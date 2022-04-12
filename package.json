@@ -6,11 +6,11 @@
   "license": "See license in https://www.creative-tim.com/license",
   "description": "",
   "bugs": {
-    "url": "https://github.com/creativetimofficial/material-dashboard-react/issues"
+    "url": "https://github.com/bigbluelc/bblc_customerapp"
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/bigbluelc/bblc_customerapp"
   },
   "engines": {
     "node": "14 || 15 || 16",
