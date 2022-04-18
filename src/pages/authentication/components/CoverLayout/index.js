@@ -1,14 +1,14 @@
 import PropTypes from "prop-types";
 import Grid from "@mui/material/Grid";
 import MDBox from "atoms/MDBox";
-import DefaultNavbar from "organisms/Navbars/DefaultNavbar";
+// import DefaultNavbar from "organisms/Navbars/DefaultNavbar";
 import PageLayout from "organisms/LayoutContainers/PageLayout";
 import Footer from "pages/authentication/components/Footer";
 
 function CoverLayout({ coverHeight, image, children }) {
   return (
     <PageLayout>
-      <DefaultNavbar
+      {/* <DefaultNavbar
         action={{
           type: "external",
           route: "https://creative-tim.com/product/material-dashboard-react",
@@ -16,7 +16,7 @@ function CoverLayout({ coverHeight, image, children }) {
         }}
         transparent
         light
-      />
+      /> */}
       <MDBox
         width="calc(100% - 2rem)"
         minHeight={coverHeight}

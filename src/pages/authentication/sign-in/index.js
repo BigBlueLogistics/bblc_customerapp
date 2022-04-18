@@ -98,6 +98,18 @@ function Basic() {
                 </MDTypography>
               </MDTypography>
             </MDBox>
+            <MDBox mt={1} mb={1} textAlign="center">
+              <MDTypography
+                component={Link}
+                to="/authentication/reset-password"
+                variant="button"
+                color="info"
+                fontWeight="medium"
+                textGradient
+              >
+                Forgot your password?
+              </MDTypography>
+            </MDBox>
           </MDBox>
         </MDBox>
       </Card>

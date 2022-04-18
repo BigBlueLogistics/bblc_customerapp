@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
@@ -13,6 +14,12 @@ import CoverLayout from "pages/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 
 function Cover() {
+  const [fname, setFname] = useState("");
+
+  const onChangeFname = (e) => {
+    setFname(e.target.value);
+  };
+
   return (
     <CoverLayout image={bgImage}>
       <Card>
@@ -31,19 +38,41 @@ function Cover() {
             Join us today
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            Enter your email and password to register
+            Enter your account details to register
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
-            <MDBox mb={2}>
-              <MDInput type="text" label="Name" variant="standard" fullWidth />
+            <MDBox mb={1}>
+              <MDInput
+                type="text"
+                label="First name"
+                variant="standard"
+                fullWidth
+                value={fname}
+                onChange={onChangeFname}
+              />
             </MDBox>
-            <MDBox mb={2}>
+            <MDBox mb={1}>
+              <MDInput type="text" label="Last name" variant="standard" fullWidth />
+            </MDBox>
+            <MDBox mb={1}>
+              <MDInput type="text" label="Phone Number" variant="standard" fullWidth />
+            </MDBox>
+            <MDBox mb={1}>
               <MDInput type="email" label="Email" variant="standard" fullWidth />
             </MDBox>
-            <MDBox mb={2}>
+            <MDBox mb={1}>
+              <MDInput type="text" label="Company" variant="standard" fullWidth />
+            </MDBox>
+            <MDBox mb={1}>
+              <MDInput type="text" label="Address" variant="standard" fullWidth />
+            </MDBox>
+            <MDBox mb={1}>
               <MDInput type="password" label="Password" variant="standard" fullWidth />
+            </MDBox>
+            <MDBox mb={1}>
+              <MDInput type="password" label="Confirm Password" variant="standard" fullWidth />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Checkbox />
@@ -68,7 +97,7 @@ function Cover() {
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth>
-                sign in
+                sign up
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">

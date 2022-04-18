@@ -29,13 +29,14 @@ import Notifications from "pages/notifications";
 import Profile from "pages/profile";
 import SignIn from "pages/authentication/sign-in";
 import SignUp from "pages/authentication/sign-up";
+import ResetPassword from "pages/authentication/reset-password/cover";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
 
 const routes = [
   {
-    type: "collapse",
+    type: "collapse", // collapse
     name: "Dashboard",
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
@@ -43,7 +44,7 @@ const routes = [
     component: <Dashboard />,
   },
   {
-    type: "collapse",
+    type: "",
     name: "Tables",
     key: "tables",
     icon: <Icon fontSize="small">table_view</Icon>,
@@ -51,7 +52,7 @@ const routes = [
     component: <Tables />,
   },
   {
-    type: "collapse",
+    type: "",
     name: "Billing",
     key: "billing",
     icon: <Icon fontSize="small">receipt_long</Icon>,
@@ -59,7 +60,7 @@ const routes = [
     component: <Billing />,
   },
   {
-    type: "collapse",
+    type: "",
     name: "RTL",
     key: "rtl",
     icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
@@ -67,7 +68,7 @@ const routes = [
     component: <RTL />,
   },
   {
-    type: "collapse",
+    type: "",
     name: "Notifications",
     key: "notifications",
     icon: <Icon fontSize="small">notifications</Icon>,
@@ -75,7 +76,7 @@ const routes = [
     component: <Notifications />,
   },
   {
-    type: "collapse",
+    type: "",
     name: "Profile",
     key: "profile",
     icon: <Icon fontSize="small">person</Icon>,
@@ -83,7 +84,7 @@ const routes = [
     component: <Profile />,
   },
   {
-    type: "collapse",
+    type: "",
     name: "Sign In",
     key: "sign-in",
     icon: <Icon fontSize="small">login</Icon>,
@@ -91,12 +92,20 @@ const routes = [
     component: <SignIn />,
   },
   {
-    type: "collapse",
+    type: "",
     name: "Sign Up",
     key: "sign-up",
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
+  },
+  {
+    type: "",
+    name: "Reset Password",
+    key: "reset-password",
+    icon: <Icon fontSize="small">reset</Icon>,
+    route: "/authentication/reset-password",
+    component: <ResetPassword />,
   },
 ];
 
