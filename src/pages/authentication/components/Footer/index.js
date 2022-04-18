@@ -30,7 +30,7 @@ function Footer({ light }) {
             &copy; {new Date().getFullYear()},
             <Link href="https://www.bigbluelogisticscorp.com/" target="_blank">
               <MDTypography variant="button" fontWeight="medium" color={light ? "white" : "dark"}>
-                &nbsp;Big Blue Logistics Corporation,&nbsp;
+                &nbsp;BigBlue Logistics Corporation,&nbsp;
               </MDTypography>
             </Link>
             All Rights Reserved.

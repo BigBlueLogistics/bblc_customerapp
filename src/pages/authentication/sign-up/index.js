@@ -66,9 +66,6 @@ function Cover() {
               <MDInput type="text" label="Company" variant="standard" fullWidth />
             </MDBox>
             <MDBox mb={1}>
-              <MDInput type="text" label="Address" variant="standard" fullWidth />
-            </MDBox>
-            <MDBox mb={1}>
               <MDInput type="password" label="Password" variant="standard" fullWidth />
             </MDBox>
             <MDBox mb={1}>
