@@ -30,6 +30,7 @@ import Profile from "pages/profile";
 import SignIn from "pages/authentication/sign-in";
 import SignUp from "pages/authentication/sign-up";
 import ResetPassword from "pages/authentication/reset-password/cover";
+import Inventory from "pages/Inventory";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -103,9 +104,17 @@ const routes = [
     type: "",
     name: "Reset Password",
     key: "reset-password",
-    icon: <Icon fontSize="small">reset</Icon>,
     route: "/authentication/reset-password",
     component: <ResetPassword />,
+  },
+  {
+    type: "collapse",
+    name: "Inventory",
+    key: "inventory",
+    icon: <Icon fontSize="small">inventory</Icon>,
+    route: "/inventory",
+    component: <Inventory />,
+    title: "Check",
   },
 ];
 
