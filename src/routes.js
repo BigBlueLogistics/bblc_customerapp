@@ -22,11 +22,11 @@
 
 // pages
 import Dashboard from "pages/dashboard";
-import Tables from "pages/tables";
-import Billing from "pages/billing";
-import RTL from "pages/rtl";
-import Notifications from "pages/notifications";
-import Profile from "pages/profile";
+// import Tables from "pages/tables";
+// import Billing from "pages/billing";
+// import RTL from "pages/rtl";
+// import Notifications from "pages/notifications";
+// import Profile from "pages/profile";
 import SignIn from "pages/authentication/sign-in";
 import SignUp from "pages/authentication/sign-up";
 import ResetPassword from "pages/authentication/reset-password/cover";
@@ -34,56 +34,62 @@ import Inventory from "pages/Inventory";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import SummarizeIcon from "@mui/icons-material/Summarize";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import MoveDownIcon from "@mui/icons-material/MoveDown";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import WebIcon from "@mui/icons-material/Web";
 
 const routes = [
-  {
-    type: "collapse", // collapse
-    name: "Dashboard",
-    key: "dashboard",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard",
-    component: <Dashboard />,
-  },
-  {
-    type: "",
-    name: "Tables",
-    key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
-    component: <Tables />,
-  },
-  {
-    type: "",
-    name: "Billing",
-    key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
-  },
-  {
-    type: "",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: "/rtl",
-    component: <RTL />,
-  },
-  {
-    type: "",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: <Notifications />,
-  },
-  {
-    type: "",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
-  },
+  // {
+  //   type: "collapse", // collapse
+  //   name: "Dashboard",
+  //   key: "dashboard",
+  //   icon: <Icon fontSize="small">dashboard</Icon>,
+  //   route: "/dashboard",
+  //   component: <Dashboard />,
+  // },
+  // {
+  //   type: "",
+  //   name: "Tables",
+  //   key: "tables",
+  //   icon: <Icon fontSize="small">table_view</Icon>,
+  //   route: "/tables",
+  //   component: <Tables />,
+  // },
+  // {
+  //   type: "",
+  //   name: "Billing",
+  //   key: "billing",
+  //   icon: <Icon fontSize="small">receipt_long</Icon>,
+  //   route: "/billing",
+  //   component: <Billing />,
+  // },
+  // {
+  //   type: "",
+  //   name: "RTL",
+  //   key: "rtl",
+  //   icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
+  //   route: "/rtl",
+  //   component: <RTL />,
+  // },
+  // {
+  //   type: "",
+  //   name: "Notifications",
+  //   key: "notifications",
+  //   icon: <Icon fontSize="small">notifications</Icon>,
+  //   route: "/notifications",
+  //   component: <Notifications />,
+  // },
+  // {
+  //   type: "",
+  //   name: "Profile",
+  //   key: "profile",
+  //   icon: <Icon fontSize="small">person</Icon>,
+  //   route: "/profile",
+  //   component: <Profile />,
+  // },
   {
     type: "",
     name: "Sign In",
@@ -115,6 +121,54 @@ const routes = [
     route: "/inventory",
     component: <Inventory />,
     title: "Check",
+  },
+  {
+    type: "collapse",
+    name: "Movements",
+    key: "movements",
+    icon: <TrendingUpIcon />,
+    route: "/movements",
+    component: "",
+  },
+  {
+    type: "collapse",
+    name: "Reports",
+    key: "reports",
+    icon: <SummarizeIcon />,
+    route: "/reports",
+    component: "",
+  },
+  {
+    type: "collapse",
+    name: "Orders",
+    key: "orders",
+    icon: <ShoppingCartIcon />,
+    route: "/reports",
+    component: "",
+  },
+  {
+    type: "collapse",
+    name: "Indicators",
+    key: "indicators",
+    icon: <MoveDownIcon />,
+    route: "/indicators",
+    component: <Dashboard />,
+  },
+  {
+    type: "collapse",
+    name: "Profile",
+    key: "profile",
+    icon: <AccountBoxIcon />,
+    route: "/profile",
+    component: "",
+  },
+  {
+    type: "collapse",
+    name: "Website",
+    key: "website",
+    icon: <WebIcon />,
+    route: "/website",
+    component: "",
   },
 ];
 
