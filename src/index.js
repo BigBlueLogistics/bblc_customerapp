@@ -6,11 +6,17 @@ import App from "App";
 // Context Provider
 import { MaterialUIControllerProvider } from "context";
 
+// redux store
+import { Provider } from "react-redux";
+import store from "redux/store";
+
 ReactDOM.render(
-  <BrowserRouter>
-    <MaterialUIControllerProvider>
-      <App />
-    </MaterialUIControllerProvider>
-  </BrowserRouter>,
+  <Provider store={store}>
+    <BrowserRouter>
+      <MaterialUIControllerProvider>
+        <App />
+      </MaterialUIControllerProvider>
+    </BrowserRouter>
+  </Provider>,
   document.getElementById("root")
 );
