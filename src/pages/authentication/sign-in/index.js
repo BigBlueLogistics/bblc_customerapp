@@ -8,6 +8,9 @@ import MuiLink from "@mui/material/Link";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
+import { useFormik } from "formik";
+
+import validationSchema from "pages/authentication/sign-in/validationSchema";
 
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
@@ -20,6 +23,17 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
+  const { values, handleSubmit, handleChange, isSubmitting, errors, touched } = useFormik({
+    validationSchema,
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    onSubmit: (_values, { setSubmitting }) => {
+      console.log(JSON.stringify(_values));
+      setSubmitting(false);
+    },
+  });
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
@@ -59,12 +73,30 @@ function Basic() {
           </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
-          <MDBox component="form" role="form">
+          <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" fullWidth />
+              <MDInput
+                name="email"
+                type="email"
+                label="Email"
+                fullWidth
+                onChange={handleChange}
+                value={values.email}
+                error={touched.email && Boolean(errors.email)}
+                // helperText={touched.email ? errors.email : ""}
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" fullWidth />
+              <MDInput
+                name="password"
+                type="password"
+                label="Password"
+                fullWidth
+                onChange={handleChange}
+                value={values.password}
+                error={touched.password && Boolean(errors.password)}
+                // helperText={touched.password ? errors.password : ""}
+              />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -79,7 +111,13 @@ function Basic() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton
+                type="submit"
+                variant="gradient"
+                color="info"
+                fullWidth
+                disabled={isSubmitting}
+              >
                 sign in
               </MDButton>
             </MDBox>
