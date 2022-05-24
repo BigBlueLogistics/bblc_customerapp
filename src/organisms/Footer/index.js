@@ -73,7 +73,7 @@ function Footer() {
       >
         <MDBox component="small" px={2} lineHeight={1}>
           <MDTypography variant="button" fontWeight="regular" color="text">
-            Version 2.0 BigBlue Customer Portal
+            Version 2.0 Customer Portal
           </MDTypography>
         </MDBox>
       </MDBox>
