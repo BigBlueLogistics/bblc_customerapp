@@ -31,7 +31,12 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 
+import axiosInstance from "config/axiosDefaults";
+
 export default function App() {
+  // Axios default config
+  axiosInstance();
+
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
