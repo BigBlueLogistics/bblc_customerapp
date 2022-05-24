@@ -29,7 +29,9 @@
       }
     ],
     "react/jsx-curly-spacing": [2, "never"],
-    "no-console": "off"
+    "no-console": "off",
+    "class-methods-use-this": "off",
+    "arrow-body-style": "off"
   },
   "settings": { "import/resolver": { "node": { "paths": ["src"] } } }
 }
