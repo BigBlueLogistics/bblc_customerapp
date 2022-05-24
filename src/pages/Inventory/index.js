@@ -1,4 +1,5 @@
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 
@@ -11,30 +12,81 @@ import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
 import DataTable from "organisms/Tables/DataTable";
 
-import authorsTableData from "pages/tables/data/authorsTableData";
+import miscData from "pages/Inventory/data";
+import inventoryServices from "services/inventoryServices";
 
 function Inventory() {
-  const { columns, rows } = authorsTableData();
-  const [selectedGroup, setSelectedGroup] = useState("");
+  const { tableHeaders, groupOpts } = miscData();
+  const [selectedGroupBy, setSelectedGroupBy] = useState("material");
+  const [selectedFilterBy, setSelectedFilterBy] = useState("");
+  const [warehouseList, setWarehouseList] = useState([]);
+  const [rowsInventory, setRowsInventory] = useState([]);
 
-  const groupOpts = [
-    {
-      value: "material",
-      label: "Material Codes",
-    },
-    {
-      value: "batch",
-      label: "Batch Codes",
-    },
-  ];
+  const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const onChangeGrouping = (e) => {
-    setSelectedGroup(e.target.value);
+  const onChangeGroupBy = (e) => {
+    console.log(e.target.value);
+    setSelectedGroupBy(e.target.value);
   };
+
+  const onChangeFilterBy = (e) => {
+    console.log("warehouse: ", e.target.value);
+    setSelectedFilterBy(e.target.value);
+  };
+
+  const fetchInventoryTable = async () => {
+    setLoading(true);
+
+    try {
+      const tableBody = {
+        customer_code: "FGVIRGIN",
+        warehouse: selectedFilterBy,
+        group_by: selectedGroupBy,
+      };
+
+      const { data: rows } = await inventoryServices.getTableData({ params: tableBody });
+
+      setRowsInventory(rows.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchWarehouseList = async () => {
+    setLoading(true);
+
+    try {
+      const { data: rows } = await inventoryServices.getWarehouseList();
+
+      setWarehouseList(rows.data);
+      if (rows.data.length) {
+        setSelectedFilterBy(rows.data[0].PLANT);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchWarehouseList();
+  }, []);
+
+  useEffect(() => {
+    fetchInventoryTable();
+  }, [selectedGroupBy, selectedFilterBy]);
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
+
+      {isLoading && <div>Loading...</div>}
+      {error && <div>{error}</div>}
+
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
@@ -49,22 +101,37 @@ function Inventory() {
                 borderRadius="lg"
                 coloredShadow="info"
               >
-                <MDTypography variant="h6" color="white">
+                <MDBox>
                   <MDSelect
-                    label="Select Grouping"
-                    onChange={onChangeGrouping}
-                    selectedOption={selectedGroup}
+                    helperText="Group by"
+                    onChange={onChangeGroupBy}
                     options={groupOpts}
+                    value={selectedGroupBy}
+                    showArrowIcon
                   />
-                </MDTypography>
+
+                  <MDSelect
+                    helperText="Filter by"
+                    onChange={onChangeFilterBy}
+                    options={warehouseList}
+                    value={selectedFilterBy}
+                    showArrowIcon
+                    optKeyValue="PLANT"
+                    optKeyLabel="NAME1"
+                  />
+                </MDBox>
               </MDBox>
               <MDBox pt={3}>
+                <MDTypography ml={3} variant="h4" color="black" textTransform="uppercase">
+                  Material Details
+                </MDTypography>
                 <DataTable
-                  table={{ columns, rows }}
+                  table={{ columns: tableHeaders[selectedGroupBy], rows: rowsInventory }}
                   isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
+                  entriesPerPage={5}
+                  showTotalEntries
                   noEndBorder
+                  canSearch
                 />
               </MDBox>
             </Card>
