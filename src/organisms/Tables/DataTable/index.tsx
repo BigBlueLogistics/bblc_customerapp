@@ -25,10 +25,14 @@ function DataTable({
   isSorted,
   noEndBorder,
 }: IDataTable) {
-  const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
-  const entries = entriesPerPage.entries
-    ? entriesPerPage.entries.map((el) => el.toString())
-    : ["5", "10", "15", "20", "25"];
+  const defaultValue =
+    typeof entriesPerPage === "object" && entriesPerPage.defaultValue
+      ? entriesPerPage.defaultValue
+      : 10;
+  const entries =
+    typeof entriesPerPage === "object" && entriesPerPage.entries
+      ? entriesPerPage.entries.map((el) => el.toString())
+      : ["5", "10", "15", "20", "25"];
   const columns = useMemo(() => table.columns, [table]);
   const data = useMemo(() => table.rows, [table]);
 

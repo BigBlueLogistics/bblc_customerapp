@@ -1,27 +1,5 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-import { useEffect } from "react";
-
-// @mui material components
 import Grid from "@mui/material/Grid";
-
-// Material Dashboard 2 React components
 import MDBox from "atoms/MDBox";
-
-// Material Dashboard 2 React example components
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
@@ -29,27 +7,15 @@ import ReportsBarChart from "organisms/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "organisms/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "organisms/Cards/StatisticsCards/ComplexStatisticsCard";
 
-// Data
-import reportsBarChartData from "pages/rtl/data/reportsBarChartData";
-import reportsLineChartData from "pages/rtl/data/reportsLineChartData";
+import reportsBarChartData from "pages/dashboard/data/reportsBarChartData";
+import reportsLineChartData from "pages/dashboard/data/reportsLineChartData";
 
-// RTL components
-import Projects from "pages/rtl/components/Projects";
-import OrdersOverview from "pages/rtl/components/OrdersOverview";
+// Dashboard components
+import Projects from "pages/dashboard/components/Projects";
+import OrdersOverview from "pages/dashboard/components/OrdersOverview";
 
-// Material Dashboard 2 React contexts
-import { useMaterialUIController, setDirection } from "context";
-
-function RTL() {
-  const [, dispatch] = useMaterialUIController();
+function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
-
-  // Changing the direction to rtl
-  useEffect(() => {
-    setDirection(dispatch, "rtl");
-
-    return () => setDirection(dispatch, "ltr");
-  }, []);
 
   return (
     <DashboardLayout>
@@ -61,12 +27,12 @@ function RTL() {
               <ComplexStatisticsCard
                 color="dark"
                 icon="weekend"
-                title="أموال اليوم"
-                count={281}
+                title="Inbound"
+                count={0}
                 percentage={{
                   color: "success",
-                  amount: "+55%",
-                  label: "من الأسبوع الماضي",
+                  amount: "0",
+                  label: "than lask week",
                 }}
               />
             </MDBox>
@@ -75,12 +41,12 @@ function RTL() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
-                title="مستخدمو اليوم"
-                count="2,300"
+                title="Outbound"
+                count="0"
                 percentage={{
                   color: "success",
-                  amount: "+3%",
-                  label: "من الأسبوع الماضي",
+                  amount: "0",
+                  label: "than last month",
                 }}
               />
             </MDBox>
@@ -90,12 +56,12 @@ function RTL() {
               <ComplexStatisticsCard
                 color="success"
                 icon="store"
-                title="عملاء جدد"
-                count="34k"
+                title="Total picking"
+                count="0"
                 percentage={{
                   color: "success",
-                  amount: "+1%",
-                  label: "من الشهر الماضي",
+                  amount: "0",
+                  label: "than yesterday",
                 }}
               />
             </MDBox>
@@ -105,12 +71,12 @@ function RTL() {
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
-                title="مبيعات"
-                count="+91"
+                title="Complete picking"
+                count="0"
                 percentage={{
                   color: "success",
                   amount: "",
-                  label: "مقارنة بيوم أمس",
+                  label: "Just updated",
                 }}
               />
             </MDBox>
@@ -122,9 +88,9 @@ function RTL() {
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="مشاهدات الموقع"
-                  description="آخر أداء للحملة"
-                  date="الحملة أرسلت قبل يومين"
+                  title="Ave. Movement Material"
+                  description="Daily"
+                  date="updated 1 min ago"
                   chart={reportsBarChartData}
                 />
               </MDBox>
@@ -133,13 +99,13 @@ function RTL() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="المبيعات اليومية"
+                  title="Ave. Movement Material"
                   description={
                     <>
-                      (<strong>+15%</strong>) زيادة في مبيعات اليوم..
+                      (<strong>+15%</strong>) weekly.
                     </>
                   }
-                  date="تم التحديث منذ 4 دقائق"
+                  date="updated 4 min ago"
                   chart={sales}
                 />
               </MDBox>
@@ -148,9 +114,9 @@ function RTL() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
-                  title="المهام المكتملة"
-                  description="آخر أداء للحملة"
-                  date="تم تحديثه للتو"
+                  title="Volume By Material"
+                  description="Current"
+                  date="just updated"
                   chart={tasks}
                 />
               </MDBox>
@@ -173,4 +139,4 @@ function RTL() {
   );
 }
 
-export default RTL;
+export default Dashboard;

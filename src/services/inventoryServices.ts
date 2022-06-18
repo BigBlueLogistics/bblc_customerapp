@@ -1,7 +1,8 @@
+import { AxiosRequestConfig } from "axios";
 import api from "services/httpAdapter";
 
-export default class inventoryServices {
-  static getTableData(config) {
+export default class InventoryServices {
+  static getTableData(config: AxiosRequestConfig) {
     return api.get("/inventory/table", config);
   }
 

@@ -72,6 +72,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }: ISidenav) {
             name={name}
             icon={icon}
             active={key === collapseName}
+            // @ts-ignore
             noCollapse={noCollapse}
           />
         </Link>

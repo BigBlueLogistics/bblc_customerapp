@@ -1,10 +1,12 @@
 import React from "react";
 
 export type IDataTable = {
-  entriesPerPage?: {
-    defaultValue: number;
-    entries: number[];
-  }; // { defaultValue: number; entries: number } | [];
+  entriesPerPage?:
+    | {
+        defaultValue: number;
+        entries: number[];
+      }
+    | boolean; // { defaultValue: number; entries: number } | [];
   canSearch?: boolean;
   showTotalEntries?: boolean;
   table: { [key: string]: any[] };

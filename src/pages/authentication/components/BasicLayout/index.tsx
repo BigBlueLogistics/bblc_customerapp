@@ -1,10 +1,10 @@
-import PropTypes from "prop-types";
 import Grid from "@mui/material/Grid";
 import MDBox from "atoms/MDBox";
 import PageLayout from "organisms/LayoutContainers/PageLayout";
 import Footer from "pages/authentication/components/Footer";
+import { IBasicLayout } from "./types";
 
-function BasicLayout({ image, children }) {
+function BasicLayout({ image, children }: IBasicLayout) {
   return (
     <PageLayout>
       <MDBox
@@ -34,11 +34,5 @@ function BasicLayout({ image, children }) {
     </PageLayout>
   );
 }
-
-// Typechecking props for the BasicLayout
-BasicLayout.propTypes = {
-  image: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
-};
 
 export default BasicLayout;

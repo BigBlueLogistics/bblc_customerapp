@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -128,7 +127,7 @@ function Inventory() {
                 <DataTable
                   table={{ columns: tableHeaders[selectedGroupBy], rows: rowsInventory }}
                   isSorted={false}
-                  entriesPerPage={5}
+                  entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}
                   showTotalEntries
                   noEndBorder
                   canSearch

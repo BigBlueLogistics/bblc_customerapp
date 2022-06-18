@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import AppBar from "@mui/material/AppBar";
@@ -18,9 +16,10 @@ import breakpoints from "assets/theme/base/breakpoints";
 // Images
 import burceMars from "assets/images/bruce-mars.jpg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
+import { IHeader } from "./types";
 
-function Header({ children }) {
-  const [tabsOrientation, setTabsOrientation] = useState("horizontal");
+function Header({ children }: IHeader) {
+  const [tabsOrientation, setTabsOrientation] = useState<"horizontal" | "vertical">("horizontal");
   const [tabValue, setTabValue] = useState(0);
 
   useEffect(() => {
@@ -124,14 +123,8 @@ function Header({ children }) {
   );
 }
 
-// Setting default props for the Header
 Header.defaultProps = {
   children: "",
-};
-
-// Typechecking props for the Header
-Header.propTypes = {
-  children: PropTypes.node,
 };
 
 export default Header;

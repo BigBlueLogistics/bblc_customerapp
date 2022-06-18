@@ -1,11 +1,11 @@
-import PropTypes from "prop-types";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import typography from "assets/theme/base/typography";
+import { IFooter } from "./types";
 
-function Footer({ light }) {
+function Footer({ light }: IFooter) {
   const { size } = typography;
 
   return (
@@ -41,14 +41,8 @@ function Footer({ light }) {
   );
 }
 
-// Setting default props for the Footer
 Footer.defaultProps = {
   light: false,
-};
-
-// Typechecking props for the Footer
-Footer.propTypes = {
-  light: PropTypes.bool,
 };
 
 export default Footer;

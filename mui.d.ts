@@ -4,15 +4,16 @@ declare module "@mui/material/styles" {
   interface Palette {
     white: { main: string };
     dark: { main: string };
-    gradients: { dark: { main: string; state: string } };
+    gradients: { dark: { main: string; state: string }; info: { main: string; state: string } };
     light: { main: string };
     transparent: { main: string };
   }
   interface PaletteOptions {
     white: { main: string };
     dark: { main: string };
-    gradients: { dark: { main: string; state: string } };
+    gradients: { dark: { main: string; state: string }; info: { main: string; state: string } };
     light: { main: string };
+    transparent: { main: string };
   }
   interface PaletteColor {
     darker?: string;

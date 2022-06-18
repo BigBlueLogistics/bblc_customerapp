@@ -1,11 +1,9 @@
-import PropTypes from "prop-types";
-
 import Icon from "@mui/material/Icon";
-
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
+import { IInvoice } from "./types";
 
-function Invoice({ date, id, price, noGutter }) {
+function Invoice({ date, id, price, noGutter }: IInvoice) {
   return (
     <MDBox
       component="li"
@@ -39,17 +37,8 @@ function Invoice({ date, id, price, noGutter }) {
   );
 }
 
-// Setting default values for the props of Invoice
 Invoice.defaultProps = {
   noGutter: false,
-};
-
-// Typechecking props for the Invoice
-Invoice.propTypes = {
-  date: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
-  price: PropTypes.string.isRequired,
-  noGutter: PropTypes.bool,
 };
 
 export default Invoice;

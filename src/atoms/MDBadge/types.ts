@@ -11,4 +11,4 @@ export type IMDBadge = Partial<{
   children: React.ReactNode;
   container: boolean;
 }> &
-  Omit<BadgeProps, "variant">;
+  Omit<BadgeProps, "variant" | "color">;

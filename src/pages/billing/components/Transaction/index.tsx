@@ -1,12 +1,10 @@
-import PropTypes from "prop-types";
-
 import Icon from "@mui/material/Icon";
-
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDButton from "atoms/MDButton";
+import { ITransaction } from "./types";
 
-function Transaction({ color, icon, name, description, value }) {
+function Transaction({ color, icon, name, description, value }: ITransaction) {
   return (
     <MDBox key={name} component="li" py={1} pr={2} mb={1}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center">
@@ -32,23 +30,5 @@ function Transaction({ color, icon, name, description, value }) {
     </MDBox>
   );
 }
-
-// Typechecking props of the Transaction
-Transaction.propTypes = {
-  color: PropTypes.oneOf([
-    "primary",
-    "secondary",
-    "info",
-    "success",
-    "warning",
-    "error",
-    "light",
-    "dark",
-  ]).isRequired,
-  icon: PropTypes.node.isRequired,
-  name: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-};
 
 export default Transaction;

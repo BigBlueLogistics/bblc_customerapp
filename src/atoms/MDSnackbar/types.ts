@@ -1,3 +1,4 @@
+import { SnackbarProps } from "@mui/material";
 import React from "react";
 
 export type IMDSnackbar = {
@@ -8,4 +9,4 @@ export type IMDSnackbar = {
   content: React.ReactNode;
   close: () => void;
   bgWhite?: boolean;
-};
+} & SnackbarProps;

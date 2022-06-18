@@ -1,25 +1,7 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
+import { useEffect } from "react";
 import Grid from "@mui/material/Grid";
-
-// Material Dashboard 2 React components
 import MDBox from "atoms/MDBox";
 
-// Material Dashboard 2 React example components
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
@@ -28,15 +10,26 @@ import ReportsLineChart from "organisms/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "organisms/Cards/StatisticsCards/ComplexStatisticsCard";
 
 // Data
-import reportsBarChartData from "pages/dashboard/data/reportsBarChartData";
-import reportsLineChartData from "pages/dashboard/data/reportsLineChartData";
+import reportsBarChartData from "pages/rtl/data/reportsBarChartData";
+import reportsLineChartData from "pages/rtl/data/reportsLineChartData";
 
-// Dashboard components
-import Projects from "pages/dashboard/components/Projects";
-import OrdersOverview from "pages/dashboard/components/OrdersOverview";
+// RTL components
+import Projects from "pages/rtl/components/Projects";
+import OrdersOverview from "pages/rtl/components/OrdersOverview";
 
-function Dashboard() {
+// Material Dashboard 2 React contexts
+import { useMaterialUIController, setDirection } from "context";
+
+function RTL() {
+  const [, dispatch] = useMaterialUIController();
   const { sales, tasks } = reportsLineChartData;
+
+  // Changing the direction to rtl
+  useEffect(() => {
+    setDirection(dispatch, "rtl");
+
+    return () => setDirection(dispatch, "ltr");
+  }, []);
 
   return (
     <DashboardLayout>
@@ -48,12 +41,12 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="dark"
                 icon="weekend"
-                title="Inbound"
-                count={0}
+                title="أموال اليوم"
+                count={281}
                 percentage={{
                   color: "success",
-                  amount: "0",
-                  label: "than lask week",
+                  amount: "+55%",
+                  label: "من الأسبوع الماضي",
                 }}
               />
             </MDBox>
@@ -62,12 +55,12 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
-                title="Outbound"
-                count="0"
+                title="مستخدمو اليوم"
+                count="2,300"
                 percentage={{
                   color: "success",
-                  amount: "0",
-                  label: "than last month",
+                  amount: "+3%",
+                  label: "من الأسبوع الماضي",
                 }}
               />
             </MDBox>
@@ -77,12 +70,12 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="success"
                 icon="store"
-                title="Total picking"
-                count="0"
+                title="عملاء جدد"
+                count="34k"
                 percentage={{
                   color: "success",
-                  amount: "0",
-                  label: "than yesterday",
+                  amount: "+1%",
+                  label: "من الشهر الماضي",
                 }}
               />
             </MDBox>
@@ -92,12 +85,12 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
-                title="Complete picking"
-                count="0"
+                title="مبيعات"
+                count="+91"
                 percentage={{
                   color: "success",
                   amount: "",
-                  label: "Just updated",
+                  label: "مقارنة بيوم أمس",
                 }}
               />
             </MDBox>
@@ -109,9 +102,9 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="Ave. Movement Material"
-                  description="Daily"
-                  date="updated 1 min ago"
+                  title="مشاهدات الموقع"
+                  description="آخر أداء للحملة"
+                  date="الحملة أرسلت قبل يومين"
                   chart={reportsBarChartData}
                 />
               </MDBox>
@@ -120,13 +113,13 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="Ave. Movement Material"
+                  title="المبيعات اليومية"
                   description={
                     <>
-                      (<strong>+15%</strong>) weekly.
+                      (<strong>+15%</strong>) زيادة في مبيعات اليوم..
                     </>
                   }
-                  date="updated 4 min ago"
+                  date="تم التحديث منذ 4 دقائق"
                   chart={sales}
                 />
               </MDBox>
@@ -135,9 +128,9 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
-                  title="Volume By Material"
-                  description="Current"
-                  date="just updated"
+                  title="المهام المكتملة"
+                  description="آخر أداء للحملة"
+                  date="تم تحديثه للتو"
                   chart={tasks}
                 />
               </MDBox>
@@ -160,4 +153,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default RTL;

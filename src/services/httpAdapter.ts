@@ -1,16 +1,16 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 class HttpAdapter {
-  token;
+  token: string;
 
-  server;
+  server: string;
 
-  constructor(server, token = "") {
+  constructor(server: string, token = "") {
     this.server = server;
     this.token = token;
   }
 
-  get = (url, config = {}) => {
+  get = (url: string, config: AxiosRequestConfig = {}) => {
     const axiosConfig = { ...config, params: { server: this.server, ...config.params } };
 
     return axios.get(url, axiosConfig);

@@ -6,7 +6,7 @@
 // chroma-js is a library for all kinds of color conversions and color scales.
 import chroma from "chroma-js";
 
-function hexToRgb(color) {
+function hexToRgb(color: string | number | chroma.Color) {
   return chroma(color).rgb().join(", ");
 }
 

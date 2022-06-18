@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import Icon from "@mui/material/Icon";
 
 import MDBox from "atoms/MDBox";
@@ -6,8 +5,9 @@ import MDTypography from "atoms/MDTypography";
 import MDButton from "atoms/MDButton";
 
 import { useMaterialUIController } from "context";
+import { IBill } from "./types";
 
-function Bill({ name, company, email, vat, noGutter }) {
+function Bill({ name, company, email, vat, noGutter }: IBill) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -76,15 +76,6 @@ function Bill({ name, company, email, vat, noGutter }) {
 // Setting default values for the props of Bill
 Bill.defaultProps = {
   noGutter: false,
-};
-
-// Typechecking props for the Bill
-Bill.propTypes = {
-  name: PropTypes.string.isRequired,
-  company: PropTypes.string.isRequired,
-  email: PropTypes.string.isRequired,
-  vat: PropTypes.string.isRequired,
-  noGutter: PropTypes.bool,
 };
 
 export default Bill;

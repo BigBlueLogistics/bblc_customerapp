@@ -1,24 +1,5 @@
-/* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
 import Tooltip from "@mui/material/Tooltip";
-
-// Material Dashboard 2 React components
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDAvatar from "atoms/MDAvatar";
@@ -37,8 +18,8 @@ import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 
 export default function data() {
-  const avatars = (أعضاء) =>
-    أعضاء.map(([image, name]) => (
+  const avatars = (members) =>
+    members.map(([image, name]) => (
       <Tooltip key={name} title={name} placeholder="bottom">
         <MDAvatar
           src={image}
@@ -62,9 +43,10 @@ export default function data() {
       </Tooltip>
     ));
 
-  const Company = ({ image, name }) => (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const Company = ({ image, name }: { image: string; name: string }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDAvatar src={image} name={name} size="sm" />
+      {/* <MDAvatar src={image} name={name} size="sm" /> */}
       <MDTypography variant="button" fontWeight="medium" ml={1} lineHeight={1}>
         {name}
       </MDTypography>
@@ -73,34 +55,16 @@ export default function data() {
 
   return {
     columns: [
-      { Header: "المشروع", accessor: "المشروع", width: "45%", align: "left" },
-      { Header: "أعضاء", accessor: "أعضاء", width: "10%", align: "left" },
-      { Header: "ميزانية", accessor: "ميزانية", align: "center" },
-      { Header: "إكمال", accessor: "إكمال", align: "center" },
+      { Header: "companies", accessor: "companies", width: "45%", align: "left" },
+      { Header: "members", accessor: "members", width: "10%", align: "left" },
+      { Header: "budget", accessor: "budget", align: "center" },
+      { Header: "completion", accessor: "completion", align: "center" },
     ],
 
     rows: [
       {
-        المشروع: (
-          <Company
-            image={logoXD}
-            name="/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/ الإصدار"
-          />
-        ),
-        أعضاء: (
+        companies: <Company image={logoXD} name="ORBIFLEX" />,
+        members: (
           <MDBox display="flex" py={1}>
             {avatars([
               [team1, "Ryan Tompson"],
@@ -110,20 +74,20 @@ Coded by www.creative-tim.com
             ])}
           </MDBox>
         ),
-        ميزانية: (
+        budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
             $14,000
           </MDTypography>
         ),
-        إكمال: (
+        completion: (
           <MDBox width="8rem" textAlign="left">
             <MDProgress value={60} color="info" variant="gradient" label={false} />
           </MDBox>
         ),
       },
       {
-        المشروع: <Company image={logoAtlassian} name="أضف مسار التقدم إلى التطبيق الداخلي" />,
-        أعضاء: (
+        companies: <Company image={logoAtlassian} name="IPLAX" />,
+        members: (
           <MDBox display="flex" py={1}>
             {avatars([
               [team2, "Romina Hadid"],
@@ -131,20 +95,20 @@ Coded by www.creative-tim.com
             ])}
           </MDBox>
         ),
-        ميزانية: (
+        budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
             $3,000
           </MDTypography>
         ),
-        إكمال: (
+        completion: (
           <MDBox width="8rem" textAlign="left">
             <MDProgress value={10} color="info" variant="gradient" label={false} />
           </MDBox>
         ),
       },
       {
-        المشروع: <Company image={logoSlack} name="إصلاح أخطاء النظام الأساسي" />,
-        أعضاء: (
+        companies: <Company image={logoSlack} name="TERRASYS" />,
+        members: (
           <MDBox display="flex" py={1}>
             {avatars([
               [team1, "Ryan Tompson"],
@@ -152,20 +116,20 @@ Coded by www.creative-tim.com
             ])}
           </MDBox>
         ),
-        ميزانية: (
+        budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            غير مضبوط
+            Not set
           </MDTypography>
         ),
-        إكمال: (
+        completion: (
           <MDBox width="8rem" textAlign="left">
             <MDProgress value={100} color="success" variant="gradient" label={false} />
           </MDBox>
         ),
       },
       {
-        المشروع: <Company image={logoSpotify} name="إطلاق تطبيق الهاتف المحمول الخاص بنا" />,
-        أعضاء: (
+        companies: <Company image={logoSpotify} name="CINASTER" />,
+        members: (
           <MDBox display="flex" py={1}>
             {avatars([
               [team4, "Jessica Doe"],
@@ -175,38 +139,38 @@ Coded by www.creative-tim.com
             ])}
           </MDBox>
         ),
-        ميزانية: (
+        budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
             $20,500
           </MDTypography>
         ),
-        إكمال: (
+        completion: (
           <MDBox width="8rem" textAlign="left">
             <MDProgress value={100} color="success" variant="gradient" label={false} />
           </MDBox>
         ),
       },
       {
-        المشروع: <Company image={logoJira} name="أضف صفحة التسعير الجديدة" />,
-        أعضاء: (
+        companies: <Company image={logoJira} name="COMVEYOR" />,
+        members: (
           <MDBox display="flex" py={1}>
             {avatars([[team4, "Jessica Doe"]])}
           </MDBox>
         ),
-        ميزانية: (
+        budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
             $500
           </MDTypography>
         ),
-        إكمال: (
+        completion: (
           <MDBox width="8rem" textAlign="left">
             <MDProgress value={25} color="info" variant="gradient" label={false} />
           </MDBox>
         ),
       },
       {
-        المشروع: <Company image={logoInvesion} name="إعادة تصميم متجر جديد على الإنترنت" />,
-        أعضاء: (
+        companies: <Company image={logoInvesion} name="ZAYAK FOODS" />,
+        members: (
           <MDBox display="flex" py={1}>
             {avatars([
               [team1, "Ryan Tompson"],
@@ -214,12 +178,12 @@ Coded by www.creative-tim.com
             ])}
           </MDBox>
         ),
-        ميزانية: (
+        budget: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
             $2,000
           </MDTypography>
         ),
-        إكمال: (
+        completion: (
           <MDBox width="8rem" textAlign="left">
             <MDProgress value={40} color="info" variant="gradient" label={false} />
           </MDBox>

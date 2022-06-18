@@ -17,7 +17,6 @@ const MDBadge = forwardRef<HTMLSpanElement, IMDBadge>(
 
 MDBadge.displayName = "MDBadge";
 
-// Setting default values for the props of MDBadge
 MDBadge.defaultProps = {
   color: "info",
   variant: "gradient",

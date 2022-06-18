@@ -12,8 +12,9 @@ import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 
 export default function data() {
-  const Author = ({ image, name, email }) => (
+  const Author = ({ image, name, email }: { image: string; name: string; email: string }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
+      {/* @ts-ignore */}
       <MDAvatar src={image} name={name} size="sm" />
       <MDBox ml={2} lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium">
@@ -24,7 +25,7 @@ export default function data() {
     </MDBox>
   );
 
-  const Job = ({ title, description }) => (
+  const Job = ({ title, description }: { title: string; description: string }) => (
     <MDBox lineHeight={1} textAlign="left">
       <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
         {title}

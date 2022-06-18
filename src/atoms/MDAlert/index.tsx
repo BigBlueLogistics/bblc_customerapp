@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import Fade from "@mui/material/Fade";
 import MDBox from "atoms/MDBox";
 import MDAlertRoot from "atoms/MDAlert/MDAlertRoot";
@@ -18,7 +18,11 @@ function MDAlert({ color, dismissible, children, ...rest }: IMDAlert) {
           {children}
         </MDBox>
         {dismissible ? (
-          <MDAlertCloseIcon onClick={mount ? handleAlertStatus : null}>&times;</MDAlertCloseIcon>
+          <MDAlertCloseIcon
+            onClick={(mount ? handleAlertStatus : null) as MouseEventHandler<HTMLSpanElement>}
+          >
+            &times;
+          </MDAlertCloseIcon>
         ) : null}
       </MDAlertRoot>
     </Fade>

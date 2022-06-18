@@ -51,7 +51,7 @@ function MDSnackbar({
       }}
       {...rest}
       action={
-        <IconButton size="small" aria-label="close" color="inherit" onClick={close}>
+        <IconButton size="small" aria-label="close" color="inherit" onClick={() => close()}>
           <Icon fontSize="small">close</Icon>
         </IconButton>
       }
@@ -102,7 +102,7 @@ function MDSnackbar({
                 marginLeft: 2,
                 transform: "translateY(-1px)",
               }}
-              onClick={close}
+              onClick={() => close()}
             >
               close
             </Icon>

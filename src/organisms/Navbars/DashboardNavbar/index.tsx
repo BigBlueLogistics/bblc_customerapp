@@ -27,7 +27,7 @@ import { Theme } from "@mui/material/styles/createTheme";
 import { IDashboardNavbar, CSSPosition } from "./types";
 
 function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
-  const [navbarType, setNavbarType] = useState("");
+  const [navbarType, setNavbarType] = useState("sticky");
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(null);

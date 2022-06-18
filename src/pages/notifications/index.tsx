@@ -1,14 +1,11 @@
 import { useState } from "react";
-
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDAlert from "atoms/MDAlert";
 import MDButton from "atoms/MDButton";
 import MDSnackbar from "atoms/MDSnackbar";
-
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";

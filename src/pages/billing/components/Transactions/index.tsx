@@ -1,11 +1,8 @@
 import Card from "@mui/material/Card";
 // import Divider from "@mui/material/Divider";
 import Icon from "@mui/material/Icon";
-
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
-// import MDButton from "atoms/MDButton";
-
 import Transaction from "pages/billing/components/Transaction";
 
 function Transactions() {

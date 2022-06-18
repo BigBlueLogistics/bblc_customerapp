@@ -1,46 +1,18 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect } from "react";
-
-// react-router components
 import { Link } from "react-router-dom";
-
-// prop-types is a library for typechecking of props.
-import PropTypes from "prop-types";
-
-// @mui material components
 import Container from "@mui/material/Container";
 import Icon from "@mui/material/Icon";
-
-// Material Dashboard 2 React components
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDButton from "atoms/MDButton";
 
-// Material Dashboard 2 React example components
 import DefaultNavbarLink from "organisms/Navbars/DefaultNavbar/DefaultNavbarLink";
 import DefaultNavbarMobile from "organisms/Navbars/DefaultNavbar/DefaultNavbarMobile";
-
-// Material Dashboard 2 React base styles
 import breakpoints from "assets/theme/base/breakpoints";
-
-// Material Dashboard 2 React context
 import { useMaterialUIController } from "context";
+import { IDefaultNavbar } from "./types";
 
-function DefaultNavbar({ transparent, light, action }) {
+function DefaultNavbar({ transparent, light, action }: IDefaultNavbar) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -167,7 +139,7 @@ function DefaultNavbar({ transparent, light, action }) {
           sx={{ cursor: "pointer" }}
           onClick={openMobileNavbar}
         >
-          <Icon fontSize="default">{mobileNavbar ? "close" : "menu"}</Icon>
+          <Icon fontSize="medium">{mobileNavbar ? "close" : "menu"}</Icon>
         </MDBox>
       </MDBox>
       {mobileView && <DefaultNavbarMobile open={mobileNavbar} close={closeMobileNavbar} />}
@@ -179,31 +151,7 @@ function DefaultNavbar({ transparent, light, action }) {
 DefaultNavbar.defaultProps = {
   transparent: false,
   light: false,
-  action: false,
-};
-
-// Typechecking props for the DefaultNavbar
-DefaultNavbar.propTypes = {
-  transparent: PropTypes.bool,
-  light: PropTypes.bool,
-  action: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.shape({
-      type: PropTypes.oneOf(["external", "internal"]).isRequired,
-      route: PropTypes.string.isRequired,
-      color: PropTypes.oneOf([
-        "primary",
-        "secondary",
-        "info",
-        "success",
-        "warning",
-        "error",
-        "dark",
-        "light",
-      ]),
-      label: PropTypes.string.isRequired,
-    }),
-  ]),
+  action: null,
 };
 
 export default DefaultNavbar;

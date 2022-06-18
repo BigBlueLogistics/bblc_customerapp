@@ -1,3 +1,5 @@
+import { DrawerProps } from "@mui/material";
+
 export type ISidenav = {
   color?: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "dark";
   brand?: string;
@@ -9,4 +11,4 @@ export type ISidenavCollapse = {
   icon: React.ReactNode;
   name: string;
   active?: boolean;
-};
+} & DrawerProps;

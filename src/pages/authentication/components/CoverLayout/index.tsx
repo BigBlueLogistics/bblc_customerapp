@@ -1,11 +1,11 @@
-import PropTypes from "prop-types";
 import Grid from "@mui/material/Grid";
 import MDBox from "atoms/MDBox";
 // import DefaultNavbar from "organisms/Navbars/DefaultNavbar";
 import PageLayout from "organisms/LayoutContainers/PageLayout";
 import Footer from "pages/authentication/components/Footer";
+import { ICoverLayout } from "./types";
 
-function CoverLayout({ coverHeight, image, children }) {
+function CoverLayout({ coverHeight, image, children }: ICoverLayout) {
   return (
     <PageLayout>
       {/* <DefaultNavbar
@@ -52,13 +52,6 @@ function CoverLayout({ coverHeight, image, children }) {
 // Setting default props for the CoverLayout
 CoverLayout.defaultProps = {
   coverHeight: "35vh",
-};
-
-// Typechecking props for the CoverLayout
-CoverLayout.propTypes = {
-  coverHeight: PropTypes.string,
-  image: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
 };
 
 export default CoverLayout;
