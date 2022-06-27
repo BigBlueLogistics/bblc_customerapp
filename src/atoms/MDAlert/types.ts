@@ -6,4 +6,10 @@ type IMDAlert = {
   children: React.ReactNode;
 };
 
+export type IOwnerState = {
+  ownerState: {
+    color: IMDAlert["color"];
+  };
+};
+
 export default IMDAlert;

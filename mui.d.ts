@@ -4,14 +4,32 @@ declare module "@mui/material/styles" {
   interface Palette {
     white: { main: string };
     dark: { main: string };
-    gradients: { dark: { main: string; state: string }; info: { main: string; state: string } };
+    gradients: {
+      dark: { main: string; state: string };
+      info: { main: string; state: string };
+      primary: { main: string; state: string };
+      secondary: { main: string; state: string };
+      light: { main: string; state: string };
+      success: { main: string; state: string };
+      error: { main: string; state: string };
+      warning: { main: string; state: string };
+    };
     light: { main: string };
     transparent: { main: string };
   }
   interface PaletteOptions {
     white: { main: string };
     dark: { main: string };
-    gradients: { dark: { main: string; state: string }; info: { main: string; state: string } };
+    gradients: {
+      dark: { main: string; state: string };
+      info: { main: string; state: string };
+      primary: { main: string; state: string };
+      secondary: { main: string; state: string };
+      light: { main: string; state: string };
+      success: { main: string; state: string };
+      error: { main: string; state: string };
+      warning: { main: string; state: string };
+    };
     light: { main: string };
     transparent: { main: string };
   }
@@ -122,5 +140,9 @@ declare module "@mui/material/styles/createTypography" {
       "2xl": string;
       "3xl": string;
     };
+  }
+
+  interface FontStyle {
+    fontSizeRegular: string;
   }
 }
