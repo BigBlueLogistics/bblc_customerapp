@@ -1,9 +1,14 @@
 import { LinearProgressProps } from "@mui/material";
 
-export type IMDProgress = Partial<{
+export type IProgress = Partial<{
   variant: "contained" | "gradient";
   color: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "light" | "dark";
   value: number;
   label: boolean;
-}> &
-  Omit<LinearProgressProps, "variant" | "color">;
+}>;
+
+export type IMDProgress = IProgress & Omit<LinearProgressProps, "variant" | "color">;
+
+export type IOwnerState = {
+  ownerState?: IProgress;
+};

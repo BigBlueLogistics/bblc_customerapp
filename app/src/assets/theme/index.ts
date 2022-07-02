@@ -143,4 +143,4 @@ export const opt = {
   },
 };
 
-export default createTheme(opt as ThemeOptions);
+export default createTheme(opt as unknown as ThemeOptions);

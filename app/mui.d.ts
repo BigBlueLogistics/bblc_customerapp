@@ -1,9 +1,10 @@
 import "@mui/material/styles";
+import chroma from "chroma-js";
 
 declare module "@mui/material/styles" {
   interface Palette {
-    white: { main: string };
-    dark: { main: string };
+    white: { main: string; focus: string };
+    dark: { main: string; focus: string };
     gradients: {
       dark: { main: string; state: string };
       info: { main: string; state: string };
@@ -14,12 +15,13 @@ declare module "@mui/material/styles" {
       error: { main: string; state: string };
       warning: { main: string; state: string };
     };
-    light: { main: string };
-    transparent: { main: string };
+    light: { main: string; focus: string };
+    transparent: { main: string; focus: string };
+    badgeColors: any;
   }
   interface PaletteOptions {
-    white: { main: string };
-    dark: { main: string };
+    white: { main: string; focus: string };
+    dark: { main: string; focus: string };
     gradients: {
       dark: { main: string; state: string };
       info: { main: string; state: string };
@@ -30,11 +32,13 @@ declare module "@mui/material/styles" {
       error: { main: string; state: string };
       warning: { main: string; state: string };
     };
-    light: { main: string };
-    transparent: { main: string };
+    light: { main: string; focus: string };
+    transparent: { main: string; focus: string };
+    badgeColors: any;
   }
   interface PaletteColor {
     darker?: string;
+    focus?: string;
   }
   interface SimplePaletteColorOptions {
     darker?: string;
@@ -46,18 +50,43 @@ declare module "@mui/material/styles" {
   // }
 
   interface Theme {
-    functions?: {
-      linearGradient: (...args) => string;
+    functions: {
+      linearGradient: (
+        color: string | number,
+        colorState: string | number,
+        angle?: number
+      ) => string;
       pxToRem: (value: number, radix?: number) => string;
       rgba: (color: string, rgba?: number) => string;
+      boxShadow: (
+        offset: number[],
+        radius: number[],
+        color: string,
+        opacity: number,
+        inset?: string
+      ) => string;
+      hexToRgb: (color: string | number | chroma.Color) => string;
     };
     boxShadows?: {
+      none?: string;
+      inset: string;
       xs: string;
       sm: string;
       md: string;
       lg: string;
       xl: string;
+      xxl: string;
       navbarBoxShadow: string;
+      colored: {
+        primary: string;
+        secondary: string;
+        info: string;
+        success: string;
+        warning: string;
+        error: string;
+        light: string;
+        dark: string;
+      };
     };
     borders: {
       borderColor: string;
@@ -82,17 +111,32 @@ declare module "@mui/material/styles" {
   }
 
   interface ThemeOptions {
-    functions?: {
-      linearGradient: (...args) => string;
+    functions: {
+      linearGradient: (
+        color: string | number,
+        colorState: string | number,
+        angle?: number
+      ) => string;
       pxToRem: (value: number, radix?: number) => string;
       rgba: (color: string, rgba?: number) => string;
+      boxShadow: (
+        offset: number[],
+        radius: number[],
+        color: string,
+        opacity: number,
+        inset?: string
+      ) => string;
+      hexToRgb: (color: string | number | chroma.Color) => string;
     };
     boxShadows?: {
+      none?: string;
+      inset: string;
       xs: string;
       sm: string;
       md: string;
       lg: string;
       xl: string;
+      xxl: string;
       navbarBoxShadow: string;
     };
     borders: {
@@ -114,6 +158,16 @@ declare module "@mui/material/styles" {
         xxl: string;
         section: string;
       };
+    };
+    colored: {
+      primary: string;
+      secondary: string;
+      info: string;
+      success: string;
+      warning: string;
+      error: string;
+      light: string;
+      dark: string;
     };
   }
 }

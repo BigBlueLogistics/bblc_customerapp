@@ -1,12 +1,12 @@
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
-import { IMaterialElem } from "types/materialElem";
+import { IOwnerState } from "./types";
 
-export default styled(Button)<IMaterialElem>(({ theme, ownerState }) => {
+export default styled(Button)<IOwnerState>(({ theme, ownerState = {} }) => {
   const { palette, functions, borders, boxShadows } = theme;
   const { color, variant, size, circular, iconOnly, darkMode } = ownerState;
 
-  const { white, text, transparent, gradients, grey } = palette || ({} as any);
+  const { white, text, transparent, gradients, grey } = palette;
   const { boxShadow, linearGradient, pxToRem, rgba } = functions;
   const { borderRadius } = borders;
   const { colored } = boxShadows;

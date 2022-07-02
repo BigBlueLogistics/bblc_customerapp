@@ -8,3 +8,7 @@ export type IMDSelect = {
   options: { value: string | number; label: string }[];
   value: string | number;
 };
+
+export type IOwnerState = {
+  ownerState: { showArrowIcon: IMDSelect["showArrowIcon"] };
+};

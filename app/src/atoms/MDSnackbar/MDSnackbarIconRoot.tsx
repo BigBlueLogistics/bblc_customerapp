@@ -1,8 +1,8 @@
 import Icon from "@mui/material/Icon";
 import { styled } from "@mui/material/styles";
-import { IMaterialElem } from "types/materialElem";
+import { IOwnerState } from "./types";
 
-export default styled(Icon)<IMaterialElem>(({ theme, ownerState }) => {
+export default styled(Icon)<IOwnerState>(({ theme, ownerState }) => {
   const { palette, functions, typography } = theme;
   const { color, bgWhite } = ownerState;
 

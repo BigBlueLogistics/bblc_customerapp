@@ -1,8 +1,8 @@
 import Typography from "@mui/material/Typography";
 import { styled, TypographyStyle } from "@mui/material/styles";
-import { IMaterialElem } from "types/materialElem";
+import { IOwnerState, ITypography } from "./types";
 
-export default styled(Typography)<IMaterialElem>(({ theme, ownerState }) => {
+export default styled(Typography)<IOwnerState>(({ theme, ownerState }) => {
   const { palette, typography, functions } = theme;
   const { color, textTransform, verticalAlign, fontWeight, opacity, textGradient, darkMode } =
     ownerState;
@@ -45,7 +45,9 @@ export default styled(Typography)<IMaterialElem>(({ theme, ownerState }) => {
     verticalAlign,
     textDecoration: "none",
     color: colorValue,
-    fontWeight: fontWeights[fontWeight] && fontWeights[fontWeight],
+    fontWeight:
+      fontWeights[fontWeight as Exclude<ITypography["fontWeight"], boolean>] &&
+      fontWeights[fontWeight as Exclude<ITypography["fontWeight"], boolean>],
     ...(textGradient && gradientStyles()),
   } as TypographyStyle;
 });

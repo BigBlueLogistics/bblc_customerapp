@@ -121,7 +121,7 @@ function Inventory() {
                 </MDBox>
               </MDBox>
               <MDBox pt={3}>
-                <MDTypography ml={3} variant="h4" color="black" textTransform="uppercase">
+                <MDTypography ml={3} variant="h4" color="dark" textTransform="uppercase">
                   Material Details
                 </MDTypography>
                 <DataTable

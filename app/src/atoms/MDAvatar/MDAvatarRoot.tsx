@@ -1,8 +1,8 @@
 import Avatar from "@mui/material/Avatar";
 import { styled } from "@mui/material/styles";
-import { IMaterialElem } from "types/materialElem";
+import { IOwnerState } from "./types";
 
-export default styled(Avatar)<IMaterialElem>(({ theme, ownerState }) => {
+export default styled(Avatar)<IOwnerState>(({ theme, ownerState = {} }) => {
   const { palette, functions, typography, boxShadows } = theme;
   const { shadow, bgColor, size } = ownerState;
 
@@ -14,7 +14,10 @@ export default styled(Avatar)<IMaterialElem>(({ theme, ownerState }) => {
   const backgroundValue =
     bgColor === "transparent"
       ? transparent.main
-      : linearGradient(gradients[bgColor].main, gradients[bgColor].state);
+      : linearGradient(
+          gradients[bgColor as NonNullable<typeof bgColor>].main,
+          gradients[bgColor as NonNullable<typeof bgColor>].state
+        );
 
   // size value
   let sizeValue;
@@ -68,7 +71,7 @@ export default styled(Avatar)<IMaterialElem>(({ theme, ownerState }) => {
     background: backgroundValue,
     color: white.main,
     fontWeight: fontWeightRegular,
-    boxShadow: boxShadows[shadow],
+    boxShadow: boxShadows && boxShadows[shadow as NonNullable<typeof shadow>],
     ...sizeValue,
   };
 });

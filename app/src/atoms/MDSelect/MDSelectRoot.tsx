@@ -1,8 +1,8 @@
 import { styled } from "@mui/material/styles";
 import Select from "@mui/material/Select";
-import { IMaterialElem } from "types/materialElem";
+import { IOwnerState } from "./types";
 
-export default styled(Select)<IMaterialElem>(({ theme, ownerState }) => {
+export default styled(Select)<IOwnerState>(({ theme, ownerState }) => {
   const { palette, borders, functions } = theme;
   const { background } = palette;
   const { showArrowIcon } = ownerState;

@@ -1,8 +1,8 @@
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
-import { IMaterialElem } from "types/materialElem";
+import { IOwnerState } from "./types";
 
-export default styled(TextField)<IMaterialElem>(({ theme, ownerState }) => {
+export default styled(TextField)<IOwnerState>(({ theme, ownerState = {} }) => {
   const { palette, functions } = theme;
   const { error, success, disabled } = ownerState;
 

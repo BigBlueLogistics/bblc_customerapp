@@ -1,8 +1,8 @@
 import { styled } from "@mui/material/styles";
 import LinearProgress from "@mui/material/LinearProgress";
-import { IMaterialElem } from "types/materialElem";
+import { IOwnerState } from "./types";
 
-export default styled(LinearProgress)<IMaterialElem>(({ theme, ownerState }) => {
+export default styled(LinearProgress)<IOwnerState>(({ theme, ownerState }) => {
   const { palette, functions } = theme;
   const { color, value, variant } = ownerState;
 

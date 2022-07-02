@@ -1,8 +1,8 @@
 import Badge from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
-import { IMaterialElem } from "types/materialElem";
+import { IOwnerState, IBadge } from "./types";
 
-export default styled(Badge)<IMaterialElem>(({ theme, ownerState }) => {
+export default styled(Badge)<IOwnerState>(({ theme, ownerState = {} }) => {
   const { palette, typography, borders, functions } = theme;
   const { color, circular, border, size, indicator, variant, container, children } = ownerState;
 
@@ -29,14 +29,14 @@ export default styled(Badge)<IMaterialElem>(({ theme, ownerState }) => {
   const borderRadiusValue = circular ? borderRadius.section : borderRadius.md;
 
   // styles for the badge with indicator={true}
-  const indicatorStyles = (sizeProp) => {
+  const indicatorStyles = (sizeProp: IBadge["size"]) => {
     let widthValue = pxToRem(20);
     let heightValue = pxToRem(20);
 
-    if (sizeProp === "medium") {
+    if (sizeProp === "md") {
       widthValue = pxToRem(24);
       heightValue = pxToRem(24);
-    } else if (sizeProp === "large") {
+    } else if (sizeProp === "lg") {
       widthValue = pxToRem(32);
       heightValue = pxToRem(32);
     }
@@ -54,10 +54,11 @@ export default styled(Badge)<IMaterialElem>(({ theme, ownerState }) => {
   };
 
   // styles for the badge with variant="gradient"
-  const gradientStyles = (colorProp) => {
-    const backgroundValue = gradients[colorProp]
-      ? linearGradient(gradients[colorProp].main, gradients[colorProp].state)
-      : linearGradient(gradients.info.main, gradients.info.state);
+  const gradientStyles = (colorProp: IBadge["color"]) => {
+    const backgroundValue =
+      colorProp && gradients[colorProp]
+        ? linearGradient(gradients[colorProp].main, gradients[colorProp].state)
+        : linearGradient(gradients.info.main, gradients.info.state);
     const colorValue = colorProp === "light" ? dark.main : white.main;
 
     return {
@@ -67,11 +68,13 @@ export default styled(Badge)<IMaterialElem>(({ theme, ownerState }) => {
   };
 
   // styles for the badge with variant="contained"
-  const containedStyles = (colorProp) => {
-    const backgroundValue = badgeColors[colorProp]
-      ? badgeColors[colorProp].background
-      : badgeColors.info.background;
-    let colorValue = badgeColors[colorProp] ? badgeColors[colorProp].text : badgeColors.info.text;
+  const containedStyles = (colorProp: IBadge["color"]) => {
+    const backgroundValue =
+      colorProp && badgeColors[colorProp]
+        ? badgeColors[colorProp].background
+        : badgeColors.info.background;
+    let colorValue =
+      colorProp && badgeColors[colorProp] ? badgeColors[colorProp].text : badgeColors.info.text;
 
     if (colorProp === "light") {
       colorValue = dark.main;
@@ -99,7 +102,7 @@ export default styled(Badge)<IMaterialElem>(({ theme, ownerState }) => {
   return {
     "& .MuiBadge-badge": {
       height: "auto",
-      padding: paddings[size] || paddings.xs,
+      padding: paddings[size as NonNullable<IBadge["size"]>] || paddings.xs,
       fontSize: fontSizeValue,
       fontWeight: fontWeightBold,
       textTransform: "uppercase",

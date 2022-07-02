@@ -1,8 +1,13 @@
 import { TextFieldProps } from "@mui/material";
 
-export type IMDInput = Partial<{
+export type IInput = Partial<{
   error: boolean;
   success: boolean;
   disabled: boolean;
-}> &
-  TextFieldProps;
+}>;
+
+export type IMDInput = IInput & TextFieldProps;
+
+export type IOwnerState = {
+  ownerState?: IInput;
+};

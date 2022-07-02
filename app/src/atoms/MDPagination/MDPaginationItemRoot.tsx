@@ -1,8 +1,8 @@
 import { styled } from "@mui/material/styles";
 import MDButton from "atoms/MDButton";
-import { IMaterialElem } from "types/materialElem";
+import { IOwnerState } from "./types";
 
-export default styled(MDButton)<IMaterialElem>(({ theme, ownerState }) => {
+export default styled(MDButton)<IOwnerState>(({ theme, ownerState = {} }) => {
   const { borders, functions, typography, palette } = theme;
   const { variant, paginationSize, active } = ownerState;
 
@@ -33,6 +33,7 @@ export default styled(MDButton)<IMaterialElem>(({ theme, ownerState }) => {
 
     "&:hover, &:focus, &:active": {
       transform: "none",
+      // @ts-ignore
       boxShadow: (variant !== "gradient" || variant !== "contained") && "none !important",
       opacity: "1 !important",
     },

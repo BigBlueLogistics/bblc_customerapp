@@ -7,7 +7,7 @@ type IMDAlert = {
 };
 
 export type IOwnerState = {
-  ownerState: {
+  ownerState?: {
     color: IMDAlert["color"];
   };
 };

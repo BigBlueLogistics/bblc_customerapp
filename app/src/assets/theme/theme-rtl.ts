@@ -142,4 +142,4 @@ const opt = {
     MuiDialogActions: { ...dialogActions },
   },
 };
-export default createTheme(opt as ThemeOptions);
+export default createTheme(opt as unknown as ThemeOptions);

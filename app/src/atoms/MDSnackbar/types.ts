@@ -10,3 +10,7 @@ export type IMDSnackbar = {
   close: () => void;
   bgWhite?: boolean;
 } & SnackbarProps;
+
+export type IOwnerState = {
+  ownerState?: Pick<IMDSnackbar, "color" | "bgWhite">;
+};
