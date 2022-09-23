@@ -1,0 +1,10 @@
+.git
+devspace.yaml
+.DS_Store
+
+node_modules/
+npm-debug.log*
+pids
+*.pid*
+*.seed*
+*.pid.lock*

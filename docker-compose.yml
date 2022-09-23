@@ -1,0 +1,68 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "9001:80"
+    volumes:
+      - ./api:/var/www/html
+    networks:
+      - bblc_customer
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: unless-stopped
+    tty: true
+    depends_on:
+      - api
+    ports:
+      - 3000:3000
+    volumes:
+      - ./app:/var/www/html
+      - /var/www/html/node_modules
+    # environment:
+      # - WDS_SOCKET_PORT=3000
+      # - CHOKIDAR_USEPOLLING=true
+    networks:
+      - bblc_customer
+
+  # composer:
+  #   image: composer:2.4.1
+  #   container_name:  composer
+  #   depends_on:
+  #     - api
+  #   volumes: 
+  #     - ./:/var/www/html
+  #   working_dir:
+  #     -/var/ww/html
+  #   networks:
+  #     - bblc_customer
+
+  # mssql:
+  #   image: mcr.microsoft.com/mssql/server:2019-latest
+  #   tty: true
+  #   ports:
+  #     - 1433:1433
+  #   volumes:
+  #     - ./:/var/lib/mssqlql/data
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #     - SA_PASSWORD=p@ssw0rd
+  #   networks:
+  #     - bblc
+
+networks:
+  bblc_customer:
+    name: bblc_customer_net
+
+volumes:
+  shared_vol:
