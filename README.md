@@ -1,4 +1,4 @@
-# DOCKER Command
+# How to run the project with docker
 
 **Execute command of running container**
 
