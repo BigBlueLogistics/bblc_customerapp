@@ -2,7 +2,7 @@
 devspace.yaml
 .DS_Store
 
-node_modules/
+/node_modules
 npm-debug.log*
 pids
 *.pid*

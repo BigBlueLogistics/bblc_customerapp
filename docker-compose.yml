@@ -11,7 +11,8 @@ services:
     ports:
       - "9001:80"
     volumes:
-      - ./api:/var/www/html
+      - ./api:/var/www/html/api
+      - /var/www/html/vendor
     networks:
       - bblc_customer
 
@@ -30,22 +31,10 @@ services:
       - ./app:/var/www/html
       - /var/www/html/node_modules
     # environment:
-      # - WDS_SOCKET_PORT=3000
-      # - CHOKIDAR_USEPOLLING=true
+    # - WDS_SOCKET_PORT=3000
+    # - CHOKIDAR_USEPOLLING=true
     networks:
       - bblc_customer
-
-  # composer:
-  #   image: composer:2.4.1
-  #   container_name:  composer
-  #   depends_on:
-  #     - api
-  #   volumes: 
-  #     - ./:/var/www/html
-  #   working_dir:
-  #     -/var/ww/html
-  #   networks:
-  #     - bblc_customer
 
   # mssql:
   #   image: mcr.microsoft.com/mssql/server:2019-latest

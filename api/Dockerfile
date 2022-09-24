@@ -1,10 +1,10 @@
-FROM ubuntu:20.04
+FROM debian:bullseye-slim
 
 ARG ROOT_APP_DIR=/var/www/html
 ARG OWNER_NAME
 ARG OWNER_ID
 
-RUN useradd ${OWNER_NAME} -u ${OWNER_ID}
+# RUN useradd ${OWNER_NAME} -u ${OWNER_ID}
 
 RUN apt update && apt upgrade -y && \
     apt install software-properties-common apt-transport-https -y
@@ -12,7 +12,7 @@ RUN apt update && apt upgrade -y && \
 # Update OS packages and install required deps.
 # https://github.com/silencesys/docker-php-oci8/blob/a9997b9a95d69fbe541878c636724bf27696b857/Dockerfile#L16
 RUN apt update && apt install -y --no-install-recommends \
-      nano \
+      gnupg2 \
       curl \
       git \
       libmemcached-dev \
@@ -59,8 +59,8 @@ RUN set -eux; \
 	rm -rf /var/lib/apt/lists/*
 
 # Add the PPA PHP and Apache2
-RUN add-apt-repository ppa:ondrej/php -y && \
-    add-apt-repository -y ppa:ondrej/apache2
+RUN curl -sSL https://packages.sury.org/php/README.txt | bash -x && \
+    curl -sSL https://packages.sury.org/apache2/README.txt | bash -x
 
 RUN apt update && apt upgrade -y && \
     apt install apache2 php8.1 supervisor -y && \
@@ -87,7 +87,7 @@ RUN apt install php8.1-dev php8.1-xml -y
 
 # MSSQL Driver Installation and PHP extension
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-    curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
     apt-get update && \
     ACCEPT_EULA=Y apt-get install -y msodbcsql17 && \
     ACCEPT_EULA=Y apt-get install -y mssql-tools && \
@@ -146,12 +146,14 @@ RUN printf "; priority=20\nextension=sapnwrfc.so\n" > /etc/php/8.1/mods-availabl
 
 WORKDIR $ROOT_APP_DIR
 
-# Copy project app
+# Copy project api
 RUN rm -rf ${ROOT_APP_DIR}/*
 
-COPY . $ROOT_APP_DIR    
+RUN useradd ${OWNER_NAME} -u ${OWNER_ID} -g www-data
+  
+COPY --chown=${OWNER_NAME}:www-data . $ROOT_APP_DIR  
 
-RUN composer install
+RUN composer install --ignore-platform-reqs
 
 # Assign permissions of the working directory to the www-data user
 RUN chmod 775 -R ${ROOT_APP_DIR}/storage
@@ -166,6 +168,7 @@ RUN apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 
 EXPOSE 80
 
