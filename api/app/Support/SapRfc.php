@@ -78,22 +78,6 @@ class SapRfc
         return $this;
     }
 
-
-    function invoke()
-    {
-        try {
-            // Set function to use
-            $f = $this->sap_conn->getFunction($this->fm);
-
-            // Invoke and return the result
-            $result = $f->invoke($this->paramaters);
-
-            return $result;
-        } catch (\SapException $ex) {
-            throw new Exception($ex->getMessage() . PHP_EOL);
-        }
-    }
-
     function getData()
     {
         $data = $this->invoke();
@@ -112,10 +96,25 @@ class SapRfc
         return $this->transformData($data);
     }
 
+    private function invoke()
+    {
+        try {
+            // Set function to use
+            $f = $this->sap_conn->getFunction($this->fm);
+
+            // Invoke and return the result
+            $result = $f->invoke($this->paramaters);
+
+            return $result;
+        } catch (\SapException $ex) {
+            throw new Exception($ex->getMessage() . PHP_EOL);
+        }
+    }
+
     /** 
      * Transform data to one dimensional arrays
      */
-    function transformData($result)
+    private function transformData($result)
     {
         $data = $result['DATA'] ?? [];
         $fields = $result['FIELDS'] ?? [];
@@ -160,7 +159,7 @@ class SapRfc
     /**
      * Clear non-static local variables data
      */
-    function reset()
+    private function reset()
     {
 
         foreach (get_class_vars(get_class($this)) as $var => $default_val) {
