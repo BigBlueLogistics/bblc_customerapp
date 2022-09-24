@@ -126,7 +126,7 @@ function Basic() {
                 Don&apos;t have an account?{" "}
                 <MDTypography
                   component={Link}
-                  to="/authentication/sign-up"
+                  to="/sign-up"
                   variant="button"
                   color="info"
                   fontWeight="medium"
@@ -139,7 +139,7 @@ function Basic() {
             <MDBox mt={1} mb={1} textAlign="center">
               <MDTypography
                 component={Link}
-                to="/authentication/reset-password"
+                to="/reset-password"
                 variant="button"
                 color="info"
                 fontWeight="medium"

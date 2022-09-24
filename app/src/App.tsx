@@ -152,7 +152,7 @@ export default function App() {
         <Routes>
           {getRoutes(routes)}
           {/* TODO: replace it with NOT FOUND template */}
-          <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
+          <Route path="*" element={<Navigate to="/sign-in" />} />
         </Routes>
       </ThemeProvider>
     </CacheProvider>
@@ -177,7 +177,7 @@ export default function App() {
       <Routes>
         {getRoutes(routes)}
         {/* TODO: replace it with NOT FOUND template */}
-        <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
+        <Route path="*" element={<Navigate to="/sign-in" />} />
       </Routes>
     </ThemeProvider>
   );

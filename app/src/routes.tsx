@@ -95,7 +95,7 @@ const routes: Array<{ [key: string]: any }> = [
     name: "Sign In",
     key: "sign-in",
     icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
+    route: "/sign-in",
     component: <SignIn />,
   },
   {
@@ -103,14 +103,14 @@ const routes: Array<{ [key: string]: any }> = [
     name: "Sign Up",
     key: "sign-up",
     icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
+    route: "/sign-up",
     component: <SignUp />,
   },
   {
     type: "",
     name: "Reset Password",
     key: "reset-password",
-    route: "/authentication/reset-password",
+    route: "/reset-password",
     component: <ResetPassword />,
   },
   {
