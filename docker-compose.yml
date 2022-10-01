@@ -1,5 +1,13 @@
 version: "3.9"
 
+volumes:
+  app_build:
+    external: true
+
+networks:
+  bblc_customer:
+    name: bblc_customer_net
+
 services:
   api:
     build:
@@ -11,8 +19,9 @@ services:
     ports:
       - "9001:80"
     volumes:
-      - ./api:/var/www/html/api
+      - ./api:/var/www/html
       - /var/www/html/vendor
+      - app_build:/var/www/html/build
     networks:
       - bblc_customer
 
@@ -30,9 +39,10 @@ services:
     volumes:
       - ./app:/var/www/html
       - /var/www/html/node_modules
-    # environment:
-    # - WDS_SOCKET_PORT=3000
-    # - CHOKIDAR_USEPOLLING=true
+      - app_build:/var/www/html/build
+    environment:
+      - WDS_SOCKET_PORT=3000
+      - CHOKIDAR_USEPOLLING=true
     networks:
       - bblc_customer
 
@@ -48,10 +58,3 @@ services:
   #     - SA_PASSWORD=p@ssw0rd
   #   networks:
   #     - bblc
-
-networks:
-  bblc_customer:
-    name: bblc_customer_net
-
-volumes:
-  shared_vol:

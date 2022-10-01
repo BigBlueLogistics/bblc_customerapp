@@ -7,13 +7,13 @@ trait HttpResponse
     /**
      * sendResponse
      *
+     * @param  mixed $data to be encoded into json format
      * @param  string $message
-     * @param  mixed $data data to be encoded into json format
      * @param  int $code default 200 (ok)
      * @param  array $headers
      * @return json_encode $result
      */
-    public function sendResponse($message, $data = [], $code = 200, $headers = [])
+    public function sendResponse($data = [], $message = null,  $code = 200, $headers = [])
     {
         $response = [
             'status' => 'success',
@@ -30,11 +30,11 @@ trait HttpResponse
      * @param  int $code default to 500
      * @return json_encode $result
      */
-    public function sendError($error,  $code = 500)
+    public function sendError($message,  $code = 500)
     {
         $response = [
             'status' => 'failed',
-            'errors' => $error,
+            'message' => $message
         ];
         return response()->json($response, $code);
     }

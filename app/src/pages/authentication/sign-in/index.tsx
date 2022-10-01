@@ -9,19 +9,22 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useFormik } from "formik";
-
-import validationSchema from "pages/authentication/sign-in/validationSchema";
+import { useAppDispatch } from "hooks";
+import { signIn } from "redux/auth/thunk";
 
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
-
 import BasicLayout from "pages/authentication/components/BasicLayout";
 
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import validationSchema from "pages/authentication/sign-in/validationSchema";
 
 function Basic() {
+  // const { status } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
   const [rememberMe, setRememberMe] = useState(false);
   const { values, handleSubmit, handleChange, isSubmitting, errors, touched } = useFormik({
     validationSchema,
@@ -29,13 +32,15 @@ function Basic() {
       email: "",
       password: "",
     },
-    onSubmit: (_values, { setSubmitting }) => {
-      console.log(JSON.stringify(_values));
+    onSubmit: (validatedVal, { setSubmitting }) => {
+      dispatch(signIn(validatedVal));
       setSubmitting(false);
     },
   });
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  console.log("errorsz", Boolean(errors.email));
 
   return (
     <BasicLayout image={bgImage}>
@@ -83,7 +88,7 @@ function Basic() {
                 onChange={handleChange}
                 value={values.email}
                 error={touched.email && Boolean(errors.email)}
-                // helperText={touched.email ? errors.email : ""}
+                helperText={touched.email ? errors.email : ""}
               />
             </MDBox>
             <MDBox mb={2}>
@@ -95,7 +100,7 @@ function Basic() {
                 onChange={handleChange}
                 value={values.password}
                 error={touched.password && Boolean(errors.password)}
-                // helperText={touched.password ? errors.password : ""}
+                helperText={touched.password ? errors.password : ""}
               />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>

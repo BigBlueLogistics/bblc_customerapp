@@ -13,9 +13,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable; //HasFactory,
 
-    protected $table = 'USERS';
-    protected $primaryKey = 'Index';
-    public $timestamps = false;
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -23,10 +21,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'uname', 'fname', 'lname',
-        'utype', 'stype', 'email',
-        'pword', 'phone', 'depmt',
-        'client',
+        'fname', 'lname', 'email',
+        'password'
     ];
 
     /**
@@ -35,7 +31,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'pword',
+        'password',
     ];
 
     /**
@@ -44,7 +40,8 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'login' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     // TODO: Based url should from front-end url.

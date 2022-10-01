@@ -1,10 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\USERS\LoginController;
-use App\Http\Controllers\USERS\RegisterController;
-use App\Http\Controllers\USERS\ResetPasswordController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WAREHOUSE\InventoryController;
 
 /*
@@ -18,14 +15,15 @@ use App\Http\Controllers\WAREHOUSE\InventoryController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Public routes
+Route::get('/auth/login', [AuthController::class, 'login'])->name('login');
+Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/forgot-password', [AuthController::class, 'forgot'])->name('password.reset');
+Route::post('/auth/reset-password', [AuthController::class, 'reset']);
 
-Route::get('/login', [LoginController::class, 'authenticate']);
-Route::post('/register', [RegisterController::class, 'register']);
-Route::post('/forgot-password', [ResetPasswordController::class, 'forgot'])->name('password.reset');
-Route::post('/reset-password', [ResetPasswordController::class, 'reset']);
-Route::get('/testoracle', [LoginController::class, 'testOracle']);
-Route::get('/inventory/warehouse-list', [InventoryController::class, 'warehouseList']);
-Route::get('/inventory/table', [InventoryController::class, 'table']);
+// Protected routes
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/inventory/warehouse-list', [InventoryController::class, 'warehouseList']);
+    Route::get('/inventory/table', [InventoryController::class, 'table']);
+    Route::get('/auth/logout', [AuthController::class, 'logout']);
+});

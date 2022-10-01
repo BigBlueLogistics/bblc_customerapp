@@ -1,26 +1,35 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig, AxiosInstance } from "axios";
 
 class HttpAdapter {
-  token: string;
+  private token: string;
 
-  server: string;
+  private server: string;
+
+  private axios: AxiosInstance;
 
   constructor(server: string, token = "") {
     this.server = server;
     this.token = token;
+    this.axios = axios.create({
+      baseURL: process.env.REACT_APP_API_URL,
+      withCredentials: true,
+      headers: {
+        Accept: "application/json",
+      },
+    });
   }
 
-  get = (url: string, config: AxiosRequestConfig = {}) => {
+  public get(url: string, config?: AxiosRequestConfig) {
     const axiosConfig = { ...config, params: { server: this.server, ...config.params } };
 
-    return axios.get(url, axiosConfig);
-  };
+    return this.axios.get(url, axiosConfig);
+  }
+
+  public post(url: string, data?: any, config?: AxiosRequestConfig) {
+    const postData = { ...data, server: this.server };
+
+    return this.axios.post(url, postData, config);
+  }
 }
 
-// TODO: retrieve cookies server and token
-const http = new HttpAdapter("prd");
-const api = {
-  get: http.get,
-};
-
-export default api;
+export default HttpAdapter;

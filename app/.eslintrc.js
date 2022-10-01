@@ -33,7 +33,7 @@ module.exports = {
     "react/react-in-jsx-scope": "off", // allow no import * as React from "react"
     "react/jsx-props-no-spreading": "off",
     "react/jsx-filename-extension": [1, { extensions: ["js.", "jsx", ".ts", ".tsx"] }],
-
+    "no-param-reassign": ["error", { props: false }],
     "@typescript-eslint/default-param-last": "off",
   },
 };

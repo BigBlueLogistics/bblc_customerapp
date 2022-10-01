@@ -12,7 +12,7 @@ import Footer from "organisms/Footer";
 import DataTable from "organisms/Tables/DataTable";
 
 import miscData from "pages/Inventory/data";
-import inventoryServices from "services/inventoryServices";
+import inventoryServices from "services/inventoryService";
 
 function Inventory() {
   const { tableHeaders, groupOpts } = miscData();

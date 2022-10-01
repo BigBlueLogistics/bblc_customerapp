@@ -4,7 +4,13 @@ import { IMDInput } from "./types";
 
 const MDInput = forwardRef<HTMLDivElement, IMDInput>(
   ({ error, success, disabled, ...rest }, ref) => (
-    <MDInputRoot {...rest} ref={ref} ownerState={{ error, success, disabled }} />
+    <MDInputRoot
+      error={error}
+      disabled={disabled}
+      {...rest}
+      ref={ref}
+      ownerState={{ error, success, disabled }}
+    />
   )
 );
 

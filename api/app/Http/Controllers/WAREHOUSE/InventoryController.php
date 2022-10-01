@@ -240,9 +240,14 @@ class InventoryController extends Controller
         }
     }
 
+
     function table(Request $request)
     {
         try {
+
+            // putaway 1010
+            // allocated 2020
+
             $customerCode = $request->input('customer_code');
             $warehouse = $request->input('warehouse');
 

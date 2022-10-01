@@ -3,7 +3,10 @@
 **Execute command of running container**
 
 ```bash
-docker exec -it <container ID> /bin/bash
+docker exec -it <IMAGE NAME> /bin/bash
+
+with root
+docker exec --user root --workdir /root -it <IMAGE NAME> /bin/bash
 ```
 
 **Build images**
