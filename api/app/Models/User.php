@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\ResetPasswordNotification;
+use App\Jobs\QueuedResetPasswordJob;
 
 class User extends Authenticatable
 {
@@ -44,12 +45,12 @@ class User extends Authenticatable
         'updated_at' => 'datetime',
     ];
 
-    // TODO: Based url should from front-end url.
     public function sendPasswordResetNotification($token)
     {
+        $uiUrl = env('APP_URL') . ":" . env('UI_PORT');
         $emailForPasswordReset = urlencode(self::getEmailForPasswordReset());
-        $url =  url("/reset-password?token={$token}&email={$emailForPasswordReset}");
+        $url = "{$uiUrl}/forgot-password?token={$token}&email={$emailForPasswordReset}";
 
-        $this->notify(new ResetPasswordNotification($url));
+        QueuedResetPasswordJob::dispatch($this, $url);
     }
 }

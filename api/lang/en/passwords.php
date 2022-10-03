@@ -14,9 +14,10 @@ return [
     */
 
     'reset' => 'Your password has been reset!',
+    'reset-failed' => 'Failed to reset your password',
     'sent' => 'We have emailed your password reset link!',
     'throttled' => 'Please wait before retrying.',
     'token' => 'This password reset token is invalid.',
     'user' => "We can't find a user with that email address.",
-
+    'invalid-json' => 'Invalid json format of sending an email. '
 ];

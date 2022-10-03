@@ -11,3 +11,7 @@ export type SignUpFormType = {
   email: string;
   customer_code: string;
 };
+
+export type ResetPasswdType = {
+  email: string;
+};

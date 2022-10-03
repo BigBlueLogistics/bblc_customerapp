@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Http\Response;
 
 use App\Traits\HttpResponse;
 use App\Http\Requests\RegisterUserRequest;
@@ -28,17 +29,17 @@ class AuthController extends Controller
         ]);
 
         if (!$authenticate) {
-            return $this->sendResponse('', 'Credentials not match', 401);
+            return $this->sendResponse('', __('auth.failed'), Response::HTTP_UNAUTHORIZED);
         }
 
         $user = User::where('email', $request->email)->first();
 
         if (!$user->active || $user->active === 'false') {
-            return $this->sendResponse('', 'Account has been disable', 401);
+            return $this->sendResponse('', __('auth.disabled'), Response::HTTP_UNAUTHORIZED);
         }
 
         if (!$user->email_verified_at) {
-            return $this->sendResponse('', 'Account is not yet verified. Please check your email we\'ve sent for verification.', 401);
+            return $this->sendResponse('', __('auth.not-verified'), Response::HTTP_UNAUTHORIZED);
         }
 
         $token = $user->createToken($user->email);
@@ -69,9 +70,9 @@ class AuthController extends Controller
             // $token = $user->createToken($request->email);
 
             if ($user) {
-                return $this->sendResponse("", "Account has been succesully registered");
+                return $this->sendResponse("", __('auth.register'));
             }
-            return $this->sendError("Account failed to register");
+            return $this->sendError(__('auth.register-failed'));
         } catch (\Exception $e) {
             return $this->sendError($e);
         }
@@ -88,13 +89,16 @@ class AuthController extends Controller
             $status = Password::sendResetLink($validated);
 
             if ($status === Password::RESET_LINK_SENT) {
-                return $this->sendResponse('Password reset email sent');
+                return $this->sendResponse('', __('passwords.sent'));
             }
             if ($status === Password::INVALID_USER) {
-                return $this->sendError('Email not exists', 404);
+                return $this->sendError(__('passwords.user'), Response::HTTP_NOT_FOUND);
+            }
+            if ($status === Password::RESET_THROTTLED) {
+                return $this->sendError(__('passwords.throttled'), Response::HTTP_TOO_MANY_REQUESTS);
             }
 
-            return $this->sendError('Invalid json format of sending an email');
+            return $this->sendError(__('passwords.invalid-json'));
         } catch (\Exception $e) {
             return $this->sendError('Something went wrong ' . $e->getMessage());
         }
@@ -116,16 +120,16 @@ class AuthController extends Controller
             });
 
             if ($status === Password::PASSWORD_RESET) {
-                return $this->sendResponse('', 'Password reset successful');
+                return $this->sendResponse('', __('password.reset'));
             }
             if ($status === Password::INVALID_USER) {
-                return $this->sendError('Email not exists', 404);
+                return $this->sendError(__('passwords.user'), Response::HTTP_NOT_FOUND);
             }
             if ($status === Password::INVALID_TOKEN) {
-                return $this->sendError('Invalid token', 400);
+                return $this->sendError(__('passwords.token'), Response::HTTP_BAD_REQUEST);
             }
 
-            return $this->sendError('Failed to reset password' . $status);
+            return $this->sendError(__('passwords.reset-failed'));
         } catch (\Exception $e) {
             return $this->sendError('Something went wrong ' . $e->getMessage());
         }
@@ -135,6 +139,6 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return $this->sendResponse('', 'Successfully logout');
+        return $this->sendResponse('', __('auth.logout'));
     }
 }
