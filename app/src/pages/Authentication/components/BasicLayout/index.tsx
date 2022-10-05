@@ -1,7 +1,7 @@
 import Grid from "@mui/material/Grid";
 import MDBox from "atoms/MDBox";
 import PageLayout from "organisms/LayoutContainers/PageLayout";
-import Footer from "pages/authentication/components/Footer";
+import Footer from "pages/Authentication/components/Footer";
 import { IBasicLayout } from "./types";
 
 function BasicLayout({ image, children }: IBasicLayout) {

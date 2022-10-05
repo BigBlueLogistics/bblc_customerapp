@@ -16,13 +16,15 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
-import BasicLayout from "pages/authentication/components/BasicLayout";
+import MDAlert2 from "atoms/MDAlert2";
+import BasicLayout from "pages/Authentication/components/BasicLayout";
 
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
-import validationSchema from "pages/authentication/sign-in/validationSchema";
+import validationSchema from "./validationSchema";
+import selector from "./selector";
 
-function Basic() {
-  // const { status } = useAppSelector((state) => state.auth);
+function SignIn() {
+  const { errorMsg, hasError } = selector();
   const dispatch = useAppDispatch();
 
   const [rememberMe, setRememberMe] = useState(false);
@@ -38,9 +40,27 @@ function Basic() {
     },
   });
 
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
+  const renderMessage = () => {
+    if (hasError) {
+      return (
+        <MDAlert2
+          severity="error"
+          dismissible
+          sx={({ typography: { pxToRem } }) => ({
+            width: "90%",
+            margin: `${pxToRem(15)} auto`,
+          })}
+        >
+          <MDTypography variant="body2" fontSize={14}>
+            {errorMsg}
+          </MDTypography>
+        </MDAlert2>
+      );
+    }
+    return null;
+  };
 
-  console.log("errorsz", Boolean(errors.email));
+  const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   return (
     <BasicLayout image={bgImage}>
@@ -77,6 +97,8 @@ function Basic() {
             </Grid>
           </Grid>
         </MDBox>
+        {renderMessage()}
+
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
@@ -160,4 +182,4 @@ function Basic() {
   );
 }
 
-export default Basic;
+export default SignIn;

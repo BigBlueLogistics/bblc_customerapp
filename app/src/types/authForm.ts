@@ -12,6 +12,13 @@ export type SignUpFormType = {
   customer_code: string;
 };
 
-export type ResetPasswdType = {
+export type ResetPassType = {
   email: string;
+};
+
+export type ChangePassType = {
+  password: string;
+  confirm_password: string;
+  email: string;
+  token: string;
 };

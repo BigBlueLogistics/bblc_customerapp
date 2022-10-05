@@ -33,7 +33,6 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request->email)->first();
-
         if (!$user->active || $user->active === 'false') {
             return $this->sendResponse('', __('auth.disabled'), Response::HTTP_UNAUTHORIZED);
         }
@@ -54,8 +53,12 @@ class AuthController extends Controller
     public function register(RegisterUserRequest $request)
     {
         try {
-
             $request->validated($request->all());
+            $isExist = User::where('email', $request->email)->first();
+
+            if ($isExist) {
+                return $this->sendError(__('auth.register-exists'), Response::HTTP_CONFLICT);
+            }
 
             $user = User::create([
                 'fname' => $request->fname,
@@ -65,9 +68,6 @@ class AuthController extends Controller
                 'customer_code' => $request->customer_code,
                 'phone_no' => $request->phone_no
             ]);
-
-            // Generate user token
-            // $token = $user->createToken($request->email);
 
             if ($user) {
                 return $this->sendResponse("", __('auth.register'));
@@ -79,7 +79,7 @@ class AuthController extends Controller
     }
 
 
-    public function forgot(Request $request)
+    public function reset(Request $request)
     {
         try {
             $validator = Validator::make($request->only('email'), ['email' => 'required|email']);
@@ -105,12 +105,12 @@ class AuthController extends Controller
     }
 
 
-    public function reset(ResetPassRequest $request)
+    public function change(ResetPassRequest $request)
     {
         try {
-            $request->validated($request->all());
+            $request->validated($request->only('email', 'password', 'token'));
 
-            $status = Password::reset($request->all(), function ($user, $password) {
+            $status = Password::reset($request->only('email', 'password', 'token'), function ($user, $password) {
 
                 $hash_password = Hash::make($password);
 
@@ -120,7 +120,7 @@ class AuthController extends Controller
             });
 
             if ($status === Password::PASSWORD_RESET) {
-                return $this->sendResponse('', __('password.reset'));
+                return $this->sendResponse('', __('passwords.reset'));
             }
             if ($status === Password::INVALID_USER) {
                 return $this->sendError(__('passwords.user'), Response::HTTP_NOT_FOUND);

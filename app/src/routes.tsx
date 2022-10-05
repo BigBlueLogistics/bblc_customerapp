@@ -27,9 +27,10 @@ import Dashboard from "pages/dashboard";
 // import RTL from "pages/rtl";
 // import Notifications from "pages/notifications";
 // import Profile from "pages/profile";
-import SignIn from "pages/authentication/sign-in";
-import SignUp from "pages/authentication/sign-up";
-import ResetPassword from "pages/authentication/reset-password/cover";
+import SignIn from "pages/Authentication/SignIn";
+import SignUp from "pages/Authentication/SignUp";
+import ResetPassword from "pages/Authentication/ResetPassword";
+import ChangePassword from "pages/Authentication/ChangePassword";
 import Inventory from "pages/Inventory";
 
 // @mui icons
@@ -112,6 +113,13 @@ const routes: Array<{ [key: string]: any }> = [
     key: "reset-password",
     route: "/reset-password",
     component: <ResetPassword />,
+  },
+  {
+    type: "",
+    name: "Change Password",
+    key: "change-password",
+    route: "/change-password",
+    component: <ChangePassword />,
   },
   {
     type: "collapse",

@@ -18,8 +18,8 @@ use App\Http\Controllers\WAREHOUSE\InventoryController;
 // Public routes
 Route::get('/auth/login', [AuthController::class, 'login'])->name('login');
 Route::post('/auth/register', [AuthController::class, 'register']);
-Route::post('/auth/forgot-password', [AuthController::class, 'forgot'])->name('password.reset');
-Route::post('/auth/reset-password', [AuthController::class, 'reset']);
+Route::post('/auth/reset-password', [AuthController::class, 'reset'])->name('password.reset');
+Route::post('/auth/change-password', [AuthController::class, 'change']);
 
 // Protected routes
 Route::middleware(['auth:sanctum'])->group(function () {

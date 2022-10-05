@@ -11,5 +11,5 @@ export default yup.object({
     .required("required"),
   customer_code: yup.string().required("required"),
   email: yup.string().email("Invalid email address").required("required"),
-  password: yup.string().min(8, "Password requires minimum of 8 characters.").required("required"),
+  password: yup.string().min(8, "Requires minimum of 8 characters.").required("required"),
 });

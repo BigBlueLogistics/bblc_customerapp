@@ -8,19 +8,20 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
-import Alert from "@mui/material/Alert";
-import CoverLayout from "pages/authentication/components/CoverLayout";
+import MDAlert2 from "atoms/MDAlert2";
+import CoverLayout from "pages/Authentication/components/CoverLayout";
 
-import { useAppDispatch, useAppSelector } from "hooks";
+import { useAppDispatch } from "hooks";
 import { signUp } from "redux/auth/thunk";
 
 // Images
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 import validationSchema from "./validationSchema";
+import selector from "./selector";
 
-function Cover() {
+function SignUp() {
   const dispatch = useAppDispatch();
-  const { status, data } = useAppSelector((state) => state.auth);
+  const { status, message } = selector();
 
   const { values, errors, handleSubmit, handleChange, isSubmitting, touched, resetForm } =
     useFormik({
@@ -38,6 +39,27 @@ function Cover() {
         setSubmitting(false);
       },
     });
+
+  const renderMessage = () => {
+    if (status === "succeeded" || status === "failed") {
+      const severity = status === "succeeded" ? "success" : "error";
+      return (
+        <MDAlert2
+          severity={severity}
+          dismissible
+          sx={({ typography: { pxToRem } }) => ({
+            width: "90%",
+            margin: `${pxToRem(15)} auto`,
+          })}
+        >
+          <MDTypography variant="body2" fontSize={14}>
+            {message}
+          </MDTypography>
+        </MDAlert2>
+      );
+    }
+    return null;
+  };
 
   useEffect(() => {
     if (status === "succeeded") {
@@ -67,19 +89,7 @@ function Cover() {
           </MDTypography>
         </MDBox>
 
-        {status === "succeeded" && (
-          <Alert
-            severity="success"
-            sx={() => ({
-              width: "80%",
-              margin: "0 auto",
-            })}
-          >
-            <MDTypography variant="body2" fontSize={14}>
-              {data.message || ""}
-            </MDTypography>
-          </Alert>
-        )}
+        {renderMessage()}
 
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
@@ -216,4 +226,4 @@ function Cover() {
   );
 }
 
-export default Cover;
+export default SignUp;

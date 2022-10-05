@@ -16,9 +16,10 @@ return [
     'failed' => 'These credentials do not match our records.',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-    'disable'  => 'These account has been disabled.',
+    'disabled'  => 'These account has been disabled.',
     'not-verified' => 'These Account is not yet verified. Please check your email we\'ve sent for verification.',
-    'register' => 'Account has been succesully registered',
-    'register-failed' => 'Account failed to register',
+    'register' => 'Account has been successfully registered.',
+    'register-failed' => 'Account failed to register.',
+    'register-exists' => 'Email Address has been exists.',
     'logout' => 'Successfully logout'
 ];

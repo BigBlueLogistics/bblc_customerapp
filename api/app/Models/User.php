@@ -49,7 +49,7 @@ class User extends Authenticatable
     {
         $uiUrl = env('APP_URL') . ":" . env('UI_PORT');
         $emailForPasswordReset = urlencode(self::getEmailForPasswordReset());
-        $url = "{$uiUrl}/forgot-password?token={$token}&email={$emailForPasswordReset}";
+        $url = "{$uiUrl}/change-password?token={$token}&email={$emailForPasswordReset}";
 
         QueuedResetPasswordJob::dispatch($this, $url);
     }
