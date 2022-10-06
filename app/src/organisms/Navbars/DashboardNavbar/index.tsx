@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -31,6 +31,7 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(null);
+  const [openProfile, setOpenProfile] = useState(null);
   const route = useLocation().pathname.split("/").slice(1);
 
   useEffect(() => {
@@ -63,6 +64,8 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(null);
+  const handleOpenProfile = (event) => setOpenProfile(event.currentTarget);
+  const handleCloseProfile = () => setOpenProfile(null);
 
   // Render the notifications menu
   const renderMenu = () => (
@@ -80,6 +83,23 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
       <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
       <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
       <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
+    </Menu>
+  );
+
+  // Render the notifications menu
+  const renderProfile = () => (
+    <Menu
+      anchorEl={openProfile}
+      anchorReference={null}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "right",
+      }}
+      open={Boolean(openProfile)}
+      onClose={handleCloseProfile}
+      sx={{ mt: 2 }}
+    >
+      <NotificationItem icon={<Icon>logout</Icon>} title="Log out" />
     </Menu>
   );
 
@@ -112,17 +132,23 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
               <MDInput label="Search here" />
             </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
-              <Link to="/sign-in/basic">
-                <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
-                </IconButton>
-              </Link>
+              <IconButton
+                sx={navbarIconButton}
+                size="small"
+                disableRipple
+                onClick={handleOpenProfile}
+                title="profile"
+              >
+                <Icon sx={iconsStyle}>account_circle</Icon>
+              </IconButton>
+              {renderProfile()}
               <IconButton
                 size="small"
                 disableRipple
                 color="inherit"
                 sx={navbarMobileMenu}
                 onClick={handleMiniSidenav}
+                title="menu"
               >
                 <Icon sx={iconsStyle} fontSize="medium">
                   {miniSidenav ? "menu_open" : "menu"}
@@ -147,6 +173,7 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
                 aria-haspopup="true"
                 variant="contained"
                 onClick={handleOpenMenu}
+                title="notifications"
               >
                 <Icon sx={iconsStyle}>notifications</Icon>
               </IconButton>
