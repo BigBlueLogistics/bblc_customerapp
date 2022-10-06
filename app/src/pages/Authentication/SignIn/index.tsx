@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
@@ -10,7 +10,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useFormik } from "formik";
 import { useAppDispatch } from "hooks";
-import { signIn } from "redux/auth/thunk";
+import { signIn } from "redux/auth/action";
 
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
@@ -24,8 +24,9 @@ import validationSchema from "./validationSchema";
 import selector from "./selector";
 
 function SignIn() {
-  const { errorMsg, hasError } = selector();
+  const { errorMsg, hasError, isAuthenticated } = selector();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [rememberMe, setRememberMe] = useState(false);
   const { values, handleSubmit, handleChange, isSubmitting, errors, touched } = useFormik({
@@ -61,6 +62,12 @@ function SignIn() {
   };
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/inventory", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <BasicLayout image={bgImage}>

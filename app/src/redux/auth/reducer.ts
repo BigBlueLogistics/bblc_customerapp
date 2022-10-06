@@ -1,15 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { AuthStoreType } from "types/authStore";
 import { signIn, signUp, resetPass, changePass } from "./thunk";
 
-type StateType = {
-  succeededRequests: object;
-  failedRequests: object;
-  request: object;
-  authenticated: boolean;
-};
-
-const initialState: StateType = {
-  succeededRequests: {},
+const initialState: AuthStoreType = {
+  successfulRequests: {},
   failedRequests: {},
   request: {},
   authenticated: false,
@@ -18,16 +12,22 @@ const initialState: StateType = {
 export const authReducer = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    setIsAuthenticated: (state, action) => {
+      state.authenticated = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(signIn.pending, (state) => {
         state.request[signIn.pending.type] = { status: "loading" };
+        state.authenticated = false;
       })
       .addCase(signIn.fulfilled, (state, action) => {
-        state.succeededRequests[signIn.fulfilled.type] = { data: action.payload };
-        state.succeededRequests[signIn.fulfilled.type] = { message: action.payload.message };
+        state.successfulRequests[signIn.fulfilled.type] = { data: action.payload };
+        state.successfulRequests[signIn.fulfilled.type] = { message: action.payload.message };
         state.request[signIn.pending.type] = { status: "succeeded" };
+        state.authenticated = true;
       })
       .addCase(signIn.rejected, (state, action) => {
         state.failedRequests[signIn.rejected.type] = { message: action.error.message };
@@ -37,8 +37,8 @@ export const authReducer = createSlice({
         state.request[signUp.pending.type] = { status: "loading" };
       })
       .addCase(signUp.fulfilled, (state, action) => {
-        state.succeededRequests[signUp.fulfilled.type] = { data: action.payload };
-        state.succeededRequests[signUp.fulfilled.type] = { message: action.payload.message };
+        state.successfulRequests[signUp.fulfilled.type] = { data: action.payload };
+        state.successfulRequests[signUp.fulfilled.type] = { message: action.payload.message };
         state.request[signUp.pending.type] = { status: "succeeded" };
       })
       .addCase(signUp.rejected, (state, action) => {
@@ -49,8 +49,8 @@ export const authReducer = createSlice({
         state.request[resetPass.pending.type] = { status: "loading" };
       })
       .addCase(resetPass.fulfilled, (state, action) => {
-        state.succeededRequests[resetPass.fulfilled.type] = { data: action.payload };
-        state.succeededRequests[resetPass.fulfilled.type] = { message: action.payload.message };
+        state.successfulRequests[resetPass.fulfilled.type] = { data: action.payload };
+        state.successfulRequests[resetPass.fulfilled.type] = { message: action.payload.message };
         state.request[resetPass.pending.type] = { status: "succeeded" };
       })
       .addCase(resetPass.rejected, (state, action) => {
@@ -61,8 +61,8 @@ export const authReducer = createSlice({
         state.request[changePass.pending.type] = { status: "loading" };
       })
       .addCase(changePass.fulfilled, (state, action) => {
-        state.succeededRequests[changePass.fulfilled.type] = { data: action.payload };
-        state.succeededRequests[changePass.fulfilled.type] = { message: action.payload.message };
+        state.successfulRequests[changePass.fulfilled.type] = { data: action.payload };
+        state.successfulRequests[changePass.fulfilled.type] = { message: action.payload.message };
         state.request[changePass.pending.type] = { status: "succeeded" };
       })
       .addCase(changePass.rejected, (state, action) => {
@@ -72,5 +72,5 @@ export const authReducer = createSlice({
   },
 });
 
-export const actionType = authReducer.caseReducers;
+export const { setIsAuthenticated } = authReducer.actions;
 export default authReducer.reducer;

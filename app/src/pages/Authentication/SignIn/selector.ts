@@ -2,7 +2,7 @@ import { useAppSelector } from "hooks";
 import { signIn } from "redux/auth/thunk";
 
 export default () => {
-  const { request, failedRequests } = useAppSelector((state) => state.auth);
+  const { request, failedRequests, authenticated } = useAppSelector((state) => state.auth);
 
   const message = failedRequests[signIn.rejected.type]?.message;
 
@@ -11,5 +11,6 @@ export default () => {
   return {
     errorMsg: message,
     hasError,
+    isAuthenticated: authenticated,
   };
 };

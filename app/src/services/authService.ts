@@ -3,7 +3,7 @@ import HttpAdapter from "./httpAdapter";
 
 class AuthService extends HttpAdapter {
   constructor() {
-    super("prd", "");
+    super("");
   }
 
   signIn(formData: SignInFormType) {

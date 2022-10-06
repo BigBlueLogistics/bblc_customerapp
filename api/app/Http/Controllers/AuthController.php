@@ -29,24 +29,28 @@ class AuthController extends Controller
         ]);
 
         if (!$authenticate) {
-            return $this->sendResponse('', __('auth.failed'), Response::HTTP_UNAUTHORIZED);
+            return $this->sendError(__('auth.failed'), Response::HTTP_UNAUTHORIZED);
         }
 
         $user = User::where('email', $request->email)->first();
         if (!$user->active || $user->active === 'false') {
-            return $this->sendResponse('', __('auth.disabled'), Response::HTTP_UNAUTHORIZED);
+            return $this->sendError(__('auth.disabled'), Response::HTTP_UNAUTHORIZED);
         }
-
         if (!$user->email_verified_at) {
-            return $this->sendResponse('', __('auth.not-verified'), Response::HTTP_UNAUTHORIZED);
+            return $this->sendError(__('auth.not-verified'), Response::HTTP_UNAUTHORIZED);
         }
 
         $token = $user->createToken($user->email);
 
-        return $this->sendResponse([
-            'user' => $user,
-            'token' => $token->plainTextToken
-        ], 'Login successful');
+        $request->session()->regenerate();
+
+        return $this->sendResponse(
+            [
+                'user' => $user,
+                'token' => $token->plainTextToken,
+            ],
+            'Login successful'
+        );
     }
 
 
@@ -137,7 +141,11 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        // $request->user()->currentAccessToken()->delete();
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return $this->sendResponse('', __('auth.logout'));
     }

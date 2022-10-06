@@ -3,12 +3,9 @@ import axios, { AxiosRequestConfig, AxiosInstance } from "axios";
 class HttpAdapter {
   private token: string;
 
-  private server: string;
-
   private axios: AxiosInstance;
 
-  constructor(server: string, token = "") {
-    this.server = server;
+  constructor(token = "") {
     this.token = token;
     this.axios = axios.create({
       baseURL: process.env.REACT_APP_API_URL,
@@ -17,16 +14,25 @@ class HttpAdapter {
         Accept: "application/json",
       },
     });
+
+    // TODO
+    // this.axios.interceptors.request.use((resolve) =>{
+    //   if(["POST", "GET", "PATCH", "DELETE"].includes(resolve.method) && !Cookies.get("XSRF-TOKEN") ){
+    //     // TODO request endpint /sanctum/csrf-cookies
+    //   }
+
+    //   return resolve;
+    // });
   }
 
-  public get(url: string, config?: AxiosRequestConfig) {
-    const axiosConfig = { ...config, params: { server: this.server, ...config.params } };
+  public get(url: string, config: AxiosRequestConfig = {}) {
+    const axiosConfig = { ...config, params: { ...config.params } };
 
     return this.axios.get(url, axiosConfig);
   }
 
   public post(url: string, data?: any, config?: AxiosRequestConfig) {
-    const postData = { ...data, server: this.server };
+    const postData = { ...data };
 
     return this.axios.post(url, postData, config);
   }

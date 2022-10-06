@@ -12,7 +12,7 @@ import MDAlert2 from "atoms/MDAlert2";
 import CoverLayout from "pages/Authentication/components/CoverLayout";
 
 import { useAppDispatch } from "hooks";
-import { signUp } from "redux/auth/thunk";
+import { signUp } from "redux/auth/action";
 
 // Images
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";

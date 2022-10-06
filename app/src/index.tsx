@@ -7,14 +7,18 @@ import { MaterialUIControllerProvider } from "context";
 
 // redux store
 import { Provider } from "react-redux";
-import store from "redux/store";
+import { PersistGate } from "redux-persist/integration/react";
+import configStore from "redux/store";
 
+const { store, persistor } = configStore();
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <MaterialUIControllerProvider>
-        <App />
-      </MaterialUIControllerProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <MaterialUIControllerProvider>
+          <App />
+        </MaterialUIControllerProvider>
+      </PersistGate>
     </BrowserRouter>
   </Provider>,
   document.getElementById("root")

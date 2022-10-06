@@ -3,7 +3,7 @@ import HttpAdapter from "services/httpAdapter";
 
 class InventoryServices extends HttpAdapter {
   constructor() {
-    super("prd", "");
+    super("");
   }
 
   getTableData(config: AxiosRequestConfig) {

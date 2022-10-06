@@ -37,7 +37,7 @@ class InventoryController extends Controller
             return $arr;
         }, $res);
 
-        return $this->sendResponse("List of warehouse", $wh);
+        return $this->sendResponse($wh, "List of warehouse");
     }
 
     function getMCHB($customerCode, $warehouse, $server)
@@ -241,7 +241,7 @@ class InventoryController extends Controller
     }
 
 
-    function table(Request $request)
+    function table2(Request $request)
     {
         try {
 
@@ -267,7 +267,7 @@ class InventoryController extends Controller
 
 
 
-    function table2(Request $request)
+    function table(Request $request)
     {
         try {
             $customerCode = $request->input('customer_code');
@@ -388,7 +388,7 @@ class InventoryController extends Controller
             }
             $result = $groupBy === "material" ? array_values($output) : $output;
 
-            return $this->sendResponse("inventory details",  $result);
+            return $this->sendResponse($result, "inventory details");
         } catch (SapException $ex) {
             return $this->sendError('Exception: ' . $ex->getMessage() . PHP_EOL);
         }

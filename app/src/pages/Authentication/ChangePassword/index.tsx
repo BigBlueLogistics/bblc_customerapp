@@ -8,7 +8,7 @@ import MDAlert2 from "atoms/MDAlert2";
 import CoverLayout from "pages/Authentication/components/CoverLayout";
 
 import { useAppDispatch, useQueryString } from "hooks";
-import { changePass } from "redux/auth/thunk";
+import { changePass } from "redux/auth/action";
 
 import { useFormik } from "formik";
 import bgImage from "assets/images/bg-reset-cover.jpeg";
