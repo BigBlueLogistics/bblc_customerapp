@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
-use App\Support\SapRfc;
 use Illuminate\Support\ServiceProvider;
+use App\Support\SapRfc;
+use App\Interfaces\IInventoryRepository;
+use App\Repository\InventoryRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('sap-rfc', function () {
             return new SapRfc('prd', 'Local');
         });
+        $this->app->bind(IInventoryRepository::class, InventoryRepository::class);
     }
 
     /**
