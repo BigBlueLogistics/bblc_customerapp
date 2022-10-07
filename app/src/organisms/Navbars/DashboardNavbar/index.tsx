@@ -16,6 +16,9 @@ import {
   navbarIconButton,
   navbarMobileMenu,
 } from "organisms/Navbars/DashboardNavbar/styles";
+import { useAppDispatch } from "hooks";
+import { signOut, setIsAuthenticated } from "redux/auth/action";
+import Cookies from "js-cookie";
 
 import {
   useMaterialUIController,
@@ -27,6 +30,7 @@ import { Theme } from "@mui/material/styles/createTheme";
 import { IDashboardNavbar, CSSPosition } from "./types";
 
 function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
+  const reduxDispatch = useAppDispatch();
   const [navbarType, setNavbarType] = useState("sticky");
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
@@ -67,6 +71,14 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
   const handleOpenProfile = (event) => setOpenProfile(event.currentTarget);
   const handleCloseProfile = () => setOpenProfile(null);
 
+  const handleSignOut = () => {
+    reduxDispatch(signOut());
+    reduxDispatch(setIsAuthenticated(false));
+    if (Cookies.get("XSRF-TOKEN")) {
+      Cookies.remove("XSRF-TOKEN");
+    }
+  };
+
   // Render the notifications menu
   const renderMenu = () => (
     <Menu
@@ -99,7 +111,7 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
       onClose={handleCloseProfile}
       sx={{ mt: 2 }}
     >
-      <NotificationItem icon={<Icon>logout</Icon>} title="Log out" />
+      <NotificationItem icon={<Icon>logout</Icon>} title="Sign out" onClick={handleSignOut} />
     </Menu>
   );
 

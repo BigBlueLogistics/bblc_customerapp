@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AuthStoreType } from "types/authStore";
-import { signIn, signUp, resetPass, changePass } from "./thunk";
+import { signIn, signUp, resetPass, changePass, signOut } from "./thunk";
 
 const initialState: AuthStoreType = {
   successfulRequests: {},
@@ -68,6 +68,18 @@ export const authReducer = createSlice({
       .addCase(changePass.rejected, (state, action) => {
         state.failedRequests[changePass.rejected.type] = { message: action.error.message };
         state.request[changePass.pending.type] = { status: "failed" };
+      })
+      .addCase(signOut.pending, (state) => {
+        state.request[signOut.pending.type] = { status: "loading" };
+      })
+      .addCase(signOut.fulfilled, (state, action) => {
+        state.successfulRequests[signOut.fulfilled.type] = { data: action.payload };
+        state.successfulRequests[signOut.fulfilled.type] = { message: action.payload.message };
+        state.request[signOut.pending.type] = { status: "succeeded" };
+      })
+      .addCase(signOut.rejected, (state, action) => {
+        state.failedRequests[signOut.rejected.type] = { message: action.error.message };
+        state.request[signOut.pending.type] = { status: "failed" };
       });
   },
 });

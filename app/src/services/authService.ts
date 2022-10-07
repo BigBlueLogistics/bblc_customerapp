@@ -21,6 +21,10 @@ class AuthService extends HttpAdapter {
   changePass(formData: ChangePassType) {
     return this.post("/auth/change-password", formData);
   }
+
+  signOut() {
+    return this.get("/auth/logout");
+  }
 }
 
 const auth = new AuthService();
