@@ -8,15 +8,19 @@ use SAPNWRFC\ConnectionException as SapException;
 
 class SapRfc
 {
-
     private static $mandt;
+
     private static $cached_conn = [];
+
     private static $hash_config;
+
     private $sap_conn;
+
     private $paramaters = [];
+
     private $fm;
 
-    function __construct($server, $connection)
+    public function __construct($server, $connection)
     {
         try {
             $config = static::setConfig($server, $connection);
@@ -24,13 +28,13 @@ class SapRfc
 
             $this->sap_conn = $conn;
         } catch (SapException $ex) {
-            throw new Exception('Error connecting to SAP: ' . $ex->getMessage() . PHP_EOL);
+            throw new Exception('Error connecting to SAP: '.$ex->getMessage().PHP_EOL);
         }
     }
 
     private static function cachedConnection($config, $sapInstanceConnection)
     {
-        $hash_config = sha1(implode(";", $config));
+        $hash_config = sha1(implode(';', $config));
         static::$hash_config = $hash_config;
 
         if (array_key_exists($hash_config, static::$cached_conn)) {
@@ -40,24 +44,23 @@ class SapRfc
         }
     }
 
-    function getMandt()
+    public function getMandt()
     {
         if (is_null($this->sap_conn) || empty($this->sap_conn)) {
-            throw new Exception("SAP Connection should established first");
+            throw new Exception('SAP Connection should established first');
         }
         if (is_null(static::$mandt) || empty(static::$mandt)) {
-            throw new Exception("Mandt is empty");
+            throw new Exception('Mandt is empty');
         }
 
         return static::$mandt;
     }
 
-    function param($name, $value)
+    public function param($name, $value)
     {
-
         $name = strtoupper($name);
 
-        if (!isset($name)) {
+        if (! isset($name)) {
             throw new Exception("$name paramater not found");
         }
 
@@ -66,10 +69,11 @@ class SapRfc
         }
 
         $this->paramaters[$name] = $value;
+
         return $this;
     }
 
-    function functionModule($name)
+    public function functionModule($name)
     {
         $fm = strtoupper($name);
 
@@ -78,7 +82,7 @@ class SapRfc
         return $this;
     }
 
-    function getData()
+    public function getData()
     {
         $data = $this->invoke();
 
@@ -87,7 +91,7 @@ class SapRfc
         return $data;
     }
 
-    function getDataToArray()
+    public function getDataToArray()
     {
         $data = $this->invoke();
 
@@ -107,11 +111,11 @@ class SapRfc
 
             return $result;
         } catch (\SapException $ex) {
-            throw new Exception($ex->getMessage() . PHP_EOL);
+            throw new Exception($ex->getMessage().PHP_EOL);
         }
     }
 
-    /** 
+    /**
      * Transform data to one dimensional arrays
      */
     private function transformData($result)
@@ -126,8 +130,7 @@ class SapRfc
 
         // Data
         $data = array_map(function ($value) {
-
-            $explode_value = explode(";", $value['WA']);
+            $explode_value = explode(';', $value['WA']);
 
             $trim_data = array_map(function ($value) {
                 return trim($value);
@@ -136,12 +139,10 @@ class SapRfc
             return $trim_data;
         }, $data);
 
-
         // Fields
         $fields = array_map(function ($value) {
             return trim($value['FIELDNAME']);
         }, $fields);
-
 
         // Combine array Fields as keys
         // and array Data as values
@@ -161,20 +162,17 @@ class SapRfc
      */
     private function reset()
     {
-
         foreach (get_class_vars(get_class($this)) as $var => $default_val) {
-
             if (isset($this->$var)) {
-
                 $this->$var = $default_val;
             }
         }
     }
 
-    /** 
+    /**
      * Close connection
      */
-    function close()
+    public function close()
     {
         try {
             $this->sap_conn->close();
@@ -184,7 +182,7 @@ class SapRfc
 
             return $this;
         } catch (\SapException $ex) {
-            throw new Exception($ex->getMessage() . PHP_EOL);
+            throw new Exception($ex->getMessage().PHP_EOL);
         }
     }
 
@@ -197,82 +195,81 @@ class SapRfc
             if ($connection == 'Local') {
                 $config = [
                     'ashost' => '192.168.5.131',
-                    'sysid'  => 'PRD',
-                    'sysnr'  => '00',
+                    'sysid' => 'PRD',
+                    'sysnr' => '00',
                     'client' => '888',
-                    'user'   => 'RFCMANAGER',
+                    'user' => 'RFCMANAGER',
                     'passwd' => '2BBLC1234@dmin',
-                    'trace'  => SapConnection::TRACE_LEVEL_OFF,
+                    'trace' => SapConnection::TRACE_LEVEL_OFF,
                 ];
                 static::$mandt = '888';
             } else {
                 $config = [
                     'ashost' => '192.168.5.131',
-                    'sysid'  => 'DEV',
-                    'sysnr'  => '00',
+                    'sysid' => 'DEV',
+                    'sysnr' => '00',
                     'client' => '120',
-                    'user'   => 'RFCMANAGER',
+                    'user' => 'RFCMANAGER',
                     'passwd' => '2BBLC1234@dmin',
                     'saprouter' => '/H/222.127.142.230',
-                    'trace'  => SapConnection::TRACE_LEVEL_OFF,
+                    'trace' => SapConnection::TRACE_LEVEL_OFF,
 
                 ];
                 static::$mandt = '120';
             }
-        } else if ($server == 'dev') {
-
+        } elseif ($server == 'dev') {
             if ($connection == 'Local') {
                 $config = [
                     'ashost' => '192.168.5.128',
-                    'sysid'  => 'DEV',
-                    'sysnr'  => '00',
+                    'sysid' => 'DEV',
+                    'sysnr' => '00',
                     'client' => '120',
-                    'user'   => 'BBLITMNGR',
+                    'user' => 'BBLITMNGR',
                     'passwd' => '2BBLC1234@dmin',
-                    'trace'  => SapConnection::TRACE_LEVEL_OFF,
+                    'trace' => SapConnection::TRACE_LEVEL_OFF,
                 ];
                 static::$mandt = '120';
             } else {
                 $config = [
                     'ashost' => '192.168.5.128',
-                    'sysid'  => 'DEV',
-                    'sysnr'  => '00',
+                    'sysid' => 'DEV',
+                    'sysnr' => '00',
                     'client' => '120',
-                    'user'   => 'BBLITMNGR',
+                    'user' => 'BBLITMNGR',
                     'passwd' => '2BBLC1234@dmin',
                     'saprouter' => '/H/222.127.142.230',
-                    'trace'  => SapConnection::TRACE_LEVEL_OFF,
+                    'trace' => SapConnection::TRACE_LEVEL_OFF,
 
                 ];
                 static::$mandt = '120';
             }
         } else {
-
             if ($connection == 'Local') {
                 $config = [
                     'ashost' => '192.168.5.132',
-                    'sysid'  => 'QAS',
-                    'sysnr'  => '00',
+                    'sysid' => 'QAS',
+                    'sysnr' => '00',
                     'client' => '200',
-                    'user'   => 'EWMMANAGER',
+                    'user' => 'EWMMANAGER',
                     'passwd' => 'agsaccess',
-                    'trace'  => SapConnection::TRACE_LEVEL_OFF,
+                    'trace' => SapConnection::TRACE_LEVEL_OFF,
                 ];
                 static::$mandt = '200';
             } else {
                 $config = [
                     'ashost' => '192.168.5.132',
-                    'sysid'  => 'QAS',
-                    'sysnr'  => '00',
+                    'sysid' => 'QAS',
+                    'sysnr' => '00',
                     'client' => '200',
-                    'user'   => 'EWMMANAGER',
+                    'user' => 'EWMMANAGER',
                     'passwd' => 'agsaccess',
                     'saprouter' => '/H/222.127.142.230',
-                    'trace'  => SapConnection::TRACE_LEVEL_OFF,
+                    'trace' => SapConnection::TRACE_LEVEL_OFF,
                 ];
                 static::$mandt = '200';
             }
         }
+
         return $config;
     }
 }

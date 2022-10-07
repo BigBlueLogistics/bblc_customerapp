@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WAREHOUSE\InventoryController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +24,7 @@ Route::post('/auth/change-password', [AuthController::class, 'change']);
 // Protected routes
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/auth/logout', [AuthController::class, 'logout']);
+    Route::get('/auth/is-authenticated', [AuthController::class, 'isAuthenticated']);
     Route::get('/inventory/warehouse-list', [InventoryController::class, 'warehouseList']);
     Route::get('/inventory/table', [InventoryController::class, 'table']);
-    Route::get('/auth/is-authenticated', [AuthController::class, 'isAuthenticated']);
 });

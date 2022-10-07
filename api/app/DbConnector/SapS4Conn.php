@@ -6,39 +6,38 @@ use Exception;
 use SAPNWRFC\Connection as SapConnection;
 use SAPNWRFC\ConnectionException as SapException;
 
-class SapS4Conn{
-
+class SapS4Conn
+{
     private static $mandt;
+
     private static $sap_conn;
 
     // Disable class for instatiation
-    private function __construct(){}
-
-    static function connect($server, $connection)
+    private function __construct()
     {
-        try
-        {
+    }
+
+    public static function connect($server, $connection)
+    {
+        try {
             $config = self::setConfig($server, $connection);
             $conn = new SapConnection($config);
-            
+
             self::$sap_conn = $conn;
 
             return $conn;
-        } 
-        catch(SapException $ex) 
-        {
-            throw new Exception('Error connecting to SAP: ' . $ex->getMessage() . PHP_EOL);
+        } catch(SapException $ex) {
+            throw new Exception('Error connecting to SAP: '.$ex->getMessage().PHP_EOL);
         }
     }
 
-    static function getMandt()
+    public static function getMandt()
     {
-        if(is_null(self::$sap_conn) || empty(self::$sap_conn))
-        {
-            throw new Exception("SAP Connection should established first");
+        if (is_null(self::$sap_conn) || empty(self::$sap_conn)) {
+            throw new Exception('SAP Connection should established first');
         }
-        if(is_null(self::$mandt) || empty(self::$mandt)){
-            throw new Exception("Mandt is empty");
+        if (is_null(self::$mandt) || empty(self::$mandt)) {
+            throw new Exception('Mandt is empty');
         }
 
         return self::$mandt;
@@ -46,94 +45,85 @@ class SapS4Conn{
 
     private static function setConfig($server, $connection)
     {
-        if($server == 'prd'){
-            if($connection=='Local'){
+        if ($server == 'prd') {
+            if ($connection == 'Local') {
                 $config = [
                     'ashost' => '192.168.5.131',
-                    'sysid'  => 'PRD',
-                    'sysnr'  => '00',
+                    'sysid' => 'PRD',
+                    'sysnr' => '00',
                     'client' => '888',
-                    'user'   => 'RFCMANAGER',
+                    'user' => 'RFCMANAGER',
                     'passwd' => '2BBLC1234@dmin',
-                    'trace'  => SapConnection::TRACE_LEVEL_OFF,
+                    'trace' => SapConnection::TRACE_LEVEL_OFF,
                 ];
                 self::$mandt = '888';
-            }
-            else{
+            } else {
                 $config = [
                     'ashost' => '192.168.5.131',
-                    'sysid'  => 'DEV',
-                    'sysnr'  => '00',
+                    'sysid' => 'DEV',
+                    'sysnr' => '00',
                     'client' => '120',
-                    'user'   => 'RFCMANAGER',
+                    'user' => 'RFCMANAGER',
                     'passwd' => '2BBLC1234@dmin',
                     'saprouter' => '/H/222.127.142.230',
-                    'trace'  => SapConnection::TRACE_LEVEL_OFF,
-                    
-                ];
-                self::$mandt = '120';
-            }
-        }
-        else if($server == 'dev'){
+                    'trace' => SapConnection::TRACE_LEVEL_OFF,
 
-            if($connection=='Local'){
-                $config = [
-                    'ashost' => '192.168.5.128',
-                    'sysid'  => 'DEV',
-                    'sysnr'  => '00',
-                    'client' => '120',
-                    'user'   => 'BBLITMNGR',
-                    'passwd' => '2BBLC1234@dmin',
-                    'trace'  => SapConnection::TRACE_LEVEL_OFF,
                 ];
                 self::$mandt = '120';
             }
-            else{
+        } elseif ($server == 'dev') {
+            if ($connection == 'Local') {
                 $config = [
                     'ashost' => '192.168.5.128',
-                    'sysid'  => 'DEV',
-                    'sysnr'  => '00',
+                    'sysid' => 'DEV',
+                    'sysnr' => '00',
                     'client' => '120',
-                    'user'   => 'BBLITMNGR',
+                    'user' => 'BBLITMNGR',
+                    'passwd' => '2BBLC1234@dmin',
+                    'trace' => SapConnection::TRACE_LEVEL_OFF,
+                ];
+                self::$mandt = '120';
+            } else {
+                $config = [
+                    'ashost' => '192.168.5.128',
+                    'sysid' => 'DEV',
+                    'sysnr' => '00',
+                    'client' => '120',
+                    'user' => 'BBLITMNGR',
                     'passwd' => '2BBLC1234@dmin',
                     'saprouter' => '/H/222.127.142.230',
-                    'trace'  => SapConnection::TRACE_LEVEL_OFF,
-                    
+                    'trace' => SapConnection::TRACE_LEVEL_OFF,
+
                 ];
                 self::$mandt = '120';
             }
-        }
-        else{
-
-            if($connection=='Local'){
+        } else {
+            if ($connection == 'Local') {
                 $config = [
                     'ashost' => '192.168.5.132',
-                    'sysid'  => 'QAS',
-                    'sysnr'  => '00',
+                    'sysid' => 'QAS',
+                    'sysnr' => '00',
                     'client' => '200',
-                    'user'   => 'EWMMANAGER',
-                    'passwd' => 'agsaccess',                        
-                    'trace'  => SapConnection::TRACE_LEVEL_OFF,
+                    'user' => 'EWMMANAGER',
+                    'passwd' => 'agsaccess',
+                    'trace' => SapConnection::TRACE_LEVEL_OFF,
                 ];
                 self::$mandt = '200';
-            }
-            else{
+            } else {
                 $config = [
                     'ashost' => '192.168.5.132',
-                    'sysid'  => 'QAS',
-                    'sysnr'  => '00',
+                    'sysid' => 'QAS',
+                    'sysnr' => '00',
                     'client' => '200',
-                    'user'   => 'EWMMANAGER',
+                    'user' => 'EWMMANAGER',
                     'passwd' => 'agsaccess',
                     'saprouter' => '/H/222.127.142.230',
-                    'trace'  => SapConnection::TRACE_LEVEL_OFF,                       
+                    'trace' => SapConnection::TRACE_LEVEL_OFF,
                 ];
                 self::$mandt = '200';
-        
             }
         }
-        return $config;
-             
-    }
 
+        return $config;
+    }
 }

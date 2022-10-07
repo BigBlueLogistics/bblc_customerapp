@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers\WAREHOUSE;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
 use App\DbConnector\SapS4Conn as SapS4;
-use App\Traits\HttpResponse;
 use App\Facades\SapRfcFacade;
+use App\Http\Controllers\Controller;
+use App\Traits\HttpResponse;
+use Illuminate\Http\Request;
 
 class InventoryController extends Controller
 {
-
     use HttpResponse;
 
-    function warehouseList()
+    public function warehouseList()
     {
         $mandt = SapRfcFacade::getMandt();
         $res = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
@@ -31,130 +29,133 @@ class InventoryController extends Controller
             ->getDataToArray();
 
         $wh = array_map(function ($value) {
-            $arr["PLANT"] = $value["WERKS"];
-            $arr["NAME1"] = $value["NAME1"];
+            $arr['PLANT'] = $value['WERKS'];
+            $arr['NAME1'] = $value['NAME1'];
 
             return $arr;
         }, $res);
 
-        return $this->sendResponse($wh, "List of warehouse");
+        return $this->sendResponse($wh, 'List of warehouse');
     }
 
-    function getMCHB($customerCode, $warehouse, $server)
+    public function getMCHB($customerCode, $warehouse, $server)
     {
         $c = SapS4::connect($server, 'Local');
         $mandt = SapS4::getMandt();
         $f = $c->getFunction('ZFM_BBP_RFC_READ_TABLE');
 
-        $options = array(
-            array("TEXT" => "MANDT EQ  '" . $mandt . "'"),
-            array("TEXT" => " AND MATNR LIKE '" . $customerCode . "%'"),
-            array("TEXT" => " AND WERKS EQ '" . $warehouse . "'"),
-            array("TEXT" => " AND (CLABS > 0"),
-            array("TEXT" => " OR CINSM > 0"),
-            array("TEXT" => " OR CSPEM > 0)"),
-        );
-        $fields = array(
-            array("FIELDNAME" => "MATNR"),
-            array("FIELDNAME" => "CLABS"),
-            array("FIELDNAME" => "CINSM"),
-            array("FIELDNAME" => "CSPEM"),
-            array("FIELDNAME" => "CHARG"),
-        );
+        $options = [
+            ['TEXT' => "MANDT EQ  '".$mandt."'"],
+            ['TEXT' => " AND MATNR LIKE '".$customerCode."%'"],
+            ['TEXT' => " AND WERKS EQ '".$warehouse."'"],
+            ['TEXT' => ' AND (CLABS > 0'],
+            ['TEXT' => ' OR CINSM > 0'],
+            ['TEXT' => ' OR CSPEM > 0)'],
+        ];
+        $fields = [
+            ['FIELDNAME' => 'MATNR'],
+            ['FIELDNAME' => 'CLABS'],
+            ['FIELDNAME' => 'CINSM'],
+            ['FIELDNAME' => 'CSPEM'],
+            ['FIELDNAME' => 'CHARG'],
+        ];
 
         $rowMCHB = $f->invoke([
             'QUERY_TABLE' => 'MCHB',
             'OPTIONS' => $options,
             'FIELDS' => $fields,
-            'DELIMITER' => ";",
-            'ORDER_BY_COLUMN' => "2", // 2 = DESC , 1 = ASC
-            'SORT_FIELDS' => "MATNR"
+            'DELIMITER' => ';',
+            'ORDER_BY_COLUMN' => '2', // 2 = DESC , 1 = ASC
+            'SORT_FIELDS' => 'MATNR',
         ]);
 
         $c->close();
+
         return $rowMCHB;
     }
 
-    function getMAKT($customerCode, $server)
+    public function getMAKT($customerCode, $server)
     {
         $c = SapS4::connect($server, 'Local');
         $mandt = SapS4::getMandt();
 
         $f = $c->getFunction('ZFM_BBP_RFC_READ_TABLE');
 
-        $options = array(
-            array("TEXT" => "MANDT EQ '{$mandt}'"),
-            array("TEXT" => " AND MATNR LIKE '{$customerCode}%'"),
-        );
-        $fields = array(
-            array("FIELDNAME" => "MATNR"),
-            array("FIELDNAME" => "MAKTX"),
-        );
+        $options = [
+            ['TEXT' => "MANDT EQ '{$mandt}'"],
+            ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+        ];
+        $fields = [
+            ['FIELDNAME' => 'MATNR'],
+            ['FIELDNAME' => 'MAKTX'],
+        ];
 
         $rowMAKT = $f->invoke([
             'QUERY_TABLE' => 'MAKT',
             'OPTIONS' => $options,
             'FIELDS' => $fields,
-            'DELIMITER' => ";",
+            'DELIMITER' => ';',
         ]);
 
         $c->close();
+
         return $rowMAKT;
     }
 
-    function getMKVE($customerCode, $server)
+    public function getMKVE($customerCode, $server)
     {
         $c = SapS4::connect($server, 'Local');
         $mandt = SapS4::getMandt();
         $f = $c->getFunction('ZFM_BBP_RFC_READ_TABLE');
 
-        $options = array(
-            array("TEXT" => "MANDT EQ '{$mandt}'"),
-            array("TEXT" => " AND MATNR LIKE '{$customerCode}%'"),
-            array("TEXT" => " AND VRKME NE 'KG'"),
-        );
-        $fields = array(
-            array("FIELDNAME" => "MATNR"),
-            array("FIELDNAME" => "VRKME"),
-        );
+        $options = [
+            ['TEXT' => "MANDT EQ '{$mandt}'"],
+            ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+            ['TEXT' => " AND VRKME NE 'KG'"],
+        ];
+        $fields = [
+            ['FIELDNAME' => 'MATNR'],
+            ['FIELDNAME' => 'VRKME'],
+        ];
 
         $rowMVKE = $f->invoke([
             'QUERY_TABLE' => 'MVKE',
             'OPTIONS' => $options,
             'FIELDS' => $fields,
-            'DELIMITER' => ";",
+            'DELIMITER' => ';',
         ]);
 
         $c->close();
+
         return $rowMVKE;
     }
 
-    function getMARA($customerCode, $server)
+    public function getMARA($customerCode, $server)
     {
         $c = SapS4::connect($server, 'Local');
         $mandt = SapS4::getMandt();
         $f = $c->getFunction('ZFM_BBP_RFC_READ_TABLE');
 
-        $options = array(
-            array("TEXT" => "MANDT EQ '{$mandt}'"),
-            array("TEXT" => " AND MATNR LIKE '{$customerCode}%'"),
-        );
-        $fields = array(
-            array("FIELDNAME" => "MATNR"),
-            array("FIELDNAME" => "MATKL"),
-            array("FIELDNAME" => "MAGRV"),
-            array("FIELDNAME" => "NORMT"),
-            array("FIELDNAME" => "ERNAM"),
-            array("FIELDNAME" => "ERSDA"),
-            array("FIELDNAME" => "LAEDA"),
-            array("FIELDNAME" => "SCM_MATID_GUID16"),
-        );
+        $options = [
+            ['TEXT' => "MANDT EQ '{$mandt}'"],
+            ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+        ];
+        $fields = [
+            ['FIELDNAME' => 'MATNR'],
+            ['FIELDNAME' => 'MATKL'],
+            ['FIELDNAME' => 'MAGRV'],
+            ['FIELDNAME' => 'NORMT'],
+            ['FIELDNAME' => 'ERNAM'],
+            ['FIELDNAME' => 'ERSDA'],
+            ['FIELDNAME' => 'LAEDA'],
+            ['FIELDNAME' => 'SCM_MATID_GUID16'],
+        ];
 
         $rowMARA = $f->invoke([
             'QUERY_TABLE' => 'MARA',
             'OPTIONS' => $options,
             'FIELDS' => $fields,
-            'DELIMITER' => ";",
+            'DELIMITER' => ';',
         ]);
 
         $c->close();
@@ -162,31 +163,31 @@ class InventoryController extends Controller
         return $rowMARA;
     }
 
-    function getMARM($customerCode, $server)
+    public function getMARM($customerCode, $server)
     {
         $c = SapS4::connect($server, 'Local');
         $mandt = SapS4::getMandt();
         $f = $c->getFunction('ZFM_BBP_RFC_READ_TABLE');
 
-        $options = array(
-            array("TEXT" => "MANDT EQ '{$mandt}'"),
-            array("TEXT" => " AND MATNR LIKE '{$customerCode}%'"),
-        );
-        $fields = array(
-            array("FIELDNAME" => "MATNR"),
-            array("FIELDNAME" => "MEINH"),
-            array("FIELDNAME" => "UMREZ"),
-            array("FIELDNAME" => "UMREN"),
-            array("FIELDNAME" => "VOLUM"),
-            array("FIELDNAME" => "VOLEH"),
-            array("FIELDNAME" => "EAN11"),
-        );
+        $options = [
+            ['TEXT' => "MANDT EQ '{$mandt}'"],
+            ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+        ];
+        $fields = [
+            ['FIELDNAME' => 'MATNR'],
+            ['FIELDNAME' => 'MEINH'],
+            ['FIELDNAME' => 'UMREZ'],
+            ['FIELDNAME' => 'UMREN'],
+            ['FIELDNAME' => 'VOLUM'],
+            ['FIELDNAME' => 'VOLEH'],
+            ['FIELDNAME' => 'EAN11'],
+        ];
 
         $getMARM = $f->invoke([
             'QUERY_TABLE' => 'MARM',
             'OPTIONS' => $options,
             'FIELDS' => $fields,
-            'DELIMITER' => ";",
+            'DELIMITER' => ';',
         ]);
 
         // close sap connection;
@@ -195,44 +196,49 @@ class InventoryController extends Controller
         return $getMARM;
     }
 
-    function getMCH1($material, $batch, $server)
+    public function getMCH1($material, $batch, $server)
     {
         $c = SapS4::connect($server, 'Local');
         $mandt = SapS4::getMandt();
         $f = $c->getFunction('ZFM_BBP_RFC_READ_TABLE');
 
-        $options = array(
-            array("TEXT" => "MANDT EQ '{$mandt}'"),
-            array("TEXT" => " AND MATNR EQ '{$material}'"),
-            array("TEXT" => " AND CHARG EQ '{$batch}'"),
-        );
-        $fields = array(
-            array("FIELDNAME" => "VFDAT"),
-            array("FIELDNAME" => "HSDAT"),
-        );
+        $options = [
+            ['TEXT' => "MANDT EQ '{$mandt}'"],
+            ['TEXT' => " AND MATNR EQ '{$material}'"],
+            ['TEXT' => " AND CHARG EQ '{$batch}'"],
+        ];
+        $fields = [
+            ['FIELDNAME' => 'VFDAT'],
+            ['FIELDNAME' => 'HSDAT'],
+        ];
 
         $rowMCH1 = $f->invoke([
             'QUERY_TABLE' => 'MCH1',
             'OPTIONS' => $options,
             'FIELDS' => $fields,
-            'DELIMITER' => ";",
+            'DELIMITER' => ';',
         ]);
 
         $c->close();
+
         return $rowMCH1;
     }
 
-    function convert_from_latin1_to_utf8_recursively($dat)
+    public function convert_from_latin1_to_utf8_recursively($dat)
     {
         if (is_string($dat)) {
             return utf8_encode($dat);
         } elseif (is_array($dat)) {
             $ret = [];
-            foreach ($dat as $i => $d) $ret[$i] = self::convert_from_latin1_to_utf8_recursively($d);
+            foreach ($dat as $i => $d) {
+                $ret[$i] = self::convert_from_latin1_to_utf8_recursively($d);
+            }
 
             return $ret;
         } elseif (is_object($dat)) {
-            foreach ($dat as $i => $d) $dat->$i = self::convert_from_latin1_to_utf8_recursively($d);
+            foreach ($dat as $i => $d) {
+                $dat->$i = self::convert_from_latin1_to_utf8_recursively($d);
+            }
 
             return $dat;
         } else {
@@ -240,11 +246,9 @@ class InventoryController extends Controller
         }
     }
 
-
-    function table2(Request $request)
+    public function table2(Request $request)
     {
         try {
-
             // putaway 1010
             // allocated 2020
 
@@ -260,14 +264,11 @@ class InventoryController extends Controller
 
             return response($formattedRes);
         } catch (SapException $ex) {
-
             return response($ex, 500);
         }
     }
 
-
-
-    function table(Request $request)
+    public function table(Request $request)
     {
         try {
             $customerCode = $request->input('customer_code');
@@ -281,20 +282,20 @@ class InventoryController extends Controller
             $rowMARA = $this->getMARA($customerCode, $server);
             $rowMARM = $this->getMARM($customerCode, $server);
 
-            $maktx = "";
-            $meinh = "";
+            $maktx = '';
+            $meinh = '';
             $umren = 0;
             $umrez = 0;
 
-            $output = array();
-            for ($iMCHB = 0; $iMCHB <= count($rowMCHB["DATA"]) - 1; $iMCHB++) {
+            $output = [];
+            for ($iMCHB = 0; $iMCHB <= count($rowMCHB['DATA']) - 1; $iMCHB++) {
                 // Material code
-                $mchb = explode(";", $rowMCHB["DATA"][$iMCHB]["WA"]);
+                $mchb = explode(';', $rowMCHB['DATA'][$iMCHB]['WA']);
                 $matnr = trim($mchb[0]);
 
-                for ($iMAKT = 0; $iMAKT <= count($rowMAKT["DATA"]) - 1; $iMAKT++) {
+                for ($iMAKT = 0; $iMAKT <= count($rowMAKT['DATA']) - 1; $iMAKT++) {
                     // Material description
-                    $makt = explode(";", $rowMAKT["DATA"][$iMAKT]["WA"]);
+                    $makt = explode(';', $rowMAKT['DATA'][$iMAKT]['WA']);
 
                     if ($matnr == trim($makt[0])) {
                         $maktx = $makt[1];
@@ -302,10 +303,9 @@ class InventoryController extends Controller
                     }
                 }
 
-                for ($iMKVE = 0; $iMKVE <= count($rowMKVE["DATA"]) - 1; $iMKVE++) {
-
+                for ($iMKVE = 0; $iMKVE <= count($rowMKVE['DATA']) - 1; $iMKVE++) {
                     // Sales unit
-                    $makve = explode(";", $rowMKVE["DATA"][$iMKVE]["WA"]);
+                    $makve = explode(';', $rowMKVE['DATA'][$iMKVE]['WA']);
 
                     if ($matnr == trim($makve[0])) {
                         $meinh = $makve[1];
@@ -313,19 +313,17 @@ class InventoryController extends Controller
                     }
                 }
 
-                if ($meinh == "") {
-                    $meinh = "kg";
+                if ($meinh == '') {
+                    $meinh = 'kg';
                     $umrez = 1;
                     $umren = 1;
                 } else {
-                    for ($iMARM = 0; $iMARM <= count($rowMARM["DATA"]) - 1; $iMARM++) {
+                    for ($iMARM = 0; $iMARM <= count($rowMARM['DATA']) - 1; $iMARM++) {
                         // Unit of measure
-                        $marm = explode(";", $rowMARM["DATA"][$iMARM]["WA"]);
+                        $marm = explode(';', $rowMARM['DATA'][$iMARM]['WA']);
 
                         if ($matnr == trim($marm[0])) {
-
                             if (trim($meinh) == trim($marm[1])) {
-
                                 $umrez = $marm[2];
                                 $umren = $marm[3];
                             }
@@ -333,64 +331,64 @@ class InventoryController extends Controller
                     }
                 }
 
-                if ($groupBy === "material") {
+                if ($groupBy === 'material') {
                     // Unique material code, and sum up clabs, cinsm and cspem
                     if (array_key_exists($matnr, $output)) {
-                        $output[$matnr]["clabs"] += floatval($mchb[1]);
-                        $output[$matnr]["cinsm"] += floatval($mchb[2]);
-                        $output[$matnr]["cspem"] += floatval($mchb[3]);
+                        $output[$matnr]['clabs'] += floatval($mchb[1]);
+                        $output[$matnr]['cinsm'] += floatval($mchb[2]);
+                        $output[$matnr]['cspem'] += floatval($mchb[3]);
                     } else {
-                        $output[$matnr]["matnr"] = $matnr;
-                        $output[$matnr]["makt"] = trim($maktx);
-                        $output[$matnr]["meinh"] = trim($meinh);
-                        $output[$matnr]["umrez"] = trim($umrez);
-                        $output[$matnr]["umren"] = trim($umren);
-                        $output[$matnr]["clabs"] = floatval($mchb[1]);
-                        $output[$matnr]["cinsm"] = floatval($mchb[2]);
-                        $output[$matnr]["cspem"] = floatval($mchb[3]);
+                        $output[$matnr]['matnr'] = $matnr;
+                        $output[$matnr]['makt'] = trim($maktx);
+                        $output[$matnr]['meinh'] = trim($meinh);
+                        $output[$matnr]['umrez'] = trim($umrez);
+                        $output[$matnr]['umren'] = trim($umren);
+                        $output[$matnr]['clabs'] = floatval($mchb[1]);
+                        $output[$matnr]['cinsm'] = floatval($mchb[2]);
+                        $output[$matnr]['cspem'] = floatval($mchb[3]);
                     }
-                } else if ($groupBy === "batch") {
-                    $output[$iMCHB] = array(
-                        "matnr" =>  $matnr,             // material
-                        "makt"  => trim($maktx),        // description
-                        "meinh" => trim($meinh),
-                        "umrez" => trim($umrez),
-                        "umren" => trim($umren),
-                        "clabs" => floatval($mchb[1]),  // putaway
-                        "cinsm" => floatval($mchb[2]),  // allocated
-                        "cspem" => floatval($mchb[3]),  // available
-                        "charg" => trim($mchb[4]),
-                    );
+                } elseif ($groupBy === 'batch') {
+                    $output[$iMCHB] = [
+                        'matnr' => $matnr,             // material
+                        'makt' => trim($maktx),        // description
+                        'meinh' => trim($meinh),
+                        'umrez' => trim($umrez),
+                        'umren' => trim($umren),
+                        'clabs' => floatval($mchb[1]),  // putaway
+                        'cinsm' => floatval($mchb[2]),  // allocated
+                        'cspem' => floatval($mchb[3]),  // available
+                        'charg' => trim($mchb[4]),
+                    ];
                 } else {
                     $rowMCH1 = $this->getMCH1($matnr, trim($mchb[4]), $server);
-                    $mch1 = explode(";", $rowMCH1["DATA"][0]["WA"]);
+                    $mch1 = explode(';', $rowMCH1['DATA'][0]['WA']);
                     $vfdat = trim($mch1[0]);
 
-                    if (!empty($vfdat)) {
+                    if (! empty($vfdat)) {
                         $date = date_create($vfdat);
-                        $vfdat_format = date_format($date, "m/d/Y");
+                        $vfdat_format = date_format($date, 'm/d/Y');
                     } else {
                         $vfdat_format = 000000000;
                     }
 
-                    $output[$iMCHB] = array(
-                        "matnr" =>  $matnr,             // material
-                        "makt"  => trim($maktx),        // description
-                        "meinh" => trim($meinh),
-                        "umrez" => trim($umrez),
-                        "umren" => trim($umren),
-                        "clabs" => floatval($mchb[1]),  // putaway
-                        "cinsm" => floatval($mchb[2]),  // allocated
-                        "cspem" => floatval($mchb[3]),  // available
-                        "vfdat" => $vfdat_format        // expiry
-                    );
+                    $output[$iMCHB] = [
+                        'matnr' => $matnr,             // material
+                        'makt' => trim($maktx),        // description
+                        'meinh' => trim($meinh),
+                        'umrez' => trim($umrez),
+                        'umren' => trim($umren),
+                        'clabs' => floatval($mchb[1]),  // putaway
+                        'cinsm' => floatval($mchb[2]),  // allocated
+                        'cspem' => floatval($mchb[3]),  // available
+                        'vfdat' => $vfdat_format,        // expiry
+                    ];
                 }
             }
-            $result = $groupBy === "material" ? array_values($output) : $output;
+            $result = $groupBy === 'material' ? array_values($output) : $output;
 
-            return $this->sendResponse($result, "inventory details");
+            return $this->sendResponse($result, 'inventory details');
         } catch (SapException $ex) {
-            return $this->sendError('Exception: ' . $ex->getMessage() . PHP_EOL);
+            return $this->sendError('Exception: '.$ex->getMessage().PHP_EOL);
         }
     }
 }

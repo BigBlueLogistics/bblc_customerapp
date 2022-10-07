@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Http\Response;
-
-use App\Traits\HttpResponse;
-use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\ResetPassRequest;
 use App\Models\User;
+use App\Traits\HttpResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -24,10 +23,10 @@ class AuthController extends Controller
         $request->validated($request->all());
 
         $user = User::where('email', $request->email)->first();
-        if (!$user->active || $user->active === 'false') {
+        if (! $user->active || $user->active === 'false') {
             return $this->sendError(__('auth.disabled'), Response::HTTP_UNAUTHORIZED);
         }
-        if (!$user->email_verified_at) {
+        if (! $user->email_verified_at) {
             return $this->sendError(__('auth.not-verified'), Response::HTTP_UNAUTHORIZED);
         }
 
@@ -35,7 +34,8 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password,
         ]);
-        if (!$authenticate) {
+
+        if (! $authenticate) {
             return $this->sendError(__('auth.failed'), Response::HTTP_UNAUTHORIZED);
         }
 
@@ -49,7 +49,6 @@ class AuthController extends Controller
             'Login successful'
         );
     }
-
 
     public function register(RegisterUserRequest $request)
     {
@@ -67,18 +66,18 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'email' => $request->email,
                 'customer_code' => $request->customer_code,
-                'phone_no' => $request->phone_no
+                'phone_no' => $request->phone_no,
             ]);
 
             if ($user) {
-                return $this->sendResponse("", __('auth.register'));
+                return $this->sendResponse('', __('auth.register'));
             }
+
             return $this->sendError(__('auth.register-failed'));
         } catch (\Exception $e) {
             return $this->sendError($e);
         }
     }
-
 
     public function reset(Request $request)
     {
@@ -101,10 +100,9 @@ class AuthController extends Controller
 
             return $this->sendError(__('passwords.invalid-json'));
         } catch (\Exception $e) {
-            return $this->sendError('Something went wrong ' . $e->getMessage());
+            return $this->sendError('Something went wrong '.$e->getMessage());
         }
     }
-
 
     public function change(ResetPassRequest $request)
     {
@@ -112,7 +110,6 @@ class AuthController extends Controller
             $request->validated($request->only('email', 'password', 'token'));
 
             $status = Password::reset($request->only('email', 'password', 'token'), function ($user, $password) {
-
                 $hash_password = Hash::make($password);
 
                 // Update the field with new hashed password
@@ -132,7 +129,7 @@ class AuthController extends Controller
 
             return $this->sendError(__('passwords.reset-failed'));
         } catch (\Exception $e) {
-            return $this->sendError('Something went wrong ' . $e->getMessage());
+            return $this->sendError('Something went wrong '.$e->getMessage());
         }
     }
 

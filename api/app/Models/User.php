@@ -2,13 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 // use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Jobs\QueuedResetPasswordJob;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Notifications\ResetPasswordNotification;
-use App\Jobs\QueuedResetPasswordJob;
 
 class User extends Authenticatable
 {
@@ -23,7 +21,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'fname', 'lname', 'email',
-        'password'
+        'password',
     ];
 
     /**
@@ -47,7 +45,7 @@ class User extends Authenticatable
 
     public function sendPasswordResetNotification($token)
     {
-        $uiUrl = env('APP_URL') . ":" . env('UI_PORT');
+        $uiUrl = env('APP_URL').':'.env('UI_PORT');
         $emailForPasswordReset = urlencode(self::getEmailForPasswordReset());
         $url = "{$uiUrl}/change-password?token={$token}&email={$emailForPasswordReset}";
 
