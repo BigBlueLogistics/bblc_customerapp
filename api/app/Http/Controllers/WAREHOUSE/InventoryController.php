@@ -2,15 +2,26 @@
 
 namespace App\Http\Controllers\WAREHOUSE;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+
 use App\DbConnector\SapS4Conn as SapS4;
 use App\Facades\SapRfcFacade;
-use App\Http\Controllers\Controller;
 use App\Traits\HttpResponse;
-use Illuminate\Http\Request;
+use App\Interfaces\IInventoryRepository;
+use App\Exports\InventoryExport;
 
 class InventoryController extends Controller
 {
     use HttpResponse;
+
+    private $inventory;
+
+    public function __construct(IInventoryRepository $inventory)
+    {
+        $this->inventory = $inventory;
+    }
 
     public function warehouseList()
     {
@@ -224,26 +235,15 @@ class InventoryController extends Controller
         return $rowMCH1;
     }
 
-    public function convert_from_latin1_to_utf8_recursively($dat)
+    public function export(Request $request)
     {
-        if (is_string($dat)) {
-            return utf8_encode($dat);
-        } elseif (is_array($dat)) {
-            $ret = [];
-            foreach ($dat as $i => $d) {
-                $ret[$i] = self::convert_from_latin1_to_utf8_recursively($d);
-            }
+        $customerCode = $request->input('customer_code');
+        $warehouse = $request->input('warehouse');
 
-            return $ret;
-        } elseif (is_object($dat)) {
-            foreach ($dat as $i => $d) {
-                $dat->$i = self::convert_from_latin1_to_utf8_recursively($d);
-            }
+        $export = new InventoryExport($this->inventory);
+        $export->setFilterBy($customerCode, $warehouse);
 
-            return $dat;
-        } else {
-            return $dat;
-        }
+        return Excel::download($export, 'stocks.xlsx');
     }
 
     public function table2(Request $request)
@@ -255,16 +255,11 @@ class InventoryController extends Controller
             $customerCode = $request->input('customer_code');
             $warehouse = $request->input('warehouse');
 
-            $res = SapRfcFacade::functionModule('ZFM_EWM_TABLEREAD')
-                ->param('IV_CUSTOMER', $customerCode)
-                ->param('IV_WAREHOUSENO', $warehouse ?? '')
-                ->getData();
+            $res = $this->inventory->getStocksInventory($customerCode, $warehouse);
 
-            $formattedRes = $this->convert_from_latin1_to_utf8_recursively($res);
-
-            return response($formattedRes);
+            return $this->sendResponse($res);
         } catch (SapException $ex) {
-            return response($ex, 500);
+            return $this->sendError($ex, 500);
         }
     }
 

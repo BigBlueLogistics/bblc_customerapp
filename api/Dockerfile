@@ -1,10 +1,9 @@
 FROM debian:bullseye-slim
 
 ARG ROOT_APP_DIR=/var/www/html
-ARG OWNER_NAME
-ARG OWNER_ID
 
-# RUN useradd ${OWNER_NAME} -u ${OWNER_ID}
+RUN groupadd --gid 1000 bblc \
+  && useradd --uid 1000 --gid bblc --shell /bin/bash --create-home bblc
 
 RUN apt update && apt upgrade -y && \
     apt install software-properties-common apt-transport-https -y
@@ -71,7 +70,8 @@ RUN service apache2 stop && \
 
 # Install PHP 8.1 FPM and it's modules
 RUN a2enmod mpm_event rewrite && \
-    apt install php8.1-fpm php8.1-curl php8.1-mbstring libapache2-mod-fcgid -y --allow-unauthenticated
+    apt install php8.1-fpm php8.1-curl php8.1-mbstring php8.1-gd php8.1-zip \
+    libapache2-mod-fcgid -y --allow-unauthenticated
 
 RUN a2enconf php8.1-fpm && \    
     a2enmod proxy proxy_fcgi setenvif && \
@@ -149,13 +149,11 @@ WORKDIR $ROOT_APP_DIR
 # Copy project api
 RUN rm -rf ${ROOT_APP_DIR}/*
 
-RUN useradd ${OWNER_NAME} -u ${OWNER_ID} -g www-data --shell /bin/bash 
-
-COPY --chown=${OWNER_NAME}:www-data . $ROOT_APP_DIR
+COPY . $ROOT_APP_DIR
 
 RUN composer install --ignore-platform-reqs
 
-# Assign permissions of the working directory to the www-data user
+# Assign permissions of the working directory to current user.
 RUN chmod 775 -R ${ROOT_APP_DIR}/storage
 
 COPY ./docker/sites-available/bblc_customerapp.conf /etc/apache2/sites-available/
