@@ -23,14 +23,14 @@ class AuthController extends Controller
         $request->validated($request->all());
 
         $user = User::where('email', $request->email)->first();
-        if (! $user->active || $user->active === 'false') {
+        if ($user && (! $user->active || $user->active === 'false')) {
             return $this->sendError(__('auth.disabled'), Response::HTTP_UNAUTHORIZED);
         }
-        if (! $user->email_verified_at) {
+        if ($user && ! $user->email_verified_at) {
             return $this->sendError(__('auth.not-verified'), Response::HTTP_UNAUTHORIZED);
         }
 
-        $authenticate = Auth::attemptWhen([
+        $authenticate = Auth::attempt([
             'email' => $request->email,
             'password' => $request->password,
         ]);
