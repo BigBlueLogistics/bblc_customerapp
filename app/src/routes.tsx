@@ -23,6 +23,7 @@ import SignUp from "pages/Authentication/SignUp";
 import ResetPassword from "pages/Authentication/ResetPassword";
 import ChangePassword from "pages/Authentication/ChangePassword";
 import Inventory from "pages/Inventory";
+import DefaultPage from "pages/DefaultPage";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -85,6 +86,11 @@ const routes: RoutesType = [
   //   component: <Profile />,
   // },
   {
+    route: "/",
+    component: <DefaultPage />,
+    access: "public",
+  },
+  {
     type: "",
     name: "Sign In",
     key: "sign-in",
@@ -119,6 +125,7 @@ const routes: RoutesType = [
     access: "public",
   },
   {
+    index: true,
     type: "collapse",
     name: "Inventory",
     key: "inventory",

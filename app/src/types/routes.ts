@@ -8,6 +8,7 @@ type RoutesType = Array<{
   collapse?: Array<any>;
   href?: string;
   title?: string;
+  index?: boolean;
   route: string;
   component: React.ReactNode;
   access: "public" | "protected";

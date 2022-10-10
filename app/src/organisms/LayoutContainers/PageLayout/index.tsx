@@ -10,6 +10,7 @@ function PageLayout({ background, children }: IPageLayout) {
 
   useEffect(() => {
     setLayout(dispatch, "page");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   return (

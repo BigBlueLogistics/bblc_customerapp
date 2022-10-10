@@ -11,6 +11,7 @@ function DashboardLayout({ children }: IDashboardLayout) {
 
   useEffect(() => {
     setLayout(dispatch, "dashboard");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   return (

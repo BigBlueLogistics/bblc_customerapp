@@ -14,12 +14,15 @@ import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
 import DataTable from "organisms/Tables/DataTable";
-import { useDownloadFile } from "hooks";
+import { useDownloadFile, useAppDispatch } from "hooks";
+import { setIsAuthenticated } from "redux/auth/action";
 
 import miscData from "pages/Inventory/data";
 import inventoryServices from "services/inventoryService";
+import { AxiosError } from "axios";
 
 function Inventory() {
+  const dispatch = useAppDispatch();
   const { tableHeaders, groupOpts } = miscData();
   const [showNotifyDownload, setShowNotifyDownload] = useState({
     open: false,
@@ -33,7 +36,7 @@ function Inventory() {
   const [action, setAction] = useState(null);
 
   const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<AxiosError | null>(null);
 
   const { downloadFile, status: downloadStatus } = useDownloadFile();
   const openAction = ({ currentTarget }) => setAction(currentTarget);
@@ -70,7 +73,7 @@ function Inventory() {
 
       setRowsInventory(rows.data);
     } catch (err) {
-      setError(err.message);
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -87,7 +90,7 @@ function Inventory() {
         setSelectedFilterBy(rows.data[0].PLANT);
       }
     } catch (err) {
-      setError(err.message);
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -108,6 +111,12 @@ function Inventory() {
     fetchInventoryTable();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGroupBy, selectedFilterBy]);
+
+  useEffect(() => {
+    if (error?.response?.statusText === "Unauthorized" && error?.response?.status === 401) {
+      dispatch(setIsAuthenticated(false));
+    }
+  }, [error, dispatch]);
 
   useEffect(() => {
     if (downloadStatus === "loading") {
@@ -142,7 +151,7 @@ function Inventory() {
       <DashboardNavbar />
 
       {isLoading && <div>Loading...</div>}
-      {error && <div>{error}</div>}
+      {error && <div>{error.message}</div>}
       <MDSnackbar
         color="info"
         icon="info"
