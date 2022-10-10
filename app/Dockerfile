@@ -17,11 +17,13 @@ WORKDIR $ROOT_APP_DIR
 
 COPY --from=builder $ROOT_APP_DIR ./
 
+FROM main as app_dev
 EXPOSE 3000
+CMD ["yarn","start"]
+
 # TODO: execute only for production
 # current user should add to sudo groups and 
 # update the ownership of /build folder to current user
 
-#RUN yarn run build
-
-CMD ["yarn","start"]
+FROM main as app_prod
+CMD ["yarn","build"]
