@@ -18,7 +18,7 @@ WORKDIR $ROOT_APP_DIR
 COPY --from=builder $ROOT_APP_DIR ./
 
 FROM main as app_dev
-EXPOSE 15694
+EXPOSE 16694
 CMD ["yarn","start"]
 
 # TODO: execute only for production
