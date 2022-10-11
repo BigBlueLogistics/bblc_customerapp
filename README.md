@@ -1,11 +1,11 @@
-# How to run the project with docker
+## How to run the project with docker
 
 **Execute command of running container**
 
 ```bash
 docker exec -it <IMAGE NAME> /bin/bash
 
-with root
+# using root
 docker exec --user root --workdir /root -it <IMAGE NAME> /bin/bash
 ```
 
