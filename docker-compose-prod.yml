@@ -19,8 +19,8 @@ services:
     stdin_open: true
     tty: true
     ports:
-      - 9001:80
-      - 3000:3000
+      - 15692:15692
+      - 15694:15694
     volumes:
       - ./api:/var/www/html
       - /var/www/html/vendor
@@ -43,9 +43,6 @@ services:
       - ./app:/var/www/html
       - /var/www/html/node_modules
       - app_build:/var/www/html/build
-    environment:
-      - WDS_SOCKET_PORT=3000
-      - CHOKIDAR_USEPOLLING=true
     networks:
       - bblc_customer
 
