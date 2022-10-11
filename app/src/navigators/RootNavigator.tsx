@@ -21,7 +21,7 @@ function RootNavigator() {
         );
       }
 
-      return <Route path={route.route} element={route.component} key={route.key} />;
+      return <Route key={route.key} path={route.route} element={route.component} />;
     });
   };
 

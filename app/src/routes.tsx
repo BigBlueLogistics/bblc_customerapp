@@ -24,6 +24,7 @@ import ResetPassword from "pages/Authentication/ResetPassword";
 import ChangePassword from "pages/Authentication/ChangePassword";
 import Inventory from "pages/Inventory";
 import DefaultPage from "pages/DefaultPage";
+import NotFound from "pages/NotFound";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -85,6 +86,11 @@ const routes: RoutesType = [
   //   route: "/profile",
   //   component: <Profile />,
   // },
+  {
+    route: "*",
+    component: <NotFound />,
+    access: "public",
+  },
   {
     route: "/",
     component: <DefaultPage />,
