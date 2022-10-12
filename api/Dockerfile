@@ -149,7 +149,7 @@ WORKDIR $ROOT_APP_DIR
 # Copy project api
 RUN rm -rf ${ROOT_APP_DIR}/*
 
-COPY . $ROOT_APP_DIR
+COPY --chown=bblc:bblc . $ROOT_APP_DIR
 
 RUN composer install --ignore-platform-reqs
 
