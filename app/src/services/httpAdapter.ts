@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosInstance } from "axios";
+import { urls } from "config";
 
 class HttpAdapter {
   private token: string;
@@ -8,7 +9,7 @@ class HttpAdapter {
   constructor(token = "") {
     this.token = token;
     this.axios = axios.create({
-      baseURL: process.env.REACT_APP_API_URL,
+      baseURL: urls().apiUrl,
       withCredentials: true,
       headers: {
         Accept: "application/json",
