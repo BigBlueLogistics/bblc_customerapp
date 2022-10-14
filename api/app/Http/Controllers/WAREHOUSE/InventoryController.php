@@ -246,16 +246,14 @@ class InventoryController extends Controller
         return Excel::download($export, 'stocks.xlsx');
     }
 
-    public function table2(Request $request)
+    public function table(Request $request)
     {
         try {
-            // putaway 1010
-            // allocated 2020
-
             $customerCode = $request->input('customer_code');
             $warehouse = $request->input('warehouse');
+            $groupBy = $request->input('group_by');
 
-            $res = $this->inventory->getStocksInventory($customerCode, $warehouse);
+            $res = $this->inventory->getStocksInventory($customerCode, $warehouse, $groupBy);
 
             return $this->sendResponse($res);
         } catch (SapException $ex) {
@@ -263,7 +261,7 @@ class InventoryController extends Controller
         }
     }
 
-    public function table(Request $request)
+    public function table2(Request $request)
     {
         try {
             $customerCode = $request->input('customer_code');

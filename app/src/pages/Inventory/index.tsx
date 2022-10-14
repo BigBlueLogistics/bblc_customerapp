@@ -65,12 +65,11 @@ function Inventory() {
     try {
       const tableBody = {
         customer_code: "FGVIRGIN",
-        warehouse: "WH05", // selectedFilterBy
+        warehouse: "BB05", // selectedFilterBy
         group_by: selectedGroupBy,
       };
 
       const { data: rows } = await inventoryServices.getTableData({ params: tableBody });
-
       setRowsInventory(rows.data);
     } catch (err) {
       setError(err);
@@ -213,7 +212,7 @@ function Inventory() {
                   Material Details
                 </MDTypography>
                 <DataTable
-                  table={{ columns: tableHeaders[selectedGroupBy], rows: rowsInventory }}
+                  table={{ columns: tableHeaders, rows: rowsInventory }}
                   isSorted={false}
                   entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}
                   showTotalEntries
