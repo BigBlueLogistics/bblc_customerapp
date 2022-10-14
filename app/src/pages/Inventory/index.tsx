@@ -20,14 +20,16 @@ import { setIsAuthenticated } from "redux/auth/action";
 import miscData from "pages/Inventory/data";
 import inventoryServices from "services/inventoryService";
 import { AxiosError } from "axios";
+import { INotifyDownload } from "./types";
 
 function Inventory() {
   const dispatch = useAppDispatch();
   const { tableHeaders, groupOpts } = miscData();
-  const [showNotifyDownload, setShowNotifyDownload] = useState({
+  const [showNotifyDownload, setShowNotifyDownload] = useState<INotifyDownload>({
     open: false,
     message: "",
     title: "",
+    color: "primary",
   });
   const [selectedGroupBy, setSelectedGroupBy] = useState("material");
   const [selectedFilterBy, setSelectedFilterBy] = useState("");
@@ -38,15 +40,15 @@ function Inventory() {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<AxiosError | null>(null);
 
-  const { downloadFile, status: downloadStatus } = useDownloadFile();
+  const { downloadFile, status: downloadStatus, error: downloadError } = useDownloadFile();
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
 
-  const openNotifyDownload = (message: string, title: string) => {
-    setShowNotifyDownload({ open: true, message, title });
+  const openNotifyDownload = ({ message, title, color }: Omit<INotifyDownload, "open">) => {
+    setShowNotifyDownload({ open: true, message, title, color });
   };
   const closeNotifyDownload = () => {
-    setShowNotifyDownload({ open: false, message: "", title: "" });
+    setShowNotifyDownload({ open: false, message: "", title: "", color: showNotifyDownload.color });
   };
 
   const onChangeGroupBy = (e) => {
@@ -65,7 +67,7 @@ function Inventory() {
     try {
       const tableBody = {
         customer_code: "FGVIRGIN",
-        warehouse: "BB05", // selectedFilterBy
+        warehouse: selectedFilterBy, // selectedFilterBy
         group_by: selectedGroupBy,
       };
 
@@ -96,7 +98,7 @@ function Inventory() {
   };
 
   const exportToExcel = () => {
-    const data = { customer_code: "FGVIRGIN", warehouse: "WH05" };
+    const data = { customer_code: "FGVIRGIN", warehouse: selectedFilterBy };
 
     downloadFile({ url: "/inventory/export-excel", filename: "Stocks Inventory", data });
     closeAction();
@@ -107,7 +109,9 @@ function Inventory() {
   }, []);
 
   useEffect(() => {
-    fetchInventoryTable();
+    if (selectedGroupBy && selectedFilterBy) {
+      fetchInventoryTable();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGroupBy, selectedFilterBy]);
 
@@ -118,13 +122,29 @@ function Inventory() {
   }, [error, dispatch]);
 
   useEffect(() => {
-    if (downloadStatus === "loading") {
-      openNotifyDownload("Please wait exporting file [Stocks Inventory.xlsx]", "Exporting File");
+    const { message } = downloadError || {};
+    if (!message && downloadStatus === "loading") {
+      openNotifyDownload({
+        message: "Please wait exporting file [Stocks Inventory.xlsx]",
+        title: "Exporting File",
+        color: "info",
+      });
     }
-    if (downloadStatus === "done") {
-      openNotifyDownload("You can now open [Stocks Inventory.xlsx]", "Export to excel complete!");
+    if (!message && downloadStatus === "done") {
+      openNotifyDownload({
+        message: "You can now open [Stocks Inventory.xlsx]",
+        title: "Export to excel complete!",
+        color: "info",
+      });
     }
-  }, [downloadStatus]);
+    if (message) {
+      openNotifyDownload({
+        message,
+        title: "Failed to export excel",
+        color: "error",
+      });
+    }
+  }, [downloadError, downloadStatus]);
 
   const renderAction = (
     <Menu
@@ -152,7 +172,7 @@ function Inventory() {
       {isLoading && <div>Loading...</div>}
       {error && <div>{error.message}</div>}
       <MDSnackbar
-        color="info"
+        color={showNotifyDownload.color}
         icon="info"
         title={showNotifyDownload.title}
         content={showNotifyDownload.message}
