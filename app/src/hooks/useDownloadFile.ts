@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
+import { urls } from "config";
 
-type Status = "idle" | "loading" | "done";
+type Status = "idle" | "loading" | "success" | "failed";
 type Download = {
   url: string;
   filename?: string;
@@ -11,7 +12,7 @@ type Error = AxiosError | null;
 
 function axiosInit() {
   return axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: urls().apiUrl,
     withCredentials: true,
     headers: {
       Accept: "application/json",
@@ -22,20 +23,19 @@ function axiosInit() {
 function useDownloadFile() {
   const [error, setError] = useState<Error>(null);
   const [status, setStatus] = useState<Status>("idle");
-  const onError = (err: any) => {
-    setError(err);
-  };
+
   const onDownloadProgress = (event: any) => {
     const percent = Math.round((event.loaded / event.total) * 100);
     if (percent === 100) {
-      setStatus("done");
+      setStatus("success");
     }
   };
 
   const downloadFile = async ({ url, filename = "file1", data = {} }: Download) => {
-    try {
-      setStatus("loading");
+    setStatus("loading");
+    setError(null);
 
+    try {
       const config: AxiosRequestConfig = { params: data, onDownloadProgress, responseType: "blob" };
 
       const response = await axiosInit().get(url, config);
@@ -47,7 +47,8 @@ function useDownloadFile() {
       link.click();
       link.remove();
     } catch (err) {
-      onError(err);
+      setError(err);
+      setStatus("failed");
     }
   };
 

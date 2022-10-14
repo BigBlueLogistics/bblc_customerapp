@@ -2,10 +2,12 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromArray;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use App\Interfaces\IInventoryRepository;
 
-class InventoryExport implements FromCollection
+class InventoryExport implements FromArray, Withheadings, ShouldAutoSize
 {
     private $inventoryExport;
     private $customerCode;
@@ -23,14 +25,24 @@ class InventoryExport implements FromCollection
     }
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
-    public function collection()
+     * @return \Illuminate\Support\Collection
+     */
+    public function array(): array
     {
-        $result = $this->inventoryExport->getStocksInventory($this->customerCode, $this->warehouseNo);
+        $result = $this->inventoryExport->getStocksInventory($this->customerCode, $this->warehouseNo, "material");
 
-        $values = array_values($result);
+        return count($result) ? $result : [];
+    }
 
-        return count($values) ? collect($values[0]) : [];
+    public function headings(): array
+    {
+        return [
+            "Material code",
+            "Description",
+            "Total available",
+            "Allocated stocks",
+            "Blocked stocks",
+            "Restricted stocks"
+        ];
     }
 }

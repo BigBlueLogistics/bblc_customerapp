@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 
@@ -48,16 +48,14 @@ function Inventory() {
     setShowNotifyDownload({ open: true, message, title, color });
   };
   const closeNotifyDownload = () => {
-    setShowNotifyDownload({ open: false, message: "", title: "", color: showNotifyDownload.color });
+    setShowNotifyDownload({ open: false });
   };
 
-  const onChangeGroupBy = (e) => {
-    console.log(e.target.value);
+  const onChangeGroupBy = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedGroupBy(e.target.value);
   };
 
-  const onChangeFilterBy = (e) => {
-    console.log("warehouse: ", e.target.value);
+  const onChangeFilterBy = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedFilterBy(e.target.value);
   };
 
@@ -130,14 +128,14 @@ function Inventory() {
         color: "info",
       });
     }
-    if (!message && downloadStatus === "done") {
+    if (!message && downloadStatus === "success") {
       openNotifyDownload({
         message: "You can now open [Stocks Inventory.xlsx]",
         title: "Export to excel complete!",
-        color: "info",
+        color: "success",
       });
     }
-    if (message) {
+    if (message && downloadStatus === "failed") {
       openNotifyDownload({
         message,
         title: "Failed to export excel",
@@ -178,7 +176,6 @@ function Inventory() {
         content={showNotifyDownload.message}
         dateTime="now"
         open={showNotifyDownload.open}
-        onClose={closeNotifyDownload}
         close={closeNotifyDownload}
       />
 
