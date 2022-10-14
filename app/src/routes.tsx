@@ -90,11 +90,13 @@ const routes: RoutesType = [
     route: "*",
     component: <NotFound />,
     access: "public",
+    key: "not-found",
   },
   {
     route: "/",
     component: <DefaultPage />,
     access: "public",
+    key: "default-page",
   },
   {
     type: "",
