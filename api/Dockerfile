@@ -177,13 +177,13 @@ FROM main as api_prod
 COPY ./docker/sites-available/*.conf /etc/apache2/sites-available/
 
 # PORT for APP production build
-RUN echo "Listen 16694" >> /etc/apache2/ports.conf
+# RUN echo "Listen 80" >> /etc/apache2/ports.conf
 
 RUN a2dissite 000-default.conf && \
     a2ensite bblc_customer_api.conf bblc_customer_app.conf 
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-EXPOSE 16694
+EXPOSE 80
 
 # Execute multiple services E.g: php and apache2
 CMD ["/usr/bin/supervisord"]

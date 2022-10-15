@@ -20,7 +20,7 @@ services:
     tty: true
     ports:
       - 16692:16692
-      - 16694:16694
+      - 80:80
     volumes:
       - ./api:/var/www/html
       - /var/www/html/vendor
