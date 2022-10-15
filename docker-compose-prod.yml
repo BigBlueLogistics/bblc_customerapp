@@ -19,7 +19,6 @@ services:
     stdin_open: true
     tty: true
     ports:
-      - 16692:16692
       - 80:80
     volumes:
       - ./api:/var/www/html

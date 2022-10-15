@@ -161,8 +161,7 @@ RUN apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Common PORT for API
-RUN echo "Listen 16692" >> /etc/apache2/ports.conf
-EXPOSE 16692
+EXPOSE 80
 
 FROM main as api_dev
 COPY ./docker/sites-available/bblc_customer_api.conf /etc/apache2/sites-available/
@@ -183,7 +182,7 @@ RUN a2dissite 000-default.conf && \
     a2ensite bblc_customer_api.conf bblc_customer_app.conf 
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-EXPOSE 80
+# EXPOSE 80
 
 # Execute multiple services E.g: php and apache2
 CMD ["/usr/bin/supervisord"]
