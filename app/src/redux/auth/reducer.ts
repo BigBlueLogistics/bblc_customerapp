@@ -7,6 +7,7 @@ const initialState: AuthStoreType = {
   failedRequests: {},
   request: {},
   authenticated: false,
+  apiToken: "",
 };
 
 export const authReducer = createSlice({
@@ -22,12 +23,16 @@ export const authReducer = createSlice({
       .addCase(signIn.pending, (state) => {
         state.request[signIn.pending.type] = { status: "loading" };
         state.authenticated = false;
+        state.apiToken = "";
       })
       .addCase(signIn.fulfilled, (state, action) => {
-        state.successfulRequests[signIn.fulfilled.type] = { data: action.payload };
-        state.successfulRequests[signIn.fulfilled.type] = { message: action.payload.message };
+        state.successfulRequests[signIn.fulfilled.type] = {
+          data: action.payload.data.user,
+          message: action.payload.message,
+        };
         state.request[signIn.pending.type] = { status: "succeeded" };
         state.authenticated = true;
+        state.apiToken = action.payload.data.token;
       })
       .addCase(signIn.rejected, (state, action) => {
         state.failedRequests[signIn.rejected.type] = { message: action.error.message };

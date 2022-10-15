@@ -24,7 +24,7 @@ import validationSchema from "./validationSchema";
 import selector from "./selector";
 
 function SignIn() {
-  const { errorMsg, hasError, isAuthenticated } = selector();
+  const { errorMsg, hasError, isAuthenticated, apiToken } = selector();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -64,10 +64,13 @@ function SignIn() {
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && apiToken) {
       navigate("/inventory", { replace: true });
+
+      // store api token
+      localStorage.setItem("apiToken", apiToken);
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, apiToken, navigate]);
 
   return (
     <BasicLayout image={bgImage}>

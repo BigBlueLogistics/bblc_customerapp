@@ -18,7 +18,7 @@ import { useDownloadFile, useAppDispatch } from "hooks";
 import { setIsAuthenticated } from "redux/auth/action";
 
 import miscData from "pages/Inventory/data";
-import inventoryServices from "services/inventoryService";
+import { inventoryServices } from "services";
 import { AxiosError } from "axios";
 import { INotifyDownload } from "./types";
 

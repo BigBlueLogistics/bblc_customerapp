@@ -1,14 +1,14 @@
 import { Outlet, Navigate } from "react-router-dom";
-import Cookies from "js-cookie";
 import { useAppDispatch } from "hooks";
 import { setIsAuthenticated } from "redux/auth/action";
 import selector from "./selector";
 
 interface IProtectedRoute {
   authenticated: boolean;
+  apiToken: "";
 }
 
-function ProtectedRoute({ authenticated }: IProtectedRoute) {
+function ProtectedRoute({ authenticated, apiToken }: IProtectedRoute) {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = selector();
 
@@ -16,7 +16,7 @@ function ProtectedRoute({ authenticated }: IProtectedRoute) {
     return <Navigate to="/sign-in" replace />;
   }
 
-  if (isAuthenticated && !Cookies.get("XSRF-TOKEN")) {
+  if (isAuthenticated && !apiToken) {
     dispatch(setIsAuthenticated(false));
   }
 

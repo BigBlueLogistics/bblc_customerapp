@@ -3,6 +3,7 @@ import { createTransform } from "redux-persist";
 import { signIn } from "redux/auth/action";
 import { AuthStoreType } from "types/authStore";
 
+// Clear and not persist object keys below.
 const authPersistFilter = createTransform(
   null,
   (state: AuthStoreType) => {

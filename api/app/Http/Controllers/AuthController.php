@@ -39,12 +39,12 @@ class AuthController extends Controller
             return $this->sendError(__('auth.failed'), Response::HTTP_UNAUTHORIZED);
         }
 
-        // Regenerate user's session to prevent session fixation.
-        $request->session()->regenerate();
+        $token = $user->createToken($user->email)->plainTextToken;
 
         return $this->sendResponse(
             [
-                'user' => $user,
+                'user'  => $user,
+                'token' => $token,
             ],
             'Login successful'
         );

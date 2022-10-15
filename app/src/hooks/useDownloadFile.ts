@@ -11,11 +11,14 @@ type Download = {
 type Error = AxiosError | null;
 
 function axiosInit() {
+  const apiToken = localStorage.getItem("apiToken");
+
   return axios.create({
     baseURL: urls().apiUrl,
     withCredentials: true,
     headers: {
       Accept: "application/json",
+      Authorization: `Bearer ${apiToken}`,
     },
   });
 }

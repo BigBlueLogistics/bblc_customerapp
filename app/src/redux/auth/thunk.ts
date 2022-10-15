@@ -1,12 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import AuthService from "services/authService";
+import { authServices } from "services";
 import { SignInFormType, SignUpFormType, ResetPassType, ChangePassType } from "types/authForm";
 
 export const signIn = createAsyncThunk(
   "auth/signIn",
   async ({ email, password }: SignInFormType) => {
     try {
-      const response = await AuthService.signIn({ email, password });
+      const response = await authServices.signIn({ email, password });
       return response.data;
     } catch (error) {
       if (error.response) {
@@ -20,7 +20,7 @@ export const signIn = createAsyncThunk(
 
 export const signUp = createAsyncThunk("auth/signup", async (payload: SignUpFormType) => {
   try {
-    const response = await AuthService.signUp(payload);
+    const response = await authServices.signUp(payload);
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -33,7 +33,7 @@ export const signUp = createAsyncThunk("auth/signup", async (payload: SignUpForm
 
 export const resetPass = createAsyncThunk("auth/reset-pass", async (payload: ResetPassType) => {
   try {
-    const response = await AuthService.resetPass(payload);
+    const response = await authServices.resetPass(payload);
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -46,7 +46,7 @@ export const resetPass = createAsyncThunk("auth/reset-pass", async (payload: Res
 
 export const changePass = createAsyncThunk("auth/change-pass", async (payload: ChangePassType) => {
   try {
-    const response = await AuthService.changePass(payload);
+    const response = await authServices.changePass(payload);
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -59,7 +59,7 @@ export const changePass = createAsyncThunk("auth/change-pass", async (payload: C
 
 export const signOut = createAsyncThunk("auth/logout", async () => {
   try {
-    const response = await AuthService.signOut();
+    const response = await authServices.signOut();
     return response.data;
   } catch (error) {
     if (error.response) {

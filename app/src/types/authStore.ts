@@ -3,4 +3,5 @@ export type AuthStoreType = {
   failedRequests: object;
   request: object;
   authenticated: boolean;
+  apiToken: string;
 };

@@ -11,7 +11,6 @@ import Configurator from "organisms/Configurator";
 
 import theme from "assets/theme";
 import themeDark from "assets/theme-dark";
-import csrf from "services/csrfService";
 
 // routes
 import routes from "routes";
@@ -57,11 +56,6 @@ export default function App() {
 
   // Change the openConfigurator state
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
-
-  // Initialize request of CSRF token
-  useEffect(() => {
-    csrf.getToken();
-  }, []);
 
   // Setting the dir attribute for the body element
   useEffect(() => {

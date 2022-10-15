@@ -2,8 +2,8 @@ import { SignInFormType, SignUpFormType, ResetPassType, ChangePassType } from "t
 import HttpAdapter from "./httpAdapter";
 
 class AuthService extends HttpAdapter {
-  constructor() {
-    super("");
+  constructor(token = "") {
+    super(token);
   }
 
   signIn(formData: SignInFormType) {
@@ -27,5 +27,4 @@ class AuthService extends HttpAdapter {
   }
 }
 
-const auth = new AuthService();
-export default auth;
+export default AuthService;

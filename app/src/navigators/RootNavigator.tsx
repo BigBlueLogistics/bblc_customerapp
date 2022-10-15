@@ -5,7 +5,7 @@ import routes from "../routes";
 import selector from "./selector";
 
 function RootNavigator() {
-  const { isAuthenticated } = selector();
+  const { isAuthenticated, apiToken } = selector();
 
   const renderRoutes = (allRoutes: RoutesType) => {
     return allRoutes.map((route) => {
@@ -15,7 +15,10 @@ function RootNavigator() {
 
       if (route.access === "protected") {
         return (
-          <Route key={route.key} element={<ProtectedRoute authenticated={isAuthenticated} />}>
+          <Route
+            key={route.key}
+            element={<ProtectedRoute authenticated={isAuthenticated} apiToken={apiToken} />}
+          >
             <Route path={route.route} element={route.component} />
           </Route>
         );
