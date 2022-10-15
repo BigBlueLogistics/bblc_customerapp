@@ -19,7 +19,7 @@ services:
     stdin_open: true
     tty: true
     ports:
-      - "80:80"
+      - "16692:16692"
     volumes:
       - ./api:/var/www/html
       - /var/www/html/vendor
