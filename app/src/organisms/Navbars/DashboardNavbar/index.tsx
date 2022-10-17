@@ -18,7 +18,6 @@ import {
 } from "organisms/Navbars/DashboardNavbar/styles";
 import { useAppDispatch } from "hooks";
 import { signOut, setIsAuthenticated } from "redux/auth/action";
-import Cookies from "js-cookie";
 
 import {
   useMaterialUIController,
@@ -74,8 +73,8 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
   const handleSignOut = () => {
     reduxDispatch(signOut());
     reduxDispatch(setIsAuthenticated(false));
-    if (Cookies.get("XSRF-TOKEN")) {
-      Cookies.remove("XSRF-TOKEN");
+    if (localStorage.getItem("apiToken")) {
+      localStorage.removeItem("apiToken");
     }
   };
 

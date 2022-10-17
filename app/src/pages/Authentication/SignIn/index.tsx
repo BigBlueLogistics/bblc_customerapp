@@ -67,7 +67,7 @@ function SignIn() {
     if (isAuthenticated && apiToken) {
       navigate("/inventory", { replace: true });
 
-      // store api token
+      // Cache api token
       localStorage.setItem("apiToken", apiToken);
     }
   }, [isAuthenticated, apiToken, navigate]);

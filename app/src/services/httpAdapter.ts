@@ -4,13 +4,13 @@ import { urls } from "config";
 class HttpAdapter {
   private axios: AxiosInstance;
 
-  constructor(token = "") {
+  constructor() {
     this.axios = axios.create({
       baseURL: urls().apiUrl,
       withCredentials: true,
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${localStorage.getItem("apiToken")}`,
       },
     });
   }

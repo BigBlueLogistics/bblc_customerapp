@@ -2,10 +2,6 @@ import { SignInFormType, SignUpFormType, ResetPassType, ChangePassType } from "t
 import HttpAdapter from "./httpAdapter";
 
 class AuthService extends HttpAdapter {
-  constructor(token = "") {
-    super(token);
-  }
-
   signIn(formData: SignInFormType) {
     return this.get("/auth/login", { params: formData });
   }
