@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect, ChangeEvent } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -194,13 +195,13 @@ function Inventory() {
                 coloredShadow="info"
               >
                 <MDBox display="flex">
-                  <MDSelect
+                  {/* <MDSelect
                     helperText="Group by"
                     onChange={onChangeGroupBy}
                     options={groupOpts}
                     value={selectedGroupBy}
                     showArrowIcon
-                  />
+                  /> */}
 
                   <MDSelect
                     helperText="Filter by"
