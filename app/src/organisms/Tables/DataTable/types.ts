@@ -22,6 +22,8 @@ export type IDataTableBodyCell = {
   children: React.ReactNode;
   noBorder?: boolean;
   align?: "left" | "right" | "center";
+  colSpan?: number;
+  rowSpan?: number;
 };
 
 export type IDataTableHeadCell = {
@@ -29,4 +31,6 @@ export type IDataTableHeadCell = {
   children: React.ReactNode;
   sorted?: false | "none" | "asce" | "desc";
   align?: "left" | "right" | "center";
+  colSpan?: number;
+  rowSpan?: number;
 };

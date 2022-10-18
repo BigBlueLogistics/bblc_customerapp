@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import { useMemo, useEffect, useState } from "react";
 import { useTable, usePagination, useGlobalFilter, useAsyncDebounce, useSortBy } from "react-table";
 import Table from "@mui/material/Table";
@@ -167,7 +166,7 @@ function DataTable({
       <Table {...getTableProps()}>
         <MDBox component="thead">
           {headerGroups.map((headerGroup) => (
-            <TableRow {...headerGroup.getHeaderGroupProps()}>
+            <TableRow key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <DataTableHeadCell
                   key={column.id}
@@ -183,22 +182,31 @@ function DataTable({
           ))}
         </MDBox>
         <TableBody {...getTableBodyProps()}>
-          {page.map((row, key) => {
-            prepareRow(row);
-            return (
-              <TableRow {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <DataTableBodyCell
-                    noBorder={noEndBorder && rows.length - 1 === key}
-                    align={cell.column.align ? cell.column.align : "left"}
-                    {...cell.getCellProps()}
-                  >
-                    {cell.render("Cell")}
-                  </DataTableBodyCell>
-                ))}
-              </TableRow>
-            );
-          })}
+          {page.length ? (
+            page.map((row, key) => {
+              prepareRow(row);
+              return (
+                <TableRow key={row.id} {...row.getRowProps()}>
+                  {row.cells.map((cell) => (
+                    <DataTableBodyCell
+                      key={cell.id}
+                      noBorder={noEndBorder && rows.length - 1 === key}
+                      align={cell.column.align ? cell.column.align : "left"}
+                      {...cell.getCellProps()}
+                    >
+                      {cell.render("Cell")}
+                    </DataTableBodyCell>
+                  ))}
+                </TableRow>
+              );
+            })
+          ) : (
+            <TableRow>
+              <DataTableBodyCell align="center" colSpan={columns.length}>
+                No data available.
+              </DataTableBodyCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
 

@@ -5,6 +5,9 @@ export type ISidenav = {
   brand?: string;
   brandName: string;
   routes: { [key: string]: any }[];
+  handleSignOut: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 };
 
 export type ISidenavCollapse = {

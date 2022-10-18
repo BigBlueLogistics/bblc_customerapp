@@ -3,7 +3,15 @@ import MDBox from "atoms/MDBox";
 import { useMaterialUIController } from "context";
 import { IDataTableHeadCell } from "./types";
 
-function DataTableHeadCell({ width, children, sorted, align, ...rest }: IDataTableHeadCell) {
+function DataTableHeadCell({
+  width,
+  children,
+  sorted,
+  align,
+  colSpan,
+  rowSpan,
+  ...rest
+}: IDataTableHeadCell) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -16,6 +24,8 @@ function DataTableHeadCell({ width, children, sorted, align, ...rest }: IDataTab
       sx={({ palette: { light }, borders: { borderWidth } }) => ({
         borderBottom: `${borderWidth[1]} solid ${light.main}`,
       })}
+      colSpan={colSpan}
+      rowSpan={rowSpan}
     >
       <MDBox
         {...rest}

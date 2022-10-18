@@ -73,9 +73,7 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
   const handleSignOut = () => {
     reduxDispatch(signOut());
     reduxDispatch(setIsAuthenticated(false));
-    if (localStorage.getItem("apiToken")) {
-      localStorage.removeItem("apiToken");
-    }
+    localStorage.removeItem("apiToken");
   };
 
   // Render the notifications menu

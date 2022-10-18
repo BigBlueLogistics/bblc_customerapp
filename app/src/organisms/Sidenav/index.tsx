@@ -19,7 +19,15 @@ import {
 } from "context";
 import { ISidenav } from "./types";
 
-function Sidenav({ color, brand, brandName, routes, ...rest }: ISidenav) {
+function Sidenav({
+  color,
+  brand,
+  brandName,
+  routes,
+  handleSignOut,
+  onMouseEnter,
+  onMouseLeave,
+}: ISidenav) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
@@ -115,7 +123,9 @@ function Sidenav({ color, brand, brandName, routes, ...rest }: ISidenav) {
 
   return (
     <SidenavRoot
-      {...rest}
+      color={color}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       variant="permanent"
       ownerState={{ transparentSidenav, whiteSidenav, miniSidenav, darkMode }}
     >
@@ -153,16 +163,8 @@ function Sidenav({ color, brand, brandName, routes, ...rest }: ISidenav) {
       />
       <List>{renderRoutes}</List>
       <MDBox p={2} mt="auto">
-        <MDButton
-          component="a"
-          href="https://www.creative-tim.com/product/material-dashboard-pro-react"
-          target="_blank"
-          rel="noreferrer"
-          variant="gradient"
-          color={sidenavColor}
-          fullWidth
-        >
-          log out
+        <MDButton variant="gradient" color={sidenavColor} fullWidth onClick={handleSignOut}>
+          sign out
         </MDButton>
       </MDBox>
     </SidenavRoot>

@@ -1,7 +1,7 @@
 import MDBox from "atoms/MDBox";
 import { IDataTableBodyCell } from "./types";
 
-function DataTableBodyCell({ noBorder, align, children }: IDataTableBodyCell) {
+function DataTableBodyCell({ noBorder, align, colSpan, rowSpan, children }: IDataTableBodyCell) {
   return (
     <MDBox
       component="td"
@@ -12,6 +12,8 @@ function DataTableBodyCell({ noBorder, align, children }: IDataTableBodyCell) {
         fontSize: size.sm,
         borderBottom: noBorder ? "none" : `${borderWidth[1]} solid ${light.main}`,
       })}
+      colSpan={colSpan}
+      rowSpan={rowSpan}
     >
       <MDBox
         display="inline-block"

@@ -21,10 +21,12 @@ import { setIsAuthenticated } from "redux/auth/action";
 import miscData from "pages/Inventory/data";
 import { inventoryServices } from "services";
 import { AxiosError } from "axios";
+import selector from "./selector";
 import { INotifyDownload } from "./types";
 
 function Inventory() {
   const dispatch = useAppDispatch();
+  const { customerCode } = selector();
   const { tableHeaders, groupOpts } = miscData();
   const [showNotifyDownload, setShowNotifyDownload] = useState<INotifyDownload>({
     open: false,
@@ -65,8 +67,8 @@ function Inventory() {
 
     try {
       const tableBody = {
-        customer_code: "FGVIRGIN",
-        warehouse: selectedFilterBy, // selectedFilterBy
+        customer_code: customerCode,
+        warehouse: selectedFilterBy,
         group_by: selectedGroupBy,
       };
 
@@ -97,7 +99,7 @@ function Inventory() {
   };
 
   const exportToExcel = () => {
-    const data = { customer_code: "FGVIRGIN", warehouse: selectedFilterBy };
+    const data = { customer_code: customerCode, warehouse: selectedFilterBy };
 
     downloadFile({ url: "/inventory/export-excel", filename: "Stocks Inventory", data });
     closeAction();
