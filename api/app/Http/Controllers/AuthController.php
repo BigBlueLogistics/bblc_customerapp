@@ -40,13 +40,16 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken($user->email)->plainTextToken;
+        $customerCode = [
+           'customer_code' => $user->company()->value('customer_code')
+        ];
 
         return $this->sendResponse(
             [
-                'user'  => $user,
+                'user'  =>  array_merge($user->toArray(), $customerCode),
                 'token' => $token,
             ],
-            'Login successful'
+            __('auth.success')
         );
     }
 
@@ -100,7 +103,7 @@ class AuthController extends Controller
 
             return $this->sendError(__('passwords.invalid-json'));
         } catch (\Exception $e) {
-            return $this->sendError('Something went wrong '.$e->getMessage());
+            return $this->sendError($e);
         }
     }
 
@@ -129,21 +132,25 @@ class AuthController extends Controller
 
             return $this->sendError(__('passwords.reset-failed'));
         } catch (\Exception $e) {
-            return $this->sendError('Something went wrong '.$e->getMessage());
+            return $this->sendError($e);
         }
     }
 
     public function logout(Request $request)
     {
-        Auth('web')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $request->user()->currentAccessToken()->delete();
 
         return $this->sendResponse('', __('auth.logout'));
     }
 
-    public function isAuthenticated()
+    public function isAuthenticated(Request $request)
     {
-        return $this->sendResponse(['authenticated' => true, 'user' => Auth::user()]);
+        $customerCode = [
+            'customer_code' => $request->user()->company()->value('customer_code')
+         ];
+        return $this->sendResponse([
+                'authenticated' => Auth::check(),
+                'user' => array_merge(Auth::user()->toArray(), $customerCode)
+            ]);
     }
 }

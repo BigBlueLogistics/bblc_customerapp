@@ -8,9 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use App\Models\CompanyRepresent;
+
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable; //HasFactory,
+    use HasApiTokens;
+    use Notifiable; //HasFactory,
 
     protected $table = 'users';
 
@@ -50,5 +53,10 @@ class User extends Authenticatable
         $url = "{$uiUrl}/change-password?token={$token}&email={$emailForPasswordReset}";
 
         QueuedResetPasswordJob::dispatch($this, $url);
+    }
+
+    public function company()
+    {
+        return $this->hasOne(CompanyRepresent::class, 'user_id');
     }
 }

@@ -88,7 +88,7 @@ class InventoryRepository implements IInventoryRepository
 
         // Get material no., total available, allocated stocks,
         // blocked stocks, quarantined stocks and restricted stocks.
-        $stockDetails = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+        $weightDetails = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
                 ->param('QUERY_TABLE', 'MARD')
                 ->param('DELIMITER', ';')
                 ->param('OPTIONS', [
@@ -109,8 +109,26 @@ class InventoryRepository implements IInventoryRepository
                 ])
                 ->getDataToArray();
 
+        $fixedWeight = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                ->param('QUERY_TABLE', 'MARM')
+                ->param('DELIMITER', ';')
+                ->param('OPTIONS', [
+                    ['TEXT' => "MANDT = {$mandt}"],
+                    ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+                    ['TEXT' => " AND MEINH NE 'KG'"],
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'MATNR'],
+                    ['FIELDNAME' => 'MEINH'],
+                    ['FIELDNAME' => 'UMREZ'],
+                    ['FIELDNAME' => 'UMREN'],
+                ])
+                ->getDataToArray();
+
+
         $collectionMaterial = collect($materialNo);
-        $collectionStocks = collect($stockDetails);
+        $collectionWeight = collect($weightDetails);
+        $collectionFixedWeight = collect($fixedWeight);
 
         $keyedMaterial = $collectionMaterial->mapWithKeys(function ($item, $key) {
             return [
@@ -121,18 +139,54 @@ class InventoryRepository implements IInventoryRepository
             ];
         });
 
-        $keyedStocks = $collectionStocks->mapWithKeys(function ($item, $key) {
+        $keyedStockWeight = $collectionWeight->mapWithKeys(function ($item, $key) {
             return [
                 $item['MATNR'] => [
-                    'totalAvailable' => $item['LABST'],
-                    'allocatedStocks' => $item['UMLME'],
-                    'blockedStocks' => $item['INSME'],
-                    'restrictedStocks' => $item['SPEME'],
+                    'availableWt' => (float)$item['LABST'],
+                    'allocatedWt' => (float)$item['UMLME'],
+                    'blockedWt' => (float)$item['INSME'],
+                    'restrictedWt' => (float)$item['SPEME'],
                 ]
             ];
         });
 
-        $merged = $keyedMaterial->mergeRecursive($keyedStocks)->all();
+        $keyedFixedWeight = $collectionFixedWeight->mapWithKeys(function ($item, $key) {
+            return [
+                $item['MATNR'] => [
+                    'unit' => $item['MEINH'],
+                    'fixedWt' =>  (float)$item['UMREZ'] / (float)$item['UMREN'],
+                ]
+            ];
+        });
+
+        $mergedMaterialStocks = $keyedMaterial->mergeRecursive($keyedStockWeight);
+        $merged = $mergedMaterialStocks->mergeRecursive($keyedFixedWeight)
+                 ->filter(function ($data) {
+                     // Return only data if anyone of the field below has value.
+                     return (
+                         array_key_exists('availableWt', $data)
+                      || array_key_exists('allocatedWt', $data)
+                      || array_key_exists('blockedWt', $data)
+                      || array_key_exists('restrictedWt', $data)
+                     );
+                 })
+                 ->map(function ($data) {
+                     $fixedWeight = array_key_exists('fixedWt', $data) ? $data['fixedWt'] : 0;
+
+                     if ($fixedWeight > 0) {
+                         $qty['availableQty'] = $data['availableWt'] / $fixedWeight;
+                         $qty['allocatedQty'] = $data['allocatedWt'] / $fixedWeight;
+                         $qty['blockedQty'] = $data['blockedWt'] / $fixedWeight;
+                         $qty['restrictedQty'] = $data['restrictedWt'] / $fixedWeight;
+                     } else {
+                         $qty['availableQty'] = 0;
+                         $qty['allocatedQty'] = 0;
+                         $qty['blockedQty'] = 0;
+                         $qty['restrictedQty'] = 0;
+                     }
+                     return array_merge($data, $qty);
+                 })
+                 ->all();
         $result = count($merged) > 0 ? array_values($merged) : [];
 
         return $result;
