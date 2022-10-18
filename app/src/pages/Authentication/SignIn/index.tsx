@@ -6,7 +6,6 @@ import Grid from "@mui/material/Grid";
 import MuiLink from "@mui/material/Link";
 
 import FacebookIcon from "@mui/icons-material/Facebook";
-import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useFormik } from "formik";
 import { useAppDispatch } from "hooks";
@@ -19,7 +18,7 @@ import MDButton from "atoms/MDButton";
 import MDAlert2 from "atoms/MDAlert2";
 import BasicLayout from "pages/Authentication/components/BasicLayout";
 
-import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import bgImage from "assets/images/bg-sign-in-basic.jpg";
 import validationSchema from "./validationSchema";
 import selector from "./selector";
 
@@ -93,11 +92,6 @@ function SignIn() {
             <Grid item xs={2}>
               <MDTypography component={MuiLink} href="#" variant="body1" color="white">
                 <FacebookIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GitHubIcon color="inherit" />
               </MDTypography>
             </Grid>
             <Grid item xs={2}>

@@ -3,13 +3,15 @@ import { createTransform } from "redux-persist";
 import { signIn } from "redux/auth/action";
 import { AuthStoreType } from "types/authStore";
 
-// Clear and not persist object keys below.
+// Clear and not persist object keys below except auth key.
 const authPersistFilter = createTransform(
   null,
   (state: AuthStoreType) => {
     const authState = { ...state };
     authState.request[signIn.pending.type] = {};
-    authState.successfulRequests[signIn.fulfilled.type] = {};
+    authState.successfulRequests[signIn.fulfilled.type] = {
+      ...authState.successfulRequests[signIn.fulfilled.type],
+    };
     authState.failedRequests[signIn.rejected.type] = {};
     return authState;
   },
@@ -17,7 +19,7 @@ const authPersistFilter = createTransform(
 );
 
 const persistConfig = {
-  key: "root",
+  key: "bblc-customer",
   storage,
   whitelist: ["auth"],
   transforms: [authPersistFilter],

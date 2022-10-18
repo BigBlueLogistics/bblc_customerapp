@@ -1,5 +1,5 @@
 import { useAppSelector } from "hooks";
-import { signIn } from "redux/auth/thunk";
+import { signIn } from "redux/auth/action";
 
 export default () => {
   const { request, failedRequests, authenticated, apiToken } = useAppSelector(

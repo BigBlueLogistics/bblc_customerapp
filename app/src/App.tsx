@@ -8,6 +8,8 @@ import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import Sidenav from "organisms/Sidenav";
 import Configurator from "organisms/Configurator";
+import { useAppDispatch } from "hooks";
+import { signOut, setIsAuthenticated } from "redux/auth/action";
 
 import theme from "assets/theme";
 import themeDark from "assets/theme-dark";
@@ -24,6 +26,7 @@ import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 
 export default function App() {
+  const reduxDispatch = useAppDispatch();
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -56,6 +59,12 @@ export default function App() {
 
   // Change the openConfigurator state
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+
+  const handleSignOut = () => {
+    reduxDispatch(signOut());
+    reduxDispatch(setIsAuthenticated(false));
+    localStorage.removeItem("apiToken");
+  };
 
   // Setting the dir attribute for the body element
   useEffect(() => {
@@ -100,9 +109,9 @@ export default function App() {
           <Sidenav
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="Customer Portal"
+            brandName={process.env.REACT_APP_NAME}
             routes={routes}
-            // @ts-ignore
+            handleSignOut={handleSignOut}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />

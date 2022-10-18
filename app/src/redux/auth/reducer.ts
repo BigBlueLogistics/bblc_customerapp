@@ -81,6 +81,10 @@ export const authReducer = createSlice({
         state.successfulRequests[signOut.fulfilled.type] = { data: action.payload };
         state.successfulRequests[signOut.fulfilled.type] = { message: action.payload.message };
         state.request[signOut.pending.type] = { status: "succeeded" };
+
+        // Clear sign-in
+        state.successfulRequests[signIn.fulfilled.type] = {};
+        state.apiToken = "";
       })
       .addCase(signOut.rejected, (state, action) => {
         state.failedRequests[signOut.rejected.type] = { message: action.error.message };

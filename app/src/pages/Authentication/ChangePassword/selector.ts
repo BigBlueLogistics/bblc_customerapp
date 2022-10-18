@@ -1,5 +1,5 @@
 import { useAppSelector } from "hooks";
-import { changePass } from "redux/auth/thunk";
+import { changePass } from "redux/auth/action";
 
 export default () => {
   const { request, failedRequests, successfulRequests } = useAppSelector((state) => state.auth);

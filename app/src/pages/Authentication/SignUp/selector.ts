@@ -1,5 +1,5 @@
 import { useAppSelector } from "hooks";
-import { signUp } from "redux/auth/thunk";
+import { signUp } from "redux/auth/action";
 
 export default () => {
   const { request, failedRequests, successfulRequests } = useAppSelector((state) => state.auth);
