@@ -173,9 +173,10 @@ class InventoryRepository implements IInventoryRepository
                  ->map(function ($data) {
                      $fixedWeight = array_key_exists('fixedWt', $data) ? $data['fixedWt'] : 0;
 
+                     // Calculate the quantity.
                      if ($fixedWeight > 0) {
                          $qty['availableQty'] = $data['availableWt'] / $fixedWeight;
-                         $qty['allocatedQty'] = $data['allocatedWt'] / $fixedWeight;
+                         $qty['allocatedQty'] = number_format($data['allocatedWt'] / $fixedWeight, 3);
                          $qty['blockedQty'] = $data['blockedWt'] / $fixedWeight;
                          $qty['restrictedQty'] = $data['restrictedWt'] / $fixedWeight;
                      } else {
