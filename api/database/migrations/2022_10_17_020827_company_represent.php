@@ -17,6 +17,8 @@ return new class () extends Migration {
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('customer_code', 50);
+            $table->string('contact_no', 15)->nullable();
+            $table->text('address')->nullable();
         });
     }
 
