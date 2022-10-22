@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
-import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
 import MuiLink from "@mui/material/Link";
 
@@ -18,7 +17,7 @@ import MDButton from "atoms/MDButton";
 import MDAlert2 from "atoms/MDAlert2";
 import BasicLayout from "pages/Authentication/components/BasicLayout";
 
-import bgImage from "assets/images/bg-sign-in-basic.jpg";
+import bgImage from "assets/images/bg-bblc-wh5.jpg";
 import validationSchema from "./validationSchema";
 import selector from "./selector";
 
@@ -27,7 +26,6 @@ function SignIn() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [rememberMe, setRememberMe] = useState(false);
   const { values, handleSubmit, handleChange, isSubmitting, errors, touched } = useFormik({
     validationSchema,
     initialValues: {
@@ -60,8 +58,6 @@ function SignIn() {
     return null;
   };
 
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
-
   useEffect(() => {
     if (isAuthenticated && apiToken) {
       navigate("/inventory", { replace: true });
@@ -80,15 +76,15 @@ function SignIn() {
           borderRadius="lg"
           coloredShadow="info"
           mx={2}
-          mt={-3}
-          p={2}
+          mt={-4}
+          p={1}
           mb={1}
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
             Sign in
           </MDTypography>
-          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
+          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 1 }}>
             <Grid item xs={2}>
               <MDTypography component={MuiLink} href="#" variant="body1" color="white">
                 <FacebookIcon color="inherit" />
@@ -128,18 +124,6 @@ function SignIn() {
                 error={touched.password && Boolean(errors.password)}
                 helperText={touched.password ? errors.password : ""}
               />
-            </MDBox>
-            <MDBox display="flex" alignItems="center" ml={-1}>
-              <Switch checked={rememberMe} onChange={handleSetRememberMe} />
-              <MDTypography
-                variant="button"
-                fontWeight="regular"
-                color="text"
-                onClick={handleSetRememberMe}
-                sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-              >
-                &nbsp;&nbsp;Remember me
-              </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton

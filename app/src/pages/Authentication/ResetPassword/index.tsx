@@ -11,7 +11,7 @@ import { useAppDispatch } from "hooks";
 import { resetPass } from "redux/auth/action";
 
 import { useFormik } from "formik";
-import bgImage from "assets/images/bg-reset-cover.jpeg";
+import bgImage from "assets/images/bg-bblc-wh5.jpg";
 import validationSchema from "./validationSchema";
 import selector from "./selector";
 

@@ -15,7 +15,7 @@ import { useAppDispatch } from "hooks";
 import { signUp } from "redux/auth/action";
 
 // Images
-import bgImage from "assets/images/bg-sign-up-cover.jpeg";
+import bgImage from "assets/images/bg-bblc-wh5.jpg";
 import validationSchema from "./validationSchema";
 import selector from "./selector";
 
