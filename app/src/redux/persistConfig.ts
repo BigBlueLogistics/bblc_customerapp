@@ -7,13 +7,13 @@ import { AuthStoreType } from "types/authStore";
 const authPersistFilter = createTransform(
   null,
   (state: AuthStoreType) => {
-    const authState = { ...state };
-    authState.request[signIn.pending.type] = {};
-    authState.successfulRequests[signIn.fulfilled.type] = {
-      ...authState.successfulRequests[signIn.fulfilled.type],
+    const newState = { ...state };
+    newState.request = {};
+    newState.successfulRequests = {
+      [signIn.fulfilled.type]: { ...newState.successfulRequests[signIn.fulfilled.type] },
     };
-    authState.failedRequests[signIn.rejected.type] = {};
-    return authState;
+    newState.failedRequests = {};
+    return newState;
   },
   { whitelist: ["auth"] }
 );
