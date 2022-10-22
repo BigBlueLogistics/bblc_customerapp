@@ -101,7 +101,11 @@ function Inventory() {
   const exportToExcel = () => {
     const data = { customer_code: customerCode, warehouse: selectedFilterBy };
 
-    downloadFile({ url: "/inventory/export-excel", filename: "Stocks Inventory", data });
+    downloadFile({
+      url: "/inventory/export-excel",
+      filename: `${customerCode}-${selectedFilterBy}`,
+      data,
+    });
     closeAction();
   };
 
@@ -110,11 +114,13 @@ function Inventory() {
   }, []);
 
   useEffect(() => {
-    if (selectedGroupBy && selectedFilterBy) {
+    console.log("fetches", customerCode);
+    console.log("selectedFilterByz", selectedFilterBy);
+    if (customerCode && selectedFilterBy) {
       fetchInventoryTable();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedGroupBy, selectedFilterBy]);
+  }, [customerCode, selectedFilterBy]);
 
   useEffect(() => {
     if (error?.response?.statusText === "Unauthorized" && error?.response?.status === 401) {
@@ -124,16 +130,18 @@ function Inventory() {
 
   useEffect(() => {
     const { message } = downloadError || {};
+    const filename = `${customerCode}-${selectedFilterBy}`;
+
     if (!message && downloadStatus === "loading") {
       openNotifyDownload({
-        message: "Please wait exporting file [Stocks Inventory.xlsx]",
+        message: `Please wait exporting file [${filename}.xlsx]`,
         title: "Exporting File",
         color: "info",
       });
     }
     if (!message && downloadStatus === "success") {
       openNotifyDownload({
-        message: "You can now open [Stocks Inventory.xlsx]",
+        message: `You can now open [${filename}.xlsx]`,
         title: "Export to excel complete!",
         color: "success",
       });
@@ -145,6 +153,7 @@ function Inventory() {
         color: "error",
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [downloadError, downloadStatus]);
 
   const renderAction = (
@@ -172,6 +181,7 @@ function Inventory() {
 
       {isLoading && <div>Loading...</div>}
       {error && <div>{error.message}</div>}
+
       <MDSnackbar
         color={showNotifyDownload.color}
         icon="info"
@@ -189,8 +199,8 @@ function Inventory() {
               <MDBox
                 mx={2}
                 mt={-3}
-                py={3}
-                px={2}
+                py={1}
+                px={1}
                 variant="gradient"
                 bgColor="info"
                 borderRadius="lg"
