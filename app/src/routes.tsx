@@ -12,7 +12,7 @@
 // 10. The `component` key is used to store the component of its route.
 // 11. The `access` key is used to determine if route is set to public or protected.
 
-import Dashboard from "pages/dashboard";
+// import Dashboard from "pages/dashboard";
 // import Tables from "pages/tables";
 // import Billing from "pages/billing";
 // import RTL from "pages/rtl";
@@ -25,6 +25,7 @@ import ChangePassword from "pages/Authentication/ChangePassword";
 import Inventory from "pages/Inventory";
 import DefaultPage from "pages/DefaultPage";
 import NotFound from "pages/NotFound";
+import UnderConstruction from "pages/UnderConstruction";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -149,7 +150,7 @@ const routes: RoutesType = [
     key: "movements",
     icon: <TrendingUpIcon />,
     route: "/movements",
-    component: () => <h3>Coming soon</h3>,
+    component: <UnderConstruction />,
     access: "protected",
   },
   {
@@ -158,7 +159,7 @@ const routes: RoutesType = [
     key: "reports",
     icon: <SummarizeIcon />,
     route: "/reports",
-    component: () => <h3>Coming soon</h3>,
+    component: <UnderConstruction />,
     access: "protected",
   },
   {
@@ -166,8 +167,8 @@ const routes: RoutesType = [
     name: "Orders",
     key: "orders",
     icon: <ShoppingCartIcon />,
-    route: "/reports",
-    component: () => <h3>Coming soon</h3>,
+    route: "/orders",
+    component: <UnderConstruction />,
     access: "protected",
   },
   {
@@ -176,7 +177,7 @@ const routes: RoutesType = [
     key: "indicators",
     icon: <MoveDownIcon />,
     route: "/indicators",
-    component: <Dashboard />,
+    component: <UnderConstruction />,
     access: "protected",
   },
   {
@@ -185,7 +186,7 @@ const routes: RoutesType = [
     key: "profile",
     icon: <AccountBoxIcon />,
     route: "/profile",
-    component: () => <h3>Coming soon</h3>,
+    component: <UnderConstruction />,
     access: "protected",
   },
   {
@@ -194,7 +195,7 @@ const routes: RoutesType = [
     key: "website",
     icon: <WebIcon />,
     route: "/website",
-    component: () => <h3>Coming soon</h3>,
+    component: <UnderConstruction />,
     access: "protected",
   },
 ];
