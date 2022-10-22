@@ -65,7 +65,7 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
 
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
-  const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
+  // const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(null);
   const handleOpenProfile = (event) => setOpenProfile(event.currentTarget);
   const handleCloseProfile = () => setOpenProfile(null);
@@ -172,7 +172,7 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
               >
                 <Icon sx={iconsStyle}>settings</Icon>
               </IconButton>
-              {/* @ts-ignore */}
+              {/* @ts-ignore
               <IconButton
                 size="small"
                 disableRipple
@@ -185,7 +185,7 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
                 title="notifications"
               >
                 <Icon sx={iconsStyle}>notifications</Icon>
-              </IconButton>
+              </IconButton> */}
               {renderMenu()}
             </MDBox>
           </MDBox>
