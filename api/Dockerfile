@@ -177,7 +177,7 @@ COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 CMD ["/usr/bin/supervisord"]
 
 FROM main as api_prod
-COPY ./docker/sites-available/bblc_customer_ssl.conf /etc/apache2/sites-available/
+COPY ./docker/sites-available/bblc_customer_app.conf /etc/apache2/sites-available/
 COPY ./docker/sites-available/bblc_customer_app_ssl.conf /etc/apache2/sites-available/
 
 RUN a2dissite 000-default.conf && \
