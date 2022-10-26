@@ -160,30 +160,34 @@ RUN chmod 775 -R ${ROOT_APP_DIR}/storage
 RUN apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Common PORT for API
-RUN echo "Listen 16692" >> /etc/apache2/ports.conf
-EXPOSE 16692
 
 FROM main as api_dev
+RUN echo "Listen 16692" >> /etc/apache2/ports.conf
+
+EXPOSE 16692
+
 COPY ./docker/sites-available/bblc_customer_api.conf /etc/apache2/sites-available/
+
 RUN a2dissite 000-default.conf && \
     a2ensite bblc_customer_api.conf
+
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Execute multiple services E.g: php and apache2
 CMD ["/usr/bin/supervisord"]
 
 FROM main as api_prod
-COPY ./docker/sites-available/*.conf /etc/apache2/sites-available/
-
-# PORT for APP production build
-# RUN echo "Listen 80" >> /etc/apache2/ports.conf
+COPY ./docker/sites-available/bblc_customer_ssl.conf /etc/apache2/sites-available/
+COPY ./docker/sites-available/bblc_customer_app_ssl.conf /etc/apache2/sites-available/
 
 RUN a2dissite 000-default.conf && \
-    a2ensite bblc_customer_api.conf bblc_customer_app.conf 
+    a2ensite bblc_customer_app.conf && \
+    bblc_customer_app_ssl.conf
+
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 80
+EXPOSE 443
 
 # Execute multiple services E.g: php and apache2
 CMD ["/usr/bin/supervisord"]

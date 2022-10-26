@@ -21,10 +21,11 @@ services:
     ports:
       - 16692:16692
       - 80:80
+      - 443:443
     volumes:
       - ./api:/var/www/html
       - /var/www/html/vendor
-      - app_build:/var/www/html/build
+      - app_build:/var/www/html/portal
     networks:
       - bblc_customer
 
@@ -42,7 +43,7 @@ services:
     volumes:
       - ./app:/var/www/html
       - /var/www/html/node_modules
-      - app_build:/var/www/html/build
+      - app_build:/var/www/html/portal
     networks:
       - bblc_customer
 
