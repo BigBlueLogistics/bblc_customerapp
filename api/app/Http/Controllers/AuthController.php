@@ -132,7 +132,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        auth('sanctum')->user()->currentAccessToken()->delete();
+        $user->tokens()->where('id', auth()->id())->delete();
 
         return $this->sendResponse('', __('auth.logout'));
     }
