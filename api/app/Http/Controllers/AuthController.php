@@ -29,13 +29,7 @@ class AuthController extends Controller
         if ($user && ! $user->email_verified_at) {
             return $this->sendError(__('auth.not-verified'), Response::HTTP_UNAUTHORIZED);
         }
-
-        $authenticate = Auth::attempt([
-            'email' => $request->email,
-            'password' => $request->password,
-        ]);
-
-        if (! $authenticate) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             return $this->sendError(__('auth.failed'), Response::HTTP_UNAUTHORIZED);
         }
 
@@ -138,7 +132,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        auth('sanctum')->user()->currentAccessToken()->delete();
 
         return $this->sendResponse('', __('auth.logout'));
     }
