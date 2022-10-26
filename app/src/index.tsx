@@ -13,7 +13,7 @@ import configStore from "redux/store";
 const { store, persistor } = configStore();
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter>
+    <BrowserRouter basename="/portal/">
       <PersistGate loading={null} persistor={persistor}>
         <MaterialUIControllerProvider>
           <App />
