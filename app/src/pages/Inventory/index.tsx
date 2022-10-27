@@ -114,8 +114,6 @@ function Inventory() {
   }, []);
 
   useEffect(() => {
-    console.log("fetches", customerCode);
-    console.log("selectedFilterByz", selectedFilterBy);
     if (customerCode && selectedFilterBy) {
       fetchInventoryTable();
     }
