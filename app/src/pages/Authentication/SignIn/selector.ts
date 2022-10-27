@@ -7,13 +7,16 @@ export default () => {
   );
 
   const message = failedRequests[signIn.rejected.type]?.message;
+  const status = request[signIn.pending.type]?.status;
 
-  const hasError = request[signIn.pending.type]?.status === "failed";
+  const hasError = status === "failed";
+  const isLogging = status === "loading";
 
   return {
     errorMsg: message,
     hasError,
     isAuthenticated: authenticated,
     apiToken,
+    isLogging,
   };
 };

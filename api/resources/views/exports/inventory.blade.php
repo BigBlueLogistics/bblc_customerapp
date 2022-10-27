@@ -15,14 +15,14 @@
         </tr>
         <tr>
             <th class="fontBold">Address</th>
-            <th colspan="3">Tayud Consolaction</th>
+            <th colspan="3"></th>
             <th colspan="2"></th>
             <th>WHSE:</th>
             <th colspan="2">{{ $warehouseNo }}</th>
         </tr>
         <tr>
             <th class="fontBold">PHONE/FAX:</th>
-            <th align="left" colspan="3">22222</th>
+            <th align="left" colspan="3"></th>
             <th colspan="2"></th>
             <th>TIME:</th>
             <th colspan="2">{{ $timeNow }}</th>

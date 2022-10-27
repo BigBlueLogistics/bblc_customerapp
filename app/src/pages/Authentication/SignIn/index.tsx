@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import MuiLink from "@mui/material/Link";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GoogleIcon from "@mui/icons-material/Google";
@@ -22,19 +23,18 @@ import validationSchema from "./validationSchema";
 import selector from "./selector";
 
 function SignIn() {
-  const { errorMsg, hasError, isAuthenticated, apiToken } = selector();
+  const { errorMsg, hasError, isAuthenticated, apiToken, isLogging } = selector();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { values, handleSubmit, handleChange, isSubmitting, errors, touched } = useFormik({
+  const { values, handleSubmit, handleChange, errors, touched } = useFormik({
     validationSchema,
     initialValues: {
       email: "",
       password: "",
     },
-    onSubmit: (validatedVal, { setSubmitting }) => {
+    onSubmit: (validatedVal) => {
       dispatch(signIn(validatedVal));
-      setSubmitting(false);
     },
   });
 
@@ -131,9 +131,9 @@ function SignIn() {
                 variant="gradient"
                 color="info"
                 fullWidth
-                disabled={isSubmitting}
+                disabled={isLogging}
               >
-                sign in
+                {isLogging ? <CircularProgress size={22} color="inherit" /> : "sign in"}
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
