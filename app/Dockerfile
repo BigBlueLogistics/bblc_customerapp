@@ -23,7 +23,13 @@ CMD ["yarn","start"]
 
 # TODO: execute only for production
 # current user should add to sudo groups and 
-# update the ownership of /build folder to current user
+# update the ownership of /${build_dir} folder to current user
 
 FROM main as app_prod
+ARG build_dir
+
+RUN mkdir -p ${build_dir}
+RUN chown node:node -R ${build_dir} && \
+    chmod 755 -R ${build_dir}
+
 CMD ["yarn","build"]

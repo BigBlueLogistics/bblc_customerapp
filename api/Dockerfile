@@ -182,6 +182,9 @@ COPY ./docker/sites-available/bblc_customer_app_ssl.conf /etc/apache2/sites-avai
 
 RUN a2dissite 000-default.conf && \
     a2ensite bblc_customer_app.conf bblc_customer_app_ssl.conf
+    
+# Enable mod_ssl
+RUN a2enmod ssl
 
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
