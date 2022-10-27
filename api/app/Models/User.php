@@ -48,7 +48,7 @@ class User extends Authenticatable
 
     public function sendPasswordResetNotification($token)
     {
-        $uiUrl = env('APP_URL').':'.env('UI_PORT');
+        $uiUrl = env('APP_URL');
         $emailForPasswordReset = urlencode(self::getEmailForPasswordReset());
         $url = "{$uiUrl}/change-password?token={$token}&email={$emailForPasswordReset}";
 
