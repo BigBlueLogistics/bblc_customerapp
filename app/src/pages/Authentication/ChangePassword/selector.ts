@@ -14,8 +14,11 @@ export default () => {
       ? failedRequests[changePass.rejected.type]?.message
       : "";
 
+  const isChangingPass = status === "loading";
+
   return {
     message,
     status,
+    isChangingPass,
   };
 };

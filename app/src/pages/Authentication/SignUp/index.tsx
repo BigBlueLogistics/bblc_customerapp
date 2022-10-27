@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useFormik } from "formik";
 
 import MDBox from "atoms/MDBox";
@@ -21,24 +22,22 @@ import selector from "./selector";
 
 function SignUp() {
   const dispatch = useAppDispatch();
-  const { status, message } = selector();
+  const { status, message, isSigningUp } = selector();
 
-  const { values, errors, handleSubmit, handleChange, isSubmitting, touched, resetForm } =
-    useFormik({
-      validationSchema,
-      initialValues: {
-        fname: "",
-        lname: "",
-        phone_no: "",
-        customer_code: "",
-        email: "",
-        password: "",
-      },
-      onSubmit: (validatedVal, { setSubmitting }) => {
-        dispatch(signUp(validatedVal));
-        setSubmitting(false);
-      },
-    });
+  const { values, errors, handleSubmit, handleChange, touched, resetForm } = useFormik({
+    validationSchema,
+    initialValues: {
+      fname: "",
+      lname: "",
+      phone_no: "",
+      customer_code: "",
+      email: "",
+      password: "",
+    },
+    onSubmit: (validatedVal) => {
+      dispatch(signUp(validatedVal));
+    },
+  });
 
   const renderMessage = () => {
     if (status === "succeeded" || status === "failed") {
@@ -199,9 +198,9 @@ function SignUp() {
                 variant="gradient"
                 color="info"
                 fullWidth
-                disabled={isSubmitting}
+                disabled={isSigningUp}
               >
-                sign up
+                {isSigningUp ? <CircularProgress size={22} color="inherit" /> : "sign up"}
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">

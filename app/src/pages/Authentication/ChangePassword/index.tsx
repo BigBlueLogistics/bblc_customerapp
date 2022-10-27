@@ -5,6 +5,7 @@ import MDTypography from "atoms/MDTypography";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
 import MDAlert2 from "atoms/MDAlert2";
+import CircularProgress from "@mui/material/CircularProgress";
 import CoverLayout from "pages/Authentication/components/CoverLayout";
 
 import { useAppDispatch, useQueryString } from "hooks";
@@ -18,24 +19,21 @@ import selector from "./selector";
 function ChangePassword() {
   const dispatch = useAppDispatch();
   const queryString = useQueryString();
-  const { status, message } = selector();
+  const { status, message, isChangingPass } = selector();
 
-  const { values, errors, handleChange, handleSubmit, isSubmitting, touched, resetForm } =
-    useFormik({
-      validationSchema,
-      initialValues: {
-        password: "",
-        confirm_password: "",
-      },
-      onSubmit: (validatedVal, { setSubmitting }) => {
-        const token = queryString.get("token");
-        const email = queryString.get("email");
+  const { values, errors, handleChange, handleSubmit, touched, resetForm } = useFormik({
+    validationSchema,
+    initialValues: {
+      password: "",
+      confirm_password: "",
+    },
+    onSubmit: (validatedVal) => {
+      const token = queryString.get("token");
+      const email = queryString.get("email");
 
-        dispatch(changePass({ token, email, ...validatedVal }));
-
-        setSubmitting(false);
-      },
-    });
+      dispatch(changePass({ token, email, ...validatedVal }));
+    },
+  });
 
   const renderMessage = () => {
     if (status === "succeeded" || status === "failed") {
@@ -126,10 +124,10 @@ function ChangePassword() {
                 variant="gradient"
                 color="info"
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isChangingPass}
                 fullWidth
               >
-                change
+                {isChangingPass ? <CircularProgress size={22} color="inherit" /> : "change"}
               </MDButton>
             </MDBox>
           </MDBox>

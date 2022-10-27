@@ -14,8 +14,11 @@ export default () => {
       ? failedRequests[signUp.rejected.type]?.message
       : "";
 
+  const isSigningUp = status === "loading";
+
   return {
     message,
     status,
+    isSigningUp,
   };
 };

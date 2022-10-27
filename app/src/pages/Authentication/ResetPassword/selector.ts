@@ -14,8 +14,11 @@ export default () => {
       ? failedRequests[resetPass.rejected.type]?.message
       : "";
 
+  const isResetting = status === "loading";
+
   return {
     message,
     status,
+    isResetting,
   };
 };

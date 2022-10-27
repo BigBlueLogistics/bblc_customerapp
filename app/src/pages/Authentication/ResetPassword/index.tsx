@@ -5,6 +5,7 @@ import MDTypography from "atoms/MDTypography";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
 import MDAlert2 from "atoms/MDAlert2";
+import CircularProgress from "@mui/material/CircularProgress";
 import CoverLayout from "pages/Authentication/components/CoverLayout";
 
 import { useAppDispatch } from "hooks";
@@ -17,20 +18,17 @@ import selector from "./selector";
 
 function ResetPassword() {
   const dispatch = useAppDispatch();
-  const { status, message } = selector();
+  const { status, message, isResetting } = selector();
 
-  const { values, errors, handleChange, handleSubmit, isSubmitting, touched, resetForm } =
-    useFormik({
-      validationSchema,
-      initialValues: {
-        email: "",
-      },
-      onSubmit: (validatedVal, { setSubmitting }) => {
-        dispatch(resetPass(validatedVal));
-
-        setSubmitting(false);
-      },
-    });
+  const { values, errors, handleChange, handleSubmit, touched, resetForm } = useFormik({
+    validationSchema,
+    initialValues: {
+      email: "",
+    },
+    onSubmit: (validatedVal) => {
+      dispatch(resetPass(validatedVal));
+    },
+  });
 
   const renderMessage = () => {
     if (status === "succeeded" || status === "failed") {
@@ -108,10 +106,10 @@ function ResetPassword() {
                 variant="gradient"
                 color="info"
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isResetting}
                 fullWidth
               >
-                reset
+                {isResetting ? <CircularProgress size={22} color="inherit" /> : "reset"}
               </MDButton>
             </MDBox>
           </MDBox>
