@@ -11,6 +11,7 @@ import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
+import MDImageIcon from "atoms/MDImageIcon";
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
@@ -21,6 +22,8 @@ import { setIsAuthenticated } from "redux/auth/action";
 import miscData from "pages/Inventory/data";
 import { inventoryServices } from "services";
 import { AxiosError } from "axios";
+
+import excel from "assets/images/icons/excel.png";
 import selector from "./selector";
 import { INotifyDownload } from "./types";
 
@@ -169,7 +172,19 @@ function Inventory() {
       open={Boolean(action)}
       onClose={closeAction}
     >
-      <MenuItem onClick={exportToExcel}>Export to Excel</MenuItem>
+      <MenuItem onClick={exportToExcel}>
+        <MDImageIcon src={excel} alt="export-excel-icon" width={18} height={18} />
+        <MDTypography
+          ml={1}
+          variant="body2"
+          sx={({ typography: { pxToRem } }) => ({
+            fontSize: pxToRem(14),
+            fontWeight: 400,
+          })}
+        >
+          Export excel
+        </MDTypography>
+      </MenuItem>
     </Menu>
   );
 
