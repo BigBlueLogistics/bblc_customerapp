@@ -117,6 +117,9 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
                 component="span"
                 fontWeight="regular"
                 textTransform="capitalize"
+                sx={({ typography: { pxToRem } }) => ({
+                  fontSize: pxToRem(14),
+                })}
               >
                 {name}
               </MDTypography>
