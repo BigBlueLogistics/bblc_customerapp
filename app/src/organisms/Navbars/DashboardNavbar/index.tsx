@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
-import MDInput from "atoms/MDInput";
+import MDTypography from "atoms/MDTypography";
 import Breadcrumbs from "organisms/Breadcrumbs";
 import NotificationItem from "organisms/Items/NotificationItem";
 import {
@@ -19,21 +19,17 @@ import {
 import { useAppDispatch } from "hooks";
 import { signOut, setIsAuthenticated } from "redux/auth/action";
 
-import {
-  useMaterialUIController,
-  setTransparentNavbar,
-  setMiniSidenav,
-  setOpenConfigurator,
-} from "context";
+import { useMaterialUIController, setTransparentNavbar, setMiniSidenav } from "context";
 import { Theme } from "@mui/material/styles/createTheme";
+import selector from "./selector";
 import { IDashboardNavbar, CSSPosition } from "./types";
 
 function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
   const reduxDispatch = useAppDispatch();
+  const { name } = selector();
   const [navbarType, setNavbarType] = useState("sticky");
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
-  const [openMenu, setOpenMenu] = useState(null);
+  const { miniSidenav, transparentNavbar, fixedNavbar, darkMode } = controller;
   const [openProfile, setOpenProfile] = useState(null);
   const route = useLocation().pathname.split("/").slice(1);
 
@@ -64,9 +60,6 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
   }, [dispatch, fixedNavbar]);
 
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
-  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
-  // const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
-  const handleCloseMenu = () => setOpenMenu(null);
   const handleOpenProfile = (event) => setOpenProfile(event.currentTarget);
   const handleCloseProfile = () => setOpenProfile(null);
 
@@ -75,25 +68,6 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
     reduxDispatch(setIsAuthenticated(false));
     localStorage.removeItem("apiToken");
   };
-
-  // Render the notifications menu
-  const renderMenu = () => (
-    <Menu
-      anchorEl={openMenu}
-      anchorReference={null}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "left",
-      }}
-      open={Boolean(openMenu)}
-      onClose={handleCloseMenu}
-      sx={{ mt: 2 }}
-    >
-      <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
-      <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
-      <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
-    </Menu>
-  );
 
   // Render the notifications menu
   const renderProfile = () => (
@@ -138,7 +112,14 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             <MDBox pr={1}>
-              <MDInput label="Search here" />
+              <MDTypography
+                variant="h6"
+                component="span"
+                fontWeight="regular"
+                textTransform="capitalize"
+              >
+                {name}
+              </MDTypography>
             </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
               <IconButton
@@ -163,30 +144,6 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
                   {miniSidenav ? "menu_open" : "menu"}
                 </Icon>
               </IconButton>
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarIconButton}
-                onClick={handleConfiguratorOpen}
-              >
-                <Icon sx={iconsStyle}>settings</Icon>
-              </IconButton>
-              {/* @ts-ignore
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarIconButton}
-                aria-controls="notification-menu"
-                aria-haspopup="true"
-                variant="contained"
-                onClick={handleOpenMenu}
-                title="notifications"
-              >
-                <Icon sx={iconsStyle}>notifications</Icon>
-              </IconButton> */}
-              {renderMenu()}
             </MDBox>
           </MDBox>
         )}
