@@ -143,13 +143,25 @@ function Sidenav({
             <Icon sx={{ fontWeight: "bold" }}>close</Icon>
           </MDTypography>
         </MDBox>
-        <MDBox component={NavLink} to="/" display="flex" alignItems="center">
-          {brand && <MDBox component="img" src={brand} alt="Brand" width="2rem" />}
-          <MDBox
-            width={!brandName && "100%"}
-            sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
-          >
-            <MDTypography component="h6" variant="button" fontWeight="medium" color={textColor}>
+        <MDBox
+          component={NavLink}
+          to="/"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          {brand && (
+            <MDBox component="img" src={brand} alt="Brand" width="12rem" borderRadius={5} />
+          )}
+          <MDBox width="100%" sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}>
+            <MDTypography
+              textAlign="center"
+              component="h6"
+              variant="button"
+              fontWeight="medium"
+              color={textColor}
+            >
               {brandName}
             </MDTypography>
           </MDBox>
