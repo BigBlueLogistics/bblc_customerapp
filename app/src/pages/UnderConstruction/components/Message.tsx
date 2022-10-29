@@ -14,7 +14,7 @@ export const MessageTitle = styled(MDTypography)<IMaterialElem>(({ theme }) => {
       fontSize: pxToRem(25),
     },
     [breakpoints.up("md")]: {
-      fontSize: pxToRem(35),
+      fontSize: pxToRem(30),
     },
   };
 });
@@ -31,7 +31,7 @@ export const MessageDescription = styled(MDTypography)<IMaterialElem>(({ theme }
       fontSize: pxToRem(18),
     },
     [breakpoints.up("md")]: {
-      fontSize: pxToRem(22),
+      fontSize: pxToRem(20),
     },
   };
 });

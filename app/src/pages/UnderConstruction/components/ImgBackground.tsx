@@ -10,13 +10,13 @@ export default styled("img")<IMaterialElem>(({ theme }) => {
     height: pxToRem(235),
 
     [breakpoints.up("sm")]: {
-      width: pxToRem(400),
-      height: pxToRem(355),
+      width: pxToRem(380),
+      height: pxToRem(330),
     },
 
     [breakpoints.up("md")]: {
-      width: pxToRem(520),
-      height: pxToRem(465),
+      width: pxToRem(480),
+      height: pxToRem(425),
     },
   };
 });
