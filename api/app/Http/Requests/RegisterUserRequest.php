@@ -28,8 +28,8 @@ class RegisterUserRequest extends FormRequest
             'lname' => ['required', 'string'],
             'password' => ['required', 'string', 'min:8'],
             'email' => ['required', 'string', 'email'],
-            'customer_code' => ['required', 'string'],
             'phone_no' => ['string'],
+            'company' => ['required', 'string']
         ];
     }
 }

@@ -9,7 +9,7 @@ export type SignUpFormType = {
   password: string;
   phone_no?: string;
   email: string;
-  customer_code: string;
+  company: string;
 };
 
 export type ResetPassType = {

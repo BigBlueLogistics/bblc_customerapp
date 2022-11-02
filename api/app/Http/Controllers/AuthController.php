@@ -6,6 +6,7 @@ use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\ResetPassRequest;
 use App\Models\User;
+use App\Models\CompanyRepresent;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -58,15 +60,18 @@ class AuthController extends Controller
             }
 
             $user = User::create([
-                'fname' => $request->fname,
-                'lname' => $request->lname,
+                'fname' => Str::lower($request->fname),
+                'lname' => Str::lower($request->lname),
                 'password' => Hash::make($request->password),
-                'email' => $request->email,
-                'customer_code' => $request->customer_code,
-                'phone_no' => $request->phone_no,
+                'email' => Str::lower($request->email),
+                'phone_no' => Str::lower($request->phone_no),
             ]);
 
             if ($user) {
+                CompanyRepresent::create([
+                    'user_id' => $user->id,
+                    'company' => $request->company
+                ]);
                 return $this->sendResponse('', __('auth.register'));
             }
 

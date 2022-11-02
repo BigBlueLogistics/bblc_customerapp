@@ -30,7 +30,7 @@ function SignUp() {
       fname: "",
       lname: "",
       phone_no: "",
-      customer_code: "",
+      company: "",
       email: "",
       password: "",
     },
@@ -148,13 +148,13 @@ function SignUp() {
             <MDBox mb={1}>
               <MDInput
                 type="text"
-                name="customer_code"
+                name="company"
                 label="Company"
                 variant="standard"
                 fullWidth
-                value={values.customer_code}
-                error={touched.customer_code && Boolean(errors.customer_code)}
-                helperText={touched.customer_code ? errors.customer_code : ""}
+                value={values.company}
+                error={touched.company && Boolean(errors.company)}
+                helperText={touched.company ? errors.company : ""}
                 onChange={handleChange}
               />
             </MDBox>

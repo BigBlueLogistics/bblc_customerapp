@@ -9,7 +9,7 @@ export default yup.object({
     .min(11, "Must be exactly 11 digits")
     .max(11, "Must be exactly 11 digits")
     .required("required"),
-  customer_code: yup.string().required("required"),
+  company: yup.string().required("required"),
   email: yup.string().email("Invalid email address").required("required"),
   password: yup.string().min(8, "Requires minimum of 8 characters.").required("required"),
 });
