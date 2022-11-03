@@ -8,6 +8,8 @@ export default styled(Alert)(({ theme }) => {
   return {
     "& .MuiAlert-message": {
       display: "inline-flex",
+      width: "100%",
+      justifyContent: "space-between",
     },
   };
 });

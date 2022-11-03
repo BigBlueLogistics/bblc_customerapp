@@ -17,7 +17,7 @@
 // import Billing from "pages/billing";
 // import RTL from "pages/rtl";
 // import Notifications from "pages/notifications";
-// import Profile from "pages/profile";
+import Profile from "pages/profile";
 import SignIn from "pages/Authentication/SignIn";
 import SignUp from "pages/Authentication/SignUp";
 import ResetPassword from "pages/Authentication/ResetPassword";
@@ -79,14 +79,15 @@ const routes: RoutesType = [
   //   route: "/notifications",
   //   component: <Notifications />,
   // },
-  // {
-  //   type: "",
-  //   name: "Profile",
-  //   key: "profile",
-  //   icon: <Icon fontSize="small">person</Icon>,
-  //   route: "/profile",
-  //   component: <Profile />,
-  // },
+  {
+    type: "",
+    access: "protected",
+    name: "Profile",
+    key: "profile",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/profile",
+    component: <Profile />,
+  },
   {
     route: "*",
     component: <NotFound />,

@@ -77,7 +77,7 @@ class InventoryRepository implements IInventoryRepository
                 ->param('QUERY_TABLE', 'MAKT')
                 ->param('DELIMITER', ';')
                 ->param('OPTIONS', [
-                    ['TEXT' => "MANDT = {$mandt}"],
+                    ['TEXT' => "MANDT EQ {$mandt}"],
                     ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
                 ])
                 ->param('FIELDS', [
@@ -92,7 +92,7 @@ class InventoryRepository implements IInventoryRepository
                 ->param('QUERY_TABLE', 'MARD')
                 ->param('DELIMITER', ';')
                 ->param('OPTIONS', [
-                    ['TEXT' => "MANDT = {$mandt}"],
+                    ['TEXT' => "MANDT EQ {$mandt}"],
                     ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
                     ['TEXT' => " AND WERKS EQ '{$warehouseNo}'"],
                     ['TEXT' => " AND (LABST > 0"],
@@ -112,8 +112,10 @@ class InventoryRepository implements IInventoryRepository
         $fixedWeight = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
                 ->param('QUERY_TABLE', 'MARM')
                 ->param('DELIMITER', ';')
+                ->param('SORT_FIELDS', 'MEINH')
+                ->param('ORDER_BY_COLUMN', '1')
                 ->param('OPTIONS', [
-                    ['TEXT' => "MANDT = {$mandt}"],
+                    ['TEXT' => "MANDT EQ {$mandt}"],
                     ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
                     ['TEXT' => " AND MEINH NE 'KG'"],
                 ])
@@ -125,6 +127,57 @@ class InventoryRepository implements IInventoryRepository
                 ])
                 ->getDataToArray();
 
+        $productIds = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                ->param('QUERY_TABLE', 'NDBSMATG16')
+                ->param('DELIMITER', ';')
+                ->param('OPTIONS', [
+                    ['TEXT' => "MANDT EQ {$mandt}"],
+                    ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'MATNR'],
+                    ['FIELDNAME' => 'GUID'],
+                ])
+                ->getDataToArray();
+
+
+        $collectionPicking = collect($productIds)->map(function ($item, $key) use ($mandt, $warehouseNo) {
+            $guid =  $item['GUID'];
+            $matnr = $item['MATNR'];
+            $replaceWh = str_replace('BB', 'WH', $warehouseNo);
+
+            $picking = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                ->param('QUERY_TABLE', '/SCWM/ORDIM_O')
+                ->param('DELIMITER', ';')
+                ->param('OPTIONS', [
+                    ['TEXT' => "MANDT EQ {$mandt}"],
+                    ['TEXT' => " AND LGNUM EQ '{$replaceWh}'"],
+                    ['TEXT' => " AND MATID EQ '{$guid}'"],
+                    ['TEXT' => " AND PROCTY EQ '2010'"],
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'VSOLM'],
+                    ['FIELDNAME' => 'CHARG'],
+                    ['FIELDNAME' => 'VFDAT'],
+                    ['FIELDNAME' => 'VLPLA'],
+                    ['FIELDNAME' => 'VLTYP'],
+                    ['FIELDNAME' => 'VLENR'],
+                ])
+                ->getDataToArray();
+
+            if (count($picking)) {
+                $picking = array_map(function ($value) use ($matnr) {
+                    $value['MATNR'] = $matnr;
+                    return $value;
+                }, $picking);
+            }
+
+            return $picking;
+        })->filter(function ($values) {
+            return count($values) > 0;
+        })->flatMap(function ($values) {
+            return $values;
+        });
 
         $collectionMaterial = collect($materialNo);
         $collectionWeight = collect($weightDetails);
@@ -139,28 +192,46 @@ class InventoryRepository implements IInventoryRepository
             ];
         });
 
-        $keyedStockWeight = $collectionWeight->mapWithKeys(function ($item, $key) {
+        $keyedStockWt = $collectionWeight->mapWithKeys(function ($item) {
             return [
                 $item['MATNR'] => [
                     'availableWt' => (float)$item['LABST'],
-                    'allocatedWt' => (float)$item['UMLME'],
+                    // 'allocatedWt' => (float)$item['UMLME'],
                     'blockedWt' => (float)$item['INSME'],
                     'restrictedWt' => (float)$item['SPEME'],
                 ]
             ];
         });
 
-        $keyedFixedWeight = $collectionFixedWeight->mapWithKeys(function ($item, $key) {
+        $keyedFixedWt = $collectionFixedWeight->mapWithKeys(function ($item) {
             return [
                 $item['MATNR'] => [
-                    'unit' => $item['MEINH'],
-                    'fixedWt' =>  (float)$item['UMREZ'] / (float)$item['UMREN'],
+                    'unit' => is_null($item['MEINH']) ? "KG" : $item['MEINH'],
+                    'fixedWt' =>  is_null($item['UMREZ']) ? 1.000 : (float)$item['UMREZ'] / (float)$item['UMREN'],
                 ]
             ];
         });
 
-        $mergedMaterialStocks = $keyedMaterial->mergeRecursive($keyedStockWeight);
-        $merged = $mergedMaterialStocks->mergeRecursive($keyedFixedWeight)
+        $keyedPicking = $collectionPicking->mapToGroups(function ($item) {
+            return [
+                $item['MATNR'] =>  [
+                    'allocatedWt' => $item['VSOLM']
+                ]
+            ];
+        })->map(function ($item) {
+            $totalVsolm = $item->reduce(function ($total, $current) {
+                $total += (float)$current['allocatedWt'];
+                return $total;
+            });
+
+            return [
+                'allocatedWt' => $totalVsolm
+            ];
+        });
+
+        $mergedMaterialStocks = $keyedMaterial->mergeRecursive($keyedStockWt);
+        $mergedFixedWt = $mergedMaterialStocks->mergeRecursive($keyedFixedWt);
+        $merged = $mergedFixedWt->mergeRecursive($keyedPicking)
                  ->filter(function ($data) {
                      // Return only data if anyone of the field below has value.
                      return (
@@ -171,21 +242,19 @@ class InventoryRepository implements IInventoryRepository
                      );
                  })
                  ->map(function ($data) {
-                     $fixedWeight = array_key_exists('fixedWt', $data) ? $data['fixedWt'] : 0;
+                     $fixedWeight = array_key_exists('fixedWt', $data) ? $data['fixedWt'] : 1;
+                     $allocatedWt = array_key_exists('allocatedWt', $data) ? $data['allocatedWt'] : 0;
 
                      // Calculate the quantity.
-                     if ($fixedWeight > 0) {
-                         $qty['availableQty'] = $data['availableWt'] / $fixedWeight;
-                         $qty['allocatedQty'] = number_format($data['allocatedWt'] / $fixedWeight, 3);
-                         $qty['blockedQty'] = $data['blockedWt'] / $fixedWeight;
-                         $qty['restrictedQty'] = $data['restrictedWt'] / $fixedWeight;
-                     } else {
-                         $qty['availableQty'] = 0;
-                         $qty['allocatedQty'] = 0;
-                         $qty['blockedQty'] = 0;
-                         $qty['restrictedQty'] = 0;
-                     }
-                     return array_merge($data, $qty);
+                     $res['availableQty'] = $data['availableWt'] / $fixedWeight;
+                     $res['allocatedQty'] = $allocatedWt / $fixedWeight;
+                     $res['blockedQty'] = $data['blockedWt'] / $fixedWeight;
+                     $res['restrictedQty'] = $data['restrictedWt'] / $fixedWeight;
+
+                     // Weight
+                     $res['allocatedWt'] = $allocatedWt;
+
+                     return array_merge($data, $res);
                  })
                  ->all();
         $result = count($merged) > 0 ? array_values($merged) : [];

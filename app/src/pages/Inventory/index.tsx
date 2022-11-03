@@ -112,6 +112,10 @@ function Inventory() {
     closeAction();
   };
 
+  const refresh = () => {};
+
+  const exportToCSV = () => {};
+
   useEffect(() => {
     fetchWarehouseList();
   }, []);
@@ -172,6 +176,21 @@ function Inventory() {
       open={Boolean(action)}
       onClose={closeAction}
     >
+      <MenuItem onClick={refresh}>
+        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={() => {}}>
+          refresh
+        </Icon>
+        <MDTypography
+          ml={1}
+          variant="body2"
+          sx={({ typography: { pxToRem } }) => ({
+            fontSize: pxToRem(14),
+            fontWeight: 400,
+          })}
+        >
+          Refresh
+        </MDTypography>
+      </MenuItem>
       <MenuItem onClick={exportToExcel}>
         <MDImageIcon src={excel} alt="export-excel-icon" width={18} height={18} />
         <MDTypography
@@ -182,7 +201,22 @@ function Inventory() {
             fontWeight: 400,
           })}
         >
-          Export excel
+          Export as XLS file
+        </MDTypography>
+      </MenuItem>
+      <MenuItem onClick={exportToCSV}>
+        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={() => {}}>
+          description
+        </Icon>
+        <MDTypography
+          ml={1}
+          variant="body2"
+          sx={({ typography: { pxToRem } }) => ({
+            fontSize: pxToRem(14),
+            fontWeight: 400,
+          })}
+        >
+          Export as CSV file
         </MDTypography>
       </MenuItem>
     </Menu>
@@ -192,8 +226,8 @@ function Inventory() {
     <DashboardLayout>
       <DashboardNavbar />
 
-      {isLoading && <div>Loading...</div>}
-      {error && <div>{error.message}</div>}
+      {isLoading && <MDTypography variant="body2">Loading...</MDTypography>}
+      {error && <MDTypography variant="body2">{error.message}</MDTypography>}
 
       <MDSnackbar
         color={showNotifyDownload.color}
@@ -229,7 +263,7 @@ function Inventory() {
                   /> */}
 
                   <MDSelect
-                    helperText="Filter by"
+                    helperText="Filter by Warehouse"
                     onChange={onChangeFilterBy}
                     options={warehouseList}
                     value={selectedFilterBy}

@@ -157,9 +157,10 @@ function Sidenav({
           <MDBox width="100%" sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}>
             <MDTypography
               textAlign="center"
+              fontSize="20px"
               component="h6"
               variant="button"
-              fontWeight="medium"
+              fontWeight="normal"
               color={textColor}
             >
               {brandName}

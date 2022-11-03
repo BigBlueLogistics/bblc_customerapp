@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -21,6 +21,8 @@ import { signOut, setIsAuthenticated } from "redux/auth/action";
 
 import { useMaterialUIController, setTransparentNavbar, setMiniSidenav } from "context";
 import { Theme } from "@mui/material/styles/createTheme";
+import burceMars from "assets/images/bruce-mars.jpg";
+import MDAvatar from "atoms/MDAvatar";
 import selector from "./selector";
 import { IDashboardNavbar, CSSPosition } from "./types";
 
@@ -31,7 +33,9 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, darkMode } = controller;
   const [openProfile, setOpenProfile] = useState(null);
+  const [openNotification, setOpenNotification] = useState(null);
   const route = useLocation().pathname.split("/").slice(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Setting the navbar type
@@ -62,11 +66,17 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
   const handleOpenProfile = (event) => setOpenProfile(event.currentTarget);
   const handleCloseProfile = () => setOpenProfile(null);
+  const handleOpenNotification = (event) => setOpenNotification(event.currentTarget);
+  const handleCloseNotification = () => setOpenNotification(null);
 
   const handleSignOut = () => {
     reduxDispatch(signOut());
     reduxDispatch(setIsAuthenticated(false));
     localStorage.removeItem("apiToken");
+  };
+
+  const handleProfile = () => {
+    navigate("/profile");
   };
 
   // Render the notifications menu
@@ -82,7 +92,29 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
       onClose={handleCloseProfile}
       sx={{ mt: 2 }}
     >
+      <NotificationItem
+        icon={<Icon>manage_accounts</Icon>}
+        title="Profile"
+        onClick={handleProfile}
+      />
       <NotificationItem icon={<Icon>logout</Icon>} title="Sign out" onClick={handleSignOut} />
+    </Menu>
+  );
+
+  const renderNotification = () => (
+    <Menu
+      anchorEl={openNotification}
+      anchorReference={null}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "right",
+      }}
+      open={Boolean(openNotification)}
+      onClose={handleCloseNotification}
+      sx={{ mt: 2 }}
+    >
+      <NotificationItem icon={<Icon>mail</Icon>} title="Mail" onClick={() => {}} />
+      <NotificationItem icon={<Icon>message</Icon>} title="Chat" onClick={() => {}} />
     </Menu>
   );
 
@@ -132,9 +164,19 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
                 onClick={handleOpenProfile}
                 title="profile"
               >
-                <Icon sx={iconsStyle}>account_circle</Icon>
+                <MDAvatar src={burceMars} alt="profile-image" size="sm" shadow="sm" />
               </IconButton>
               {renderProfile()}
+              <IconButton
+                sx={({ typography: { pxToRem } }) => ({ navbarIconButton, fontSize: pxToRem(36) })}
+                size="small"
+                disableRipple
+                onClick={handleOpenNotification}
+                title="notification"
+              >
+                <Icon sx={iconsStyle}>notifications</Icon>
+              </IconButton>
+              {renderNotification()}
               <IconButton
                 size="small"
                 disableRipple

@@ -12,7 +12,6 @@ export default styled("span")<IMaterialElem>(({ theme }) => {
     color: dark.main,
     fontSize: size.xl,
     padding: `${pxToRem(9)} ${pxToRem(6)} ${pxToRem(8)}`,
-    marginLeft: pxToRem(40),
     fontWeight: fontWeightMedium,
     cursor: "pointer",
     lineHeight: 0,
