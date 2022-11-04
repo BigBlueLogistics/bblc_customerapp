@@ -37,6 +37,7 @@ class InventoryExport implements FromView, ShouldAutoSize, WithEvents, WithDrawi
     public function view(): View
     {
         $result = $this->inventoryExport->getStocksInventory($this->customerCode, $this->warehouseNo, "material");
+        $customerInfo = $this->inventoryExport->getCustomerInfo($this->customerCode);
 
         $stocks = count($result) ? $result : [];
 
@@ -45,7 +46,10 @@ class InventoryExport implements FromView, ShouldAutoSize, WithEvents, WithDrawi
             'stocks' => $stocks,
             'warehouseNo' => $this->warehouseNo,
             'dateNow' => $dateTimeNow->format('m/d/Y'),
-            'timeNow' => $dateTimeNow->format('h:i:s A')
+            'timeNow' => $dateTimeNow->format('h:i:s A'),
+            'customerName' => $customerInfo['name'],
+            'address' => $customerInfo['address'],
+            'phone' => $customerInfo['phone'],
         ]);
     }
 
@@ -70,20 +74,20 @@ class InventoryExport implements FromView, ShouldAutoSize, WithEvents, WithDrawi
         $activeSheet->getStyle('G5:G8')->getFont()->setBold(true);
 
         // Label: Warehouse stocks.
-        $activeSheet->mergeCells('A8:I8')->getStyle('A8:I8')->getFont()->setBold(true)->setSize(26);
-        $activeSheet->getStyle('A8:I8')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $activeSheet->mergeCells('A8:K8')->getStyle('A8:K8')->getFont()->setBold(true)->setSize(26);
+        $activeSheet->getStyle('A8:K8')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         // Tables
 
         // Format numberic if empty default value is dash (-).
-        $activeSheet->getStyle('D:I')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
+        $activeSheet->getStyle('D:K')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
 
         // Set bold font of sub totals.
         $highestDataRow = $activeSheet->getHighestRow();
         $IndexSubTotals = (int)$highestDataRow;
 
         if ($IndexSubTotals > 10) {
-            $activeSheet->getStyle("B{$IndexSubTotals}:I{$IndexSubTotals}")->getFont()->setBold(true);
+            $activeSheet->getStyle("B{$IndexSubTotals}:K{$IndexSubTotals}")->getFont()->setBold(true);
         }
     }
 }

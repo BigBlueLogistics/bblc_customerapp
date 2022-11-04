@@ -45,7 +45,7 @@ function useDownloadFile() {
       const fileUrl = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = fileUrl;
-      link.setAttribute("download", `${filename}.xlsx`);
+      link.setAttribute("download", `${filename}`);
       document.body.appendChild(link);
       link.click();
       link.remove();

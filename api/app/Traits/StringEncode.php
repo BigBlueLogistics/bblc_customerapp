@@ -7,7 +7,7 @@ trait StringEncode
     public function convert_latin1_to_utf8_recursive($data)
     {
         if (is_string($data)) {
-            return utf8_encode($data);
+            return trim(utf8_encode($data));
         } elseif (is_array($data)) {
             $ret = [];
             foreach ($data as $i => $d) {

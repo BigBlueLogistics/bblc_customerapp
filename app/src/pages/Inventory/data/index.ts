@@ -8,7 +8,7 @@ export default function miscData() {
       { Header: "Fixed Weight", accessor: "fixedWt", align: "left" },
       { Header: "Unit", accessor: "unit", align: "left" },
       {
-        Header: "Total Stocks",
+        Header: "Available Stocks",
         accessor: "availableQty",
         align: "right",
         Cell: ({ value }) => (value > 0 ? formatDecimal(value, 3) : 0),
@@ -16,12 +16,6 @@ export default function miscData() {
       {
         Header: "Allocated Stocks",
         accessor: "allocatedQty",
-        align: "right",
-        Cell: ({ value }) => (value > 0 ? formatDecimal(value, 3) : 0),
-      },
-      {
-        Header: "Blocked Stocks",
-        accessor: "blockedQty",
         align: "right",
         Cell: ({ value }) => (value > 0 ? formatDecimal(value, 3) : 0),
       },

@@ -101,20 +101,22 @@ function Inventory() {
     }
   };
 
-  const exportToExcel = () => {
-    const data = { customer_code: customerCode, warehouse: selectedFilterBy };
+  const exportFile = (format: string) => {
+    const data = { customer_code: customerCode, warehouse: selectedFilterBy, format };
 
+    // TODO: format xlsx and csv
     downloadFile({
       url: "/inventory/export-excel",
-      filename: `${customerCode}-${selectedFilterBy}`,
+      filename: `${customerCode}-${selectedFilterBy}.csv`,
       data,
     });
     closeAction();
   };
 
-  const refresh = () => {};
-
-  const exportToCSV = () => {};
+  const refresh = () => {
+    fetchInventoryTable();
+    closeAction();
+  };
 
   useEffect(() => {
     fetchWarehouseList();
@@ -191,7 +193,7 @@ function Inventory() {
           Refresh
         </MDTypography>
       </MenuItem>
-      <MenuItem onClick={exportToExcel}>
+      <MenuItem onClick={() => exportFile("excel")}>
         <MDImageIcon src={excel} alt="export-excel-icon" width={18} height={18} />
         <MDTypography
           ml={1}
@@ -204,7 +206,7 @@ function Inventory() {
           Export as XLS file
         </MDTypography>
       </MenuItem>
-      <MenuItem onClick={exportToCSV}>
+      <MenuItem onClick={() => exportFile("csv")}>
         <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={() => {}}>
           description
         </Icon>
