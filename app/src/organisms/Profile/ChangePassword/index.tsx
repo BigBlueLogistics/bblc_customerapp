@@ -13,7 +13,7 @@ function ProfilesList({ title, shadow }: IProfilesList) {
       </MDBox>
       <MDBox p={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          Input
+          ...
         </MDBox>
       </MDBox>
     </Card>

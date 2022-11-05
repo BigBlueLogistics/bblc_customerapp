@@ -11,10 +11,12 @@ import breakpoints from "assets/theme/base/breakpoints";
 // Images
 import burceMars from "assets/images/bruce-mars.jpg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
+import selector from "pages/Profile/selector";
 import { IHeader } from "./types";
 
 function Header({ children }: IHeader) {
   const [tabsOrientation, setTabsOrientation] = useState<"horizontal" | "vertical">("horizontal");
+  const { name } = selector();
 
   useEffect(() => {
     // A function that sets the orientation state of the tabs.
@@ -70,11 +72,11 @@ function Header({ children }: IHeader) {
           </Grid>
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
-              <MDTypography variant="h5" fontWeight="medium">
-                Richard Davis
+              <MDTypography variant="h5" fontWeight="medium" textTransform="capitalize">
+                {name}
               </MDTypography>
               <MDTypography variant="button" color="text" fontWeight="regular">
-                CEO / Co-Founder
+                User
               </MDTypography>
             </MDBox>
           </Grid>
