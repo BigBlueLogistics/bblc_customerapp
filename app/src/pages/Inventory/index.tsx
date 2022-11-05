@@ -8,10 +8,6 @@ import MDTypography from "atoms/MDTypography";
 import MDSelect from "atoms/MDSelect";
 import MDSnackbar from "atoms/MDSnackbar";
 import Icon from "@mui/material/Icon";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-
-import MDImageIcon from "atoms/MDImageIcon";
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
@@ -19,13 +15,15 @@ import DataTable from "organisms/Tables/DataTable";
 import { useDownloadFile, useAppDispatch } from "hooks";
 import { setIsAuthenticated } from "redux/auth/action";
 
+import MDImageIcon from "atoms/MDImageIcon";
+import excel from "assets/images/icons/excel.png";
 import miscData from "pages/Inventory/data";
 import { inventoryServices } from "services";
 import { AxiosError } from "axios";
-
-import excel from "assets/images/icons/excel.png";
 import selector from "./selector";
 import { INotifyDownload } from "./types";
+import MenuAction from "./components/MenuAction";
+import { IMenuAction } from "./components/MenuAction/types";
 
 function Inventory() {
   const dispatch = useAppDispatch();
@@ -46,7 +44,12 @@ function Inventory() {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<AxiosError | null>(null);
 
-  const { downloadFile, status: downloadStatus, error: downloadError } = useDownloadFile();
+  const {
+    downloadFile,
+    status: downloadStatus,
+    error: downloadError,
+    filename,
+  } = useDownloadFile();
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
 
@@ -101,13 +104,13 @@ function Inventory() {
     }
   };
 
-  const exportFile = (format: string) => {
+  const exportFile = (format: "xlsx" | "csv") => {
     const data = { customer_code: customerCode, warehouse: selectedFilterBy, format };
 
-    // TODO: format xlsx and csv
+    const fileName = `${customerCode}-${selectedFilterBy}.${format}`;
     downloadFile({
       url: "/inventory/export-excel",
-      filename: `${customerCode}-${selectedFilterBy}.csv`,
+      filename: fileName,
       data,
     });
     closeAction();
@@ -137,92 +140,56 @@ function Inventory() {
 
   useEffect(() => {
     const { message } = downloadError || {};
-    const filename = `${customerCode}-${selectedFilterBy}`;
 
     if (!message && downloadStatus === "loading") {
       openNotifyDownload({
-        message: `Please wait exporting file [${filename}.xlsx]`,
+        message: `Please wait exporting file [${filename}]`,
         title: "Exporting File",
         color: "info",
       });
     }
     if (!message && downloadStatus === "success") {
       openNotifyDownload({
-        message: `You can now open [${filename}.xlsx]`,
-        title: "Export to excel complete!",
+        message: `You can now open [${filename}]`,
+        title: "Export file complete!",
         color: "success",
       });
     }
     if (message && downloadStatus === "failed") {
       openNotifyDownload({
         message,
-        title: "Failed to export excel",
+        title: "Failed to export file",
         color: "error",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [downloadError, downloadStatus]);
 
-  const renderAction = (
-    <Menu
-      id="action"
-      anchorEl={action}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(action)}
-      onClose={closeAction}
-    >
-      <MenuItem onClick={refresh}>
-        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={() => {}}>
+  const menuItemsAction: IMenuAction["items"] = [
+    {
+      icon: (
+        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">
           refresh
         </Icon>
-        <MDTypography
-          ml={1}
-          variant="body2"
-          sx={({ typography: { pxToRem } }) => ({
-            fontSize: pxToRem(14),
-            fontWeight: 400,
-          })}
-        >
-          Refresh
-        </MDTypography>
-      </MenuItem>
-      <MenuItem onClick={() => exportFile("excel")}>
-        <MDImageIcon src={excel} alt="export-excel-icon" width={18} height={18} />
-        <MDTypography
-          ml={1}
-          variant="body2"
-          sx={({ typography: { pxToRem } }) => ({
-            fontSize: pxToRem(14),
-            fontWeight: 400,
-          })}
-        >
-          Export as XLS file
-        </MDTypography>
-      </MenuItem>
-      <MenuItem onClick={() => exportFile("csv")}>
-        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={() => {}}>
+      ),
+      label: "Refresh",
+      onClick: refresh,
+    },
+    {
+      icon: <MDImageIcon src={excel} alt="export-excel-icon" width={18} height={18} />,
+      label: "Export as XLS file",
+      onClick: () => exportFile("xlsx"),
+    },
+    {
+      icon: (
+        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">
           description
         </Icon>
-        <MDTypography
-          ml={1}
-          variant="body2"
-          sx={({ typography: { pxToRem } }) => ({
-            fontSize: pxToRem(14),
-            fontWeight: 400,
-          })}
-        >
-          Export as CSV file
-        </MDTypography>
-      </MenuItem>
-    </Menu>
-  );
+      ),
+      label: "Export as CSV file",
+      onClick: () => exportFile("csv"),
+    },
+  ];
 
   return (
     <DashboardLayout>
@@ -283,7 +250,7 @@ function Inventory() {
                       more_vert
                     </Icon>
                   </MDBox>
-                  {renderAction}
+                  <MenuAction anchorEl={action} onClose={closeAction} items={menuItemsAction} />
                 </MDBox>
               </MDBox>
               <MDBox pt={3}>

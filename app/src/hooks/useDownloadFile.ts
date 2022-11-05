@@ -26,6 +26,7 @@ function axiosInit() {
 function useDownloadFile() {
   const [error, setError] = useState<Error>(null);
   const [status, setStatus] = useState<Status>("idle");
+  const [file, setFile] = useState("");
 
   const onDownloadProgress = (event: any) => {
     const percent = Math.round((event.loaded / event.total) * 100);
@@ -37,6 +38,7 @@ function useDownloadFile() {
   const downloadFile = async ({ url, filename = "file1", data = {} }: Download) => {
     setStatus("loading");
     setError(null);
+    setFile(filename);
 
     try {
       const config: AxiosRequestConfig = { params: data, onDownloadProgress, responseType: "blob" };
@@ -55,7 +57,7 @@ function useDownloadFile() {
     }
   };
 
-  return { downloadFile, error, status };
+  return { downloadFile, error, status, filename: file };
 }
 
 export default useDownloadFile;

@@ -57,8 +57,10 @@ class InventoryController extends Controller
         $export = new InventoryExport($this->inventory);
         $export->setFilterBy($customerCode, $warehouse);
 
-        if ($format === 'excel') {
-            return Excel::download($export, 'inventory.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+        if ($format === "xlsx") {
+            return Excel::download($export, 'inventory.xlsx', \Maatwebsite\Excel\Excel::XLSX, [
+                    'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                ]);
         } else {
             return Excel::download($export, 'inventory.csv', \Maatwebsite\Excel\Excel::CSV, [
                 'Content-Type' => 'text/csv'
