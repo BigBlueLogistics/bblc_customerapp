@@ -21,6 +21,10 @@ class AuthService extends HttpAdapter {
   signOut() {
     return this.get("/auth/logout");
   }
+
+  reAuthenticate() {
+    return this.get("/auth/is-authenticated");
+  }
 }
 
 export default AuthService;

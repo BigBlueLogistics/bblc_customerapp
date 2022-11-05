@@ -9,7 +9,8 @@ import MDBox from "atoms/MDBox";
 import Sidenav from "organisms/Sidenav";
 import Configurator from "organisms/Configurator";
 import { useAppDispatch } from "hooks";
-import { signOut, setIsAuthenticated } from "redux/auth/action";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { signOut, setIsAuthenticated, reAuthenticate } from "redux/auth/action";
 
 import theme from "assets/theme";
 import themeDark from "assets/theme-dark";
@@ -66,6 +67,15 @@ export default function App() {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
+
+  // Check user if authenticated when page reload
+  useEffect(() => {
+    const apiToken = localStorage.getItem("apiToken");
+    if (apiToken && pathname !== "/sign-in") {
+      // console.log("run redux reauth");
+      reduxDispatch(reAuthenticate());
+    }
+  }, [reduxDispatch]);
 
   const configsButton = (
     <MDBox

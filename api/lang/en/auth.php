@@ -23,4 +23,5 @@ return [
     'register-failed' => 'Account failed to register.',
     'register-exists' => 'Email Address has been exists.',
     'logout' => 'Successfully log-out',
+    're-authenticate' => 'Re-authenticated user'
 ];

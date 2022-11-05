@@ -147,9 +147,12 @@ class AuthController extends Controller
         $customerCode = [
             'customer_code' => $request->user()->company()->value('customer_code')
          ];
+        $currentToken = $request->bearerToken();
+
         return $this->sendResponse([
                 'authenticated' => Auth::check(),
-                'user' => array_merge(Auth::user()->toArray(), $customerCode)
-            ]);
+                'user' => array_merge(Auth::user()->toArray(), $customerCode),
+                'token' => $currentToken
+            ], __('auth.re-authenticate'));
     }
 }

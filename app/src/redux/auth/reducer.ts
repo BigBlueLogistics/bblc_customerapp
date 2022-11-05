@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AuthStoreType } from "types/authStore";
-import { signIn, signUp, resetPass, changePass, signOut } from "./thunk";
+import { signIn, signUp, resetPass, changePass, signOut, reAuthenticate } from "./action";
 
 const initialState: AuthStoreType = {
   successfulRequests: {},
@@ -89,6 +89,22 @@ export const authReducer = createSlice({
       .addCase(signOut.rejected, (state, action) => {
         state.failedRequests[signOut.rejected.type] = { message: action.error.message };
         state.request[signOut.pending.type] = { status: "failed" };
+      })
+      .addCase(reAuthenticate.pending, (state) => {
+        state.request[signIn.pending.type] = { status: "loading" };
+      })
+      .addCase(reAuthenticate.fulfilled, (state, action) => {
+        state.successfulRequests[signIn.fulfilled.type] = {
+          data: action.payload.data.user,
+          message: action.payload.message,
+        };
+        state.request[signIn.pending.type] = { status: "succeeded" };
+        state.authenticated = true;
+        state.apiToken = action.payload.data.token;
+      })
+      .addCase(reAuthenticate.rejected, (state, action) => {
+        state.failedRequests[signIn.rejected.type] = { message: action.error.message };
+        state.request[signIn.pending.type] = { status: "failed" };
       });
   },
 });

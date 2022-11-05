@@ -5,7 +5,7 @@ import selector from "./selector";
 
 interface IProtectedRoute {
   authenticated: boolean;
-  apiToken: "";
+  apiToken: string;
 }
 
 function ProtectedRoute({ authenticated, apiToken }: IProtectedRoute) {

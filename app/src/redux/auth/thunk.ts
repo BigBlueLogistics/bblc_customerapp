@@ -69,3 +69,16 @@ export const signOut = createAsyncThunk("auth/logout", async () => {
     }
   }
 });
+
+export const reAuthenticate = createAsyncThunk("auth/is-authenticated", async () => {
+  try {
+    const response = await authServices.reAuthenticate();
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data;
+    } else {
+      throw error.message;
+    }
+  }
+});
