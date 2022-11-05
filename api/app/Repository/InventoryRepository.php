@@ -102,9 +102,15 @@ class InventoryRepository implements IInventoryRepository
                             $restrictedWt = array_key_exists('restrictedWt', $data) ? $data['restrictedWt'] : 0;
 
                             // Calculate the quantity.
-                            $res['availableQty'] = $availableWt / $fixedWt;
-                            $res['allocatedQty'] = $allocatedWt / $fixedWt;
-                            $res['restrictedQty'] = $restrictedWt / $fixedWt;
+                            $availableQty = $availableWt / $fixedWt;
+                            $allocatedQty = $allocatedWt / $fixedWt;
+                            $restrictedQty = $restrictedWt / $fixedWt;
+
+                            // Quantity
+                            $res['availableQty'] = $availableQty;
+                            $res['allocatedQty'] = $allocatedQty;
+                            $res['restrictedQty'] = $restrictedQty;
+                            $res['totalQty'] = $availableQty + $allocatedQty + $restrictedQty;
 
                             // Weight
                             $res['availableWt'] = $availableWt;

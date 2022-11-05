@@ -65,7 +65,6 @@
         $subRestrictedWt = 0;
         $subTotalQty = 0;
         $subTotalWt = 0;
-        $rowTotalQty = 0;
         $rowTotalWt = 0;
         @endphp
 
@@ -82,7 +81,7 @@
             <td>{{ $rndAvailableWt = $inventory['availableWt'] }}</td>
             <td>{{ $rndrestrictedQty = $inventory['restrictedQty'] }}</td>
             <td>{{ $rndrestrictedWt = $inventory['restrictedWt'] }}</td>
-            <td>{{ $rowTotalQty = $rndAllocatedQty + $rndAvailableQty + $rndrestrictedQty }}</td>
+            <td>{{ $rowTotalQty = $inventory['totalQty'] }}</td>
             <td>{{ $rowTotalWt = $rndAllocatedWt + $rndAvailableWt + $rndrestrictedWt }}
             </td>
 

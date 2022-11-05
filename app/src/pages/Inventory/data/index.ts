@@ -25,6 +25,12 @@ export default function miscData() {
         align: "right",
         Cell: ({ value }) => (value > 0 ? formatDecimal(value, 3) : 0),
       },
+      {
+        Header: "Total Stocks",
+        accessor: "totalQty",
+        align: "right",
+        Cell: ({ value }) => (value > 0 ? formatDecimal(value, 3) : 0),
+      },
     ],
     groupOpts: [
       {
