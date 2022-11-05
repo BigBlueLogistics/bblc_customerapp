@@ -43,26 +43,42 @@ class InventoryRepository implements IInventoryRepository
             ])
             ->getDataToArray();
 
+
+        // Get product id
+        $productIds = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                ->param('QUERY_TABLE', 'NDBSMATG16')
+                ->param('DELIMITER', ';')
+                ->param('OPTIONS', [
+                    ['TEXT' => "MANDT EQ {$mandt}"],
+                    ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'MATNR'],
+                    ['FIELDNAME' => 'GUID'],
+                ])
+                ->getDataToArray();
+
         $collectionProducts = collect($utf8_data["T_SCWM_AQUA"]);
         $collectionFixedWt = collect($fixedWt);
+        $collectionPicking = collect($productIds);
 
         $groupProductDetails = $collectionProducts->groupBy('MATNR')
                 ->map(function ($group) {
-                    // Add up allocated, available and restricted
-                    $allocatedWt = $group->reduce(function ($total, $current) {
+                    // Add up initialAllocated, available and restricted
+                    $initialAllocatedWt = $group->reduce(function ($total, $current) {
                         if ($current['LGTYP'] === 'GIZN') {
                             $total += (float)$current['QUAN'];
                         }
                         return $total;
                     }, 0);
                     $restrictedWt = $group->reduce(function ($total, $current) {
-                        if (in_array(strtoupper($current['CAT']), ['K1','B1'])) {
+                        if (in_array(strtoupper($current['CAT']), ['Q1','B1'])) {
                             $total += (float)$current['QUAN'];
                         }
                         return $total;
                     }, 0);
                     $availableWt = $group->reduce(function ($total, $current) {
-                        if (!in_array(strtoupper($current['CAT']), ['K1','B1']) && $current['LGTYP'] !== 'GIZN') {
+                        if (!in_array(strtoupper($current['CAT']), ['Q1','B1']) && $current['LGTYP'] !== 'GIZN') {
                             $total += (float)$current['QUAN'];
                         }
                         return $total;
@@ -71,7 +87,7 @@ class InventoryRepository implements IInventoryRepository
                     return [
                         'materialCode' => $group[0]['MATNR'],
                         'description' => $group[0]['MAKTX'],
-                        'allocatedWt' => round($allocatedWt, 3),
+                        'initialAllocatedWt' => round($initialAllocatedWt, 3),
                         'restrictedWt' => round($restrictedWt, 3),
                         'availableWt' => round($availableWt, 3),
                     ];
@@ -86,20 +102,77 @@ class InventoryRepository implements IInventoryRepository
             ];
         });
 
-        $mergedProducts = $groupProductDetails->mergeRecursive($keyedFixedWt)
+        // Get vsolm
+        $keyedPicking = $collectionPicking->map(function ($item, $key) use ($mandt, $warehouseNo) {
+            $guid =  $item['GUID'];
+            $matnr = $item['MATNR'];
+
+            $vsolm = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                ->param('QUERY_TABLE', '/SCWM/ORDIM_O')
+                ->param('DELIMITER', ';')
+                ->param('OPTIONS', [
+                    ['TEXT' => "MANDT EQ {$mandt}"],
+                    ['TEXT' => " AND LGNUM EQ '{$warehouseNo}'"],
+                    ['TEXT' => " AND MATID EQ '{$guid}'"],
+                    ['TEXT' => " AND PROCTY EQ '2010'"],
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'VSOLM'],
+                ])
+                ->getDataToArray();
+
+            if (count($vsolm)) {
+                $vsolm = array_map(function ($value) use ($matnr) {
+                    $value['MATNR'] = $matnr;
+                    return $value;
+                }, $vsolm);
+            }
+
+            return $vsolm;
+        })->filter(function ($values) {
+            return count($values) > 0;
+        })->flatMap(function ($values) {
+            return $values;
+        });
+
+        // Add up vsolm
+        $totalVsolmWt = $keyedPicking->mapToGroups(function ($item) {
+            return [
+                $item['MATNR'] =>  [
+                    'totalVsolmWt' => $item['VSOLM']
+                ]
+            ];
+        })->map(function ($item) {
+            $totalVsolm = $item->reduce(function ($total, $current) {
+                $total += (float)$current['totalVsolmWt'];
+                return $total;
+            });
+
+            return [
+                'totalVsolmWt' => round($totalVsolm, 3)
+            ];
+        });
+
+
+        $mergedProducts = $groupProductDetails->mergeRecursive($keyedFixedWt);
+        $merged = $mergedProducts->mergeRecursive($totalVsolmWt)
                         ->filter(function ($data) {
                             // Return only data if anyone of the field below has value.
                             return (
-                                array_key_exists('availableWt', $data)
-                             || array_key_exists('allocatedWt', $data)
+                                (array_key_exists('availableWt', $data)
                              || array_key_exists('restrictedWt', $data)
+                             || array_key_exists('initialAllocatedWt', $data)
+                             || array_key_exists('totalVsolmWt', $data))
+                             && array_key_exists('materialCode', $data)
                             );
                         })
                         ->map(function ($data) {
                             $fixedWt = array_key_exists('fixedWt', $data) ? $data['fixedWt'] : 1;
                             $availableWt = array_key_exists('availableWt', $data) ? $data['availableWt'] : 0;
-                            $allocatedWt = array_key_exists('allocatedWt', $data) ? $data['allocatedWt'] : 0;
                             $restrictedWt = array_key_exists('restrictedWt', $data) ? $data['restrictedWt'] : 0;
+                            $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) ? $data['initialAllocatedWt'] : 0;
+                            $totalVsolmWt = array_key_exists('totalVsolmWt', $data) ? $data['totalVsolmWt'] : 0;
+                            $allocatedWt = $initialAllocatedWt + $totalVsolmWt;
 
                             // Calculate the quantity.
                             $availableQty = $availableWt / $fixedWt;
@@ -120,7 +193,7 @@ class InventoryRepository implements IInventoryRepository
                             return array_merge($data, $res);
                         })
                         ->all();
-        $result = count($mergedProducts) > 0 ? array_values($mergedProducts) : [];
+        $result = count($merged) > 0 ? array_values($merged) : [];
 
         return $result;
     }
