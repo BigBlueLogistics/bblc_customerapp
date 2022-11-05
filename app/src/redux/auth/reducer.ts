@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AuthStoreType } from "types/authStore";
-import { signIn, signUp, resetPass, changePass, signOut, reAuthenticate } from "./action";
+import { signIn, signUp, resetPass, changePass, signOut, reAuthenticate } from "./thunk";
 
 const initialState: AuthStoreType = {
   successfulRequests: {},
