@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AuthStoreType } from "types/authStore";
-import { signIn, signUp, resetPass, changePass, signOut, reAuthenticate } from "./thunk";
+import { signIn, signUp, resetPassLink, resetPass, signOut, reAuthenticate } from "./thunk";
 
 const initialState: AuthStoreType = {
   successfulRequests: {},
@@ -50,6 +50,20 @@ export const authReducer = createSlice({
         state.failedRequests[signUp.rejected.type] = { message: action.error.message };
         state.request[signUp.pending.type] = { status: "failed" };
       })
+      .addCase(resetPassLink.pending, (state) => {
+        state.request[resetPassLink.pending.type] = { status: "loading" };
+      })
+      .addCase(resetPassLink.fulfilled, (state, action) => {
+        state.successfulRequests[resetPassLink.fulfilled.type] = { data: action.payload };
+        state.successfulRequests[resetPassLink.fulfilled.type] = {
+          message: action.payload.message,
+        };
+        state.request[resetPassLink.pending.type] = { status: "succeeded" };
+      })
+      .addCase(resetPassLink.rejected, (state, action) => {
+        state.failedRequests[resetPassLink.rejected.type] = { message: action.error.message };
+        state.request[resetPassLink.pending.type] = { status: "failed" };
+      })
       .addCase(resetPass.pending, (state) => {
         state.request[resetPass.pending.type] = { status: "loading" };
       })
@@ -61,18 +75,6 @@ export const authReducer = createSlice({
       .addCase(resetPass.rejected, (state, action) => {
         state.failedRequests[resetPass.rejected.type] = { message: action.error.message };
         state.request[resetPass.pending.type] = { status: "failed" };
-      })
-      .addCase(changePass.pending, (state) => {
-        state.request[changePass.pending.type] = { status: "loading" };
-      })
-      .addCase(changePass.fulfilled, (state, action) => {
-        state.successfulRequests[changePass.fulfilled.type] = { data: action.payload };
-        state.successfulRequests[changePass.fulfilled.type] = { message: action.payload.message };
-        state.request[changePass.pending.type] = { status: "succeeded" };
-      })
-      .addCase(changePass.rejected, (state, action) => {
-        state.failedRequests[changePass.rejected.type] = { message: action.error.message };
-        state.request[changePass.pending.type] = { status: "failed" };
       })
       .addCase(signOut.pending, (state) => {
         state.request[signOut.pending.type] = { status: "loading" };

@@ -20,8 +20,8 @@
 import Profile from "pages/Profile";
 import SignIn from "pages/Authentication/SignIn";
 import SignUp from "pages/Authentication/SignUp";
+import ResetPasswordLink from "pages/Authentication/ResetPasswordLink";
 import ResetPassword from "pages/Authentication/ResetPassword";
-import ChangePassword from "pages/Authentication/ChangePassword";
 import Inventory from "pages/Inventory";
 import DefaultPage from "pages/DefaultPage";
 import NotFound from "pages/NotFound";
@@ -120,18 +120,18 @@ const routes: RoutesType = [
   },
   {
     type: "",
-    name: "Reset Password",
-    key: "reset-password",
-    route: "/reset-password",
-    component: <ResetPassword />,
+    name: "Reset Password Link",
+    key: "reset-password-link",
+    route: "/reset-password-link",
+    component: <ResetPasswordLink />,
     access: "public",
   },
   {
     type: "",
-    name: "Change Password",
-    key: "change-password",
-    route: "/change-password",
-    component: <ChangePassword />,
+    name: "Reset Password",
+    key: "reset-password",
+    route: "/reset-password",
+    component: <ResetPassword />,
     access: "public",
   },
   {

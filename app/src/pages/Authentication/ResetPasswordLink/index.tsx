@@ -1,4 +1,4 @@
-import { useEffect, memo } from "react";
+import { useEffect } from "react";
 import Card from "@mui/material/Card";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
@@ -8,30 +8,25 @@ import MDAlert2 from "atoms/MDAlert2";
 import CircularProgress from "@mui/material/CircularProgress";
 import CoverLayout from "pages/Authentication/components/CoverLayout";
 
-import { useAppDispatch, useQueryString } from "hooks";
-import { changePass } from "redux/auth/action";
+import { useAppDispatch } from "hooks";
+import { resetPassLink } from "redux/auth/action";
 
 import { useFormik } from "formik";
 import bgImage from "assets/images/bg-bblc-wh5.jpg";
 import validationSchema from "./validationSchema";
 import selector from "./selector";
 
-function ChangePassword() {
+function ResetPasswordLink() {
   const dispatch = useAppDispatch();
-  const queryString = useQueryString();
-  const { status, message, isChangingPass } = selector();
+  const { status, message, isResetting } = selector();
 
   const { values, errors, handleChange, handleSubmit, touched, resetForm } = useFormik({
     validationSchema,
     initialValues: {
-      password: "",
-      confirm_password: "",
+      email: "",
     },
     onSubmit: (validatedVal) => {
-      const token = queryString.get("token");
-      const email = queryString.get("email");
-
-      dispatch(changePass({ token, email, ...validatedVal }));
+      dispatch(resetPassLink(validatedVal));
     },
   });
 
@@ -77,10 +72,10 @@ function ChangePassword() {
           textAlign="center"
         >
           <MDTypography variant="h3" fontWeight="medium" color="white" mt={1}>
-            Change Password
+            Reset Password
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            Input a new password for your account.
+            You will receive an e-mail in maximum 60 seconds
           </MDTypography>
         </MDBox>
         <MDBox
@@ -91,31 +86,18 @@ function ChangePassword() {
         >
           {renderMessage()}
         </MDBox>
-        <MDBox pt={3} pb={3} px={3}>
+        <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
-            <MDBox mb={2}>
+            <MDBox mb={4}>
               <MDInput
-                name="password"
-                type="password"
-                label="Password"
+                name="email"
+                type="email"
+                label="Email"
                 variant="standard"
                 fullWidth
-                value={values.password}
-                error={touched.password && Boolean(errors.password)}
-                helperText={touched.password ? errors.password : ""}
-                onChange={handleChange}
-              />
-            </MDBox>
-            <MDBox mb={2}>
-              <MDInput
-                name="confirm_password"
-                type="password"
-                label="Confirm Password"
-                variant="standard"
-                fullWidth
-                value={values.confirm_password}
-                error={touched.confirm_password && Boolean(errors.confirm_password)}
-                helperText={touched.confirm_password ? errors.confirm_password : ""}
+                value={values.email}
+                error={touched.email && Boolean(errors.email)}
+                helperText={touched.email ? errors.email : ""}
                 onChange={handleChange}
               />
             </MDBox>
@@ -124,10 +106,10 @@ function ChangePassword() {
                 variant="gradient"
                 color="info"
                 type="submit"
-                disabled={isChangingPass}
+                disabled={isResetting}
                 fullWidth
               >
-                {isChangingPass ? <CircularProgress size={22} color="inherit" /> : "change"}
+                {isResetting ? <CircularProgress size={22} color="inherit" /> : "reset"}
               </MDButton>
             </MDBox>
           </MDBox>
@@ -137,4 +119,4 @@ function ChangePassword() {
   );
 }
 
-export default memo(ChangePassword);
+export default ResetPasswordLink;

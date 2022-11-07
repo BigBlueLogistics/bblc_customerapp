@@ -19,8 +19,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('auth')->group(function () {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/reset-password', [AuthController::class, 'reset'])->name('password.reset');
-    Route::post('/change-password', [AuthController::class, 'change']);
+    Route::post('/reset-password-link', [AuthController::class, 'resetLink'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'reset']);
 });
 
 // Protected routes

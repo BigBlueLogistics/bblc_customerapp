@@ -81,7 +81,7 @@ class AuthController extends Controller
         }
     }
 
-    public function reset(Request $request)
+    public function resetLink(Request $request)
     {
         try {
             $validator = Validator::make($request->only('email'), ['email' => 'required|email']);
@@ -106,7 +106,7 @@ class AuthController extends Controller
         }
     }
 
-    public function change(ResetPassRequest $request)
+    public function reset(ResetPassRequest $request)
     {
         try {
             $request->validated($request->only('email', 'password', 'token'));
@@ -135,7 +135,7 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
         Auth()->user()->currentAccessToken()->delete();
 

@@ -154,7 +154,7 @@ function SignIn() {
             <MDBox mt={1} mb={1} textAlign="center">
               <MDTypography
                 component={Link}
-                to="/reset-password"
+                to="/reset-password-link"
                 variant="button"
                 color="info"
                 fontWeight="medium"

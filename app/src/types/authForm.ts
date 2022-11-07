@@ -12,11 +12,11 @@ export type SignUpFormType = {
   company: string;
 };
 
-export type ResetPassType = {
+export type ResetPassLinkType = {
   email: string;
 };
 
-export type ChangePassType = {
+export type ResetPassType = {
   password: string;
   confirm_password: string;
   email: string;

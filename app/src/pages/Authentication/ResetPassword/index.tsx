@@ -8,7 +8,7 @@ import MDAlert2 from "atoms/MDAlert2";
 import CircularProgress from "@mui/material/CircularProgress";
 import CoverLayout from "pages/Authentication/components/CoverLayout";
 
-import { useAppDispatch } from "hooks";
+import { useAppDispatch, useQueryString } from "hooks";
 import { resetPass } from "redux/auth/action";
 
 import { useFormik } from "formik";
@@ -18,15 +18,20 @@ import selector from "./selector";
 
 function ResetPassword() {
   const dispatch = useAppDispatch();
-  const { status, message, isResetting } = selector();
+  const queryString = useQueryString();
+  const { status, message, isResettingPass } = selector();
 
   const { values, errors, handleChange, handleSubmit, touched, resetForm } = useFormik({
     validationSchema,
     initialValues: {
-      email: "",
+      password: "",
+      confirm_password: "",
     },
     onSubmit: (validatedVal) => {
-      dispatch(resetPass(validatedVal));
+      const token = queryString.get("token");
+      const email = queryString.get("email");
+
+      dispatch(resetPass({ token, email, ...validatedVal }));
     },
   });
 
@@ -72,10 +77,10 @@ function ResetPassword() {
           textAlign="center"
         >
           <MDTypography variant="h3" fontWeight="medium" color="white" mt={1}>
-            Reset Password
+            Change Password
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            You will receive an e-mail in maximum 60 seconds
+            Input a new password for your account.
           </MDTypography>
         </MDBox>
         <MDBox
@@ -86,18 +91,31 @@ function ResetPassword() {
         >
           {renderMessage()}
         </MDBox>
-        <MDBox pt={4} pb={3} px={3}>
+        <MDBox pt={3} pb={3} px={3}>
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
-            <MDBox mb={4}>
+            <MDBox mb={2}>
               <MDInput
-                name="email"
-                type="email"
-                label="Email"
+                name="password"
+                type="password"
+                label="Password"
                 variant="standard"
                 fullWidth
-                value={values.email}
-                error={touched.email && Boolean(errors.email)}
-                helperText={touched.email ? errors.email : ""}
+                value={values.password}
+                error={touched.password && Boolean(errors.password)}
+                helperText={touched.password ? errors.password : ""}
+                onChange={handleChange}
+              />
+            </MDBox>
+            <MDBox mb={2}>
+              <MDInput
+                name="confirm_password"
+                type="password"
+                label="Confirm Password"
+                variant="standard"
+                fullWidth
+                value={values.confirm_password}
+                error={touched.confirm_password && Boolean(errors.confirm_password)}
+                helperText={touched.confirm_password ? errors.confirm_password : ""}
                 onChange={handleChange}
               />
             </MDBox>
@@ -106,10 +124,10 @@ function ResetPassword() {
                 variant="gradient"
                 color="info"
                 type="submit"
-                disabled={isResetting}
+                disabled={isResettingPass}
                 fullWidth
               >
-                {isResetting ? <CircularProgress size={22} color="inherit" /> : "reset"}
+                {isResettingPass ? <CircularProgress size={22} color="inherit" /> : "change"}
               </MDButton>
             </MDBox>
           </MDBox>
