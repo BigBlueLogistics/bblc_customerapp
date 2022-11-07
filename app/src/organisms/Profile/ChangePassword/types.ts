@@ -1,5 +1,7 @@
-export type IProfilesList = {
+import { ChangePassType } from "types/authForm";
+
+export type IChangePassword = {
   title: string;
-  profiles: { [key: string]: any }[];
+  onChangePass: (values: ChangePassType) => void;
   shadow?: boolean;
 };

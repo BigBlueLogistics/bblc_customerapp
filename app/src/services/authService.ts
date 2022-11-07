@@ -1,4 +1,10 @@
-import { SignInFormType, SignUpFormType, ResetPassLinkType, ResetPassType } from "types/authForm";
+import {
+  SignInFormType,
+  SignUpFormType,
+  ResetPassLinkType,
+  ResetPassType,
+  ChangePassType,
+} from "types/authForm";
 import HttpAdapter from "./httpAdapter";
 
 class AuthService extends HttpAdapter {
@@ -24,6 +30,10 @@ class AuthService extends HttpAdapter {
 
   reAuthenticate() {
     return this.get("/auth/is-authenticated");
+  }
+
+  changePass(formData: ChangePassType) {
+    return this.post("/auth/change-password", formData);
   }
 }
 

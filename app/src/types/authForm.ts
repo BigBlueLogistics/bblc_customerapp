@@ -22,3 +22,9 @@ export type ResetPassType = {
   email: string;
   token: string;
 };
+
+export type ChangePassType = {
+  current_password: string;
+  confirm_password: string;
+  new_password: string;
+};
