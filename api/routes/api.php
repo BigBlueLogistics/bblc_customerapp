@@ -28,6 +28,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('auth')->group(function () {
         Route::get('/logout', [AuthController::class, 'logout']);
         Route::get('/is-authenticated', [AuthController::class, 'isAuthenticated']);
+        Route::post('/change-password', [AuthController::class, 'changePass']);
     });
 
     Route::prefix('inventory')->group(function () {

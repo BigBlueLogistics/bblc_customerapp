@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\ResetPassRequest;
+use App\Http\Requests\ChangePassRequest;
 use App\Models\User;
 use App\Models\CompanyRepresent;
 use App\Traits\HttpResponse;
@@ -154,5 +155,27 @@ class AuthController extends Controller
                 'user' => array_merge(Auth::user()->toArray(), $customerCode),
                 'token' => $currentToken
             ], __('auth.re-authenticate'));
+    }
+
+    public function changePass(ChangePassRequest $request)
+    {
+        $request->validated($request->all());
+
+        $email = Auth::user()->email;
+
+        $user = User::where('email', $email)->first();
+
+        if (!$user || !Hash::check($request->current_password, $user->password)) {
+            return $this->sendError("Current password not match", Response::HTTP_UNAUTHORIZED);
+        }
+        if ($request->new_password !== $request->confirm_password) {
+            return $this->sendError("New and confirm new password not match.", Response::HTTP_UNAUTHORIZED);
+        }
+
+        // Update user password
+        $user->password = Hash::make($request->confirm_password);
+        $user->save();
+
+        return $this->sendResponse(null, "New password has been set.");
     }
 }
