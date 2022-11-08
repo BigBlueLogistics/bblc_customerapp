@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
-import CircularProgress from "@mui/material/CircularProgress";
 import { useFormik } from "formik";
 
 import MDBox from "atoms/MDBox";
@@ -199,8 +198,9 @@ function SignUp() {
                 color="info"
                 fullWidth
                 disabled={isSigningUp}
+                loading={isSigningUp}
               >
-                {isSigningUp ? <CircularProgress size={22} color="inherit" /> : "sign up"}
+                sign up
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">

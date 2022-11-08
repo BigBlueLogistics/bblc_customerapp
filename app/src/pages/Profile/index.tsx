@@ -28,9 +28,9 @@ function Profile() {
   const onChangePass = async (values: ChangePassType) => {
     setStatus("loading");
     try {
-      setStatus("success");
       const { data } = await authServices.changePass(values);
       setStatusMsg(data.message);
+      setStatus("success");
     } catch (err) {
       setStatus("failed");
       setStatusMsg(err.message);
@@ -80,7 +80,12 @@ function Profile() {
               <Divider orientation="vertical" sx={{ mx: 0 }} />
             </Grid>
             <Grid item xs={12} xl={4}>
-              <ChangePassword title="Change password" onChangePass={onChangePass} shadow={false} />
+              <ChangePassword
+                title="Change password"
+                onChangePass={onChangePass}
+                shadow={false}
+                isLoading={status === "loading"}
+              />
             </Grid>
           </Grid>
         </MDBox>

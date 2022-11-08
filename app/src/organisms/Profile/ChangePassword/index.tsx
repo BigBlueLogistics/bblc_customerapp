@@ -8,7 +8,7 @@ import { useFormik } from "formik";
 import { IChangePassword } from "./types";
 import validationSchema from "./validationSchema";
 
-function ChangePassword({ title, onChangePass, shadow }: IChangePassword) {
+function ChangePassword({ title, onChangePass, shadow, isLoading }: IChangePassword) {
   const { values, handleSubmit, handleChange, errors, touched } = useFormik({
     validationSchema,
     initialValues: {
@@ -65,7 +65,13 @@ function ChangePassword({ title, onChangePass, shadow }: IChangePassword) {
           />
         </MDBox>
         <MDBox mb={2}>
-          <MDButton type="submit" variant="gradient" color="info">
+          <MDButton
+            type="submit"
+            variant="gradient"
+            color="info"
+            disabled={isLoading}
+            loading={isLoading}
+          >
             Change
           </MDButton>
         </MDBox>

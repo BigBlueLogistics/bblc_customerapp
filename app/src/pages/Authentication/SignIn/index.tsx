@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import MuiLink from "@mui/material/Link";
-import CircularProgress from "@mui/material/CircularProgress";
 
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GoogleIcon from "@mui/icons-material/Google";
@@ -132,8 +131,9 @@ function SignIn() {
                 color="info"
                 fullWidth
                 disabled={isLogging}
+                loading={isLogging}
               >
-                {isLogging ? <CircularProgress size={22} color="inherit" /> : "sign in"}
+                sign in
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">

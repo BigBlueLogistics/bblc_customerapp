@@ -5,7 +5,6 @@ import MDTypography from "atoms/MDTypography";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
 import MDAlert2 from "atoms/MDAlert2";
-import CircularProgress from "@mui/material/CircularProgress";
 import CoverLayout from "pages/Authentication/components/CoverLayout";
 
 import { useAppDispatch } from "hooks";
@@ -108,8 +107,9 @@ function ResetPasswordLink() {
                 type="submit"
                 disabled={isResetting}
                 fullWidth
+                loading={isResetting}
               >
-                {isResetting ? <CircularProgress size={22} color="inherit" /> : "reset"}
+                reset
               </MDButton>
             </MDBox>
           </MDBox>

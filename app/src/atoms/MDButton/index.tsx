@@ -1,13 +1,15 @@
 import { forwardRef } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
 import MDButtonRoot from "atoms/MDButton/MDButtonRoot";
 import { useMaterialUIController } from "context";
 import { IMDButton } from "./types";
 
 const MDButton = forwardRef<HTMLButtonElement, IMDButton>(
-  ({ color, variant, size, circular, iconOnly, children, ...rest }, ref) => {
+  ({ color, variant, size, circular, iconOnly, children, loading, ...rest }, ref) => {
     const [controller] = useMaterialUIController();
     const { darkMode } = controller;
 
+    console.log("isLoadingzz!", loading);
     return (
       <MDButtonRoot
         {...rest}
@@ -17,7 +19,7 @@ const MDButton = forwardRef<HTMLButtonElement, IMDButton>(
         size={size}
         ownerState={{ color, variant, size, circular, iconOnly, darkMode }}
       >
-        {children}
+        {loading ? <CircularProgress size={22} color="inherit" /> : children}
       </MDButtonRoot>
     );
   }
@@ -32,6 +34,7 @@ MDButton.defaultProps = {
   color: "white",
   circular: false,
   iconOnly: false,
+  loading: false,
 };
 
 export default MDButton;

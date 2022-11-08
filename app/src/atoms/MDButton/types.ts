@@ -16,6 +16,7 @@ type IButton = Partial<{
     | "dark";
   circular: boolean;
   iconOnly: boolean;
+  loading: boolean;
 }>;
 
 export type IMDButton =
