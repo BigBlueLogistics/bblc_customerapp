@@ -74,7 +74,7 @@
 
             <td>{{ $inventory['materialCode'] }}</td>
             <td>{{ $inventory['description'] }}</td>
-            <td>{{ $inventory['fixedWt'] ?? "-" }} / {{ $inventory['unit'] ?? "-" }}</td>
+            <td>{{ $inventory['fixedWt'] }} / {{ $inventory['unit'] }}</td>
             <td>{{ $rndAllocatedQty = $inventory['allocatedQty'] }}</td>
             <td>{{ $rndAllocatedWt = $inventory['allocatedWt'] }}</td>
             <td>{{ $rndAvailableQty = $inventory['availableQty'] }}</td>

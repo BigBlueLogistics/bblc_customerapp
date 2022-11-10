@@ -172,6 +172,7 @@ class InventoryRepository implements IInventoryRepository
                             $restrictedWt = array_key_exists('restrictedWt', $data) ? $data['restrictedWt'] : 0;
                             $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) ? $data['initialAllocatedWt'] : 0;
                             $totalVsolmWt = array_key_exists('totalVsolmWt', $data) ? $data['totalVsolmWt'] : 0;
+                            $unit = array_key_exists('unit', $data) ? $data['unit'] : "KG";
                             $allocatedWt = $initialAllocatedWt + $totalVsolmWt;
 
                             // Calculate the quantity.
@@ -189,6 +190,8 @@ class InventoryRepository implements IInventoryRepository
                             $res['availableWt'] = $availableWt;
                             $res['allocatedWt'] = $allocatedWt;
                             $res['restrictedWt'] = $restrictedWt;
+                            $res['fixedWt'] = $fixedWt;
+                            $res['unit'] = $unit;
 
                             return array_merge($data, $res);
                         })
