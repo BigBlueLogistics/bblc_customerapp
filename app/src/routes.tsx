@@ -18,6 +18,7 @@
 // import RTL from "pages/rtl";
 // import Notifications from "pages/notifications";
 import Profile from "pages/Profile";
+import Members from "pages/Members";
 import SignIn from "pages/Authentication/SignIn";
 import SignUp from "pages/Authentication/SignUp";
 import ResetPasswordLink from "pages/Authentication/ResetPasswordLink";
@@ -183,11 +184,11 @@ const routes: RoutesType = [
   },
   {
     type: "collapse",
-    name: "Profile",
-    key: "profile",
+    name: "Members",
+    key: "members",
     icon: <AccountBoxIcon />,
-    route: "/profile",
-    component: <UnderConstruction />,
+    route: "/members",
+    component: <Members />,
     access: "protected",
   },
   {

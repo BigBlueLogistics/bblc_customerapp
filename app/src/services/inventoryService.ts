@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from "axios";
 import HttpAdapter from "services/httpAdapter";
 
 class InventoryServices extends HttpAdapter {
-  getTableData(config: AxiosRequestConfig) {
+  getInventoryList(config: AxiosRequestConfig) {
     return this.get("/inventory/table", config);
   }
 

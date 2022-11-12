@@ -9,7 +9,6 @@ const MDButton = forwardRef<HTMLButtonElement, IMDButton>(
     const [controller] = useMaterialUIController();
     const { darkMode } = controller;
 
-    console.log("isLoadingzz!", loading);
     return (
       <MDButtonRoot
         {...rest}

@@ -78,7 +78,7 @@ function Inventory() {
         group_by: selectedGroupBy,
       };
 
-      const { data: rows } = await inventoryServices.getTableData({ params: tableBody });
+      const { data: rows } = await inventoryServices.getInventoryList({ params: tableBody });
       setRowsInventory(rows.data);
     } catch (err) {
       setError(err);
