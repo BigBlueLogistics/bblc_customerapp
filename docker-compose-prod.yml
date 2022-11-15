@@ -24,7 +24,7 @@ services:
       - 443:443
     volumes:
       - ./api:/var/www/html
-      - /api/vendor
+      - /var/www/html/vendor
       - app_build:/var/www/html/portal
     networks:
       - bblc_customer
@@ -44,7 +44,7 @@ services:
       - api
     volumes:
       - ./app:/var/www/html
-      - /app/node_modules
+      - /var/www/html/node_modules
       - app_build:/var/www/html/portal
     networks:
       - bblc_customer
