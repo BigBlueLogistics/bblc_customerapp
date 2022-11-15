@@ -29,7 +29,7 @@ class MemberUpdateRequest extends FormRequest
             'fname' => 'required', 'string',
             'lname' => 'required', 'string',
             'email' => 'required',  'email', 'string',
-            'email_verified_at' => 'required', 'string',
+            'company_name' => 'required', 'string',
             'is_verify' => Rule::in("true", "false"),
             'is_active' => Rule::in("true", "false"),
         ];

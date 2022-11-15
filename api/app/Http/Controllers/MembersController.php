@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Traits\HttpResponse;
 use App\Http\Requests\MemberUpdateRequest;
 use App\Models\User;
+use App\Models\CompanyRepresent;
 use Carbon\Carbon;
 
 class MembersController extends Controller
@@ -21,42 +22,10 @@ class MembersController extends Controller
         try {
             $members = User::with('company:user_id,customer_code')->get();
 
-            return $this->sendResponse($members, 'Members list');
+            return $this->sendResponse($members, 'members list');
         } catch (Throwable $th) {
             return $this->sendError($th);
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -71,10 +40,13 @@ class MembersController extends Controller
             $member = User::find($id, ['id','fname', 'lname','email','email_verified_at', 'active']);
 
             if ($member) {
-                $member = array_merge($member->toArray(), [ 'customer_code' => $member->company->customer_code ?? '']);
+                $member = array_merge($member->toArray(), [
+                    'customer_code' => $member->company->customer_code ?? '',
+                    'company' => $member->company->company ?? ''
+                ]);
             }
 
-            return $this->sendResponse($member, 'get member details');
+            return $this->sendResponse($member, 'member details');
         } catch (Throwable $th) {
             return $this->sendError($th);
         }
@@ -99,25 +71,28 @@ class MembersController extends Controller
             $member->active = strval($request->is_active);
 
             // Include column verify
-            if ($request->is_verify && !$request->email_verified_at) {
+            if ($request->is_verify === "true") {
                 $member->email_verified_at = Carbon::now();
             }
-            $member->save();
+            $isSuccess = $member->save();
 
-            return $this->sendResponse($member, 'successfully update member details');
+            // Update customer code and company if user exist else not insert the record.
+            if ($isSuccess) {
+                $currentCompanyName = $member->company ? $member->company->company : null;
+                $companyDetails = CompanyRepresent::updateOrCreate(
+                    [ 'user_id' => $id, 'company' => $currentCompanyName],
+                    ['customer_code' => $request->customer_code, 'company' => $request->company_name]
+                );
+
+                $member = array_merge($member->toArray(), [
+                   'customer_code' => $companyDetails->customer_code ?? '',
+                   'company' => $companyDetails->company ?? ''
+                ]);
+            }
+
+            return $this->sendResponse($member, __('members.updated'));
         } catch (Throwable $th) {
             return $this->sendError($th);
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

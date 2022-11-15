@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -40,7 +39,9 @@ function Members() {
 
   const [tableStatus, setTableStatus] = useState<IStatus>("idle");
   const [editStatus, setEditStatus] = useState<IStatus>("idle");
+  const [updateStatus, setUpdateStatus] = useState<IStatus>("idle");
   const [error, setError] = useState<AxiosError | null>(null);
+  const [formMessage, setFormMessage] = useState("");
 
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
@@ -59,23 +60,38 @@ function Members() {
     try {
       const { data: rows } = await membersServices.getMembers();
       setRowsMembers(rows.data);
-      setTableStatus("success");
+      setTableStatus("succeeded");
     } catch (err) {
       setError(err);
       setTableStatus("failed");
     }
   };
 
-  const fetchMemberById = async (memberId: number) => {
+  const fetchMemberById = async (userId: number) => {
     setEditStatus("loading");
+    setUpdateStatus("idle");
 
     try {
-      const { data: rows } = await membersServices.getMemberById(memberId);
+      const { data: rows } = await membersServices.getMemberById(userId);
       setMemberDetails(rows.data);
-      setEditStatus("success");
+      setEditStatus("succeeded");
     } catch (err) {
       setError(err);
       setEditStatus("failed");
+    }
+  };
+
+  const updateMember = async (userId: number, data: any) => {
+    setUpdateStatus("loading");
+
+    try {
+      const { data: rows } = await membersServices.updateMember(userId, data);
+      setMemberDetails(rows.data);
+      setUpdateStatus("succeeded");
+      setFormMessage(rows.message);
+    } catch (err) {
+      setFormMessage(err.message);
+      setUpdateStatus("failed");
     }
   };
 
@@ -93,13 +109,15 @@ function Members() {
     setShowEdit(false);
   };
 
-  const onShowDelete = () => {
-    setShowEdit(true);
-  };
-
   useEffect(() => {
     fetchMembers();
   }, []);
+
+  useEffect(() => {
+    if (updateStatus === "succeeded") {
+      fetchMembers();
+    }
+  }, [updateStatus]);
 
   useEffect(() => {
     if (error?.response?.statusText === "Unauthorized" && error?.response?.status === 401) {
@@ -138,8 +156,12 @@ function Members() {
       <FormEdit
         open={showEdit}
         onClose={onCloseEdit}
+        onUpdate={updateMember}
         data={memberDetails}
-        isLoading={editStatus === "loading"}
+        status={updateStatus}
+        message={formMessage}
+        isLoadingEdit={editStatus === "loading"}
+        isLoadingUpdate={updateStatus === "loading"}
       />
 
       <MDBox pt={6} pb={3}>
@@ -175,7 +197,7 @@ function Members() {
                 </MDTypography>
                 <DataTable
                   table={{
-                    columns: tableHeaders({ onShowEdit, onShowDelete }),
+                    columns: tableHeaders({ onShowEdit }),
                     rows: rowsMembers,
                   }}
                   isSorted={false}

@@ -9,40 +9,77 @@ import MDButton from "atoms/MDButton";
 import MDTypography from "atoms/MDTypography";
 import MDCheckbox from "atoms/MDCheckbox";
 import MDInput from "atoms/MDInput";
+import MDAlert2 from "atoms/MDAlert2";
 import SkeletonForm from "organisms/Skeleton/Form";
 import { useFormik } from "formik";
 import { format, parseISO } from "date-fns";
 import { IFormEdit } from "./type";
 import validationSchema from "./validationSchema";
 
-function FormEdit({ open, onClose, data, isLoading }: IFormEdit) {
+function FormEdit({
+  open,
+  onClose,
+  onUpdate,
+  data,
+  isLoadingEdit,
+  isLoadingUpdate,
+  status,
+  message,
+}: IFormEdit) {
   const { values, handleChange, handleSubmit, touched, errors } = useFormik({
     enableReinitialize: true,
     validationSchema,
     initialValues: {
+      id: data.id || "",
       customer_code: data.customer_code || "",
+      company_name: data.company || "",
       fname: data.fname || "",
       lname: data.lname || "",
       email: data.email || "",
       email_verified_at: data.email_verified_at || "",
       is_verify: false,
-      is_active: Boolean(data.active) || false,
+      is_active: data.active === "true",
     },
     onSubmit: (validatedVal) => {
       const isActive = validatedVal.is_active.toString();
-
-      console.log("member update", { ...validatedVal, is_active: isActive });
+      const isVerify = validatedVal.is_verify.toString();
+      const argsData = { ...validatedVal, is_active: isActive, is_verify: isVerify };
+      onUpdate(validatedVal.id, argsData);
     },
   });
 
+  const renderMessage = () => {
+    if (status === "succeeded" || status === "failed") {
+      const severity = status === "succeeded" ? "success" : "error";
+      return (
+        <MDAlert2
+          severity={severity}
+          dismissible
+          sx={({ typography: { pxToRem } }) => ({
+            width: "90%",
+            margin: `${pxToRem(15)} auto`,
+          })}
+        >
+          <MDTypography variant="body2" fontSize={14}>
+            {message}
+          </MDTypography>
+        </MDAlert2>
+      );
+    }
+    return null;
+  };
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
-      {isLoading ? (
+      {isLoadingEdit ? (
         <SkeletonForm contentWidth={300} />
       ) : (
         <MDBox component="form" role="form" onSubmit={handleSubmit}>
           <DialogTitle>Update Member Details</DialogTitle>
-          <DialogContent>
+          {renderMessage()}
+          <DialogContent sx={{ paddingTop: "20px !important" }}>
+            <input type="hidden" value={values.id} />
+
             {values.email_verified_at ? (
               <MDTypography
                 mb={1}
@@ -77,7 +114,7 @@ function FormEdit({ open, onClose, data, isLoading }: IFormEdit) {
                 label="Verify?"
                 name="is_verify"
                 onChange={handleChange}
-                checked={values.is_verify}
+                checked={String(values.is_verify) === "true"}
               />
             )}
 
@@ -93,6 +130,21 @@ function FormEdit({ open, onClose, data, isLoading }: IFormEdit) {
                 value={values.customer_code}
                 error={touched.customer_code && Boolean(errors.customer_code)}
                 helperText={touched.customer_code ? errors.customer_code : ""}
+                onChange={handleChange}
+              />
+            </MDBox>
+            <MDBox mb={1}>
+              <MDInput
+                autoCapitalize="characters"
+                margin="dense"
+                name="company_name"
+                label="Company"
+                type="text"
+                fullWidth
+                variant="standard"
+                value={values.company_name}
+                error={touched.company_name && Boolean(errors.company_name)}
+                helperText={touched.company_name ? errors.company_name : ""}
                 onChange={handleChange}
               />
             </MDBox>
@@ -139,15 +191,17 @@ function FormEdit({ open, onClose, data, isLoading }: IFormEdit) {
               <Switch
                 name="is_active"
                 color="primary"
-                checked={values.is_active}
+                checked={String(values.is_active) === "true"}
                 onChange={handleChange}
               />
               <MDTypography variant="body2">Active</MDTypography>
             </MDBox>
           </DialogContent>
           <DialogActions>
-            <MDButton onClick={onClose}>Cancel</MDButton>
-            <MDButton type="submit">Update</MDButton>
+            <MDButton onClick={onClose}>Close</MDButton>
+            <MDButton type="submit" disabled={isLoadingUpdate} loading={isLoadingUpdate}>
+              Update
+            </MDButton>
           </DialogActions>
         </MDBox>
       )}

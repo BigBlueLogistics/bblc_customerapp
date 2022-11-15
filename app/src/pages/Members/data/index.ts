@@ -5,7 +5,7 @@ import { IData } from "./types";
 
 export default function miscData() {
   return {
-    tableHeaders: ({ onShowEdit, onShowDelete }: IData) => [
+    tableHeaders: ({ onShowEdit }: IData) => [
       { Header: "Customer code", accessor: "company.customer_code", width: "20%", align: "left" },
       {
         Header: "Name",
@@ -37,7 +37,7 @@ export default function miscData() {
         Header: "Actions",
         accessor: "",
         align: "center",
-        cellProps: { onShowEdit, onShowDelete },
+        cellProps: { onShowEdit },
         Cell: CellAction,
       },
     ],
