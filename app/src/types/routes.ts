@@ -1,6 +1,6 @@
 import React from "react";
 
-type RoutesType = Array<{
+export type RouteParams = {
   type?: "collapse" | "title" | "divider" | "";
   name?: string;
   icon?: React.ReactNode;
@@ -9,9 +9,12 @@ type RoutesType = Array<{
   title?: string;
   key: string;
   index?: boolean;
+  allowedRoles?: Array<string>;
   route: string;
   component: React.ReactNode;
   access: "public" | "protected";
-}>;
+};
+
+type RoutesType = Array<RouteParams>;
 
 export default RoutesType;

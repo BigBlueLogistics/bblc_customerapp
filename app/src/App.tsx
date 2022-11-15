@@ -24,6 +24,7 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 
 // Images
 import brand from "assets/images/logo-bblc.png";
+import selector from "./selector";
 
 export default function App() {
   const reduxDispatch = useAppDispatch();
@@ -31,6 +32,7 @@ export default function App() {
   const { miniSidenav, direction, layout, openConfigurator, sidenavColor, darkMode } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
+  const { accountRole } = selector();
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -110,6 +112,7 @@ export default function App() {
             color={sidenavColor}
             brand={brand}
             brandName={process.env.REACT_APP_NAME}
+            accountRole={accountRole}
             routes={routes}
             handleSignOut={handleSignOut}
             onMouseEnter={handleOnMouseEnter}
@@ -120,7 +123,7 @@ export default function App() {
         </>
       )}
       {layout === "vr" && <Configurator />}
-      <RootNavigator />
+      <RootNavigator accountRole={accountRole} />
     </ThemeProvider>
   );
 }

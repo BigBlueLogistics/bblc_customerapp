@@ -17,6 +17,7 @@ return new class () extends Migration {
             $table->string('fname', 50);
             $table->string('lname', 50);
             $table->string('email')->unique();
+            $table->unsignedInteger('role_id');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('active', 5)->nullable();

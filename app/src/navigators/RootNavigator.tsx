@@ -4,7 +4,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import routes from "../routes";
 import selector from "./selector";
 
-function RootNavigator() {
+function RootNavigator({ accountRole }: { accountRole: string }) {
   const { isAuthenticated, apiToken } = selector();
 
   const renderRoutes = (allRoutes: RoutesType) => {
@@ -17,7 +17,14 @@ function RootNavigator() {
         return (
           <Route
             key={route.key}
-            element={<ProtectedRoute authenticated={isAuthenticated} apiToken={apiToken} />}
+            element={
+              <ProtectedRoute
+                authenticated={isAuthenticated}
+                apiToken={apiToken}
+                accountRole={accountRole}
+                allowedRoles={route.allowedRoles}
+              />
+            }
           >
             <Route path={route.route} element={route.component} />
           </Route>

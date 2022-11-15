@@ -4,6 +4,7 @@ export type ISidenav = {
   color?: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "dark";
   brand?: string;
   brandName: string;
+  accountRole: string;
   routes: { [key: string]: any }[];
   handleSignOut: () => void;
   onMouseEnter: () => void;

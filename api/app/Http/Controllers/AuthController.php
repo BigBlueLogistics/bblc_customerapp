@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\ResetPassRequest;
 use App\Http\Requests\ChangePassRequest;
 use App\Models\User;
+use App\Models\Role;
 use App\Models\CompanyRepresent;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
@@ -37,13 +38,14 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken($user->email)->plainTextToken;
-        $customerCode = [
-           'customer_code' => $user->company()->value('customer_code')
+        $relations = [
+           'customer_code' => $user->company()->value('customer_code'),
+           'role_name' => Role::where('id', $user->role_id)->first(['name'])->name ?? null
         ];
 
         return $this->sendResponse(
             [
-                'user'  =>  array_merge($user->toArray(), $customerCode),
+                'user'  =>  array_merge($user->toArray(), $relations),
                 'token' => $token,
             ],
             __('auth.success')
@@ -145,14 +147,15 @@ class AuthController extends Controller
 
     public function isAuthenticated(Request $request)
     {
-        $customerCode = [
-            'customer_code' => $request->user()->company()->value('customer_code')
+        $relations = [
+            'customer_code' => $request->user()->company()->value('customer_code'),
+            'role_name' => Role::where('id', $request->user()->role_id)->first(['name'])->name ?? null,
          ];
         $currentToken = $request->bearerToken();
 
         return $this->sendResponse([
                 'authenticated' => Auth::check(),
-                'user' => array_merge(Auth::user()->toArray(), $customerCode),
+                'user' => array_merge(Auth::user()->toArray(), $relations),
                 'token' => $currentToken
             ], __('auth.re-authenticate'));
     }

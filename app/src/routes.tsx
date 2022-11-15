@@ -88,6 +88,7 @@ const routes: RoutesType = [
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
     component: <Profile />,
+    allowedRoles: ["sysadmin", "user"],
   },
   {
     route: "*",
@@ -100,6 +101,7 @@ const routes: RoutesType = [
     component: <DefaultPage />,
     access: "public",
     key: "default-page",
+    allowedRoles: ["sysadmin", "user"],
   },
   {
     type: "",
@@ -145,6 +147,7 @@ const routes: RoutesType = [
     component: <Inventory />,
     title: "Check",
     access: "protected",
+    allowedRoles: ["sysadmin", "user"],
   },
   {
     type: "collapse",
@@ -154,6 +157,7 @@ const routes: RoutesType = [
     route: "/movements",
     component: <UnderConstruction />,
     access: "protected",
+    allowedRoles: ["sysadmin", "user"],
   },
   {
     type: "collapse",
@@ -163,6 +167,7 @@ const routes: RoutesType = [
     route: "/reports",
     component: <UnderConstruction />,
     access: "protected",
+    allowedRoles: ["sysadmin", "user"],
   },
   {
     type: "collapse",
@@ -172,6 +177,7 @@ const routes: RoutesType = [
     route: "/orders",
     component: <UnderConstruction />,
     access: "protected",
+    allowedRoles: ["sysadmin", "user"],
   },
   {
     type: "collapse",
@@ -181,6 +187,7 @@ const routes: RoutesType = [
     route: "/indicators",
     component: <UnderConstruction />,
     access: "protected",
+    allowedRoles: ["sysadmin", "user"],
   },
   {
     type: "collapse",
@@ -190,6 +197,7 @@ const routes: RoutesType = [
     route: "/members",
     component: <Members />,
     access: "protected",
+    allowedRoles: ["sysadmin"],
   },
   {
     type: "collapse",
@@ -199,6 +207,7 @@ const routes: RoutesType = [
     route: "/website",
     component: <UnderConstruction />,
     access: "protected",
+    allowedRoles: ["sysadmin", "user"],
   },
 ];
 
