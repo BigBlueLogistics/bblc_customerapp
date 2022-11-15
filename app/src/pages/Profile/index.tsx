@@ -30,7 +30,7 @@ function Profile() {
     try {
       const { data } = await authServices.changePass(values);
       setStatusMsg(data.message);
-      setStatus("success");
+      setStatus("succeeded");
     } catch (err) {
       setStatus("failed");
       setStatusMsg(err.message);
@@ -38,7 +38,7 @@ function Profile() {
   };
 
   const renderMessage = () => {
-    if (status === "success" || status === "failed") {
+    if (status === "succeeded" || status === "failed") {
       return (
         <MDAlert2
           severity={status === "failed" ? "error" : "success"}
