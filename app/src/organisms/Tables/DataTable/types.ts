@@ -15,6 +15,7 @@ export type IDataTable = {
     color: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "dark" | "light";
   };
   isSorted?: boolean;
+  isLoading?: boolean;
   noEndBorder?: boolean;
 };
 
@@ -24,6 +25,7 @@ export type IDataTableBodyCell = {
   align?: "left" | "right" | "center";
   colSpan?: number;
   rowSpan?: number;
+  isLoading?: boolean;
 };
 
 export type IDataTableHeadCell = {

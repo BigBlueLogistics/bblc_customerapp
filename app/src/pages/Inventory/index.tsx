@@ -20,6 +20,7 @@ import excel from "assets/images/icons/excel.png";
 import miscData from "pages/Inventory/data";
 import { inventoryServices } from "services";
 import { AxiosError } from "axios";
+import { IStatus } from "types/status";
 import selector from "./selector";
 import { INotifyDownload } from "./types";
 import MenuAction from "./components/MenuAction";
@@ -41,7 +42,7 @@ function Inventory() {
   const [rowsInventory, setRowsInventory] = useState([]);
   const [action, setAction] = useState(null);
 
-  const [isLoading, setLoading] = useState(false);
+  const [tableStatus, setTableStatus] = useState<IStatus>("idle");
   const [error, setError] = useState<AxiosError | null>(null);
 
   const {
@@ -69,7 +70,7 @@ function Inventory() {
   };
 
   const fetchInventoryTable = async () => {
-    setLoading(true);
+    setTableStatus("loading");
 
     try {
       const tableBody = {
@@ -80,16 +81,14 @@ function Inventory() {
 
       const { data: rows } = await inventoryServices.getInventoryList({ params: tableBody });
       setRowsInventory(rows.data);
+      setTableStatus("succeeded");
     } catch (err) {
       setError(err);
-    } finally {
-      setLoading(false);
+      setTableStatus("failed");
     }
   };
 
   const fetchWarehouseList = async () => {
-    setLoading(true);
-
     try {
       const { data: rows } = await inventoryServices.getWarehouseList();
 
@@ -99,8 +98,6 @@ function Inventory() {
       }
     } catch (err) {
       setError(err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -195,8 +192,7 @@ function Inventory() {
     <DashboardLayout>
       <DashboardNavbar />
 
-      {isLoading && <MDTypography variant="body2">Loading...</MDTypography>}
-      {error && <MDTypography variant="body2">{error.message}</MDTypography>}
+      {tableStatus === "failed" && <MDTypography variant="body2">{error.message}</MDTypography>}
 
       <MDSnackbar
         color={showNotifyDownload.color}
@@ -260,6 +256,7 @@ function Inventory() {
                 <DataTable
                   table={{ columns: tableHeaders, rows: rowsInventory }}
                   isSorted={false}
+                  isLoading={tableStatus === "loading"}
                   entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}
                   showTotalEntries
                   noEndBorder

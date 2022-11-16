@@ -141,7 +141,6 @@ function Members() {
     <DashboardLayout>
       <DashboardNavbar />
 
-      {tableStatus === "loading" && <MDTypography variant="body2">Loading...</MDTypography>}
       {tableStatus === "failed" && <MDTypography variant="body2">{error.message}</MDTypography>}
 
       <MDSnackbar
@@ -201,6 +200,7 @@ function Members() {
                     rows: rowsMembers,
                   }}
                   isSorted={false}
+                  isLoading={tableStatus === "loading"}
                   entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}
                   showTotalEntries
                   noEndBorder

@@ -6,6 +6,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import Icon from "@mui/material/Icon";
 import Autocomplete from "@mui/material/Autocomplete";
+import Skeleton from "@mui/material/Skeleton";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDInput from "atoms/MDInput";
@@ -23,6 +24,7 @@ function DataTable({
   pagination,
   isSorted,
   noEndBorder,
+  isLoading,
 }: IDataTable) {
   const defaultValue =
     typeof entriesPerPage === "object" && entriesPerPage.defaultValue
@@ -32,8 +34,19 @@ function DataTable({
     typeof entriesPerPage === "object" && entriesPerPage.entries
       ? entriesPerPage.entries.map((el) => el.toString())
       : ["5", "10", "15", "20", "25"];
-  const columns = useMemo(() => table.columns, [table]);
-  const data = useMemo(() => table.rows, [table]);
+
+  const columns = useMemo(() => {
+    return isLoading
+      ? table.columns.map((column) => ({
+          ...column,
+          Cell: <Skeleton width="100%" height={15} />,
+        }))
+      : table.columns;
+  }, [isLoading, table]);
+
+  const data = useMemo(() => {
+    return isLoading ? new Array(defaultValue).fill({}) : table.rows;
+  }, [isLoading, table, defaultValue]);
 
   const tableInstance = useTable(
     { columns, data, initialState: { pageIndex: 0 } },
@@ -190,6 +203,7 @@ function DataTable({
                   {row.cells.map((cell) => (
                     <DataTableBodyCell
                       key={cell.id}
+                      isLoading={isLoading}
                       noBorder={noEndBorder && rows.length - 1 === key}
                       align={cell.column.align ? cell.column.align : "left"}
                       {...cell.getCellProps()}

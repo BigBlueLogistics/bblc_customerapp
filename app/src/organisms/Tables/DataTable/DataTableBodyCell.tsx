@@ -1,7 +1,16 @@
 import MDBox from "atoms/MDBox";
 import { IDataTableBodyCell } from "./types";
 
-function DataTableBodyCell({ noBorder, align, colSpan, rowSpan, children }: IDataTableBodyCell) {
+function DataTableBodyCell({
+  noBorder,
+  align,
+  colSpan,
+  rowSpan,
+  children,
+  isLoading,
+}: IDataTableBodyCell) {
+  const width = isLoading ? "100%" : "max-content";
+
   return (
     <MDBox
       component="td"
@@ -15,12 +24,7 @@ function DataTableBodyCell({ noBorder, align, colSpan, rowSpan, children }: IDat
       colSpan={colSpan}
       rowSpan={rowSpan}
     >
-      <MDBox
-        display="inline-block"
-        width="max-content"
-        color="text"
-        sx={{ verticalAlign: "middle" }}
-      >
+      <MDBox display="inline-block" width={width} color="text" sx={{ verticalAlign: "middle" }}>
         {children}
       </MDBox>
     </MDBox>
