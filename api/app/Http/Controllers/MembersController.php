@@ -73,6 +73,7 @@ class MembersController extends Controller
             // Include column verify
             if ($request->is_verify === "true") {
                 $member->email_verified_at = Carbon::now();
+                $member->role_id = 2;
             }
             $isSuccess = $member->save();
 
