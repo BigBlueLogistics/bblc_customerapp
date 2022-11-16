@@ -21,7 +21,6 @@ import { signOut, setIsAuthenticated } from "redux/auth/action";
 
 import { useMaterialUIController, setTransparentNavbar, setMiniSidenav } from "context";
 import { Theme } from "@mui/material/styles/createTheme";
-import burceMars from "assets/images/bruce-mars.jpg";
 import MDAvatar from "atoms/MDAvatar";
 import selector from "./selector";
 import { IDashboardNavbar, CSSPosition } from "./types";
@@ -164,7 +163,20 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
                 onClick={handleOpenProfile}
                 title="profile"
               >
-                <MDAvatar src={burceMars} alt="profile-image" size="sm" shadow="sm" />
+                <MDAvatar
+                  size="sm"
+                  shadow="sm"
+                  sx={({ palette: { grey } }) => ({ background: grey[500] })}
+                >
+                  <MDTypography
+                    variant="h5"
+                    fontWeight="regular"
+                    color="white"
+                    marginLeft="0px !important"
+                  >
+                    {name.charAt(0).toUpperCase()}
+                  </MDTypography>
+                </MDAvatar>
               </IconButton>
               {renderProfile()}
               <IconButton

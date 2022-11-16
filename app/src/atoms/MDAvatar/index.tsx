@@ -3,8 +3,10 @@ import MDAvatarRoot from "atoms/MDAvatar/MDAvatarRoot";
 import { IMDAvatar } from "./types";
 
 const MDAvatar = forwardRef<HTMLDivElement, IMDAvatar>(
-  ({ bgColor, size, shadow, ...rest }, ref) => (
-    <MDAvatarRoot ref={ref} ownerState={{ shadow, bgColor, size }} {...rest} />
+  ({ bgColor, size, shadow, children, ...rest }, ref) => (
+    <MDAvatarRoot ref={ref} ownerState={{ shadow, bgColor, size }} {...rest}>
+      {children}
+    </MDAvatarRoot>
   )
 );
 
@@ -15,6 +17,7 @@ MDAvatar.defaultProps = {
   bgColor: "transparent",
   size: "md",
   shadow: "none",
+  children: null,
 };
 
 export default MDAvatar;

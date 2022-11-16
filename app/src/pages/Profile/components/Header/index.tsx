@@ -9,7 +9,7 @@ import MDAvatar from "atoms/MDAvatar";
 import breakpoints from "assets/theme/base/breakpoints";
 
 // Images
-import burceMars from "assets/images/bruce-mars.jpg";
+// import burceMars from "assets/images/bruce-mars.jpg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
 import selector from "pages/Profile/selector";
 import { IHeader } from "./types";
@@ -68,7 +68,15 @@ function Header({ children }: IHeader) {
       >
         <Grid container spacing={3} alignItems="center">
           <Grid item>
-            <MDAvatar src={burceMars} alt="profile-image" size="xl" shadow="sm" />
+            <MDAvatar
+              size="xl"
+              shadow="sm"
+              sx={({ palette: { grey } }) => ({ background: grey[500] })}
+            >
+              <MDTypography variant="h3" fontWeight="regular" color="white">
+                {name.charAt(0).toUpperCase()}
+              </MDTypography>
+            </MDAvatar>
           </Grid>
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
