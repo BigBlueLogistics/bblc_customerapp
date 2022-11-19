@@ -6,80 +6,71 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
-use App\Facades\SapRfcFacade;
 use App\Traits\HttpResponse;
 use App\Interfaces\IInventoryRepository;
+use App\Interfaces\IWarehouseRepository;
 use App\Exports\InventoryExport;
+use Throwable;
 
 class InventoryController extends Controller
 {
     use HttpResponse;
 
     private $inventory;
+    private $warehouse;
 
-    public function __construct(IInventoryRepository $inventory)
+    public function __construct(IInventoryRepository $inventory, IWarehouseRepository $warehouse)
     {
         $this->inventory = $inventory;
+        $this->warehouse = $warehouse;
     }
 
     public function warehouseList()
     {
-        $mandt = SapRfcFacade::getMandt();
-        $res = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-            ->param('QUERY_TABLE', 'T001W')
-            ->param('DELIMITER', ';')
-            ->param('OPTIONS', [
-                ['TEXT' => "MANDT = {$mandt}"],
-                ['TEXT' => " AND WERKS LIKE 'BB%'"],
-            ])
-            ->param('FIELDS', [
-                ['FIELDNAME' => 'WERKS'],
-                ['FIELDNAME' => 'NAME1'],
-            ])
-            ->getDataToArray();
+        try {
+            $WhList = $this->warehouse->warehouseList();
 
-        $wh = array_map(function ($value) {
-            $arr['PLANT'] = $value['WERKS'];
-            $arr['NAME1'] = $value['NAME1'];
-
-            return $arr;
-        }, $res);
-
-        return $this->sendResponse($wh, 'List of warehouse');
+            return $this->sendResponse($WhList, 'List of warehouse');
+        } catch (\Throwable $th) {
+            return $this->sendError($th);
+        }
     }
 
     public function export(Request $request)
     {
-        $customerCode = $request->input('customer_code');
-        $warehouse = $request->input('warehouse');
-        $format = $request->input('format');
+        try {
+            $customerCode = $request->input('customer_code');
+            $warehouse = $request->input('warehouse');
+            $format = $request->input('format');
 
-        $export = new InventoryExport($this->inventory);
-        $export->setFilterBy($customerCode, $warehouse);
+            $export = new InventoryExport($this->inventory);
+            $export->setFilterBy($customerCode, $warehouse);
 
-        if ($format === "xlsx") {
-            return Excel::download($export, 'inventory.xlsx', \Maatwebsite\Excel\Excel::XLSX, [
-                    'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            if ($format === "xlsx") {
+                return Excel::download($export, 'inventory.xlsx', \Maatwebsite\Excel\Excel::XLSX, [
+                        'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    ]);
+            } else {
+                return Excel::download($export, 'inventory.csv', \Maatwebsite\Excel\Excel::CSV, [
+                    'Content-Type' => 'text/csv'
                 ]);
-        } else {
-            return Excel::download($export, 'inventory.csv', \Maatwebsite\Excel\Excel::CSV, [
-                'Content-Type' => 'text/csv'
-            ]);
+            }
+        } catch (Throwable $th) {
+            return $this->sendError($th);
         }
     }
 
-    public function table(Request $request)
+    public function index(Request $request)
     {
         try {
             $customerCode = $request->input('customer_code');
             $warehouse = $request->input('warehouse');
-            $groupBy = $request->input('group_by');
 
-            $res = $this->inventory->getStocksInventory($customerCode, $warehouse, $groupBy);
+            $res = $this->inventory->getStocksInventory($customerCode, $warehouse);
 
             return $this->sendResponse($res);
-        } catch (SapException $ex) {
-            return $this->sendError($ex, 500);
+        } catch (Throwable $th) {
+            return $this->sendError($th);
         }
     }
 }

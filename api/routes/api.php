@@ -34,7 +34,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('inventory')->group(function () {
         Route::get('/warehouse-list', [InventoryController::class, 'warehouseList']);
-        Route::get('/table', [InventoryController::class, 'table']);
+        Route::get('/table', [InventoryController::class, 'index']);
         Route::get('/export-excel', [InventoryController::class, 'export']);
     });
 
