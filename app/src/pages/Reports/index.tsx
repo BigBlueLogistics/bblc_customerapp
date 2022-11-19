@@ -6,6 +6,8 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDSelect from "atoms/MDSelect";
 import MDSnackbar from "atoms/MDSnackbar";
+import MDateRangePicker from "atoms/MDateRangePicker";
+import MDButton from "atoms/MDButton";
 import Icon from "@mui/material/Icon";
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
@@ -16,7 +18,7 @@ import { setIsAuthenticated } from "redux/auth/action";
 
 import MDImageIcon from "atoms/MDImageIcon";
 import excel from "assets/images/icons/excel.png";
-import miscData from "pages/Inventory/data";
+import miscData from "pages/Reports/data";
 import { inventoryServices } from "services";
 import { AxiosError } from "axios";
 import { IStatus } from "types/status";
@@ -26,17 +28,21 @@ import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import { IMenuAction } from "./components/MenuAction/types";
 
-function Inventory() {
+function Reports() {
   const dispatch = useAppDispatch();
   const { customerCode } = selector();
-  const { tableHeaders } = miscData();
+  const { tableHeaders, reportOpts, groupOpts, sortOpts } = miscData();
   const [showNotifyDownload, setShowNotifyDownload] = useState<INotifyDownload>({
     open: false,
     message: "",
     title: "",
     color: "primary",
   });
-  const [selectedFilterBy, setSelectedFilterBy] = useState("");
+  const [selectedReport, setSelectedReport] = useState("");
+  const [selectedGroupBy, setSelectedGroupBy] = useState("");
+  const [selectedWH, setSelectedWH] = useState("");
+  const [, setDateRange] = useState(null);
+  const [selectedSort, setSelectedSort] = useState("");
   const [warehouseList, setWarehouseList] = useState([]);
   const [rowsInventory, setRowsInventory] = useState([]);
   const [action, setAction] = useState(null);
@@ -61,8 +67,24 @@ function Inventory() {
     setShowNotifyDownload({ open: false });
   };
 
-  const onChangeFilterBy = (e: ChangeEvent<HTMLInputElement>) => {
-    setSelectedFilterBy(e.target.value);
+  const onChangeReport = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectedReport(e.target.value);
+  };
+
+  const onChangeGroupBy = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectedGroupBy(e.target.value);
+  };
+
+  const onChangeWH = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectedWH(e.target.value);
+  };
+
+  const onChangeDateRange = (dates) => {
+    setDateRange(dates);
+  };
+
+  const onChangeSort = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectedSort(e.target.value);
   };
 
   const onToggleFilter = () => {
@@ -75,7 +97,8 @@ function Inventory() {
     try {
       const tableBody = {
         customer_code: customerCode,
-        warehouse: selectedFilterBy,
+        warehouse: selectedWH,
+        group_by: selectedGroupBy,
       };
 
       const { data: rows } = await inventoryServices.getInventoryList({ params: tableBody });
@@ -98,9 +121,9 @@ function Inventory() {
   };
 
   const exportFile = (format: "xlsx" | "csv") => {
-    const data = { customer_code: customerCode, warehouse: selectedFilterBy, format };
+    const data = { customer_code: customerCode, warehouse: selectedWH, format };
 
-    const fileName = `${customerCode}-${selectedFilterBy}.${format}`;
+    const fileName = `${customerCode}-${selectedWH}.${format}`;
     downloadFile({
       url: "/inventory/export-excel",
       filename: fileName,
@@ -118,12 +141,12 @@ function Inventory() {
     fetchWarehouseList();
   }, []);
 
-  useEffect(() => {
-    if (customerCode && selectedFilterBy) {
-      fetchInventoryTable();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customerCode, selectedFilterBy]);
+  // useEffect(() => {
+  //   if (customerCode && selectedWH) {
+  //     fetchInventoryTable();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [customerCode, selectedWH]);
 
   useEffect(() => {
     if (error?.response?.statusText === "Unauthorized" && error?.response?.status === 401) {
@@ -214,9 +237,10 @@ function Inventory() {
                 bgColor="info"
                 borderRadius="lg"
                 coloredShadow="info"
+                borderTop="2px solid #dadcde"
               >
                 <MDTypography ml={3} variant="h4" color="light" textTransform="uppercase">
-                  Material Details
+                  Report Details
                 </MDTypography>
 
                 <MDBox my="auto" marginLeft="auto">
@@ -226,9 +250,11 @@ function Inventory() {
                   >
                     {toggleFilter ? "search_off" : "search"}
                   </ActionIcon>
-                  <ActionIcon onClick={openAction}>more_vert</ActionIcon>
+                  <ActionIcon title="actions" onClick={openAction}>
+                    more_vert
+                  </ActionIcon>
+                  <MenuAction anchorEl={action} onClose={closeAction} items={menuItemsAction} />
                 </MDBox>
-                <MenuAction anchorEl={action} onClose={closeAction} items={menuItemsAction} />
               </MDBox>
 
               <MDBox pt={3}>
@@ -238,25 +264,85 @@ function Inventory() {
                     backgroundColor: grey[200],
                     borderTop: `2px solid ${grey[400]}`,
                     width: "100%",
+                    overflowX: "auto",
                   })}
                 >
                   <MDBox
-                    sx={{
+                    sx={({ breakpoints }) => ({
                       display: "flex",
                       alignItems: "end",
                       justifyContent: "center",
-                    }}
+                      [breakpoints.down("md")]: {
+                        justifyContent: "space-between",
+                      },
+                    })}
                   >
+                    <MDSelect
+                      label="Type of Reports"
+                      variant="outlined"
+                      onChange={onChangeReport}
+                      options={reportOpts}
+                      value={selectedReport}
+                      showArrowIcon
+                    />
+
+                    <MDSelect
+                      label="Group by"
+                      variant="outlined"
+                      onChange={onChangeGroupBy}
+                      options={groupOpts}
+                      value={selectedGroupBy}
+                      showArrowIcon
+                    />
+
                     <MDSelect
                       label="Warehouse"
                       variant="outlined"
-                      onChange={onChangeFilterBy}
+                      onChange={onChangeWH}
                       options={warehouseList}
-                      value={selectedFilterBy}
+                      value={selectedWH}
                       showArrowIcon
                       optKeyValue="PLANT"
                       optKeyLabel="NAME1"
                     />
+
+                    <MDSelect
+                      label="Sort"
+                      variant="outlined"
+                      onChange={onChangeSort}
+                      options={sortOpts}
+                      value={selectedSort}
+                      showArrowIcon
+                    />
+
+                    <MDBox margin="8px">
+                      <MDTypography
+                        variant="body2"
+                        fontWeight="regular"
+                        sx={({ typography: { pxToRem }, palette }) => ({
+                          fontSize: pxToRem(12),
+                          color: palette.grey[600],
+                        })}
+                      >
+                        Dates
+                      </MDTypography>
+                      <MDateRangePicker
+                        onChange={onChangeDateRange}
+                        buttonStyle={{ minWidth: "150px" }}
+                      />
+                    </MDBox>
+
+                    <MDButton sx={{ margin: "8px" }} size="small" variant="gradient" color="info">
+                      Filter
+                    </MDButton>
+                    <MDButton
+                      sx={{ margin: "8px" }}
+                      size="small"
+                      variant="gradient"
+                      color="warning"
+                    >
+                      clear
+                    </MDButton>
                   </MDBox>
                 </MDBox>
                 <DataTable
@@ -278,4 +364,4 @@ function Inventory() {
   );
 }
 
-export default Inventory;
+export default Reports;

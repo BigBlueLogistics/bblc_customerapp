@@ -32,5 +32,59 @@ export default function miscData() {
         Cell: ({ value }) => (value > 0 ? formatDecimal(value, 3) : 0),
       },
     ],
+    reportOpts: [
+      {
+        value: "",
+        label: "--None--",
+      },
+      {
+        value: "stock",
+        label: "Stock Status",
+      },
+      {
+        value: "wh",
+        label: "WH Snapshot",
+      },
+      {
+        value: "aging",
+        label: "Aging Report",
+      },
+    ],
+    groupOpts: [
+      {
+        value: "",
+        label: "--None--",
+      },
+      {
+        value: "material",
+        label: "Material Codes",
+      },
+      {
+        value: "batch",
+        label: "Batch Codes",
+      },
+      {
+        value: "expiry",
+        label: "Expiry Dates",
+      },
+    ],
+    sortOpts: [
+      {
+        value: "",
+        label: "--None--",
+      },
+      {
+        value: "material",
+        label: "Material Code",
+      },
+      {
+        value: "batch",
+        label: "Batch Code",
+      },
+      {
+        value: "expiry",
+        label: "Expiry Date",
+      },
+    ],
   };
 }

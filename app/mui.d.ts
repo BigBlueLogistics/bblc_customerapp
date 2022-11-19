@@ -17,7 +17,8 @@ declare module "@mui/material/styles" {
     };
     light: { main: string; focus: string };
     transparent: { main: string; focus: string };
-    badgeColors: any;
+    badgeColors: { [key: string]: any };
+    icons: { [key: string]: any };
   }
   interface PaletteOptions {
     white: { main: string; focus: string };
@@ -34,7 +35,8 @@ declare module "@mui/material/styles" {
     };
     light: { main: string; focus: string };
     transparent: { main: string; focus: string };
-    badgeColors: any;
+    badgeColors: { [key: string]: any };
+    icons: { [key: string]: any };
   }
   interface PaletteColor {
     darker?: string;
