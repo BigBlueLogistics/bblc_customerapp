@@ -1,27 +1,27 @@
 import { useState } from "react";
-import MDButton from "atoms/MDButton";
-import MDBox from "atoms/MDBox";
+import Icon from "@mui/material/Icon";
 import DatePicker from "react-datepicker";
+import DatePickInputRoot from "./DatePickInputRoot";
+import MDateRangePickerRoot from "./MDateRangePickerRoot";
+import { IMDateRangePicker, IDatePickInput } from "./types";
 import "react-datepicker/dist/react-datepicker.css";
-import "./daterange.css";
-import { IMDateRangePicker } from "./types";
 
-function DatePickInput({ value, onClick, onChange, buttonStyle }: any) {
+function DatePickInput({ value, onClick, label, buttonStyle, ...rest }: IDatePickInput) {
   return (
-    <MDButton
-      onChange={onChange}
+    <DatePickInputRoot
+      {...rest}
       onClick={onClick}
-      value={value}
       type="button"
       variant="contained"
       sx={buttonStyle}
     >
-      {value}
-    </MDButton>
+      {value || label}
+      <Icon fontSize="large">date_range</Icon>
+    </DatePickInputRoot>
   );
 }
 
-function MDateRangePicker({ onChange, containerStyle, buttonStyle }: IMDateRangePicker) {
+function MDateRangePicker({ onChange, label, containerStyle, buttonStyle }: IMDateRangePicker) {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
@@ -34,7 +34,7 @@ function MDateRangePicker({ onChange, containerStyle, buttonStyle }: IMDateRange
   };
 
   return (
-    <MDBox sx={containerStyle}>
+    <MDateRangePickerRoot sx={containerStyle}>
       <DatePicker
         selected={startDate}
         onChange={onChangeDate}
@@ -44,9 +44,9 @@ function MDateRangePicker({ onChange, containerStyle, buttonStyle }: IMDateRange
         monthsShown={2}
         isClearable
         minDate={startDate}
-        customInput={<DatePickInput sx={buttonStyle} />}
+        customInput={<DatePickInput buttonStyle={buttonStyle} label={label} />}
       />
-    </MDBox>
+    </MDateRangePickerRoot>
   );
 }
 

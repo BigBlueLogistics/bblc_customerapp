@@ -316,20 +316,7 @@ function Reports() {
                     />
 
                     <MDBox margin="8px">
-                      <MDTypography
-                        variant="body2"
-                        fontWeight="regular"
-                        sx={({ typography: { pxToRem }, palette }) => ({
-                          fontSize: pxToRem(12),
-                          color: palette.grey[600],
-                        })}
-                      >
-                        Dates
-                      </MDTypography>
-                      <MDateRangePicker
-                        onChange={onChangeDateRange}
-                        buttonStyle={{ minWidth: "150px" }}
-                      />
+                      <MDateRangePicker label="Dates.." onChange={onChangeDateRange} />
                     </MDBox>
 
                     <MDButton sx={{ margin: "8px" }} size="small" variant="gradient" color="info">
