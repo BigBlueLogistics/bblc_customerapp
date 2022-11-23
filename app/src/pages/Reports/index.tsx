@@ -31,7 +31,7 @@ import { IMenuAction } from "./components/MenuAction/types";
 function Reports() {
   const dispatch = useAppDispatch();
   const { customerCode } = selector();
-  const { tableHeaders, reportOpts, groupOpts, sortOpts } = miscData();
+  const { tableHeaders, typeReportsData, groupByData } = miscData();
   const [showNotifyDownload, setShowNotifyDownload] = useState<INotifyDownload>({
     open: false,
     message: "",
@@ -42,9 +42,9 @@ function Reports() {
   const [selectedGroupBy, setSelectedGroupBy] = useState("");
   const [selectedWH, setSelectedWH] = useState("");
   const [, setDateRange] = useState(null);
-  const [selectedSort, setSelectedSort] = useState("");
   const [warehouseList, setWarehouseList] = useState([]);
   const [rowsInventory, setRowsInventory] = useState([]);
+  const [groupByKey, setGroupByKey] = useState<keyof typeof groupByData>("stockWH");
   const [action, setAction] = useState(null);
   const [toggleFilter, setToggleFilter] = useState(false);
 
@@ -68,7 +68,10 @@ function Reports() {
   };
 
   const onChangeReport = (e: ChangeEvent<HTMLInputElement>) => {
-    setSelectedReport(e.target.value);
+    const data = e.target.value;
+    const key = ["stock", "wh"].includes(data) ? "stockWH" : "aging";
+    setSelectedReport(data);
+    setGroupByKey(key);
   };
 
   const onChangeGroupBy = (e: ChangeEvent<HTMLInputElement>) => {
@@ -81,10 +84,6 @@ function Reports() {
 
   const onChangeDateRange = (dates) => {
     setDateRange(dates);
-  };
-
-  const onChangeSort = (e: ChangeEvent<HTMLInputElement>) => {
-    setSelectedSort(e.target.value);
   };
 
   const onToggleFilter = () => {
@@ -140,13 +139,6 @@ function Reports() {
   useEffect(() => {
     fetchWarehouseList();
   }, []);
-
-  // useEffect(() => {
-  //   if (customerCode && selectedWH) {
-  //     fetchInventoryTable();
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [customerCode, selectedWH]);
 
   useEffect(() => {
     if (error?.response?.statusText === "Unauthorized" && error?.response?.status === 401) {
@@ -281,7 +273,7 @@ function Reports() {
                       label="Type of Reports"
                       variant="outlined"
                       onChange={onChangeReport}
-                      options={reportOpts}
+                      options={typeReportsData}
                       value={selectedReport}
                       showArrowIcon
                     />
@@ -290,7 +282,7 @@ function Reports() {
                       label="Group by"
                       variant="outlined"
                       onChange={onChangeGroupBy}
-                      options={groupOpts}
+                      options={groupByData[groupByKey]}
                       value={selectedGroupBy}
                       showArrowIcon
                     />
@@ -306,17 +298,15 @@ function Reports() {
                       optKeyLabel="NAME1"
                     />
 
-                    <MDSelect
-                      label="Sort"
-                      variant="outlined"
-                      onChange={onChangeSort}
-                      options={sortOpts}
-                      value={selectedSort}
-                      showArrowIcon
-                    />
-
                     <MDBox margin="8px">
-                      <MDateRangePicker label="Dates.." onChange={onChangeDateRange} />
+                      <MDateRangePicker
+                        label="Dates.."
+                        onChange={onChangeDateRange}
+                        disabled={selectedReport !== "stock"}
+                        containerStyle={{
+                          cursor: selectedReport !== "stock" ? "not-allowed" : "default",
+                        }}
+                      />
                     </MDBox>
 
                     <MDButton sx={{ margin: "8px" }} size="small" variant="gradient" color="info">

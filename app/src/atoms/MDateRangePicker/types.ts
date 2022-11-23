@@ -12,4 +12,5 @@ export type IMDateRangePicker = {
   containerStyle?: SxProps<Theme>;
   buttonStyle?: SxProps<Theme>;
   label?: string;
+  disabled?: boolean;
 };
