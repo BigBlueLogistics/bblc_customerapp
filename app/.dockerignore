@@ -2,9 +2,20 @@
 devspace.yaml
 .DS_Store
 
-/node_modules
 npm-debug.log*
 pids
 *.pid*
 *.seed*
 *.pid.lock*
+
+**/node_modules
+**/.gitattributes
+**/.gitignore
+**/.env.example
+**/.editorconfig
+**/.styleci.yml
+**/.prettierrc.json
+.log
+LICENSE.md
+CHANGELOG.md
+README.md
