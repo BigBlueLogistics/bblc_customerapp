@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Traits\HttpResponse;
 use App\Http\Requests\MemberUpdateRequest;
 use App\Models\User;

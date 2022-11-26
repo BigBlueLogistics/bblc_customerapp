@@ -3,11 +3,11 @@ import HttpAdapter from "services/httpAdapter";
 
 class InventoryServices extends HttpAdapter {
   getInventoryList(config: AxiosRequestConfig) {
-    return this.get("/inventory/table", config);
+    return this.get("/inventory", config);
   }
 
   getWarehouseList() {
-    return this.get("/inventory/warehouse-list");
+    return this.get("/warehouse/list");
   }
 }
 

@@ -1,9 +1,11 @@
 <?php
 
+use App\Repository\WarehouseRepository;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MembersController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,8 +36,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::prefix('inventory')->group(function () {
-        Route::get('/warehouse-list', [InventoryController::class, 'warehouseList']);
-        Route::get('/table', [InventoryController::class, 'index']);
+        Route::get('/', [InventoryController::class, 'index']);
         Route::get('/export-excel', [InventoryController::class, 'export']);
     });
 
@@ -47,5 +48,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('reports')->group(function () {
         Route::get('/', [ReportsController::class, 'index']);
+    });
+
+    Route::prefix('warehouse')->group(function () {
+        Route::get('/list', [WarehouseController::class, 'list']);
     });
 });

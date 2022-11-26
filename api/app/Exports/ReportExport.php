@@ -13,6 +13,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 use App\Interfaces\IReportsRepository;
+use App\Interfaces\IMemberRepository;
 use Carbon\Carbon;
 
 class ReportsExport implements FromView, ShouldAutoSize, WithEvents, WithDrawings
@@ -20,12 +21,14 @@ class ReportsExport implements FromView, ShouldAutoSize, WithEvents, WithDrawing
     use RegistersEventListeners;
 
     private $reportsExport;
+    private $member;
     private $customerCode;
     private $warehouseNo;
 
-    public function __construct(IReportsRepository $reports)
+    public function __construct(IReportsRepository $reports, IMemberRepository $member)
     {
         $this->reportsExport = $reports;
+        $this->member = $member;
     }
 
     public function setFilterBy($customerCode, $warehouseNo)
@@ -37,7 +40,7 @@ class ReportsExport implements FromView, ShouldAutoSize, WithEvents, WithDrawing
     public function view(): View
     {
         $result = $this->reportsExport->getStocksInventory($this->customerCode, $this->warehouseNo, "material");
-        $customerInfo = $this->reportsExport->getCustomerInfo($this->customerCode);
+        $customerInfo = $this->member->getMemberInfo($this->customerCode);
 
         $stocks = count($result) ? $result : [];
 

@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 use App\Traits\HttpResponse;
 use App\Interfaces\IReportsRepository;
+use App\Interfaces\IMemberRepository;
 use App\Exports\ReportsExport;
 
 class ReportsController extends Controller
@@ -15,10 +16,12 @@ class ReportsController extends Controller
     use HttpResponse;
 
     private $reports;
+    private $members;
 
-    public function __construct(IReportsRepository $reports)
+    public function __construct(IReportsRepository $reports, IMemberRepository $members)
     {
         $this->reports = $reports;
+        $this->members = $members;
     }
 
     public function export(Request $request)
@@ -28,7 +31,7 @@ class ReportsController extends Controller
             $warehouse = $request->input('warehouse');
             $format = $request->input('format');
 
-            $export = new ReportsExport($this->reports);
+            $export = new ReportsExport($this->reports, $this->members);
             $export->setFilterBy($customerCode, $warehouse);
 
             if ($format === "xlsx") {

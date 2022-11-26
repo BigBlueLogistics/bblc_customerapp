@@ -7,9 +7,11 @@ use App\Support\SapRfc;
 use App\Interfaces\IInventoryRepository;
 use App\Interfaces\IWarehouseRepository;
 use App\Interfaces\IReportsRepository;
+use App\Interfaces\IMemberRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\WarehouseRepository;
 use App\Repository\ReportsRepository;
+use App\Repository\MemberRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(IInventoryRepository::class, InventoryRepository::class);
         $this->app->bind(IWarehouseRepository::class, WarehouseRepository::class);
         $this->app->bind(IReportsRepository::class, ReportsRepository::class);
+        $this->app->bind(IMemberRepository::class, MemberRepository::class);
     }
 
     /**

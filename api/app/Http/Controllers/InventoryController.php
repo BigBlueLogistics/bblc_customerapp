@@ -8,7 +8,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 use App\Traits\HttpResponse;
 use App\Interfaces\IInventoryRepository;
-use App\Interfaces\IWarehouseRepository;
+use App\Interfaces\IMemberRepository;
 use App\Exports\InventoryExport;
 use Throwable;
 
@@ -17,24 +17,14 @@ class InventoryController extends Controller
     use HttpResponse;
 
     private $inventory;
-    private $warehouse;
+    private $members;
 
-    public function __construct(IInventoryRepository $inventory, IWarehouseRepository $warehouse)
+    public function __construct(IInventoryRepository $inventory, IMemberRepository $members)
     {
         $this->inventory = $inventory;
-        $this->warehouse = $warehouse;
+        $this->members = $members;
     }
 
-    public function warehouseList()
-    {
-        try {
-            $WhList = $this->warehouse->warehouseList();
-
-            return $this->sendResponse($WhList, 'List of warehouse');
-        } catch (\Throwable $th) {
-            return $this->sendError($th);
-        }
-    }
 
     public function export(Request $request)
     {
@@ -43,7 +33,7 @@ class InventoryController extends Controller
             $warehouse = $request->input('warehouse');
             $format = $request->input('format');
 
-            $export = new InventoryExport($this->inventory);
+            $export = new InventoryExport($this->inventory, $this->members);
             $export->setFilterBy($customerCode, $warehouse);
 
             if ($format === "xlsx") {
