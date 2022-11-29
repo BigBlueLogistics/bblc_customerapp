@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import Icon from "@mui/material/Icon";
 import DatePicker from "react-datepicker";
 import DatePickInputRoot from "./DatePickInputRoot";
@@ -6,20 +6,25 @@ import MDateRangePickerRoot from "./MDateRangePickerRoot";
 import { IMDateRangePicker, IDatePickInput } from "./types";
 import "react-datepicker/dist/react-datepicker.css";
 
-function DatePickInput({ value, onClick, label, buttonStyle, ...rest }: IDatePickInput) {
-  return (
-    <DatePickInputRoot
-      {...rest}
-      onClick={onClick}
-      type="button"
-      variant="contained"
-      sx={buttonStyle}
-    >
-      {value || label}
-      <Icon fontSize="large">date_range</Icon>
-    </DatePickInputRoot>
-  );
-}
+const DatePickInput = forwardRef<HTMLButtonElement, IDatePickInput>(
+  ({ value, onClick, label, buttonStyle, ...rest }, ref) => {
+    return (
+      <DatePickInputRoot
+        ref={ref}
+        onClick={onClick}
+        type="button"
+        variant="contained"
+        sx={buttonStyle}
+        {...rest}
+      >
+        {value || label}
+        <Icon fontSize="large">date_range</Icon>
+      </DatePickInputRoot>
+    );
+  }
+);
+
+DatePickInput.displayName = "DatePickInput";
 
 function MDateRangePicker({
   onChange,
