@@ -2,15 +2,15 @@
 
 namespace App\Repository;
 
-use App\Interfaces\IInventoryRepository;
+use App\Interfaces\IReportsRepository;
 use App\Facades\SapRfcFacade;
 use App\Traits\StringEncode;
 
-class InventoryRepository implements IInventoryRepository
+class ReportsRepository implements IReportsRepository
 {
     use StringEncode;
 
-    public function getStocksInventory($customerCode, $warehouseNo)
+    public function getStocksInventory($customerCode, $warehouseNo, $groupBy)
     {
         $mandt = SapRfcFacade::getMandt();
         $warehouseNo = str_replace('BB', 'WH', $warehouseNo);
@@ -23,6 +23,7 @@ class InventoryRepository implements IInventoryRepository
             ->getData();
 
         $utf8_data = $this->convert_latin1_to_utf8_recursive($result);
+
 
         // Get fixed weight
         $fixedWt = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
@@ -62,9 +63,17 @@ class InventoryRepository implements IInventoryRepository
         $collectionFixedWt = collect($fixedWt);
         $collectionPicking = collect($productIds);
 
-        $groupProductDetails = $collectionProducts->groupBy('MATNR')
-                ->map(function ($group) {
-                    // Add up initialAllocated, available and restricted
+        $fieldName = null;
+        if ($groupBy === "batch") {
+            $fieldName = "CHARG";
+        }
+        if ($groupBy === "expiry") {
+            $fieldName = "VFDAT";
+        }
+
+        // Add up initialAllocated, available and restricted
+        $groupProductDetails = $collectionProducts->groupBy($fieldName)
+                ->map(function ($group) use ($groupBy, $fieldName) {
                     $initialAllocatedWt = $group->reduce(function ($total, $current) {
                         if ($current['LGTYP'] === 'GIZN') {
                             $total += (float)$current['QUAN'];
@@ -72,35 +81,47 @@ class InventoryRepository implements IInventoryRepository
                         return $total;
                     }, 0);
                     $restrictedWt = $group->reduce(function ($total, $current) {
-                        if (in_array(strtoupper($current['CAT']), ['Q1','B1'])) {
+                        if (in_array(strtoupper($current['CAT']), ['Q1','B1']) && $current['LGTYP'] !== 'GIZN') {
                             $total += (float)$current['QUAN'];
                         }
                         return $total;
                     }, 0);
                     $availableWt = $group->reduce(function ($total, $current) {
-                        if (!in_array(strtoupper($current['CAT']), ['Q1','B1']) && $current['LGTYP'] !== 'GIZN') {
+                        if (in_array(strtoupper($current['CAT']), ['F1']) && $current['LGTYP'] !== 'GIZN') {
                             $total += (float)$current['QUAN'];
                         }
                         return $total;
                     }, 0);
 
-                    return [
-                        'materialCode' => $group[0]['MATNR'],
-                        'description' => $group[0]['MAKTX'],
-                        'initialAllocatedWt' => round($initialAllocatedWt, 3),
-                        'restrictedWt' => round($restrictedWt, 3),
-                        'availableWt' => round($availableWt, 3),
+                    $transformData = [
+                       'materialCode' => $group[0]['MATNR'],
+                       'description' => $group[0]['MAKTX'],
+                       'initialAllocatedWt' => round($initialAllocatedWt, 3),
+                       'restrictedWt' => round($restrictedWt, 3),
+                       'availableWt' => round($availableWt, 3),
                     ];
+
+                    if ($groupBy === "batch") {
+                        $transformData['batch'] = $group[0][$fieldName];
+                    }
+
+                    if ($groupBy == "expiry") {
+                        $transformData['expiry'] = $group[0][$fieldName];
+                    }
+
+                    return $transformData;
                 });
 
+        // Fixed weight and unit.
         $keyedFixedWt = $collectionFixedWt->mapWithKeys(function ($item) {
             return [
                 $item['MATNR'] => [
                     'unit' => is_null($item['MEINH']) ? "KG" : $item['MEINH'],
                     'fixedWt' =>  is_null($item['UMREZ']) ? 1 : (float)$item['UMREZ'] / (float)$item['UMREN'],
-                ]
-            ];
+                    ]
+                ];
         });
+
 
         // Get vsolm
         $keyedPicking = $collectionPicking->map(function ($item, $key) use ($mandt, $warehouseNo) {
@@ -135,7 +156,8 @@ class InventoryRepository implements IInventoryRepository
             return $values;
         });
 
-        // Add up vsolm
+
+        // Add up vsolm means for picking.
         $totalVsolmWt = $keyedPicking->mapToGroups(function ($item) {
             return [
                 $item['MATNR'] =>  [
@@ -154,48 +176,48 @@ class InventoryRepository implements IInventoryRepository
         });
 
 
-        $mergedProducts = $groupProductDetails->mergeRecursive($keyedFixedWt);
-        $merged = $mergedProducts->mergeRecursive($totalVsolmWt)
-                        ->filter(function ($data) {
-                            // Return only data if anyone of the field below has value.
-                            return (
-                                (array_key_exists('availableWt', $data)
-                             || array_key_exists('restrictedWt', $data)
-                             || array_key_exists('initialAllocatedWt', $data)
-                             || array_key_exists('totalVsolmWt', $data))
-                             && array_key_exists('materialCode', $data)
-                            );
-                        })
-                        ->map(function ($data) {
-                            $fixedWt = array_key_exists('fixedWt', $data) ? $data['fixedWt'] : 1;
-                            $availableWt = array_key_exists('availableWt', $data) ? $data['availableWt'] : 0;
-                            $restrictedWt = array_key_exists('restrictedWt', $data) ? $data['restrictedWt'] : 0;
-                            $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) ? $data['initialAllocatedWt'] : 0;
-                            $totalVsolmWt = array_key_exists('totalVsolmWt', $data) ? $data['totalVsolmWt'] : 0;
-                            $unit = array_key_exists('unit', $data) ? $data['unit'] : "KG";
-                            $allocatedWt = $initialAllocatedWt + $totalVsolmWt;
+        $merged = $groupProductDetails->filter(function ($data) {
+            // Return only data if anyone of the field below has value.
+            return (
+                (array_key_exists('availableWt', $data)
+                            || array_key_exists('restrictedWt', $data)
+                            || array_key_exists('initialAllocatedWt', $data))
+                            && array_key_exists('materialCode', $data)
+            );
+        })
+                ->map(function ($data) use ($keyedFixedWt, $totalVsolmWt) {
+                    $materialCode = $data['materialCode'];
+                    $fixedWt = $keyedFixedWt[$materialCode]['fixedWt'] ?? 1;
+                    $unit = $keyedFixedWt[$materialCode]['unit'] ?? "KG";
+                    $totalVsolmWt = $totalVsolmWt[$materialCode]['totalVsolmWt'] ?? 0;
 
-                            // Calculate the quantity.
-                            $availableQty = $availableWt / $fixedWt;
-                            $allocatedQty = $allocatedWt / $fixedWt;
-                            $restrictedQty = $restrictedWt / $fixedWt;
+                    $availableWt = array_key_exists('availableWt', $data) ? $data['availableWt'] : 0;
+                    $restrictedWt = array_key_exists('restrictedWt', $data) ? $data['restrictedWt'] : 0;
+                    $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) ? $data['initialAllocatedWt'] : 0;
+                    $allocatedWt = $initialAllocatedWt + $totalVsolmWt;
 
-                            // Quantity
-                            $res['availableQty'] = $availableQty;
-                            $res['allocatedQty'] = $allocatedQty;
-                            $res['restrictedQty'] = $restrictedQty;
-                            $res['totalQty'] = $availableQty + $allocatedQty + $restrictedQty;
+                    // Calculate the quantity.
+                    $availableQty = $availableWt / $fixedWt;
+                    $allocatedQty = $allocatedWt / $fixedWt;
+                    $restrictedQty = $restrictedWt / $fixedWt;
 
-                            // Weight
-                            $res['availableWt'] = $availableWt;
-                            $res['allocatedWt'] = $allocatedWt;
-                            $res['restrictedWt'] = $restrictedWt;
-                            $res['fixedWt'] = $fixedWt;
-                            $res['unit'] = $unit;
+                    // Quantity
+                    $res['availableQty'] = $availableQty;
+                    $res['allocatedQty'] = $allocatedQty;
+                    $res['restrictedQty'] = $restrictedQty;
+                    $res['totalQty'] = $availableQty + $allocatedQty + $restrictedQty;
 
-                            return array_merge($data, $res);
-                        })
-                        ->all();
+                    // Weight
+                    $res['availableWt'] = $availableWt;
+                    $res['allocatedWt'] = $allocatedWt;
+                    $res['restrictedWt'] = $restrictedWt;
+                    $res['fixedWt'] = $fixedWt;
+                    $res['unit'] = $unit;
+
+                    return array_merge($data, $res);
+                })
+            ->all();
+
         $result = count($merged) > 0 ? array_values($merged) : [];
 
         return $result;

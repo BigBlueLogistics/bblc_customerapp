@@ -12,22 +12,22 @@ use Maatwebsite\Excel\Concerns\WithDrawings;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
-use App\Interfaces\IInventoryRepository;
+use App\Interfaces\IReportsRepository;
 use App\Interfaces\IMemberRepository;
 use Carbon\Carbon;
 
-class InventoryExport implements FromView, ShouldAutoSize, WithEvents, WithDrawings
+class ReportsExport implements FromView, ShouldAutoSize, WithEvents, WithDrawings
 {
     use RegistersEventListeners;
 
-    private $inventoryExport;
+    private $reportsExport;
     private $member;
     private $customerCode;
     private $warehouseNo;
 
-    public function __construct(IInventoryRepository $inventory, IMemberRepository $member)
+    public function __construct(IReportsRepository $reports, IMemberRepository $member)
     {
-        $this->inventoryExport = $inventory;
+        $this->reportsExport = $reports;
         $this->member = $member;
     }
 
@@ -39,7 +39,7 @@ class InventoryExport implements FromView, ShouldAutoSize, WithEvents, WithDrawi
 
     public function view(): View
     {
-        $result = $this->inventoryExport->getStocksInventory($this->customerCode, $this->warehouseNo, "material");
+        $result = $this->reportsExport->getStocksInventory($this->customerCode, $this->warehouseNo, "material");
         $customerInfo = $this->member->getMemberInfo($this->customerCode);
 
         $stocks = count($result) ? $result : [];

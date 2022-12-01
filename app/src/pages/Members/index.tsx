@@ -20,6 +20,7 @@ import miscData from "./data";
 import { INotifyDownload } from "./types";
 import FormEdit from "./components/FormEdit";
 import MenuAction from "./components/MenuAction";
+import ActionIcon from "./components/ActionIcon";
 import { IMenuAction } from "./components/MenuAction/types";
 
 function Members() {
@@ -170,30 +171,27 @@ function Members() {
               <MDBox
                 mx={2}
                 mt={-3}
-                py={1}
-                px={1}
+                py={2.5}
+                px={1.5}
+                display="flex"
                 variant="gradient"
                 bgColor="info"
                 borderRadius="lg"
                 coloredShadow="info"
               >
-                <MDBox display="flex">
-                  <MDBox my="auto" marginLeft="auto">
-                    <Icon
-                      sx={{ cursor: "pointer", fontWeight: "bold" }}
-                      fontSize="small"
-                      onClick={openAction}
-                    >
-                      more_vert
-                    </Icon>
-                  </MDBox>
+                <MDTypography ml={3} variant="h4" color="light" textTransform="uppercase">
+                  Members Details
+                </MDTypography>
+
+                <MDBox my="auto" marginLeft="auto">
+                  <ActionIcon title="actions" onClick={openAction}>
+                    more_vert
+                  </ActionIcon>
                   <MenuAction anchorEl={action} onClose={closeAction} items={menuItemsAction} />
                 </MDBox>
               </MDBox>
+
               <MDBox pt={3}>
-                <MDTypography ml={3} variant="h4" color="dark" textTransform="uppercase">
-                  Members Details
-                </MDTypography>
                 <DataTable
                   table={{
                     columns: tableHeaders({ onShowEdit }),

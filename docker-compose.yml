@@ -18,7 +18,7 @@ services:
       - "16692:16692"
     volumes:
       - ./api:/var/www/html
-      - /api/vendor
+      - /var/www/html/vendor
     networks:
       - bblc_customer
 
@@ -37,7 +37,7 @@ services:
       - 16694:16694
     volumes:
       - ./app:/var/www/html
-      - /app/node_modules
+      - /var/www/html/node_modules
     environment:
       - WDS_SOCKET_PORT=16694
       - CHOKIDAR_USEPOLLING=true

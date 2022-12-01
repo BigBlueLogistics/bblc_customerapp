@@ -1,4 +1,5 @@
 export type IMDSelect = {
+  variant: "filled" | "standard" | "outlined";
   label?: string;
   helperText?: string;
   onChange: (e: any) => void;
@@ -10,5 +11,8 @@ export type IMDSelect = {
 };
 
 export type IOwnerState = {
-  ownerState: { showArrowIcon: IMDSelect["showArrowIcon"] };
+  ownerState: {
+    showArrowIcon: IMDSelect["showArrowIcon"];
+    variant: "filled" | "standard" | "outlined";
+  };
 };

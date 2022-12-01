@@ -123,6 +123,12 @@ const colors = {
     },
   },
 
+  icons: {
+    search: {
+      darkBlue: "#1e4580",
+    },
+  },
+
   socialMediaColors: {
     facebook: {
       main: "#3b5998",

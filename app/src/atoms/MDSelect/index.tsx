@@ -1,13 +1,13 @@
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import MDFormControlRoot from "atoms/MDSelect/MDFormControlRoot";
-import FormHelperText from "@mui/material/FormHelperText";
 
 import MDSelectRoot from "atoms/MDSelect/MDSelectRoot";
 import { IMDSelect } from "./types";
 
 function MDSelect({
   onChange,
+  variant,
   options,
   value,
   label,
@@ -17,8 +17,6 @@ function MDSelect({
   optKeyLabel,
   ...rest
 }: IMDSelect) {
-  // eslint-disable-next-line no-console
-  console.log("MD Select", value);
   const renderOptionsWithCustomKeys = () => {
     const customOptValue = optKeyValue || "value";
     const customOptLabel = optKeyLabel || "label";
@@ -35,16 +33,15 @@ function MDSelect({
 
   return (
     <MDFormControlRoot sx={{ m: 1, minWidth: 130 }} {...rest}>
-      {helperText && <FormHelperText>{helperText}</FormHelperText>}
-      {label && <InputLabel id={`select-label-${label}`}>{label}</InputLabel>}
+      <InputLabel id={`select-label-${label}`}>{label}</InputLabel>
       <MDSelectRoot
-        variant="standard"
+        variant={variant}
         labelId={`select-label-${label}`}
         id={`select-${label}`}
         value={value}
         label={label}
         onChange={onChange}
-        ownerState={{ showArrowIcon }}
+        ownerState={{ showArrowIcon, variant }}
       >
         {renderOptionsWithCustomKeys()}
       </MDSelectRoot>
@@ -53,6 +50,7 @@ function MDSelect({
 }
 
 MDSelect.defaultProps = {
+  variant: "standard",
   label: "",
   helperText: "",
   showArrowIcon: false,

@@ -11,6 +11,7 @@
 // 10. The `title` key is only for the item with the type of `title` and its used for the title text on the Sidenav.
 // 10. The `component` key is used to store the component of its route.
 // 11. The `access` key is used to determine if route is set to public or protected.
+// 12. The `allowedRoles` key is used for permission to access the route.
 
 // import Dashboard from "pages/dashboard";
 // import Tables from "pages/tables";
@@ -24,6 +25,7 @@ import SignUp from "pages/Authentication/SignUp";
 import ResetPasswordLink from "pages/Authentication/ResetPasswordLink";
 import ResetPassword from "pages/Authentication/ResetPassword";
 import Inventory from "pages/Inventory";
+import Reports from "pages/Reports";
 import DefaultPage from "pages/DefaultPage";
 import NotFound from "pages/NotFound";
 import UnderConstruction from "pages/UnderConstruction";
@@ -165,7 +167,7 @@ const routes: RoutesType = [
     key: "reports",
     icon: <SummarizeIcon />,
     route: "/reports",
-    component: <UnderConstruction />,
+    component: <Reports />,
     access: "protected",
     allowedRoles: ["sysadmin", "user"],
   },

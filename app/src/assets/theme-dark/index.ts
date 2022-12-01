@@ -50,7 +50,7 @@ import step from "assets/theme-dark/components/stepper/step";
 import stepConnector from "assets/theme-dark/components/stepper/stepConnector";
 import stepLabel from "assets/theme-dark/components/stepper/stepLabel";
 import stepIcon from "assets/theme-dark/components/stepper/stepIcon";
-import select from "assets/theme-dark/components/form/select";
+// import select from "assets/theme-dark/components/form/select";
 import formControlLabel from "assets/theme-dark/components/form/formControlLabel";
 import formLabel from "assets/theme-dark/components/form/formLabel";
 import checkbox from "assets/theme-dark/components/form/checkbox";
@@ -123,7 +123,7 @@ export const opt = {
     MuiStepConnector: { ...stepConnector },
     MuiStepLabel: { ...stepLabel },
     MuiStepIcon: { ...stepIcon },
-    MuiSelect: { ...select },
+    // MuiSelect: { ...select },
     MuiFormControlLabel: { ...formControlLabel },
     MuiFormLabel: { ...formLabel },
     MuiCheckbox: { ...checkbox },
