@@ -32,12 +32,14 @@ function Reports() {
   const dispatch = useAppDispatch();
   const { customerCode } = selector();
   const { tableHeaders, typeReportsData, groupByData } = miscData();
-  const [showNotifyDownload, setShowNotifyDownload] = useState<INotifyDownload>({
+  const initialStateNotification: INotifyDownload = {
     open: false,
     message: "",
     title: "",
     color: "primary",
-  });
+  };
+  const [showNotifyDownload, setShowNotifyDownload] =
+    useState<INotifyDownload>(initialStateNotification);
   const [selectedReport, setSelectedReport] = useState("");
   const [selectedGroupBy, setSelectedGroupBy] = useState("");
   const [selectedWH, setSelectedWH] = useState("");
@@ -60,11 +62,11 @@ function Reports() {
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
 
-  const openNotifyDownload = ({ message, title, color }: Omit<INotifyDownload, "open">) => {
-    setShowNotifyDownload({ open: true, message, title, color });
+  const openNotifyDownload = ({ open, message, title, color }: INotifyDownload) => {
+    setShowNotifyDownload({ open, message, title, color });
   };
   const closeNotifyDownload = () => {
-    setShowNotifyDownload({ open: false });
+    setShowNotifyDownload((prevState) => ({ ...prevState, open: false }));
   };
 
   const onChangeReport = (e: ChangeEvent<HTMLInputElement>) => {
@@ -148,28 +150,34 @@ function Reports() {
 
   useEffect(() => {
     const { message } = downloadError || {};
+    let notificationMsg = initialStateNotification;
 
     if (!message && downloadStatus === "loading") {
-      openNotifyDownload({
+      notificationMsg = {
+        open: true,
         message: `Please wait exporting file [${filename}]`,
         title: "Exporting File",
         color: "info",
-      });
+      };
     }
     if (!message && downloadStatus === "success") {
-      openNotifyDownload({
+      notificationMsg = {
+        open: true,
         message: `You can now open [${filename}]`,
         title: "Export file complete!",
         color: "success",
-      });
+      };
     }
     if (message && downloadStatus === "failed") {
-      openNotifyDownload({
+      notificationMsg = {
+        open: true,
         message,
         title: "Failed to export file",
         color: "error",
-      });
+      };
     }
+    openNotifyDownload(notificationMsg);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [downloadError, downloadStatus]);
 
