@@ -1,6 +1,6 @@
 {
   "name": "bblc_customerportal",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "author": "BBLC IT Team",
   "homepage": "https://bigbluecoldstorage.com/portal",
@@ -14,8 +14,8 @@
     "url": "https://github.com/bigbluelc/bblc_customerapp"
   },
   "engines": {
-    "node": "14 || 15 || 16",
-    "npm": ">=6"
+    "node": "16 || 17 || 18",
+    "npm": ">=8"
   },
   "dependencies": {
     "@emotion/cache": "11.7.1",
