@@ -10,7 +10,6 @@ use App\Traits\HttpResponse;
 use App\Interfaces\IInventoryRepository;
 use App\Interfaces\IMemberRepository;
 use App\Exports\InventoryExport;
-use Throwable;
 
 class InventoryController extends Controller
 {
@@ -45,8 +44,8 @@ class InventoryController extends Controller
                     'Content-Type' => 'text/csv'
                 ]);
             }
-        } catch (Throwable $th) {
-            return $this->sendError($th);
+        } catch (Exception $e) {
+            return $this->sendError($e);
         }
     }
 
@@ -59,8 +58,8 @@ class InventoryController extends Controller
             $res = $this->inventory->getStocksInventory($customerCode, $warehouse);
 
             return $this->sendResponse($res);
-        } catch (Throwable $th) {
-            return $this->sendError($th);
+        } catch (Exception $e) {
+            return $this->sendError($e);
         }
     }
 }
