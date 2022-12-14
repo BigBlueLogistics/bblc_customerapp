@@ -19,11 +19,11 @@ import { setIsAuthenticated } from "redux/auth/action";
 import MDImageIcon from "atoms/MDImageIcon";
 import excel from "assets/images/icons/excel.png";
 import miscData from "pages/Reports/data";
-import { inventoryServices } from "services";
+import { reportServices, inventoryServices } from "services";
 import { AxiosError } from "axios";
 import { IStatus } from "types/status";
 import selector from "./selector";
-import { INotifyDownload } from "./types";
+import { INotifyDownload, IGroupBy } from "./types";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import { IMenuAction } from "./components/MenuAction/types";
@@ -41,12 +41,12 @@ function Reports() {
   const [showNotifyDownload, setShowNotifyDownload] =
     useState<INotifyDownload>(initialStateNotification);
   const [selectedReport, setSelectedReport] = useState("");
-  const [selectedGroupBy, setSelectedGroupBy] = useState("");
   const [selectedWH, setSelectedWH] = useState("");
+  const [selectedGroupBy, setSelectedGroupBy] = useState<IGroupBy>("");
   const [, setDateRange] = useState(null);
   const [warehouseList, setWarehouseList] = useState([]);
-  const [rowsInventory, setRowsInventory] = useState([]);
-  const [groupByKey, setGroupByKey] = useState<keyof typeof groupByData>("stockWH");
+  const [rowsReport, setRowsReport] = useState([]);
+  const [groupByKey, setGroupByKey] = useState<keyof typeof groupByData>("stock");
   const [action, setAction] = useState(null);
   const [toggleFilter, setToggleFilter] = useState(false);
 
@@ -71,13 +71,13 @@ function Reports() {
 
   const onChangeReport = (e: ChangeEvent<HTMLInputElement>) => {
     const data = e.target.value;
-    const key = ["stock", "wh"].includes(data) ? "stockWH" : "aging";
+    const key = ["stock-status", "wh-snapshot"].includes(data) ? "stock" : "aging";
     setSelectedReport(data);
     setGroupByKey(key);
   };
 
   const onChangeGroupBy = (e: ChangeEvent<HTMLInputElement>) => {
-    setSelectedGroupBy(e.target.value);
+    setSelectedGroupBy(e.target.value as IGroupBy);
   };
 
   const onChangeWH = (e: ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +92,7 @@ function Reports() {
     setToggleFilter((prevState) => !prevState);
   };
 
-  const fetchInventoryTable = async () => {
+  const fetchReports = async () => {
     setTableStatus("loading");
 
     try {
@@ -100,10 +100,11 @@ function Reports() {
         customer_code: customerCode,
         warehouse: selectedWH,
         group_by: selectedGroupBy,
+        report_type: selectedReport,
       };
 
-      const { data: rows } = await inventoryServices.getInventoryList({ params: tableBody });
-      setRowsInventory(rows.data);
+      const { data: rows } = await reportServices.getReports({ params: tableBody });
+      setRowsReport(rows.data);
       setTableStatus("succeeded");
     } catch (err) {
       setError(err);
@@ -115,7 +116,7 @@ function Reports() {
     try {
       const { data: rows } = await inventoryServices.getWarehouseList();
 
-      setWarehouseList([{ PLANT: "", NAME1: "--None--" }, ...rows.data]);
+      setWarehouseList(rows.data);
     } catch (err) {
       setError(err);
     }
@@ -134,8 +135,18 @@ function Reports() {
   };
 
   const refresh = () => {
-    fetchInventoryTable();
+    fetchReports();
     closeAction();
+  };
+
+  const onFilter = () => {
+    fetchReports();
+  };
+
+  const onClear = () => {
+    setSelectedReport("");
+    setSelectedWH("");
+    setSelectedGroupBy("");
   };
 
   useEffect(() => {
@@ -271,7 +282,7 @@ function Reports() {
                     sx={({ breakpoints }) => ({
                       display: "flex",
                       alignItems: "end",
-                      justifyContent: "center",
+                      justifyContent: "start",
                       [breakpoints.down("md")]: {
                         justifyContent: "space-between",
                       },
@@ -287,15 +298,6 @@ function Reports() {
                     />
 
                     <MDSelect
-                      label="Group by"
-                      variant="outlined"
-                      onChange={onChangeGroupBy}
-                      options={groupByData[groupByKey]}
-                      value={selectedGroupBy}
-                      showArrowIcon
-                    />
-
-                    <MDSelect
                       label="Warehouse"
                       variant="outlined"
                       onChange={onChangeWH}
@@ -304,6 +306,15 @@ function Reports() {
                       showArrowIcon
                       optKeyValue="PLANT"
                       optKeyLabel="NAME1"
+                    />
+
+                    <MDSelect
+                      label="Group by"
+                      variant="outlined"
+                      onChange={onChangeGroupBy}
+                      options={groupByData[groupByKey]}
+                      value={selectedGroupBy}
+                      showArrowIcon
                     />
 
                     <MDBox margin="8px">
@@ -317,7 +328,13 @@ function Reports() {
                       />
                     </MDBox>
 
-                    <MDButton sx={{ margin: "8px" }} size="small" variant="gradient" color="info">
+                    <MDButton
+                      sx={{ margin: "8px" }}
+                      size="small"
+                      variant="gradient"
+                      color="info"
+                      onClick={onFilter}
+                    >
                       Filter
                     </MDButton>
                     <MDButton
@@ -325,13 +342,14 @@ function Reports() {
                       size="small"
                       variant="gradient"
                       color="warning"
+                      onClick={onClear}
                     >
                       clear
                     </MDButton>
                   </MDBox>
                 </MDBox>
                 <DataTable
-                  table={{ columns: tableHeaders, rows: rowsInventory }}
+                  table={{ columns: tableHeaders.whSnapshot(selectedGroupBy), rows: rowsReport }}
                   isSorted={false}
                   isLoading={tableStatus === "loading"}
                   entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}

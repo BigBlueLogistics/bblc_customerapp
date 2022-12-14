@@ -93,7 +93,7 @@ function Inventory() {
     try {
       const { data: rows } = await inventoryServices.getWarehouseList();
 
-      setWarehouseList([{ PLANT: "", NAME1: "--None--" }, ...rows.data]);
+      setWarehouseList(rows.data);
     } catch (err) {
       setError(err);
     }
@@ -252,7 +252,7 @@ function Inventory() {
                     sx={{
                       display: "flex",
                       alignItems: "end",
-                      justifyContent: "center",
+                      justifyContent: "start",
                     }}
                   >
                     <MDSelect
