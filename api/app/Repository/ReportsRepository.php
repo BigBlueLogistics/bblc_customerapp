@@ -5,12 +5,13 @@ namespace App\Repository;
 use App\Interfaces\IReportsRepository;
 use App\Facades\SapRfcFacade;
 use App\Traits\StringEncode;
+use Carbon\Carbon;
 
 class ReportsRepository implements IReportsRepository
 {
     use StringEncode;
 
-    public function getStocksInventory($customerCode, $warehouseNo, $groupBy)
+    public function getWhSnapshot($customerCode, $warehouseNo, $groupBy)
     {
         $mandt = SapRfcFacade::getMandt();
         $warehouseNo = str_replace('BB', 'WH', $warehouseNo);
@@ -44,31 +45,31 @@ class ReportsRepository implements IReportsRepository
             ])
             ->getDataToArray();
 
+        // Get picking products
+        $ordim =  SapRfcFacade::functionModule('ZFM_EWM_ORDIM')
+            ->param('IV_MATNR', $customerCode)
+            ->param('IV_TYPE', '') // X = ordim_c
+            ->param('IV_PROCESS','2010')
+            ->param('IV_WAREHOUSE', $warehouseNo)
+            ->param('IV_WAREHOUSE_ORD', '')
+            // ->param('IV_ROWS', '');
+        ->getData();
 
-        // Get product id
-        $productIds = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-                ->param('QUERY_TABLE', 'NDBSMATG16')
-                ->param('DELIMITER', ';')
-                ->param('OPTIONS', [
-                    ['TEXT' => "MANDT EQ {$mandt}"],
-                    ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
-                ])
-                ->param('FIELDS', [
-                    ['FIELDNAME' => 'MATNR'],
-                    ['FIELDNAME' => 'GUID'],
-                ])
-                ->getDataToArray();
+        $utf8_data_ordim = $this->convert_latin1_to_utf8_recursive($ordim);
 
         $collectionProducts = collect($utf8_data["T_SCWM_AQUA"]);
         $collectionFixedWt = collect($fixedWt);
-        $collectionPicking = collect($productIds);
+        $collectionPicking = collect($utf8_data_ordim["T_SCWM_ORDIM"]);
 
         $fieldName = null;
         if ($groupBy === "batch") {
             $fieldName = "CHARG";
         }
-        if ($groupBy === "expiry") {
+        else if ($groupBy === "expiry") {
             $fieldName = "VFDAT";
+        }
+        else {
+            $fieldName = "MATNR";
         }
 
         // Add up initialAllocated, available and restricted
@@ -104,7 +105,6 @@ class ReportsRepository implements IReportsRepository
                     if ($groupBy === "batch") {
                         $transformData['batch'] = $group[0][$fieldName];
                     }
-
                     if ($groupBy == "expiry") {
                         $transformData['expiry'] = $group[0][$fieldName];
                     }
@@ -122,43 +122,8 @@ class ReportsRepository implements IReportsRepository
                 ];
         });
 
-
-        // Get vsolm
-        $keyedPicking = $collectionPicking->map(function ($item, $key) use ($mandt, $warehouseNo) {
-            $guid =  $item['GUID'];
-            $matnr = $item['MATNR'];
-
-            $vsolm = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-                ->param('QUERY_TABLE', '/SCWM/ORDIM_O')
-                ->param('DELIMITER', ';')
-                ->param('OPTIONS', [
-                    ['TEXT' => "MANDT EQ {$mandt}"],
-                    ['TEXT' => " AND LGNUM EQ '{$warehouseNo}'"],
-                    ['TEXT' => " AND MATID EQ '{$guid}'"],
-                    ['TEXT' => " AND PROCTY EQ '2010'"],
-                ])
-                ->param('FIELDS', [
-                    ['FIELDNAME' => 'VSOLM'],
-                ])
-                ->getDataToArray();
-
-            if (count($vsolm)) {
-                $vsolm = array_map(function ($value) use ($matnr) {
-                    $value['MATNR'] = $matnr;
-                    return $value;
-                }, $vsolm);
-            }
-
-            return $vsolm;
-        })->filter(function ($values) {
-            return count($values) > 0;
-        })->flatMap(function ($values) {
-            return $values;
-        });
-
-
         // Add up vsolm means for picking.
-        $totalVsolmWt = $keyedPicking->mapToGroups(function ($item) {
+        $totalVsolmWt = $collectionPicking->mapToGroups(function ($item) {
             return [
                 $item['MATNR'] =>  [
                     'totalVsolmWt' => $item['VSOLM']
@@ -222,4 +187,198 @@ class ReportsRepository implements IReportsRepository
 
         return $result;
     }
+
+
+    public function getStocks($customerCode, $warehouseNo, $startDate, $endDate)
+    {
+        $warehouseNo = str_replace('BB', 'WH', $warehouseNo);
+        $mandt = SapRfcFacade::getMandt();
+        $result = null;
+
+        $ndb = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                ->param('QUERY_TABLE', 'NDBSMATG16')
+                ->param('DELIMITER', ';')
+                ->param('OPTIONS', [
+                    ['TEXT' => "MANDT EQ {$mandt}"],
+                    ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'MATNR'],
+                    ['FIELDNAME' => 'GUID'],
+                ])
+                ->getDataToArray();
+        
+        $mard = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                ->param('QUERY_TABLE', 'MARD')
+                ->param('DELIMITER', ';')
+                ->param('OPTIONS', [
+                    ['TEXT' => "MANDT EQ {$mandt}"],
+                    ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+                    ['TEXT' => " AND WERKS EQ '{$warehouseNo}'"],
+                    ['TEXT' => " AND ( LABST > 0 "],
+                    ['TEXT' => " OR INSME > 0 "],
+                    ['TEXT' => " OR SPEME > 0 )"],
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'MATNR'],
+                    ['FIELDNAME' => 'LABST'],
+                    ['FIELDNAME' => 'UMLME'],
+                    ['FIELDNAME' => 'INSME'],
+                ])
+                ->getDataToArray();
+
+        $marm = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                ->param('QUERY_TABLE', 'MARM')
+                ->param('DELIMITER', ';')
+                ->param('OPTIONS', [
+                    ['TEXT' => "MANDT EQ {$mandt}"],
+                    ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+                    ['TEXT' => " AND MEINH NE 'KG'"],
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'MATNR'],
+                    ['FIELDNAME' => 'MEINH'],
+                    ['FIELDNAME' => 'UMREZ'],
+                    ['FIELDNAME' => 'UMREN'],
+                ])
+                ->getDataToArray();
+
+        $makt = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                ->param('QUERY_TABLE', 'MAKT')
+                ->param('DELIMITER', ';')
+                ->param('OPTIONS', [
+                    ['TEXT' => "MANDT EQ {$mandt}"],
+                    ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'MATNR'],
+                    ['FIELDNAME' => 'MAKTX'],
+                ])
+                ->getDataToArray();
+
+        $likp = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                ->param('QUERY_TABLE', 'LIKP')
+                ->param('DELIMITER', ";")
+                ->param('OPTIONS', [
+                    ['TEXT' => "MANDT EQ '{$mandt}'"],
+                    ['TEXT' => " AND KUNAG EQ '{$customerCode}'"],
+                    ['TEXT' => " AND ERDAT >= '{$startDate}'"],
+                    ['TEXT' => " AND ERDAT <= '{$endDate}'"],
+    
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'VBELN']
+                ])
+                ->getDataToArray();
+
+        
+        
+        $result['ndb']  = $ndb;
+        $result['maktx']= $makt;
+        $result['mard'] = $mard;
+        $result['marm'] = $marm;
+        $result['likp'] = $likp;
+
+        if(count($likp)){
+            
+            $arrWho = null;
+            foreach ($likp as $value) {
+                $vbeln = $value['VBELN'];
+                $refDoc = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                    ->param('QUERY_TABLE', '/SCDL/DB_REFDOC')
+                    ->param('DELIMITER', ";")
+                    ->param('ROWCOUNT', 1)
+                    ->param('OPTIONS', [
+                        ['TEXT' => "MANDT EQ '{$mandt}'"],
+                        ['TEXT' => " AND REFDOCNO EQ '{$vbeln}'"],
+                        ['TEXT' => " AND REFDOCCAT EQ 'ERP'"],
+                    ])
+                    ->param('FIELDS', [
+                        ['FIELDNAME' => 'DOCID']
+                    ])
+                    ->getDataToArray();
+                $docId = $refDoc[0]['DOCID'];
+
+                $whoByDocId = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                    ->param('QUERY_TABLE', '/SCWM/ORDIM_C')
+                    ->param('DELIMITER', ";")
+                    ->param('OPTIONS', [
+                        ['TEXT' => "MANDT EQ '{$mandt}'"],
+                        ['TEXT' => " AND RDOCID EQ '{$docId}'"],
+                        
+                    ])
+                    ->param('FIELDS', [
+                        ['FIELDNAME' => 'WHO']
+                    ])
+                    ->getDataToArray();
+
+                $arrWho[] = $whoByDocId;
+            }
+
+            $uniqueWho = collect($arrWho)
+                    ->flatten()
+                    ->unique()
+                    ->values()
+                    ->all();
+
+            $ordim = collect($uniqueWho)
+                    ->map(function($who){
+                        return SapRfcFacade::functionModule('ZFM_EWM_ORDIM')
+                            ->param('IV_MATNR', '')
+                            ->param('IV_TYPE', 'X') // X = ordim_c
+                            ->param('IV_PROCESS','')
+                            ->param('IV_WAREHOUSE', '')
+                            ->param('IV_WAREHOUSE_ORD', $who)
+                            // ->param('IV_ROWS', '')
+                        ->getDataToArray();
+                    });
+
+            $result['ordim_c'] = $ordim;
+        }
+            
+        return $result;
+            
+    }
+
+
+    public function getVbeln($vbeln, $warehouseNo)
+    {
+        $mandt = SapRfcFacade::getMandt();
+
+        $refDoc = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+            ->param('QUERY_TABLE', '/SDCL/DB_REFDOC')
+            ->param('DELIMITER', ';')
+            ->param('ROWCOUNT', 1)
+            ->param('OPTIONS', [
+                ['TEXT' => "MANDT EQ {$mandt}"],
+                ['TEXT' => " AND REFDOCNO EQ '{$vbeln}'"],
+                ['TEXT' => " AND REFDOCCAT EQ 'ERP'"],
+            ])
+            ->param('FIELDS', [
+                ['FIELDNAME' => 'DOCID']
+            ])
+            ->getDataToArray();
+        $docId = $refDoc[0]['DOCID'];
+
+        $rowsLikp = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+            ->param('QUERY_TABLE', 'LIKP')
+            ->param('DELIMITER', ';')
+            ->param('OPTIONS', [
+                ['TEXT' => "MANDT EQ {$mandt}"],
+                ['TEXT' => "AND LGNUM EQ {$warehouseNo}"],
+                ['TEXT' => "AND RDOCCID EQ {$docId}"],
+            ])
+            ->param('FIELDS', [
+                ['FIELDNAME' => 'MATID'],
+                ['FIELDNAME' => 'CHARG'],
+                ['FIELDNAME' => 'VFDAT'],
+                ['FIELDNAME' => 'VSOLM'],
+                ['FIELDNAME' => 'PROCTY'],
+            ])
+            ->getDataToArray();
+
+            return $rowsLikp;
+    }
+
+
 }

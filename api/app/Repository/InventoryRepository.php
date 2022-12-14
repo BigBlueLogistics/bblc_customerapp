@@ -42,25 +42,22 @@ class InventoryRepository implements IInventoryRepository
                 ['FIELDNAME' => 'UMREN'],
             ])
             ->getDataToArray();
+            
+        // Get picking products
+        $ordim =  SapRfcFacade::functionModule('ZFM_EWM_ORDIM')
+            ->param('IV_MATNR', $customerCode)
+            ->param('IV_TYPE', '') // X = ordim_c
+            ->param('IV_PROCESS','2010')
+            ->param('IV_WAREHOUSE', $warehouseNo)
+            ->param('IV_WAREHOUSE_ORD', '')
+            // ->param('IV_ROWS', '');
+        ->getData();
 
-
-        // Get product id
-        $productIds = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-                ->param('QUERY_TABLE', 'NDBSMATG16')
-                ->param('DELIMITER', ';')
-                ->param('OPTIONS', [
-                    ['TEXT' => "MANDT EQ {$mandt}"],
-                    ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
-                ])
-                ->param('FIELDS', [
-                    ['FIELDNAME' => 'MATNR'],
-                    ['FIELDNAME' => 'GUID'],
-                ])
-                ->getDataToArray();
+        $utf8_data_ordim = $this->convert_latin1_to_utf8_recursive($ordim);
 
         $collectionProducts = collect($utf8_data["T_SCWM_AQUA"]);
         $collectionFixedWt = collect($fixedWt);
-        $collectionPicking = collect($productIds);
+        $collectionPicking = collect($utf8_data_ordim["T_SCWM_ORDIM"]);
 
         $groupProductDetails = $collectionProducts->groupBy('MATNR')
                 ->map(function ($group) {
@@ -102,41 +99,8 @@ class InventoryRepository implements IInventoryRepository
             ];
         });
 
-        // Get vsolm
-        $keyedPicking = $collectionPicking->map(function ($item, $key) use ($mandt, $warehouseNo) {
-            $guid =  $item['GUID'];
-            $matnr = $item['MATNR'];
-
-            $vsolm = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-                ->param('QUERY_TABLE', '/SCWM/ORDIM_O')
-                ->param('DELIMITER', ';')
-                ->param('OPTIONS', [
-                    ['TEXT' => "MANDT EQ {$mandt}"],
-                    ['TEXT' => " AND LGNUM EQ '{$warehouseNo}'"],
-                    ['TEXT' => " AND MATID EQ '{$guid}'"],
-                    ['TEXT' => " AND PROCTY EQ '2010'"],
-                ])
-                ->param('FIELDS', [
-                    ['FIELDNAME' => 'VSOLM'],
-                ])
-                ->getDataToArray();
-
-            if (count($vsolm)) {
-                $vsolm = array_map(function ($value) use ($matnr) {
-                    $value['MATNR'] = $matnr;
-                    return $value;
-                }, $vsolm);
-            }
-
-            return $vsolm;
-        })->filter(function ($values) {
-            return count($values) > 0;
-        })->flatMap(function ($values) {
-            return $values;
-        });
-
         // Add up vsolm
-        $totalVsolmWt = $keyedPicking->mapToGroups(function ($item) {
+        $totalVsolmWt = $collectionPicking->mapToGroups(function ($item) {
             return [
                 $item['MATNR'] =>  [
                     'totalVsolmWt' => $item['VSOLM']

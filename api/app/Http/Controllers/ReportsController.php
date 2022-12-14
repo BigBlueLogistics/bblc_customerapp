@@ -10,6 +10,7 @@ use App\Traits\HttpResponse;
 use App\Interfaces\IReportsRepository;
 use App\Interfaces\IMemberRepository;
 use App\Exports\ReportsExport;
+use App\Http\Requests\ReportRequest;
 
 class ReportsController extends Controller
 {
@@ -48,14 +49,17 @@ class ReportsController extends Controller
         }
     }
 
-    public function index(Request $request)
+    public function index(ReportRequest $request)
     {
         try {
-            $customerCode = $request->input('customer_code');
-            $warehouse = $request->input('warehouse');
-            $groupBy = $request->input('group_by');
+            $request->validated($request->all());
 
-            $res = $this->reports->getStocksInventory($customerCode, $warehouse, $groupBy);
+            if($request->report_type === 'wh-snapshot'){
+                $res = $this->reports->getWhSnapshot($request->customer_code, $request->warehouse, $request->group_by);
+            }
+            if($request->report_type === 'stock-status'){
+                $res = $this->reports->getStocks($request->customer_code, $request->warehouse, $request->start_date, $request->end_date);
+            }
 
             return $this->sendResponse($res);
         } catch (Exception $e) {
