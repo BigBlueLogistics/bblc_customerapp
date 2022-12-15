@@ -1,6 +1,5 @@
 <?php
 
-use App\Repository\WarehouseRepository;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MembersController;

@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Repository\InventoryRepository;
+use Tests\TestCase;
 
 class InventoryTest extends TestCase
 {

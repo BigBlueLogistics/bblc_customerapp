@@ -2,16 +2,16 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use App\Support\SapRfc;
 use App\Interfaces\IInventoryRepository;
-use App\Interfaces\IWarehouseRepository;
-use App\Interfaces\IReportsRepository;
 use App\Interfaces\IMemberRepository;
+use App\Interfaces\IReportsRepository;
+use App\Interfaces\IWarehouseRepository;
 use App\Repository\InventoryRepository;
-use App\Repository\WarehouseRepository;
-use App\Repository\ReportsRepository;
 use App\Repository\MemberRepository;
+use App\Repository\ReportsRepository;
+use App\Repository\WarehouseRepository;
+use App\Support\SapRfc;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

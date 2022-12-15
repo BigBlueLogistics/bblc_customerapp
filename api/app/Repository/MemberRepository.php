@@ -2,8 +2,8 @@
 
 namespace App\Repository;
 
-use App\Interfaces\IMemberRepository;
 use App\Facades\SapRfcFacade;
+use App\Interfaces\IMemberRepository;
 
 class MemberRepository implements IMemberRepository
 {
@@ -15,7 +15,7 @@ class MemberRepository implements IMemberRepository
              ->param('DELIMITER', ';')
              ->param('OPTIONS', [
                  ['TEXT' => "MANDT EQ {$mandt}"],
-                 ['TEXT' => " AND KUNNR EQ '{$customerCode}'"]
+                 ['TEXT' => " AND KUNNR EQ '{$customerCode}'"],
              ])
              ->param('FIELDS', [
                  ['FIELDNAME' => 'NAME1'], // customer fullname
@@ -30,10 +30,11 @@ class MemberRepository implements IMemberRepository
         if (count($customer)) {
             return [
                 'name' => $customer[0]['NAME1'],
-                'address' => $customer[0]['STRAS'] . ", ". $customer[0]['ORT01'] . ", " . $customer[0]['LAND1'] . ", ". $customer[0]['PSTLZ'],
-                'phone' => $customer[0]['TELF1']
+                'address' => $customer[0]['STRAS'].', '.$customer[0]['ORT01'].', '.$customer[0]['LAND1'].', '.$customer[0]['PSTLZ'],
+                'phone' => $customer[0]['TELF1'],
             ];
         }
+
         return [];
     }
 }

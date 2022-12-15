@@ -2,27 +2,29 @@
 
 namespace App\Exports;
 
-use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Concerns\FromView;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\RegistersEventListeners;
-use Maatwebsite\Excel\Events\AfterSheet;
-use Maatwebsite\Excel\Concerns\WithDrawings;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
-
 use App\Interfaces\IInventoryRepository;
 use App\Interfaces\IMemberRepository;
 use Carbon\Carbon;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithDrawings;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class InventoryExport implements FromView, ShouldAutoSize, WithEvents, WithDrawings
 {
     use RegistersEventListeners;
 
     private $inventoryExport;
+
     private $member;
+
     private $customerCode;
+
     private $warehouseNo;
 
     public function __construct(IInventoryRepository $inventory, IMemberRepository $member)
@@ -39,12 +41,13 @@ class InventoryExport implements FromView, ShouldAutoSize, WithEvents, WithDrawi
 
     public function view(): View
     {
-        $result = $this->inventoryExport->getStocksInventory($this->customerCode, $this->warehouseNo, "material");
+        $result = $this->inventoryExport->getStocksInventory($this->customerCode, $this->warehouseNo, 'material');
         $customerInfo = $this->member->getMemberInfo($this->customerCode);
 
         $stocks = count($result) ? $result : [];
 
         $dateTimeNow = Carbon::now();
+
         return view('exports.inventory', [
             'stocks' => $stocks,
             'warehouseNo' => $this->warehouseNo,
@@ -87,7 +90,7 @@ class InventoryExport implements FromView, ShouldAutoSize, WithEvents, WithDrawi
 
         // Set bold font of sub totals.
         $highestDataRow = $activeSheet->getHighestRow();
-        $IndexSubTotals = (int)$highestDataRow;
+        $IndexSubTotals = (int) $highestDataRow;
 
         if ($IndexSubTotals > 10) {
             $activeSheet->getStyle("B{$IndexSubTotals}:K{$IndexSubTotals}")->getFont()->setBold(true);

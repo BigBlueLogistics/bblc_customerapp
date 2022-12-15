@@ -25,13 +25,13 @@ class MemberUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'customer_code' => 'required', 'string', 'min:8','max:8',
+            'customer_code' => 'required', 'string', 'min:8', 'max:8',
             'fname' => 'required', 'string',
             'lname' => 'required', 'string',
             'email' => 'required',  'email', 'string',
             'company_name' => 'required', 'string',
-            'is_verify' => Rule::in("true", "false"),
-            'is_active' => Rule::in("true", "false"),
+            'is_verify' => Rule::in('true', 'false'),
+            'is_active' => Rule::in('true', 'false'),
         ];
     }
 }

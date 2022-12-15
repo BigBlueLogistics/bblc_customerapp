@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Traits\HttpResponse;
 use App\Interfaces\IWarehouseRepository;
+use App\Traits\HttpResponse;
 
 class WarehouseController extends Controller
 {

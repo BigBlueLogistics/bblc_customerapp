@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Traits\HttpResponse;
 use App\Http\Requests\MemberUpdateRequest;
-use App\Models\User;
 use App\Models\CompanyRepresent;
+use App\Models\User;
+use App\Traits\HttpResponse;
 use Carbon\Carbon;
 
 class MembersController extends Controller
 {
     use HttpResponse;
+
     /**
      * Display a listing of the resource.
      *
@@ -36,12 +37,12 @@ class MembersController extends Controller
     public function edit($id)
     {
         try {
-            $member = User::find($id, ['id','fname', 'lname','email','email_verified_at', 'active']);
+            $member = User::find($id, ['id', 'fname', 'lname', 'email', 'email_verified_at', 'active']);
 
             if ($member) {
                 $member = array_merge($member->toArray(), [
                     'customer_code' => $member->company->customer_code ?? '',
-                    'company' => $member->company->company ?? ''
+                    'company' => $member->company->company ?? '',
                 ]);
             }
 
@@ -70,7 +71,7 @@ class MembersController extends Controller
             $member->active = strval($request->is_active);
 
             // Include column verify
-            if ($request->is_verify === "true") {
+            if ($request->is_verify === 'true') {
                 $member->email_verified_at = Carbon::now();
                 $member->role_id = 2;
             }
@@ -80,13 +81,13 @@ class MembersController extends Controller
             if ($isSuccess) {
                 $currentCompanyName = $member->company ? $member->company->company : null;
                 $companyDetails = CompanyRepresent::updateOrCreate(
-                    [ 'user_id' => $id, 'company' => $currentCompanyName],
+                    ['user_id' => $id, 'company' => $currentCompanyName],
                     ['customer_code' => $request->customer_code, 'company' => $request->company_name]
                 );
 
                 $member = array_merge($member->toArray(), [
-                   'customer_code' => $companyDetails->customer_code ?? '',
-                   'company' => $companyDetails->company ?? ''
+                    'customer_code' => $companyDetails->customer_code ?? '',
+                    'company' => $companyDetails->company ?? '',
                 ]);
             }
 

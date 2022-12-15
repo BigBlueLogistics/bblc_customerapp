@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangePassRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\ResetPassRequest;
-use App\Http\Requests\ChangePassRequest;
-use App\Models\User;
-use App\Models\Role;
 use App\Models\CompanyRepresent;
+use App\Models\Role;
+use App\Models\User;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -39,13 +39,13 @@ class AuthController extends Controller
 
         $token = $user->createToken($user->email)->plainTextToken;
         $relations = [
-           'customer_code' => $user->company()->value('customer_code'),
-           'role_name' => Role::where('id', $user->role_id)->first(['name'])->name ?? null
+            'customer_code' => $user->company()->value('customer_code'),
+            'role_name' => Role::where('id', $user->role_id)->first(['name'])->name ?? null,
         ];
 
         return $this->sendResponse(
             [
-                'user'  =>  array_merge($user->toArray(), $relations),
+                'user' => array_merge($user->toArray(), $relations),
                 'token' => $token,
             ],
             __('auth.success')
@@ -73,8 +73,9 @@ class AuthController extends Controller
             if ($user) {
                 CompanyRepresent::create([
                     'user_id' => $user->id,
-                    'company' => $request->company
+                    'company' => $request->company,
                 ]);
+
                 return $this->sendResponse('', __('auth.register'));
             }
 
@@ -150,14 +151,14 @@ class AuthController extends Controller
         $relations = [
             'customer_code' => $request->user()->company()->value('customer_code'),
             'role_name' => Role::where('id', $request->user()->role_id)->first(['name'])->name ?? null,
-         ];
+        ];
         $currentToken = $request->bearerToken();
 
         return $this->sendResponse([
-                'authenticated' => Auth::check(),
-                'user' => array_merge(Auth::user()->toArray(), $relations),
-                'token' => $currentToken
-            ], __('auth.re-authenticate'));
+            'authenticated' => Auth::check(),
+            'user' => array_merge(Auth::user()->toArray(), $relations),
+            'token' => $currentToken,
+        ], __('auth.re-authenticate'));
     }
 
     public function changePass(ChangePassRequest $request)
@@ -168,17 +169,17 @@ class AuthController extends Controller
 
         $user = User::where('email', $email)->first();
 
-        if (!$user || !Hash::check($request->current_password, $user->password)) {
-            return $this->sendError("Current password not match", Response::HTTP_UNAUTHORIZED);
+        if (! $user || ! Hash::check($request->current_password, $user->password)) {
+            return $this->sendError('Current password not match', Response::HTTP_UNAUTHORIZED);
         }
         if ($request->new_password !== $request->confirm_password) {
-            return $this->sendError("New and confirm new password not match.", Response::HTTP_UNAUTHORIZED);
+            return $this->sendError('New and confirm new password not match.', Response::HTTP_UNAUTHORIZED);
         }
 
         // Update user password
         $user->password = Hash::make($request->confirm_password);
         $user->save();
 
-        return $this->sendResponse(null, "New password has been set.");
+        return $this->sendResponse(null, 'New password has been set.');
     }
 }

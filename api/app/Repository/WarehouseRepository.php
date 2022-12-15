@@ -2,8 +2,8 @@
 
 namespace App\Repository;
 
-use App\Interfaces\IWarehouseRepository;
 use App\Facades\SapRfcFacade;
+use App\Interfaces\IWarehouseRepository;
 
 class WarehouseRepository implements IWarehouseRepository
 {

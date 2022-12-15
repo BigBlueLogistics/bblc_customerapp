@@ -2,14 +2,14 @@
 
 namespace App\Console;
 
+use App\Console\Commands\SetDefaultPassword;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use App\Console\Commands\SetDefaultPassword;
 
 class Kernel extends ConsoleKernel
 {
     protected $commands = [
-        SetDefaultPassword::class
+        SetDefaultPassword::class,
     ];
 
     /**

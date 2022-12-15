@@ -2,8 +2,8 @@
 
 namespace App\Repository;
 
-use App\Interfaces\IInventoryRepository;
 use App\Facades\SapRfcFacade;
+use App\Interfaces\IInventoryRepository;
 use App\Traits\StringEncode;
 
 class InventoryRepository implements IInventoryRepository
@@ -42,12 +42,12 @@ class InventoryRepository implements IInventoryRepository
                 ['FIELDNAME' => 'UMREN'],
             ])
             ->getDataToArray();
-            
+
         // Get picking products
-        $ordim =  SapRfcFacade::functionModule('ZFM_EWM_ORDIM')
+        $ordim = SapRfcFacade::functionModule('ZFM_EWM_ORDIM')
             ->param('IV_MATNR', $customerCode)
             ->param('IV_TYPE', '') // X = ordim_c
-            ->param('IV_PROCESS','2010')
+            ->param('IV_PROCESS', '2010')
             ->param('IV_WAREHOUSE', $warehouseNo)
             ->param('IV_WAREHOUSE_ORD', '')
             // ->param('IV_ROWS', '');
@@ -55,29 +55,32 @@ class InventoryRepository implements IInventoryRepository
 
         $utf8_data_ordim = $this->convert_latin1_to_utf8_recursive($ordim);
 
-        $collectionProducts = collect($utf8_data["T_SCWM_AQUA"]);
+        $collectionProducts = collect($utf8_data['T_SCWM_AQUA']);
         $collectionFixedWt = collect($fixedWt);
-        $collectionPicking = collect($utf8_data_ordim["T_SCWM_ORDIM"]);
+        $collectionPicking = collect($utf8_data_ordim['T_SCWM_ORDIM']);
 
         $groupProductDetails = $collectionProducts->groupBy('MATNR')
                 ->map(function ($group) {
                     // Add up initialAllocated, available and restricted
                     $initialAllocatedWt = $group->reduce(function ($total, $current) {
                         if ($current['LGTYP'] === 'GIZN') {
-                            $total += (float)$current['QUAN'];
+                            $total += (float) $current['QUAN'];
                         }
+
                         return $total;
                     }, 0);
                     $restrictedWt = $group->reduce(function ($total, $current) {
-                        if (in_array(strtoupper($current['CAT']), ['Q1','B1'])) {
-                            $total += (float)$current['QUAN'];
+                        if (in_array(strtoupper($current['CAT']), ['Q1', 'B1'])) {
+                            $total += (float) $current['QUAN'];
                         }
+
                         return $total;
                     }, 0);
                     $availableWt = $group->reduce(function ($total, $current) {
-                        if (!in_array(strtoupper($current['CAT']), ['Q1','B1']) && $current['LGTYP'] !== 'GIZN') {
-                            $total += (float)$current['QUAN'];
+                        if (! in_array(strtoupper($current['CAT']), ['Q1', 'B1']) && $current['LGTYP'] !== 'GIZN') {
+                            $total += (float) $current['QUAN'];
                         }
+
                         return $total;
                     }, 0);
 
@@ -93,42 +96,41 @@ class InventoryRepository implements IInventoryRepository
         $keyedFixedWt = $collectionFixedWt->mapWithKeys(function ($item) {
             return [
                 $item['MATNR'] => [
-                    'unit' => is_null($item['MEINH']) ? "KG" : $item['MEINH'],
-                    'fixedWt' =>  is_null($item['UMREZ']) ? 1 : (float)$item['UMREZ'] / (float)$item['UMREN'],
-                ]
+                    'unit' => is_null($item['MEINH']) ? 'KG' : $item['MEINH'],
+                    'fixedWt' => is_null($item['UMREZ']) ? 1 : (float) $item['UMREZ'] / (float) $item['UMREN'],
+                ],
             ];
         });
 
         // Add up vsolm
         $totalVsolmWt = $collectionPicking->mapToGroups(function ($item) {
             return [
-                $item['MATNR'] =>  [
-                    'totalVsolmWt' => $item['VSOLM']
-                ]
+                $item['MATNR'] => [
+                    'totalVsolmWt' => $item['VSOLM'],
+                ],
             ];
         })->map(function ($item) {
             $totalVsolm = $item->reduce(function ($total, $current) {
-                $total += (float)$current['totalVsolmWt'];
+                $total += (float) $current['totalVsolmWt'];
+
                 return $total;
             });
 
             return [
-                'totalVsolmWt' => round($totalVsolm, 3)
+                'totalVsolmWt' => round($totalVsolm, 3),
             ];
         });
-
 
         $mergedProducts = $groupProductDetails->mergeRecursive($keyedFixedWt);
         $merged = $mergedProducts->mergeRecursive($totalVsolmWt)
                         ->filter(function ($data) {
                             // Return only data if anyone of the field below has value.
-                            return (
+                            return
                                 (array_key_exists('availableWt', $data)
                              || array_key_exists('restrictedWt', $data)
                              || array_key_exists('initialAllocatedWt', $data)
                              || array_key_exists('totalVsolmWt', $data))
-                             && array_key_exists('materialCode', $data)
-                            );
+                             && array_key_exists('materialCode', $data);
                         })
                         ->map(function ($data) {
                             $fixedWt = array_key_exists('fixedWt', $data) ? $data['fixedWt'] : 1;
@@ -136,7 +138,7 @@ class InventoryRepository implements IInventoryRepository
                             $restrictedWt = array_key_exists('restrictedWt', $data) ? $data['restrictedWt'] : 0;
                             $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) ? $data['initialAllocatedWt'] : 0;
                             $totalVsolmWt = array_key_exists('totalVsolmWt', $data) ? $data['totalVsolmWt'] : 0;
-                            $unit = array_key_exists('unit', $data) ? $data['unit'] : "KG";
+                            $unit = array_key_exists('unit', $data) ? $data['unit'] : 'KG';
                             $allocatedWt = $initialAllocatedWt + $totalVsolmWt;
 
                             // Calculate the quantity.

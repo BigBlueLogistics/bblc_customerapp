@@ -24,10 +24,10 @@ class ReportRequest extends FormRequest
     public function rules()
     {
         return [
-            'customer_code' => ['required','string','min:8'],
-            'report_type' => ['required','string'],
+            'customer_code' => ['required', 'string', 'min:8'],
+            'report_type' => ['required', 'string'],
             'warehouse' => ['string'],
-            'group_by' => ['string','nullable'],
+            'group_by' => ['string', 'nullable'],
             'start_date' => ['date'],
             'end_date' => ['date'],
         ];

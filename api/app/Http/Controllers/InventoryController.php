@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-
-use App\Traits\HttpResponse;
+use App\Exports\InventoryExport;
 use App\Interfaces\IInventoryRepository;
 use App\Interfaces\IMemberRepository;
-use App\Exports\InventoryExport;
+use App\Traits\HttpResponse;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InventoryController extends Controller
 {
     use HttpResponse;
 
     private $inventory;
+
     private $members;
 
     public function __construct(IInventoryRepository $inventory, IMemberRepository $members)
@@ -23,7 +22,6 @@ class InventoryController extends Controller
         $this->inventory = $inventory;
         $this->members = $members;
     }
-
 
     public function export(Request $request)
     {
@@ -35,13 +33,13 @@ class InventoryController extends Controller
             $export = new InventoryExport($this->inventory, $this->members);
             $export->setFilterBy($customerCode, $warehouse);
 
-            if ($format === "xlsx") {
+            if ($format === 'xlsx') {
                 return Excel::download($export, 'inventory.xlsx', \Maatwebsite\Excel\Excel::XLSX, [
-                        'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                    ]);
+                    'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                ]);
             } else {
                 return Excel::download($export, 'inventory.csv', \Maatwebsite\Excel\Excel::CSV, [
-                    'Content-Type' => 'text/csv'
+                    'Content-Type' => 'text/csv',
                 ]);
             }
         } catch (Exception $e) {
