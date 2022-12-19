@@ -18,7 +18,7 @@ import { setIsAuthenticated } from "redux/auth/action";
 
 import MDImageIcon from "atoms/MDImageIcon";
 import excel from "assets/images/icons/excel.png";
-import miscData from "pages/Reports/data";
+import miscData, { ITableHeadersKey, IGroupByKey } from "pages/Reports/data";
 import { reportServices, inventoryServices } from "services";
 import { AxiosError } from "axios";
 import { IStatus } from "types/status";
@@ -40,13 +40,13 @@ function Reports() {
   };
   const [showNotifyDownload, setShowNotifyDownload] =
     useState<INotifyDownload>(initialStateNotification);
-  const [selectedReport, setSelectedReport] = useState("");
-  const [selectedWH, setSelectedWH] = useState("");
+  const [selectedReport, setSelectedReport] = useState<ITableHeadersKey>("wh-snapshot");
   const [selectedGroupBy, setSelectedGroupBy] = useState<IGroupBy>("");
+  const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [, setDateRange] = useState(null);
   const [warehouseList, setWarehouseList] = useState([]);
   const [rowsReport, setRowsReport] = useState([]);
-  const [groupByKey, setGroupByKey] = useState<keyof typeof groupByData>("stock");
+  const [groupByKey, setGroupByKey] = useState<IGroupByKey>("stock");
   const [action, setAction] = useState(null);
   const [toggleFilter, setToggleFilter] = useState(false);
 
@@ -70,7 +70,7 @@ function Reports() {
   };
 
   const onChangeReport = (e: ChangeEvent<HTMLInputElement>) => {
-    const data = e.target.value;
+    const data = e.target.value as keyof typeof tableHeaders;
     const key = ["stock-status", "wh-snapshot"].includes(data) ? "stock" : "aging";
     setSelectedReport(data);
     setGroupByKey(key);
@@ -80,8 +80,8 @@ function Reports() {
     setSelectedGroupBy(e.target.value as IGroupBy);
   };
 
-  const onChangeWH = (e: ChangeEvent<HTMLInputElement>) => {
-    setSelectedWH(e.target.value);
+  const onChangeWarehouse = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectedWarehouse(e.target.value);
   };
 
   const onChangeDateRange = (dates) => {
@@ -98,7 +98,7 @@ function Reports() {
     try {
       const tableBody = {
         customer_code: customerCode,
-        warehouse: selectedWH,
+        warehouse: selectedWarehouse,
         group_by: selectedGroupBy,
         report_type: selectedReport,
       };
@@ -123,9 +123,9 @@ function Reports() {
   };
 
   const exportFile = (format: "xlsx" | "csv") => {
-    const data = { customer_code: customerCode, warehouse: selectedWH, format };
+    const data = { customer_code: customerCode, warehouse: selectedWarehouse, format };
 
-    const fileName = `${customerCode}-${selectedWH}.${format}`;
+    const fileName = `${customerCode}-${selectedWarehouse}.${format}`;
     downloadFile({
       url: "/inventory/export-excel",
       filename: fileName,
@@ -134,7 +134,7 @@ function Reports() {
     closeAction();
   };
 
-  const refresh = () => {
+  const onRefresh = () => {
     fetchReports();
     closeAction();
   };
@@ -145,7 +145,7 @@ function Reports() {
 
   const onClear = () => {
     setSelectedReport("");
-    setSelectedWH("");
+    setSelectedWarehouse("");
     setSelectedGroupBy("");
   };
 
@@ -200,7 +200,7 @@ function Reports() {
         </Icon>
       ),
       label: "Refresh",
-      onClick: refresh,
+      onClick: onRefresh,
     },
     {
       icon: <MDImageIcon src={excel} alt="export-excel-icon" width={18} height={18} />,
@@ -283,6 +283,7 @@ function Reports() {
                       display: "flex",
                       alignItems: "end",
                       justifyContent: "start",
+                      padding: "10px",
                       [breakpoints.down("md")]: {
                         justifyContent: "space-between",
                       },
@@ -300,9 +301,9 @@ function Reports() {
                     <MDSelect
                       label="Warehouse"
                       variant="outlined"
-                      onChange={onChangeWH}
+                      onChange={onChangeWarehouse}
                       options={warehouseList}
-                      value={selectedWH}
+                      value={selectedWarehouse}
                       showArrowIcon
                       optKeyValue="PLANT"
                       optKeyLabel="NAME1"
@@ -321,9 +322,9 @@ function Reports() {
                       <MDateRangePicker
                         label="Dates.."
                         onChange={onChangeDateRange}
-                        disabled={selectedReport !== "stock"}
+                        disabled={selectedReport !== "stock-status"}
                         containerStyle={{
-                          cursor: selectedReport !== "stock" ? "not-allowed" : "default",
+                          cursor: selectedReport !== "stock-status" ? "not-allowed" : "default",
                         }}
                       />
                     </MDBox>
@@ -349,7 +350,10 @@ function Reports() {
                   </MDBox>
                 </MDBox>
                 <DataTable
-                  table={{ columns: tableHeaders.whSnapshot(selectedGroupBy), rows: rowsReport }}
+                  table={{
+                    columns: tableHeaders[selectedReport](selectedGroupBy),
+                    rows: rowsReport,
+                  }}
                   isSorted={false}
                   isLoading={tableStatus === "loading"}
                   entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}

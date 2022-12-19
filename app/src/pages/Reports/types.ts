@@ -5,4 +5,6 @@ export type INotifyDownload = {
   color?: "info" | "error" | "light" | "primary" | "secondary" | "success" | "warning" | "dark";
 };
 
-export type IGroupBy = "batch" | "expiry" | "material" | "";
+export type IGroupByWhSnapshot = "batch" | "expiry" | "material" | "";
+export type IGroupByAging = "expiration" | "receiving" | "production" | "";
+export type IGroupBy = IGroupByWhSnapshot | IGroupByAging;

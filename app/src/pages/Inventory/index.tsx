@@ -38,7 +38,7 @@ function Inventory() {
   };
   const [showNotifyDownload, setShowNotifyDownload] =
     useState<INotifyDownload>(initialStateNotification);
-  const [selectedFilterBy, setSelectedFilterBy] = useState("");
+  const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [warehouseList, setWarehouseList] = useState([]);
   const [rowsInventory, setRowsInventory] = useState([]);
   const [action, setAction] = useState(null);
@@ -63,21 +63,13 @@ function Inventory() {
     setShowNotifyDownload((prevState) => ({ ...prevState, open: false }));
   };
 
-  const onChangeFilterBy = (e: ChangeEvent<HTMLInputElement>) => {
-    setSelectedFilterBy(e.target.value);
-  };
-
-  const onToggleFilter = () => {
-    setToggleFilter((prevState) => !prevState);
-  };
-
-  const fetchInventoryTable = async () => {
+  const fetchInventoryTable = async (warehouse: string) => {
     setTableStatus("loading");
 
     try {
       const tableBody = {
         customer_code: customerCode,
-        warehouse: selectedFilterBy,
+        warehouse,
       };
 
       const { data: rows } = await inventoryServices.getInventoryList({ params: tableBody });
@@ -100,9 +92,9 @@ function Inventory() {
   };
 
   const exportFile = (format: "xlsx" | "csv") => {
-    const data = { customer_code: customerCode, warehouse: selectedFilterBy, format };
+    const data = { customer_code: customerCode, warehouse: selectedWarehouse, format };
 
-    const fileName = `${customerCode}-${selectedFilterBy}.${format}`;
+    const fileName = `${customerCode}-${selectedWarehouse}.${format}`;
     downloadFile({
       url: "/inventory/export-excel",
       filename: fileName,
@@ -111,21 +103,23 @@ function Inventory() {
     closeAction();
   };
 
-  const refresh = () => {
-    fetchInventoryTable();
+  const onChangeWarehouse = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectedWarehouse(e.target.value);
+    fetchInventoryTable(e.target.value);
+  };
+
+  const onToggleFilter = () => {
+    setToggleFilter((prevState) => !prevState);
+  };
+
+  const onRefresh = () => {
+    fetchInventoryTable(selectedWarehouse);
     closeAction();
   };
 
   useEffect(() => {
     fetchWarehouseList();
   }, []);
-
-  useEffect(() => {
-    if (customerCode && selectedFilterBy) {
-      fetchInventoryTable();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customerCode, selectedFilterBy]);
 
   useEffect(() => {
     if (error?.response?.statusText === "Unauthorized" && error?.response?.status === 401) {
@@ -174,7 +168,7 @@ function Inventory() {
         </Icon>
       ),
       label: "Refresh",
-      onClick: refresh,
+      onClick: onRefresh,
     },
     {
       icon: <MDImageIcon src={excel} alt="export-excel-icon" width={18} height={18} />,
@@ -253,14 +247,15 @@ function Inventory() {
                       display: "flex",
                       alignItems: "end",
                       justifyContent: "start",
+                      padding: "10px",
                     }}
                   >
                     <MDSelect
                       label="Warehouse"
                       variant="outlined"
-                      onChange={onChangeFilterBy}
+                      onChange={onChangeWarehouse}
                       options={warehouseList}
-                      value={selectedFilterBy}
+                      value={selectedWarehouse}
                       showArrowIcon
                       optKeyValue="PLANT"
                       optKeyLabel="NAME1"

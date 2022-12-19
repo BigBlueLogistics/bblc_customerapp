@@ -53,13 +53,17 @@ class ReportsController extends Controller
         try {
             $request->validated($request->all());
 
-            if ($request->report_type === 'wh-snapshot') {
+            $reportType = $request->report_type;
+            if ($reportType === 'wh-snapshot') {
                 $res = $this->reports->getWhSnapshot($request->customer_code, $request->warehouse, $request->group_by);
             }
-            if ($request->report_type === 'stock-status') {
+            if ($reportType === 'stock-status') {
                 $res = $this->reports->getStocks($request->customer_code, $request->warehouse, $request->start_date, $request->end_date);
             }
-
+            if ($reportType === 'aging-report') {   
+                $res = $this->reports->getAging($request->customer_code, $request->warehouse, $request->group_by);
+            }
+            
             return $this->sendResponse($res);
         } catch (Exception $e) {
             return $this->sendError($e);

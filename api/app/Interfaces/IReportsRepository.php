@@ -8,5 +8,7 @@ interface IReportsRepository
 
     public function getStocks($customerCode, $warehouseNo, $startDate, $endDate);
 
-    public function getAging($customerCode, $warehouseNo);
+    public function agingBy($customerCode, $warehouseNo, $fieldName);
+
+    public function getAging($customerCode, $warehouseNo, $groupBy);
 }

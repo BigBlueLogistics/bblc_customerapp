@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Facades\SapRfcFacade;
 use App\Interfaces\IReportsRepository;
 use App\Traits\StringEncode;
+use Carbon\Carbon;
 
 class ReportsRepository implements IReportsRepository
 {
@@ -17,12 +18,12 @@ class ReportsRepository implements IReportsRepository
 
         // Get Material no. and description, available,
         // allocated and restricted stocks
-        $result = SapRfcFacade::functionModule('ZFM_EWM_TABLEREAD')
+        $stocks = SapRfcFacade::functionModule('ZFM_EWM_TABLEREAD')
             ->param('IV_CUSTOMER', $customerCode)
             ->param('IV_WAREHOUSENO', $warehouseNo)
             ->getData();
 
-        $utf8_data = $this->convert_latin1_to_utf8_recursive($result);
+        $utf8_stocks = $this->convert_latin1_to_utf8_recursive($stocks);
 
         // Get fixed weight
         $fixedWt = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
@@ -53,11 +54,11 @@ class ReportsRepository implements IReportsRepository
             // ->param('IV_ROWS', '');
         ->getData();
 
-        $utf8_data_ordim = $this->convert_latin1_to_utf8_recursive($ordim);
+        $utf8_ordim = $this->convert_latin1_to_utf8_recursive($ordim);
 
-        $collectionProducts = collect($utf8_data['T_SCWM_AQUA']);
+        $collectionProducts = collect($utf8_stocks['T_SCWM_AQUA']);
         $collectionFixedWt = collect($fixedWt);
-        $collectionPicking = collect($utf8_data_ordim['T_SCWM_ORDIM']);
+        $collectionPicking = collect($utf8_ordim['T_SCWM_ORDIM']);
 
         $fieldName = null;
         if ($groupBy === 'batch') {
@@ -333,46 +334,183 @@ class ReportsRepository implements IReportsRepository
         return $result;
     }
 
-    public function getAging($customerCode, $warehouseNo)
-    {
-    }
-
-    public function getVbeln($vbeln, $warehouseNo)
+    public function agingBy($customerCode, $warehouseNo, $fieldName)
     {
         $mandt = SapRfcFacade::getMandt();
+        $warehouseNo = str_replace('BB', 'WH', $warehouseNo);
 
-        $refDoc = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-            ->param('QUERY_TABLE', '/SDCL/DB_REFDOC')
+        // Get Material no. and description, available,
+        // allocated and restricted stocks
+        $result = SapRfcFacade::functionModule('ZFM_EWM_TABLEREAD')
+            ->param('IV_CUSTOMER', $customerCode)
+            ->param('IV_WAREHOUSENO', $warehouseNo)
+            ->getData();
+
+        $utf8_data = $this->convert_latin1_to_utf8_recursive($result);
+
+        // Get fixed weight
+        $fixedWt = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+            ->param('QUERY_TABLE', 'MARM')
             ->param('DELIMITER', ';')
-            ->param('ROWCOUNT', 1)
+            ->param('SORT_FIELDS', 'MEINH')
+            ->param('ORDER_BY_COLUMN', '1')
             ->param('OPTIONS', [
                 ['TEXT' => "MANDT EQ {$mandt}"],
-                ['TEXT' => " AND REFDOCNO EQ '{$vbeln}'"],
-                ['TEXT' => " AND REFDOCCAT EQ 'ERP'"],
+                ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+                ['TEXT' => " AND MEINH NE 'KG'"],
             ])
             ->param('FIELDS', [
-                ['FIELDNAME' => 'DOCID'],
-            ])
-            ->getDataToArray();
-        $docId = $refDoc[0]['DOCID'];
-
-        $rowsLikp = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-            ->param('QUERY_TABLE', 'LIKP')
-            ->param('DELIMITER', ';')
-            ->param('OPTIONS', [
-                ['TEXT' => "MANDT EQ {$mandt}"],
-                ['TEXT' => "AND LGNUM EQ {$warehouseNo}"],
-                ['TEXT' => "AND RDOCCID EQ {$docId}"],
-            ])
-            ->param('FIELDS', [
-                ['FIELDNAME' => 'MATID'],
-                ['FIELDNAME' => 'CHARG'],
-                ['FIELDNAME' => 'VFDAT'],
-                ['FIELDNAME' => 'VSOLM'],
-                ['FIELDNAME' => 'PROCTY'],
+                ['FIELDNAME' => 'MATNR'],
+                ['FIELDNAME' => 'MEINH'],
+                ['FIELDNAME' => 'UMREZ'],
+                ['FIELDNAME' => 'UMREN'],
             ])
             ->getDataToArray();
 
-        return $rowsLikp;
+        // Get picking products
+        $ordim = SapRfcFacade::functionModule('ZFM_EWM_ORDIM')
+            ->param('IV_MATNR', $customerCode)
+            ->param('IV_TYPE', '') // X = ordim_c
+            ->param('IV_PROCESS', '2010')
+            ->param('IV_WAREHOUSE', $warehouseNo)
+            ->param('IV_WAREHOUSE_ORD', '')
+            // ->param('IV_ROWS', '');
+        ->getData();
+
+        $utf8_ordim = $this->convert_latin1_to_utf8_recursive($ordim);
+
+        $collectionFixedWt = collect($fixedWt);
+        $collectionProducts = collect($utf8_data['T_SCWM_AQUA'])
+            ->map(function ($value) {
+                return [
+                    'MATNR' => $value['MATNR'],
+                    'VFDAT' => $value['VFDAT'],
+                    'QUAN'  => $value['QUAN'],
+                    'WDATU' => $value['WDATU'],
+                    'MAKTX' => $value['MAKTX'],
+                ];
+            })->groupBy('MATNR')->ToArray();
+
+        $collectionPicking = collect($utf8_ordim['T_SCWM_ORDIM'])
+            ->map(function ($value) {
+                // Rename VSOLM to QUAN to able merge in $collectionProducts
+                return [
+                    'MATNR' => $value['MATNR'],
+                    'VFDAT' => $value['VFDAT'],
+                    'QUAN'  => $value['VSOLM'],
+                    'WDATU' => $value['WDATU'],
+                    'MAKTX' => '',
+                ];
+            })->groupBy('MATNR')->ToArray();
+
+        $mergedProducts = array_merge_recursive($collectionProducts, $collectionPicking);
+
+        $today = Carbon::today();
+        $groupProductDetails = collect($mergedProducts)->map(function ($group) use ($today, $fieldName) {
+            $qty_gt_120 = 0;
+            $qty_gt_60 = 0;
+            $qty_gt_30 = 0;
+            $qty_gt_15 = 0;
+            $qty_lt_15 = 0;
+            $qty_expired = 0;
+            foreach ($group as $value) {
+                $expiryDate = Carbon::parse($value[$fieldName]);
+                $agingDays = $today->diffInDays($expiryDate, false);
+
+                // > 120 days
+                if ($agingDays > 120) {
+                    $qty_gt_120 += (float) $value['QUAN'];
+                }
+                // > 60 days
+                elseif ($agingDays < 120 && $agingDays > 60) {
+                    $qty_gt_60 += (float) $value['QUAN'];
+                }
+                // > 30 days
+                elseif ($agingDays < 60 && $agingDays > 30) {
+                    $qty_gt_30 += (float) $value['QUAN'];
+                }
+                // > 15 days
+                elseif ($agingDays < 30 && $agingDays > 15) {
+                    $qty_gt_15 += (float) $value['QUAN'];
+                }
+                // < 15 days
+                elseif ($agingDays < 15 && $agingDays > 0) {
+                    $qty_lt_15 += (float) $value['QUAN'];
+                }
+                // expired
+                else {
+                    $qty_expired += (float) $value['QUAN'];
+                }
+            }
+
+            return [
+                'materialCode' => $group[0]['MATNR'],
+                'description' => $group[0]['MAKTX'],
+                'qty_exp_120' => round($qty_gt_120, 3),
+                'qty_exp_60' => round($qty_gt_60, 3),
+                'qty_exp_30' => round($qty_gt_30, 3),
+                'qty_exp_15' => round($qty_gt_15, 3),
+                'qty_exp_0' => round($qty_lt_15, 3),
+                'qty_expired' => round($qty_expired, 3),
+            ];
+        });
+
+        $keyedFixedWt = $collectionFixedWt->mapWithKeys(function ($item) {
+            return [
+                $item['MATNR'] => [
+                    'unit' => is_null($item['MEINH']) ? 'KG' : $item['MEINH'],
+                    'fixedWt' => is_null($item['UMREZ']) ? 1 : (float) $item['UMREZ'] / (float) $item['UMREN'],
+                ],
+            ];
+        });
+
+        $mergedProducts = $groupProductDetails->mergeRecursive($keyedFixedWt)
+                        ->filter(function ($arrData) {
+                            return array_key_exists('materialCode', $arrData);
+                        })
+                        ->map(function ($data) {
+                            $fixedWt = array_key_exists('fixedWt', $data) ? $data['fixedWt'] : 1;
+                            $unit = array_key_exists('unit', $data) ? $data['unit'] : 'KG';
+
+                            $qty_exp_120 = $data['qty_exp_120'] ?? 0;
+                            $qty_exp_60 = $data['qty_exp_60'] ?? 0;
+                            $qty_exp_30 = $data['qty_exp_30'] ?? 0;
+                            $qty_exp_15 = $data['qty_exp_15'] ?? 0;
+                            $qty_exp_0 = $data['qty_exp_0'] ?? 0;
+                            $qty_expired = $data['qty_expired'] ?? 0;
+
+                            $total = ($qty_exp_120
+                            + $qty_exp_60
+                            + $qty_exp_30
+                            + $qty_exp_15
+                            + $qty_exp_0
+                            + $qty_expired);
+
+                            return [
+                                ...$data,
+                                'fixedWt' => $fixedWt,
+                                'unit' => $unit,
+                                'totalQty' => round($total, 3),
+                            ];
+                        })
+                        ->all();
+        $result = count($mergedProducts) > 0 ? array_values($mergedProducts) : [];
+
+        return $result;
+    }
+
+    public function getAging($customerCode, $warehouseNo, $groupBy)
+    {
+        if($groupBy == 'expiry')
+        {
+            return $this->agingBy($customerCode, $warehouseNo, 'VFDAT');
+        }
+        else if ($groupBy == 'receiving')
+        {
+            return $this->agingBy($customerCode, $warehouseNo, 'WDATU');
+        }
+        else {
+            return [];
+        }
     }
 }
