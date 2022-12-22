@@ -1,15 +1,15 @@
 import { useState, forwardRef } from "react";
 import Icon from "@mui/material/Icon";
 import DatePicker from "react-datepicker";
-import DatePickInputRoot from "./DatePickInputRoot";
+import DatePickButtonRoot from "./DatePickButtonRoot";
 import MDateRangePickerRoot from "./MDateRangePickerRoot";
 import { IMDateRangePicker, IDatePickInput } from "./types";
 import "react-datepicker/dist/react-datepicker.css";
 
-const DatePickInput = forwardRef<HTMLButtonElement, IDatePickInput>(
+const DatePickButton = forwardRef<HTMLButtonElement, IDatePickInput>(
   ({ value, onClick, label, buttonStyle, ...rest }, ref) => {
     return (
-      <DatePickInputRoot
+      <DatePickButtonRoot
         ref={ref}
         onClick={onClick}
         type="button"
@@ -19,12 +19,12 @@ const DatePickInput = forwardRef<HTMLButtonElement, IDatePickInput>(
       >
         {value || label}
         <Icon fontSize="large">date_range</Icon>
-      </DatePickInputRoot>
+      </DatePickButtonRoot>
     );
   }
 );
 
-DatePickInput.displayName = "DatePickInput";
+DatePickButton.displayName = "DatePickButton";
 
 function MDateRangePicker({
   onChange,
@@ -56,7 +56,7 @@ function MDateRangePicker({
         isClearable
         minDate={startDate}
         disabled={disabled}
-        customInput={<DatePickInput buttonStyle={buttonStyle} label={label} />}
+        customInput={<DatePickButton buttonStyle={buttonStyle} label={label} />}
       />
     </MDateRangePickerRoot>
   );
