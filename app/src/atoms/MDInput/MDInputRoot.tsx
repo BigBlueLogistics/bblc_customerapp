@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import { IOwnerState } from "./types";
