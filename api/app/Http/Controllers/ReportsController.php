@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ReportsExport;
+use App\Exports\ReportWHSnapshotExport;
 use App\Http\Requests\ReportRequest;
 use App\Interfaces\IMemberRepository;
 use App\Interfaces\IReportsRepository;
 use App\Traits\HttpResponse;
-use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportsController extends Controller
@@ -24,22 +23,28 @@ class ReportsController extends Controller
         $this->members = $members;
     }
 
-    public function export(Request $request)
+    public function export(ReportRequest $request)
     {
         try {
+            $request->validated($request->all());
+
             $customerCode = $request->input('customer_code');
             $warehouse = $request->input('warehouse');
             $format = $request->input('format');
+            $reportType = $request->input('report_type');
+            $groupBy = $request->input('group_by');
 
-            $export = new ReportsExport($this->reports, $this->members);
-            $export->setFilterBy($customerCode, $warehouse);
+            if($reportType === "wh-snapshot"){
+                $export = new ReportWHSnapshotExport($this->reports, $this->members);
+                $export->setFilterBy($customerCode, $warehouse, $groupBy);
+            }
 
             if ($format === 'xlsx') {
-                return Excel::download($export, 'inventory.xlsx', \Maatwebsite\Excel\Excel::XLSX, [
+                return Excel::download($export, 'report.xlsx', \Maatwebsite\Excel\Excel::XLSX, [
                     'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 ]);
             } else {
-                return Excel::download($export, 'inventory.csv', \Maatwebsite\Excel\Excel::CSV, [
+                return Excel::download($export, 'report.csv', \Maatwebsite\Excel\Excel::CSV, [
                     'Content-Type' => 'text/csv',
                 ]);
             }
@@ -53,15 +58,21 @@ class ReportsController extends Controller
         try {
             $request->validated($request->all());
 
-            $reportType = $request->report_type;
+            $reportType = $request->input('report_type');
+            $customerCode = $request->input('customer_code');
+            $warehouse = $request->input('warehouse');
+            $start_date = $request->input('start_date');
+            $end_date = $request->input('end_date');
+            $groupBy = $request->input('group_by');
+
             if ($reportType === 'wh-snapshot') {
-                $res = $this->reports->getWhSnapshot($request->customer_code, $request->warehouse, $request->group_by);
+                $res = $this->reports->getWhSnapshot($customerCode, $warehouse, $groupBy);
             }
             if ($reportType === 'stock-status') {
-                $res = $this->reports->getStocks($request->customer_code, $request->warehouse, $request->start_date, $request->end_date);
+                $res = $this->reports->getStocks($customerCode, $warehouse, $start_date, $end_date);
             }
             if ($reportType === 'aging-report') {   
-                $res = $this->reports->getAging($request->customer_code, $request->warehouse, $request->group_by);
+                $res = $this->reports->getAging($customerCode, $warehouse, $groupBy);
             }
             
             return $this->sendResponse($res);

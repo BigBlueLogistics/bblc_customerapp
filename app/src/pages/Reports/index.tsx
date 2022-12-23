@@ -123,12 +123,19 @@ function Reports() {
   };
 
   const exportFile = (format: "xlsx" | "csv") => {
-    const data = { customer_code: customerCode, warehouse: selectedWarehouse, format };
+    const data = {
+      customer_code: customerCode,
+      warehouse: selectedWarehouse,
+      group_by: selectedGroupBy,
+      report_type: selectedReport,
+      format,
+    };
 
-    const fileName = `${customerCode}-${selectedWarehouse}.${format}`;
+    const fileName =
+      `${customerCode}-${selectedReport} ${selectedGroupBy}-${selectedWarehouse}`.toUpperCase();
     downloadFile({
-      url: "/inventory/export-excel",
-      filename: fileName,
+      url: "/reports/export-excel",
+      filename: `${fileName}.${format}`,
       data,
     });
     closeAction();

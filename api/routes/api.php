@@ -47,6 +47,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('reports')->group(function () {
         Route::get('/', [ReportsController::class, 'index']);
+        Route::get('/export-excel', [ReportsController::class, 'export']);
     });
 
     Route::prefix('warehouse')->group(function () {
