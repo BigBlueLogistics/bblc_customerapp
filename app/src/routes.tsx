@@ -25,6 +25,7 @@ import SignUp from "pages/Authentication/SignUp";
 import ResetPasswordLink from "pages/Authentication/ResetPasswordLink";
 import ResetPassword from "pages/Authentication/ResetPassword";
 import Inventory from "pages/Inventory";
+import Orders from "pages/Orders";
 import Reports from "pages/Reports";
 import DefaultPage from "pages/DefaultPage";
 import NotFound from "pages/NotFound";
@@ -177,7 +178,7 @@ const routes: RoutesType = [
     key: "orders",
     icon: <ShoppingCartIcon />,
     route: "/orders",
-    component: <UnderConstruction />,
+    component: <Orders />,
     access: "protected",
     allowedRoles: ["sysadmin", "user"],
   },
