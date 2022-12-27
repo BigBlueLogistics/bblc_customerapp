@@ -91,9 +91,15 @@ function FormTable(props: FormikProps<FormikValues>) {
                           />
                         </TableCell>
                         <TableCell>
-                          <MDButton iconOnly onClick={() => remove(index)}>
+                          <MDButton
+                            iconOnly
+                            onClick={() => remove(index)}
+                            sx={{
+                              "&:hover": { backgroundColor: "#ffcbc4" },
+                            }}
+                          >
                             <Icon color="error" fontSize="large">
-                              delete
+                              highlight_off
                             </Icon>
                           </MDButton>
                         </TableCell>
