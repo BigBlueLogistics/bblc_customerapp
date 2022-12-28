@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports;
+namespace App\Exports\Reports;
 
 use App\Interfaces\IMemberRepository;
 use App\Interfaces\IReportsRepository;
@@ -15,7 +15,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
-class ReportWHSnapshotExport implements FromView, ShouldAutoSize, WithEvents, WithDrawings
+class WHSnapshotExport implements FromView, ShouldAutoSize, WithEvents, WithDrawings
 {
     use RegistersEventListeners;
 
@@ -105,7 +105,7 @@ class ReportWHSnapshotExport implements FromView, ShouldAutoSize, WithEvents, Wi
         $IndexSubTotals = (int) $highestDataRow;
 
         if ($IndexSubTotals > 10) {
-            $activeSheet->getStyle("B{$IndexSubTotals}:K{$IndexSubTotals}")->getFont()->setBold(true);
+            $activeSheet->getStyle("B{$IndexSubTotals}:L{$IndexSubTotals}")->getFont()->setBold(true);
         }
     }
 }

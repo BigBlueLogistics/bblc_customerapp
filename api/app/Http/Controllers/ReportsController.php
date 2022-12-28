@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ReportWHSnapshotExport;
+use App\Exports\Reports\WHSnapshotExport;
 use App\Http\Requests\ReportRequest;
 use App\Interfaces\IMemberRepository;
 use App\Interfaces\IReportsRepository;
@@ -35,7 +35,7 @@ class ReportsController extends Controller
             $groupBy = $request->input('group_by');
 
             if($reportType === "wh-snapshot"){
-                $export = new ReportWHSnapshotExport($this->reports, $this->members);
+                $export = new WHSnapshotExport($this->reports, $this->members);
                 $export->setFilterBy($customerCode, $warehouse, $groupBy);
             }
 
