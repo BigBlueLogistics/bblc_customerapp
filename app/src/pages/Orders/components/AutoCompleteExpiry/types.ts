@@ -1,3 +1,5 @@
+import { AutocompleteChangeReason } from "@mui/material/Autocomplete";
+
 export type IAutoCompleteExpiryData = {
   id: string;
   batch: string;
@@ -7,6 +9,6 @@ export type IAutoCompleteExpiryData = {
 export type IAutoCompleteExpiry = {
   index: number;
   options: IAutoCompleteExpiryData[];
-  onChange: (value: IAutoCompleteExpiryData) => void;
+  onChange: (value: IAutoCompleteExpiryData, reason: AutocompleteChangeReason) => void;
   value: string;
 };

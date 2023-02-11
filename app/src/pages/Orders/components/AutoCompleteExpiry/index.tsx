@@ -12,7 +12,7 @@ function AutoCompleteExpiry({ options, value, index, onChange }: IAutoCompleteEx
     <Autocomplete
       id={`${index}-filter-expiry`}
       value={value as any}
-      onChange={(e, selectedValue) => onChange(selectedValue as any)}
+      onChange={(e, selectedValue, reason) => onChange(selectedValue as any, reason)}
       options={options}
       noOptionsText="No expiry/batch"
       filterOptions={filterOptions}
@@ -20,7 +20,7 @@ function AutoCompleteExpiry({ options, value, index, onChange }: IAutoCompleteEx
         if (typeof option === "string") {
           return option;
         }
-        return option.expiry;
+        return option.id.toString();
       }}
       sx={{ width: 250 }}
       renderInput={(params) => <TextField {...params} label="Select expiry" />}

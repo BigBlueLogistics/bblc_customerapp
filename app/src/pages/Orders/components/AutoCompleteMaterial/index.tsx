@@ -12,7 +12,7 @@ function AutoCompleteMaterial({ options, value, index, onChange }: IAutoComplete
     <Autocomplete
       id={`${index}-filter-material`}
       value={value as any}
-      onChange={(e, selectedValue) => onChange(selectedValue as any)}
+      onChange={(e, selectedValue, reason) => onChange(selectedValue as any, reason)}
       options={options}
       noOptionsText="No material"
       filterOptions={filterOptions}
@@ -20,7 +20,7 @@ function AutoCompleteMaterial({ options, value, index, onChange }: IAutoComplete
         if (typeof option === "string") {
           return option;
         }
-        return option.material;
+        return option.id.toString();
       }}
       sx={{ width: 250 }}
       renderInput={(params) => <TextField {...params} label="Select material" />}

@@ -1,3 +1,5 @@
+import { AutocompleteChangeReason } from "@mui/material/Autocomplete";
+
 export type IAutoCompleteMaterialData = {
   id: string;
   material: string;
@@ -7,6 +9,6 @@ export type IAutoCompleteMaterialData = {
 export type IAutoCompleteMaterial = {
   index: number;
   options: IAutoCompleteMaterialData[];
-  onChange: (value: IAutoCompleteMaterialData) => void;
+  onChange: (value: IAutoCompleteMaterialData, reason: AutocompleteChangeReason) => void;
   value: string;
 };
