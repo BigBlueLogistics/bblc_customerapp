@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
 export default yup.object({
-  po_number: yup.number().required("required"),
-  po_date: yup.date().required("required"),
+  ref_number: yup.number().typeError("not a number").required("required"),
+  source_wh: yup.string().required("required"),
 });

@@ -13,13 +13,8 @@ export default function miscData() {
       ...commonHeadersAttr,
     },
     {
-      Header: "P.O No.",
-      accessor: "poNo",
-      ...commonHeadersAttr,
-    },
-    {
-      Header: "P.O Date",
-      accessor: "poDate",
+      Header: "Reference No.",
+      accessor: "refNo",
       ...commonHeadersAttr,
     },
     {
