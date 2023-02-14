@@ -10,8 +10,8 @@ class OrdersServices extends HttpAdapter {
     return this.get("/orders/product-units", config);
   }
 
-  getProductDetails(config: AxiosRequestConfig) {
-    return this.get("/orders/product-details", config);
+  getExpiryBatch(config: AxiosRequestConfig) {
+    return this.get("/orders/expiry-batch", config);
   }
 }
 
