@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\Reports\WHSnapshotExport;
+use App\Exports\Reports\AgingExport;
 use App\Http\Requests\ReportRequest;
 use App\Interfaces\IMemberRepository;
 use App\Interfaces\IReportsRepository;
@@ -36,6 +37,10 @@ class ReportsController extends Controller
 
             if($reportType === "wh-snapshot"){
                 $export = new WHSnapshotExport($this->reports, $this->members);
+                $export->setFilterBy($customerCode, $warehouse, $groupBy);
+            }
+            else if($reportType === "aging-report"){
+                $export = new AgingExport($this->reports, $this->members);
                 $export->setFilterBy($customerCode, $warehouse, $groupBy);
             }
 

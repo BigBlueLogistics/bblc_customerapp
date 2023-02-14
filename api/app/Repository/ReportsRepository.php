@@ -501,7 +501,7 @@ class ReportsRepository implements IReportsRepository
 
     public function getAging($customerCode, $warehouseNo, $groupBy)
     {
-        if($groupBy == 'expiry')
+        if($groupBy == 'expiration')
         {
             return $this->agingBy($customerCode, $warehouseNo, 'VFDAT');
         }
