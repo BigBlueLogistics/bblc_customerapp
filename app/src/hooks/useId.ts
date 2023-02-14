@@ -1,12 +1,21 @@
-import { useRef } from "react";
+import { useRef, useCallback, useEffect } from "react";
 
 function useId() {
-  const idRef = useRef(0);
+  const id = useRef(0);
+  const isMount = useRef(false);
 
-  const generate = () => {
-    idRef.current += 1;
-    return idRef.current;
-  };
+  useEffect(() => {
+    if (isMount && isMount.current === false) {
+      isMount.current = true;
+    }
+  }, []);
+
+  const generate = useCallback(() => {
+    if (isMount.current) {
+      id.current += 1;
+    }
+    return id.current;
+  }, [isMount]);
 
   return generate;
 }
