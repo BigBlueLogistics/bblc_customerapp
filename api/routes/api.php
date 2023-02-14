@@ -5,6 +5,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MembersController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,5 +53,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('warehouse')->group(function () {
         Route::get('/list', [WarehouseController::class, 'list']);
+    });
+
+    Route::prefix('orders')->group(function(){
+        Route::get('/material-description', [OrderController::class, 'materialAndDescription']);
+        Route::get('/product-units', [OrderController::class, 'productUnits']);
+        Route::get('/expiry-batch', [OrderController::class, 'expiryBatch']);
     });
 });
