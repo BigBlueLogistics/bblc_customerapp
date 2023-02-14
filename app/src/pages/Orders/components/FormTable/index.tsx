@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { TableContainer, Table, TableCell, TableHead, TableBody, TableRow } from "@mui/material";
-import { FieldArray, FormikProps, FormikValues } from "formik";
+import { FieldArray, FormikProps } from "formik";
 import Icon from "@mui/material/Icon";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
 import MDSelect from "atoms/MDSelect";
+import MDTypography from "atoms/MDTypography";
 import AutoCompleteMaterial from "../AutoCompleteMaterial";
 import AutoCompleteExpiry from "../AutoCompleteExpiry";
 import { IFormTable } from "./types";
@@ -19,7 +19,7 @@ function FormTable(props: FormikProps<IFormData> & IFormTable) {
     errors,
     units,
     materials,
-    batchExpiry,
+    expiryBatch,
     setValues,
     handleMaterialCode,
     handleExpiryBatch,
@@ -28,11 +28,11 @@ function FormTable(props: FormikProps<IFormData> & IFormTable) {
   } = props;
 
   const tHeaders = [
-    "Search",
+    // "Search",
     "Material",
-    "Quantity",
     "Units",
     "Expiry / Batch",
+    "Quantity",
     "Available Quantity",
     "",
   ];
@@ -58,7 +58,7 @@ function FormTable(props: FormikProps<IFormData> & IFormTable) {
                   ? values.requests.map(({ id }, index) => (
                       // eslint-disable-next-line react/no-array-index-key
                       <TableRow key={id}>
-                        <TableCell>
+                        {/* <TableCell>
                           <MDInput
                             margin="dense"
                             name={`requests[${index}].search`}
@@ -77,14 +77,36 @@ function FormTable(props: FormikProps<IFormData> & IFormTable) {
                             }
                             onChange={handleChange}
                           />
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <AutoCompleteMaterial
                             index={index}
-                            options={materials}
+                            options={materials || []}
                             value={values.requests[index].material || ""}
                             onChange={(value, reason) =>
                               handleMaterialCode(value, reason, id, index, setValues)
+                            }
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <MDSelect
+                            name={`requests[${index}].units`}
+                            label="Select units"
+                            variant="outlined"
+                            withOptionKeys={false}
+                            options={units[id] || []}
+                            value={values.requests[index].units || ""}
+                            sx={{ width: "150px" }}
+                            onChange={handleChange}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <AutoCompleteExpiry
+                            index={index}
+                            options={expiryBatch[id] || []}
+                            value={values.requests[index].expiry || ""}
+                            onChange={(value, reason) =>
+                              handleExpiryBatch(value, reason, id, index, setValues)
                             }
                           />
                         </TableCell>
@@ -109,47 +131,13 @@ function FormTable(props: FormikProps<IFormData> & IFormTable) {
                           />
                         </TableCell>
                         <TableCell>
-                          <MDSelect
-                            name={`requests[${index}].units`}
-                            label="Select units"
-                            variant="outlined"
-                            withOptionKeys={false}
-                            options={units[id]}
-                            value={values.requests[index].units || ""}
-                            sx={{ width: "150px" }}
-                            onChange={handleChange}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <AutoCompleteExpiry
-                            index={index}
-                            options={batchExpiry}
-                            value={values.requests[index].expiry || ""}
-                            onChange={(value, reason) =>
-                              handleExpiryBatch(value, reason, index, setValues)
-                            }
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <MDInput
-                            disabled
-                            margin="dense"
-                            name={`requests[${index}].available`}
-                            type="text"
-                            variant="standard"
-                            value={values.requests[index].available || ""}
-                            // error={
-                            //   touched?.requests && errors.requests
-                            //     ? Boolean(errors.requests[index]?.qty)
-                            //     : false
-                            // }
-                            // helperText={
-                            //   touched?.requests && errors.requests
-                            //     ? errors.requests[index]?.qty
-                            //     : null
-                            // }
-                            onChange={handleChange}
-                          />
+                          <MDTypography
+                            sx={({ typography: { pxToRem } }) => ({
+                              fontSize: pxToRem(14),
+                            })}
+                          >
+                            {values.requests[index].available || ""}
+                          </MDTypography>
                         </TableCell>
                         <TableCell>
                           <MDButton

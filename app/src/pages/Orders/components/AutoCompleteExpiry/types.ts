@@ -4,6 +4,7 @@ export type IAutoCompleteExpiryData = {
   id: string;
   batch: string;
   expiry: string;
+  quantity?: number;
 };
 
 export type IAutoCompleteExpiry = {

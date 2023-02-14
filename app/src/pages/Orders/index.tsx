@@ -240,6 +240,7 @@ function Orders() {
         data={[]}
         status="idle"
         message=""
+        warehouseList={warehouseList}
         isLoadingEdit={false}
         isLoadingUpdate={false}
       />

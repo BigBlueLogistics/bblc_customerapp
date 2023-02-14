@@ -6,7 +6,7 @@ import { IFormData } from "../Form/type";
 
 export type IFormTable = {
   materials: IAutoCompleteMaterialData[];
-  batchExpiry: IAutoCompleteExpiryData[];
+  expiryBatch: { [key: string]: IAutoCompleteExpiryData[] };
   units: { [key: string]: string[] };
   handleMaterialCode: (
     value: IAutoCompleteMaterialData,
@@ -18,6 +18,7 @@ export type IFormTable = {
   handleExpiryBatch: (
     value: IAutoCompleteExpiryData,
     reason: AutocompleteChangeReason,
+    id: number,
     index: number,
     setValues: FormikHelpers<IFormData>["setValues"]
   ) => void;

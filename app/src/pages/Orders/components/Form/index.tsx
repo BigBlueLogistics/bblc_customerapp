@@ -12,7 +12,7 @@ import MDInput from "atoms/MDInput";
 import MDatePicker from "atoms/MDatePicker";
 import MDAlert2 from "atoms/MDAlert2";
 import SkeletonForm from "organisms/Skeleton/Form";
-import { Formik, Form, ArrayHelpers, FormikHelpers } from "formik";
+import { Formik, Form, ArrayHelpers, FormikHelpers, FormikHandlers } from "formik";
 import MDCheckbox from "atoms/MDCheckbox";
 import MDSelect from "atoms/MDSelect";
 import { ordersServices } from "services";
@@ -36,10 +36,34 @@ function FormRequests({
   message,
 }: IForm) {
   const autoId = useId();
+  const initialRowId = autoId();
   const { customerCode } = selector();
+  const [initialValues] = useState<IFormData>({
+    id: "",
+    pickup_date: null,
+    ref_number: "",
+    instruction: "",
+    allow_notify: false,
+    source_wh: "",
+    requests: [
+      {
+        id: initialRowId,
+        material: "",
+        description: "",
+        qty: "",
+        units: "",
+        batch: "",
+        expiry: "",
+        available: "",
+      },
+    ],
+  });
   const [materialList, setMaterialList] = useState([]);
-  const [batchExpiryList, setBatchExpiryList] = useState([]);
-  const [unitList, setUnitList] = useState({ 0: [] });
+  const [expiryBatchList, setExpiryBatchList] = useState({ [initialRowId]: [] });
+  const [unitList, setUnitList] = useState({ [initialRowId]: [] });
+
+  const [warehouseNo, setWarehouseNo] = useState("");
+  // const [materialCode, setMaterialCode] = useState("");
 
   const renderMessage = () => {
     if (status === "succeeded" || status === "failed") {
@@ -75,32 +99,33 @@ function FormRequests({
     }
   }, [customerCode]);
 
-  const fetchUnits = async (idx: number, materialCode: string) => {
+  const fetchUnits = async (id: number, material: string) => {
     try {
       const { data: resp } = await ordersServices.getUnits({
-        params: { materialCode },
+        params: { materialCode: material },
       });
       if (resp) {
         const units = resp.data;
-        setUnitList((prev) => ({ ...prev, [idx]: units }));
+        setUnitList((prev) => ({ ...prev, [id]: units }));
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const fetchBatchExpiry = useCallback(async () => {
+  const fetchExpiryBatch = async (id: number, material: string) => {
     try {
-      const { data: resp } = await ordersServices.getProductDetails({
-        params: { customerCode, warehouseNo: "WH05" },
+      const { data: resp } = await ordersServices.getExpiryBatch({
+        params: { materialCode: material, warehouseNo },
       });
       if (resp) {
-        setBatchExpiryList(resp.data);
+        const expiry = resp.data;
+        setExpiryBatchList((prev) => ({ ...prev, [id]: expiry }));
       }
     } catch (error) {
       console.log(error);
     }
-  }, [customerCode]);
+  };
 
   const clearUnits = (id: number) => {
     const unitListClone = unitList;
@@ -112,6 +137,16 @@ function FormRequests({
     }
   };
 
+  const clearExpiryBatch = (id: number) => {
+    const expiryListClone = expiryBatchList;
+    if (expiryListClone[id]) {
+      delete expiryListClone[id];
+
+      // Update expiry/batch list per row
+      setExpiryBatchList(expiryListClone);
+    }
+  };
+
   const handleMaterialCode = (
     value: IAutoCompleteMaterialData,
     reason: AutocompleteChangeReason,
@@ -119,10 +154,10 @@ function FormRequests({
     index: number,
     setValues: FormikHelpers<IFormData>["setValues"]
   ) => {
-    // Set data of material and unit dropdown
+    // Set selected material.
+    // And fetch units, expiry and batch.
     if (reason === "selectOption" && value) {
       const { material, description } = value;
-      fetchUnits(id, material);
       setValues((prev) => {
         const clonePrev = prev;
         clonePrev.requests[index].material = material;
@@ -130,33 +165,57 @@ function FormRequests({
 
         return clonePrev;
       });
+      fetchUnits(id, material);
+      fetchExpiryBatch(id, material);
     }
 
     // Clear data of material and unit dropdown
     if (reason === "clear") {
       clearUnits(id);
+      clearExpiryBatch(id);
       setValues((prev) => {
         const clonePrev = prev;
         clonePrev.requests[index].material = "";
         clonePrev.requests[index].description = "";
+        clonePrev.requests[index].units = "";
+        clonePrev.requests[index].expiry = "";
+        clonePrev.requests[index].batch = "";
 
         return clonePrev;
       });
     }
   };
 
+  const computeAvailableQty = (id: number, selectedExpiry: string, selectedBatch: string) => {
+    if (expiryBatchList[id]?.length) {
+      return expiryBatchList[id].reduce((totalQty, current) => {
+        let prevTotalQty = totalQty;
+
+        if (selectedExpiry === current.expiry && selectedBatch === current.batch) {
+          prevTotalQty += current.quantity;
+        }
+
+        return prevTotalQty;
+      }, 0);
+    }
+    return 0;
+  };
+
   const handleExpiryBatch = (
     value: IAutoCompleteExpiryData,
     reason: AutocompleteChangeReason,
+    id: number,
     index: number,
     setValues: FormikHelpers<IFormData>["setValues"]
   ) => {
     if (reason === "selectOption" && value) {
       const { expiry, batch } = value;
+      const availabeQty = computeAvailableQty(id, expiry, batch);
       setValues((prev) => {
         const clonePrev = prev;
         clonePrev.requests[index].expiry = expiry;
         clonePrev.requests[index].batch = batch;
+        clonePrev.requests[index].available = availabeQty;
 
         return clonePrev;
       });
@@ -173,15 +232,28 @@ function FormRequests({
     }
   };
 
+  const handlePickupDate = (date: Date, setValues: FormikHelpers<IFormData>["setValues"]) => {
+    setValues((prev) => ({ ...prev, pickup_date: date }));
+  };
+
+  const handleWarehouseNo = (e: any, handleChange: FormikHandlers["handleChange"]) => {
+    handleChange(e);
+    setWarehouseNo(e.target.value);
+  };
+
   const handleRemoveRow = (remove: ArrayHelpers["remove"], idx: number, id: number) => {
     clearUnits(id);
+    clearExpiryBatch(id);
 
     // Remove row
     remove(idx);
   };
 
   const handleAddRow = (push: ArrayHelpers["push"]) => {
-    push({ id: autoId(), search: "", material: "", description: "" });
+    push({
+      ...initialValues.requests[0],
+      id: autoId(),
+    });
   };
 
   useEffect(() => {
@@ -189,12 +261,6 @@ function FormRequests({
       fetchMaterialDescription();
     }
   }, [fetchMaterialDescription, open]);
-
-  useEffect(() => {
-    if (open) {
-      fetchBatchExpiry();
-    }
-  }, [fetchBatchExpiry, open]);
 
   return (
     <Dialog open={open} fullWidth maxWidth="md">
@@ -204,26 +270,7 @@ function FormRequests({
         <Formik
           // enableReinitialize
           validationSchema={validationSchema}
-          initialValues={{
-            id: "",
-            ref_number: "",
-            instruction: "",
-            allow_notify: false,
-            source_wh: "",
-            requests: [
-              {
-                id: autoId(),
-                search: "",
-                material: "",
-                description: "",
-                qty: "",
-                units: "",
-                batch: "",
-                expiry: "",
-                available: "",
-              },
-            ],
-          }}
+          initialValues={initialValues}
           onSubmit={(validatedVal) => {
             console.log(validatedVal);
 
@@ -238,7 +285,12 @@ function FormRequests({
                 <input type="hidden" value={formikProp.values.id} />
 
                 <MDBox mb={1} display="flex" justifyContent="space-between">
-                  <MDatePicker label="Pickup DateTime" onChange={() => console.log("date")} />
+                  <MDatePicker
+                    label="Pickup DateTime"
+                    name="pickup_date"
+                    defaultValue={null}
+                    onChange={(date) => handlePickupDate(date, formikProp.setValues)}
+                  />
                   <MDSelect
                     name="source_wh"
                     label="Source warehouse"
@@ -248,7 +300,7 @@ function FormRequests({
                     options={warehouseList}
                     value={formikProp.values.source_wh}
                     sx={{ width: 220 }}
-                    onChange={formikProp.handleChange}
+                    onChange={(e) => handleWarehouseNo(e, formikProp.handleChange)}
                   />
                 </MDBox>
                 <MDBox mb={1} display="flex" justifyContent="space-between">
@@ -294,7 +346,7 @@ function FormRequests({
                   <FormTable
                     {...formikProp}
                     materials={materialList}
-                    batchExpiry={batchExpiryList}
+                    expiryBatch={expiryBatchList}
                     units={unitList}
                     handleMaterialCode={handleMaterialCode}
                     handleExpiryBatch={handleExpiryBatch}
@@ -305,7 +357,12 @@ function FormRequests({
               </DialogContent>
               <DialogActions>
                 <MDButton onClick={onClose}>Close</MDButton>
-                <MDButton type="submit" disabled={isLoadingUpdate} loading={isLoadingUpdate}>
+                <MDButton
+                  type="submit"
+                  disabled={isLoadingUpdate}
+                  loading={isLoadingUpdate}
+                  onClick={formikProp.handleSubmit}
+                >
                   Save
                 </MDButton>
               </DialogActions>

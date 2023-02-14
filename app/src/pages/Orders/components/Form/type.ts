@@ -1,14 +1,16 @@
 import { IStatus } from "types/status";
+import { IAutoCompleteExpiryData } from "../AutoCompleteExpiry/types";
+import { IAutoCompleteMaterialData } from "../AutoCompleteMaterial/types";
 
 export type IFormData = {
   id: string;
+  pickup_date: Date | null;
   ref_number: string;
   instruction: string;
   allow_notify: boolean;
   source_wh: string;
   requests: {
     id: number;
-    search: string;
     material: string;
     description: string;
     qty: string;
@@ -31,4 +33,10 @@ export type IForm = {
   status: IStatus;
   message: string;
   warehouseList: { value: string | number; label: string }[];
+};
+
+export type IReducerState = {
+  materials: IAutoCompleteMaterialData[];
+  expiryBatch: { [key: string]: IAutoCompleteExpiryData[] };
+  units: { [key: string]: string[] };
 };
