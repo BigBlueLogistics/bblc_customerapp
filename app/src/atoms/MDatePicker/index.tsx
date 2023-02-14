@@ -32,8 +32,16 @@ const DatePickInput = forwardRef<HTMLInputElement, IDatePick>(
 );
 DatePickInput.displayName = "DatePickInput";
 
-function MDateRangePicker({ onChange, label, containerStyle, inputStyle, disabled }: IMDatePicker) {
-  const [selectedDate, setSelectedDate] = useState(null);
+function MDateRangePicker({
+  onChange,
+  name,
+  label,
+  containerStyle,
+  inputStyle,
+  disabled,
+  defaultValue = null,
+}: IMDatePicker) {
+  const [selectedDate, setSelectedDate] = useState(defaultValue);
 
   const onChangeDate = (date: Date) => {
     setSelectedDate(date);
@@ -52,6 +60,7 @@ function MDateRangePicker({ onChange, label, containerStyle, inputStyle, disable
         dateFormat="MM/dd/yyyy h:mm aa"
         disabled={disabled}
         strictParsing
+        name={name}
         customInput={<DatePickInput inputStyle={inputStyle} label={label} />}
       />
     </MDatePickerRoot>

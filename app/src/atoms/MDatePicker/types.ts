@@ -9,6 +9,8 @@ export type IDatePick = {
 
 export type IMDatePicker = {
   onChange: (date: Date) => void;
+  name?: string;
+  defaultValue?: Date | null;
   containerStyle?: SxProps<Theme>;
   inputStyle?: SxProps<Theme>;
   label?: string;

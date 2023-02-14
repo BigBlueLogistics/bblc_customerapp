@@ -6,6 +6,7 @@ import MDSelectRoot from "atoms/MDSelect/MDSelectRoot";
 import { IMDSelect } from "./types";
 
 function MDSelect({
+  name,
   onChange,
   variant,
   options,
@@ -15,26 +16,45 @@ function MDSelect({
   showArrowIcon,
   optKeyValue,
   optKeyLabel,
+  withOptionKeys,
   ...rest
 }: IMDSelect) {
-  const renderOptionsWithCustomKeys = () => {
-    const customOptValue = optKeyValue || "value";
-    const customOptLabel = optKeyLabel || "label";
-
+  const renderOptionsWithoutCustomKeys = () => {
     return (
-      options.length &&
-      options.map((opt) => (
-        <MenuItem key={opt[customOptValue]} value={opt[customOptValue]}>
-          {opt[customOptLabel]}
+      options?.length &&
+      options.map((optValue, idx) => (
+        // @ts-ignore
+        // eslint-disable-next-line react/no-array-index-key
+        <MenuItem key={idx} value={optValue}>
+          {optValue}
         </MenuItem>
       ))
     );
+  };
+
+  const renderOptionsWithCustomKeys = () => {
+    if (withOptionKeys) {
+      const customOptValue = optKeyValue || "value";
+      const customOptLabel = optKeyLabel || "label";
+
+      return (
+        options?.length &&
+        options.map((opt) => (
+          <MenuItem key={opt[customOptValue]} value={opt[customOptValue]}>
+            {opt[customOptLabel]}
+          </MenuItem>
+        ))
+      );
+    }
+
+    return renderOptionsWithoutCustomKeys();
   };
 
   return (
     <MDFormControlRoot sx={{ m: 1, minWidth: 130 }} {...rest}>
       <InputLabel id={`select-label-${label}`}>{label}</InputLabel>
       <MDSelectRoot
+        name={name}
         variant={variant}
         labelId={`select-label-${label}`}
         id={`select-${label}`}
@@ -56,6 +76,7 @@ MDSelect.defaultProps = {
   showArrowIcon: false,
   optKeyValue: "value",
   optKeyLabel: "label",
+  withOptionKeys: true,
 };
 
 export default MDSelect;
