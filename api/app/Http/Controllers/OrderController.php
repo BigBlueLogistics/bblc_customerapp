@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
+use App\Http\Requests\Order\CreateRequest;
+use App\Http\Requests\Order\ExpiryBatchRequest;
+use App\Http\Requests\Order\MaterialRequest;
+use App\Http\Requests\Order\ProductUnitsRequest;
 use App\Interfaces\IOrderRepository;
+use App\Models\OrderHeader;
+use App\Models\OrderItems;
 use App\Traits\HttpResponse;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -18,11 +23,12 @@ class OrderController extends Controller
         $this->order = $order;
     }
 
-    public function materialAndDescription(Request $request)
+    public function materialAndDescription(MaterialRequest $request)
     {
         try {
-            $customerCode = $request->input('customerCode');
-            $result =  $this->order->materialAndDescription($customerCode);
+            $request->validated($request->all());
+
+            $result = $this->order->materialAndDescription($request->customerCode);
 
             return $this->sendResponse($result, 'descriptions');
         } catch (Exception $e) {
@@ -30,11 +36,12 @@ class OrderController extends Controller
         }
     }
 
-    public function productUnits(Request $request)
+    public function productUnits(ProductUnitsRequest $request)
     {
         try {
-            $materialCode = $request->input('materialCode');
-            $result = $this->order->productUnits($materialCode);
+            $request->validated($request->all());
+
+            $result = $this->order->productUnits($request->materialCode);
 
             return $this->sendResponse($result, 'units');
         } catch (\Exception $e) {
@@ -42,15 +49,70 @@ class OrderController extends Controller
         }
     }
 
-    public function expiryBatch(Request $request)
+    public function expiryBatch(ExpiryBatchRequest $request)
     {
         try {
-            $materialCode = $request->input('materialCode');
-            $warehouseNo = $request->input('warehouseNo');
+            $request->validated($request->all());
 
-            $result = $this->order->expiryBatch($materialCode, $warehouseNo);
+            $result = $this->order->expiryBatch($request->materialCode, $request->warehouseNo);
 
             return $this->sendResponse($result, 'units');
+        } catch (Exception $e) {
+            return $this->sendError($e);
+        }
+    }
+
+    protected function mapToTableFields(array $data, array $miscData)
+    {
+        $collection = collect($data);
+
+        return $collection->map(function ($field) use ($miscData) {
+            return [
+                ...$miscData,
+                'matnr' => $field['material'],
+                'quan' => $field['qty'],
+                'meinh' => $field['units'],
+                'charg' => $field['batch'],
+                'vfdat' => $field['expiry'],
+            ];
+        })->all();
+    }
+
+    public function create(CreateRequest $request)
+    {
+        try {
+            $request->validated($request->all());
+
+            $authUser = auth()->user();
+            $currentDatetime = Carbon::now();
+            $warehouseNo = str_replace('BB','WH', $request->source_wh);
+
+            // Insert order details
+            $orderHeader = OrderHeader::create([
+                'lgnum' => $warehouseNo,
+                'ponum' => $request->ref_number,
+                'pudat' => $request->pickup_date,
+                'miles' => $request->allow_notify == 'true' ? 1 : 0,
+                'header' => $request->instruction,
+                'ernam' => $authUser->id,
+                'apstat' => $authUser->role_id,
+                'erdat' => $currentDatetime->format('m/d/Y'),
+                'ertim' => $currentDatetime->format('H:i:s'),
+            ]);
+
+            if ($orderHeader) {
+                $id = $orderHeader['transid'];
+                $orderDetails = OrderHeader::where('id', $id)->first(['transid', 'lgnum'])->toArray();
+
+                $mappedData = $this->mapToTableFields($request->requests, $orderDetails);
+
+                // Bulk insert order items
+                OrderItems::insert($mappedData);
+            }
+
+            return $this->sendResponse([
+                'id' => $orderDetails['transid'],
+            ], 'Successfully created order request');
         } catch (Exception $e) {
             return $this->sendError($e);
         }

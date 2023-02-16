@@ -1,6 +1,7 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import { FormikHelpers } from "formik";
 
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
@@ -18,12 +19,12 @@ import { setIsAuthenticated } from "redux/auth/action";
 
 import MDImageIcon from "atoms/MDImageIcon";
 import excel from "assets/images/icons/excel.png";
-import { reportServices, inventoryServices } from "services";
+import { reportServices, inventoryServices, ordersServices } from "services";
 import { AxiosError } from "axios";
 import { IStatus } from "types/status";
 import miscData from "./data";
 import selector from "./selector";
-import { INotifyDownload, IGroupBy } from "./types";
+import { INotifyDownload, IGroupBy, IOrderData, IFormOrderState } from "./types";
 import Form from "./components/Form";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
@@ -52,6 +53,11 @@ function Orders() {
 
   const [tableStatus, setTableStatus] = useState<IStatus>("idle");
   const [error, setError] = useState<AxiosError | null>(null);
+  const [formOrder, setFormOrder] = useState<IFormOrderState>({
+    message: "",
+    data: null,
+    status: "idle",
+  });
 
   const {
     downloadFile,
@@ -148,6 +154,17 @@ function Orders() {
     setSelectedGroupBy("");
   };
 
+  const onSave = async (orderData: IOrderData, actions: FormikHelpers<IOrderData>) => {
+    setFormOrder((prev) => ({ ...prev, status: "loading" }));
+    try {
+      const { data } = await ordersServices.createOrder(orderData);
+      setFormOrder((prev) => ({ ...prev, message: data.message, status: "succeeded" }));
+      actions.resetForm();
+    } catch (err: any) {
+      setFormOrder((prev) => ({ ...prev, message: err.message, status: "failed" }));
+    }
+  };
+
   useEffect(() => {
     fetchWarehouseList();
   }, []);
@@ -236,10 +253,8 @@ function Orders() {
       <Form
         open={showForm}
         onClose={onCloseForm}
-        onUpdate={() => console.log("save")}
-        data={[]}
-        status="idle"
-        message=""
+        onSave={onSave}
+        data={formOrder}
         warehouseList={warehouseList}
         isLoadingEdit={false}
         isLoadingUpdate={false}

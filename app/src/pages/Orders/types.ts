@@ -1,3 +1,5 @@
+import { IStatus } from "types/status";
+
 export type INotifyDownload = {
   open: boolean;
   message?: string;
@@ -8,3 +10,28 @@ export type INotifyDownload = {
 export type IGroupByWhSnapshot = "batch" | "expiry" | "material" | "";
 export type IGroupByAging = "expiration" | "receiving" | "production" | "";
 export type IGroupBy = IGroupByWhSnapshot | IGroupByAging;
+
+export type IOrderData = {
+  id: string;
+  pickup_date: Date | null;
+  ref_number: string;
+  instruction: string;
+  allow_notify: boolean;
+  source_wh: string;
+  requests: {
+    id: number;
+    material: string;
+    description: string;
+    qty: string;
+    units: string;
+    batch: string;
+    expiry: string;
+    available: string;
+  }[];
+};
+
+export type IFormOrderState = {
+  status: IStatus;
+  data: any;
+  message: string;
+};

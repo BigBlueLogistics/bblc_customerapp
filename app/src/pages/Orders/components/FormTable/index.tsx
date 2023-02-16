@@ -6,12 +6,12 @@ import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
 import MDSelect from "atoms/MDSelect";
 import MDTypography from "atoms/MDTypography";
+import { IOrderData } from "pages/Orders/types";
 import AutoCompleteMaterial from "../AutoCompleteMaterial";
 import AutoCompleteExpiry from "../AutoCompleteExpiry";
 import { IFormTable } from "./types";
-import { IFormData } from "../Form/type";
 
-function FormTable(props: FormikProps<IFormData> & IFormTable) {
+function FormTable(props: FormikProps<IOrderData> & IFormTable) {
   const {
     values,
     touched,

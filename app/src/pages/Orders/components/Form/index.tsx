@@ -18,8 +18,9 @@ import MDSelect from "atoms/MDSelect";
 import { ordersServices } from "services";
 import { useId } from "hooks";
 import selector from "selector";
+import { IOrderData } from "pages/Orders/types";
 import FormTable from "../FormTable";
-import { IForm, IFormData } from "./type";
+import { IForm } from "./types";
 import validationSchema from "./validationSchema";
 import { IAutoCompleteMaterialData } from "../AutoCompleteMaterial/types";
 import { IAutoCompleteExpiryData } from "../AutoCompleteExpiry/types";
@@ -27,18 +28,16 @@ import { IAutoCompleteExpiryData } from "../AutoCompleteExpiry/types";
 function FormRequests({
   open,
   onClose,
-  // onUpdate,
-  // data,
+  onSave,
+  data,
   warehouseList,
   isLoadingEdit,
   isLoadingUpdate,
-  status,
-  message,
 }: IForm) {
   const autoId = useId();
   const initialRowId = autoId();
   const { customerCode } = selector();
-  const [initialValues] = useState<IFormData>({
+  const [initialValues] = useState<IOrderData>({
     id: "",
     pickup_date: null,
     ref_number: "",
@@ -66,8 +65,9 @@ function FormRequests({
   // const [materialCode, setMaterialCode] = useState("");
 
   const renderMessage = () => {
-    if (status === "succeeded" || status === "failed") {
-      const severity = status === "succeeded" ? "success" : "error";
+    const { message, status: formStatus } = data;
+    if (formStatus === "succeeded" || formStatus === "failed") {
+      const severity = formStatus === "succeeded" ? "success" : "error";
       return (
         <MDAlert2
           severity={severity}
@@ -152,7 +152,7 @@ function FormRequests({
     reason: AutocompleteChangeReason,
     id: number,
     index: number,
-    setValues: FormikHelpers<IFormData>["setValues"]
+    setValues: FormikHelpers<IOrderData>["setValues"]
   ) => {
     // Set selected material.
     // And fetch units, expiry and batch.
@@ -206,7 +206,7 @@ function FormRequests({
     reason: AutocompleteChangeReason,
     id: number,
     index: number,
-    setValues: FormikHelpers<IFormData>["setValues"]
+    setValues: FormikHelpers<IOrderData>["setValues"]
   ) => {
     if (reason === "selectOption" && value) {
       const { expiry, batch } = value;
@@ -232,7 +232,7 @@ function FormRequests({
     }
   };
 
-  const handlePickupDate = (date: Date, setValues: FormikHelpers<IFormData>["setValues"]) => {
+  const handlePickupDate = (date: Date, setValues: FormikHelpers<IOrderData>["setValues"]) => {
     setValues((prev) => ({ ...prev, pickup_date: date }));
   };
 
@@ -271,10 +271,8 @@ function FormRequests({
           // enableReinitialize
           validationSchema={validationSchema}
           initialValues={initialValues}
-          onSubmit={(validatedVal) => {
-            console.log(validatedVal);
-
-            // onUpdate(1, {});
+          onSubmit={(validatedData: IOrderData, actions) => {
+            onSave(validatedData, actions);
           }}
         >
           {(formikProp) => (
@@ -311,6 +309,7 @@ function FormRequests({
                     label="Reference Number"
                     type="text"
                     variant="standard"
+                    inputProps={{ inputMode: "numeric", pattern: "[0-9]{12}" }}
                     value={formikProp.values.ref_number}
                     error={formikProp.touched.ref_number && Boolean(formikProp.errors.ref_number)}
                     helperText={formikProp.touched.ref_number ? formikProp.errors.ref_number : ""}

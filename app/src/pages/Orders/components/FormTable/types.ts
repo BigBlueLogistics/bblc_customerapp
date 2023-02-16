@@ -1,8 +1,8 @@
 import { AutocompleteChangeReason } from "@mui/material/Autocomplete";
 import { ArrayHelpers, FormikHelpers } from "formik";
+import { IOrderData } from "pages/Orders/types";
 import { IAutoCompleteExpiryData } from "../AutoCompleteExpiry/types";
 import { IAutoCompleteMaterialData } from "../AutoCompleteMaterial/types";
-import { IFormData } from "../Form/type";
 
 export type IFormTable = {
   materials: IAutoCompleteMaterialData[];
@@ -13,14 +13,14 @@ export type IFormTable = {
     reason: AutocompleteChangeReason,
     id: number,
     index: number,
-    setValues: FormikHelpers<IFormData>["setValues"]
+    setValues: FormikHelpers<IOrderData>["setValues"]
   ) => void;
   handleExpiryBatch: (
     value: IAutoCompleteExpiryData,
     reason: AutocompleteChangeReason,
     id: number,
     index: number,
-    setValues: FormikHelpers<IFormData>["setValues"]
+    setValues: FormikHelpers<IOrderData>["setValues"]
   ) => void;
   handleRemoveRow: (remove: ArrayHelpers["remove"], idx: number, id: number) => void;
   handleAddRow: (push: ArrayHelpers["push"]) => void;

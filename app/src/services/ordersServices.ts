@@ -13,6 +13,10 @@ class OrdersServices extends HttpAdapter {
   getExpiryBatch(config: AxiosRequestConfig) {
     return this.get("/orders/expiry-batch", config);
   }
+
+  createOrder(data: any) {
+    return this.post("/orders/create", data);
+  }
 }
 
 export default OrdersServices;
