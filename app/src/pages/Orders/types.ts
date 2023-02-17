@@ -30,6 +30,12 @@ export type IOrderData = {
   }[];
 };
 
+export type ITableOrder = {
+  status: IStatus;
+  data: any;
+  message: string;
+};
+
 export type IFormOrderState = {
   status: IStatus;
   data: any;

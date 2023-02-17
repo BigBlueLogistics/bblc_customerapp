@@ -60,6 +60,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/product-units', [OrderController::class, 'productUnits']);
         Route::get('/expiry-batch', [OrderController::class, 'expiryBatch']);
 
+        Route::get('/', [OrderController::class, 'index']);
         Route::post('/create', [OrderController::class, 'create']);
     });
 });

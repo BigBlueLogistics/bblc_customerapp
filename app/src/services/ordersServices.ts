@@ -14,6 +14,10 @@ class OrdersServices extends HttpAdapter {
     return this.get("/orders/expiry-batch", config);
   }
 
+  getOrderList(config?: AxiosRequestConfig) {
+    return this.get("/orders", config);
+  }
+
   createOrder(data: any) {
     return this.post("/orders/create", data);
   }

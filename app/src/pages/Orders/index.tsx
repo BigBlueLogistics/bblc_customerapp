@@ -19,12 +19,11 @@ import { setIsAuthenticated } from "redux/auth/action";
 
 import MDImageIcon from "atoms/MDImageIcon";
 import excel from "assets/images/icons/excel.png";
-import { reportServices, inventoryServices, ordersServices } from "services";
+import { inventoryServices, ordersServices } from "services";
 import { AxiosError } from "axios";
-import { IStatus } from "types/status";
 import miscData from "./data";
 import selector from "./selector";
-import { INotifyDownload, IGroupBy, IOrderData, IFormOrderState } from "./types";
+import { INotifyDownload, IGroupBy, IOrderData, IFormOrderState, ITableOrder } from "./types";
 import Form from "./components/Form";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
@@ -47,12 +46,16 @@ function Orders() {
   const [showForm, setShowForm] = useState(false);
   const [, setDateRange] = useState(null);
   const [warehouseList, setWarehouseList] = useState([]);
-  const [rowsReport, setRowsReport] = useState([]);
   const [action, setAction] = useState(null);
   const [toggleFilter, setToggleFilter] = useState(false);
 
-  const [tableStatus, setTableStatus] = useState<IStatus>("idle");
   const [error, setError] = useState<AxiosError | null>(null);
+  const [tableOrders, setTableOrders] = useState<ITableOrder>({
+    message: "",
+    data: [],
+    status: "idle",
+  });
+
   const [formOrder, setFormOrder] = useState<IFormOrderState>({
     message: "",
     data: null,
@@ -99,22 +102,18 @@ function Orders() {
     setToggleFilter((prevState) => !prevState);
   };
 
-  const fetchReports = async () => {
-    setTableStatus("loading");
+  const fetchOrderList = async () => {
+    setTableOrders((prev) => ({ ...prev, status: "loading" }));
 
     try {
-      const tableBody = {
-        customer_code: customerCode,
-        warehouse: selectedWarehouse,
-        group_by: selectedGroupBy,
-      };
-
-      const { data: rows } = await reportServices.getReports({ params: tableBody });
-      setRowsReport(rows.data);
-      setTableStatus("succeeded");
+      const { data: rows } = await ordersServices.getOrderList();
+      setTableOrders({
+        status: "succeeded",
+        data: rows.data,
+        message: rows.data.message,
+      });
     } catch (err) {
-      setError(err);
-      setTableStatus("failed");
+      setTableOrders({ status: "failed", message: err.message, data: [] });
     }
   };
 
@@ -141,12 +140,12 @@ function Orders() {
   };
 
   const onRefresh = () => {
-    fetchReports();
+    fetchOrderList();
     closeAction();
   };
 
   const onFilter = () => {
-    fetchReports();
+    fetchOrderList();
   };
 
   const onClear = () => {
@@ -166,6 +165,7 @@ function Orders() {
   };
 
   useEffect(() => {
+    fetchOrderList();
     fetchWarehouseList();
   }, []);
 
@@ -238,7 +238,9 @@ function Orders() {
     <DashboardLayout>
       <DashboardNavbar />
 
-      {tableStatus === "failed" && <MDTypography variant="body2">{error.message}</MDTypography>}
+      {tableOrders.status === "failed" && (
+        <MDTypography variant="body2">{tableOrders.message}</MDTypography>
+      )}
 
       <MDSnackbar
         color={showNotifyDownload.color}
@@ -365,10 +367,10 @@ function Orders() {
                 <DataTable
                   table={{
                     columns: tableHeaders,
-                    rows: rowsReport,
+                    rows: tableOrders.data,
                   }}
                   isSorted={false}
-                  isLoading={tableStatus === "loading"}
+                  isLoading={tableOrders.status === "loading"}
                   entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}
                   showTotalEntries
                   noEndBorder

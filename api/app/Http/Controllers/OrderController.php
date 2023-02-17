@@ -11,6 +11,7 @@ use App\Models\OrderHeader;
 use App\Models\OrderItems;
 use App\Traits\HttpResponse;
 use Carbon\Carbon;
+use DB;
 
 class OrderController extends Controller
 {
@@ -78,6 +79,22 @@ class OrderController extends Controller
         })->all();
     }
 
+    public function index()
+    {
+        try {
+            $orders = OrderHeader::select([
+                'transid', 'ponum AS ref_number', 'apstat AS status',
+                Db::raw("FORMAT(erdat, 'MMM, dd yyyy') AS created_date"),
+                Db::raw("CONVERT(VARCHAR(11), CAST(ertim AS TIME), 100) AS created_time"),
+                'updated_at',
+            ])->get();
+
+            return $this->sendResponse($orders, 'get orders list');
+        } catch (Exception $e) {
+            return $this->sendError($e);
+        }
+    }
+
     public function create(CreateRequest $request)
     {
         try {
@@ -85,7 +102,7 @@ class OrderController extends Controller
 
             $authUser = auth()->user();
             $currentDatetime = Carbon::now();
-            $warehouseNo = str_replace('BB','WH', $request->source_wh);
+            $warehouseNo = str_replace('BB', 'WH', $request->source_wh);
 
             // Insert order details
             $orderHeader = OrderHeader::create([

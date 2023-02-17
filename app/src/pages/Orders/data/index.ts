@@ -1,20 +1,18 @@
-import { formatDecimal } from "utils";
-
 export default function miscData() {
   const commonHeadersAttr = {
     align: "right",
-    Cell: ({ value }) => (value > 0 ? formatDecimal(value, 3) : 0),
+    Cell: ({ value }) => value || "",
   };
 
   const tableHeaders = [
     {
       Header: "Transaction No.",
-      accessor: "transactionNo",
+      accessor: "transid",
       ...commonHeadersAttr,
     },
     {
       Header: "Reference No.",
-      accessor: "refNo",
+      accessor: "ref_number",
       ...commonHeadersAttr,
     },
     {
@@ -24,12 +22,11 @@ export default function miscData() {
     },
     {
       Header: "Created at",
-      accessor: "createdAt",
-      ...commonHeadersAttr,
+      Cell: ({ row }) => `${row.original.created_date} ${row.original.created_time}`,
     },
     {
       Header: "Last modified",
-      accessor: "updatedAt",
+      accessor: "updated_at",
       ...commonHeadersAttr,
     },
   ];

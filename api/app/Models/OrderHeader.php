@@ -32,7 +32,7 @@ class OrderHeader extends Model
         // format of: <timestamp>-<user ID>
         if (auth()->check()) {
             self::creating(function ($model) {
-                $model->transid = Carbon::now()->timestamp. '-' .auth()->id();
+                $model->transid = auth()->id(). '-' .Carbon::now()->timestamp;
             });
         }
     }
