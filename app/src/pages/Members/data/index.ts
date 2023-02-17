@@ -1,6 +1,6 @@
 import { format, parseISO } from "date-fns";
 import { ITableCellProps } from "types/reactTable";
-import { CellName, CellStatus, CellAction } from "../components/Table";
+import { CellName, CellStatus, CellAction } from "../components/TableCell";
 import { IData } from "./types";
 
 export default function miscData() {
