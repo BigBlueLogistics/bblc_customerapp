@@ -61,6 +61,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/expiry-batch', [OrderController::class, 'expiryBatch']);
 
         Route::get('/', [OrderController::class, 'index']);
+        Route::get('/{transid}',[OrderController::class, 'edit'])->where('transid','^[0-9]+-[0-9]{10}$');
         Route::post('/create', [OrderController::class, 'create']);
     });
 });

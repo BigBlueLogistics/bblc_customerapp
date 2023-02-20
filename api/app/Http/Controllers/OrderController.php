@@ -63,22 +63,6 @@ class OrderController extends Controller
         }
     }
 
-    protected function mapToTableFields(array $data, array $miscData)
-    {
-        $collection = collect($data);
-
-        return $collection->map(function ($field) use ($miscData) {
-            return [
-                ...$miscData,
-                'matnr' => $field['material'],
-                'quan' => $field['qty'],
-                'meinh' => $field['units'],
-                'charg' => $field['batch'],
-                'vfdat' => $field['expiry'],
-            ];
-        })->all();
-    }
-
     public function index()
     {
         try {
@@ -119,18 +103,31 @@ class OrderController extends Controller
 
             if ($orderHeader) {
                 $id = $orderHeader['transid'];
-                $orderDetails = OrderHeader::where('id', $id)->first(['transid', 'lgnum'])->toArray();
+                $orderId = OrderHeader::where('id', $id)->first(['transid', 'lgnum']);
 
-                $mappedData = $this->mapToTableFields($request->requests, $orderDetails);
+                $mappedData = $orderId->withMapOrderDetails($request->requests);
 
                 // Bulk insert order items
                 OrderItems::insert($mappedData);
             }
 
             return $this->sendResponse([
-                'id' => $orderDetails['transid'],
+                'id' => $orderId['transid'],
             ], 'Successfully created order request');
         } catch (Exception $e) {
+            return $this->sendError($e);
+        }
+    }
+
+    public function edit($transId)
+    {
+        try {
+            $orders = OrderHeader::find($transId)->toFormattedOrderDetails();
+
+            return $this->sendResponse($orders, 'request order details');
+        }
+        catch (Exception $e)
+        {
             return $this->sendError($e);
         }
     }
