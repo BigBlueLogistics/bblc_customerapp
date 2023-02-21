@@ -262,15 +262,18 @@ function FormRequests({
     }
   }, [fetchMaterialDescription, open]);
 
+  console.log("edit", data.data);
+  console.log("initialValues", data.type === "add" ? initialValues : data.data);
+
   return (
     <Dialog open={open} fullWidth maxWidth="md">
-      {isLoadingEdit ? (
+      {data.status === "loading" ? (
         <SkeletonForm contentWidth={300} />
       ) : (
         <Formik
-          // enableReinitialize
+          enableReinitialize
           validationSchema={validationSchema}
-          initialValues={initialValues}
+          initialValues={data.type === "add" ? initialValues : data.data}
           onSubmit={(validatedData: IOrderData, actions) => {
             onSave(validatedData, actions);
           }}
@@ -280,13 +283,14 @@ function FormRequests({
               <DialogTitle>Create Product Request</DialogTitle>
               {renderMessage()}
               <DialogContent sx={{ paddingTop: "20px !important" }}>
-                <input type="hidden" value={formikProp.values.id} />
+                <input type="hidden" value={formikProp.values.transid} />
+                {console.log("transidz", formikProp.values.pickup_date)}
 
                 <MDBox mb={1} display="flex" justifyContent="space-between">
                   <MDatePicker
                     label="Pickup DateTime"
                     name="pickup_date"
-                    defaultValue={null}
+                    defaultValue={formikProp.values.pickup_date}
                     onChange={(date) => handlePickupDate(date, formikProp.setValues)}
                   />
                   <MDSelect
@@ -301,7 +305,7 @@ function FormRequests({
                     onChange={(e) => handleWarehouseNo(e, formikProp.handleChange)}
                   />
                 </MDBox>
-                <MDBox mb={1} display="flex" justifyContent="space-between">
+                {/*  <MDBox mb={1} display="flex" justifyContent="space-between">
                   <MDInput
                     autoCapitalize="characters"
                     margin="dense"
@@ -310,7 +314,7 @@ function FormRequests({
                     type="text"
                     variant="standard"
                     inputProps={{ inputMode: "numeric", pattern: "[0-9]{12}" }}
-                    value={formikProp.values.ref_number}
+                    value={formikProp.values?.ref_number || ""}
                     error={formikProp.touched.ref_number && Boolean(formikProp.errors.ref_number)}
                     helperText={formikProp.touched.ref_number ? formikProp.errors.ref_number : ""}
                     onChange={formikProp.handleChange}
@@ -319,7 +323,7 @@ function FormRequests({
                   <MDCheckbox
                     label="Notify me every milestone"
                     name="allow_notify"
-                    checked={formikProp.values.allow_notify}
+                    checked={formikProp.values?.allow_notify || false}
                     onChange={formikProp.handleChange}
                     sx={{ "& span:last-child": { fontWeight: "400" }, justifyContent: "end" }}
                   />
@@ -334,7 +338,7 @@ function FormRequests({
                     multiline
                     fullWidth
                     variant="standard"
-                    value={formikProp.values.instruction}
+                    value={formikProp.values?.instruction || ""}
                     error={formikProp.touched.instruction && Boolean(formikProp.errors.instruction)}
                     helperText={formikProp.touched.instruction ? formikProp.errors.instruction : ""}
                     onChange={formikProp.handleChange}
@@ -352,7 +356,7 @@ function FormRequests({
                     handleRemoveRow={handleRemoveRow}
                     handleAddRow={handleAddRow}
                   />
-                </MDBox>
+                </MDBox> */}
               </DialogContent>
               <DialogActions>
                 <MDButton onClick={onClose}>Close</MDButton>

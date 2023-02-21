@@ -21,6 +21,10 @@ class OrdersServices extends HttpAdapter {
   createOrder(data: any) {
     return this.post("/orders/create", data);
   }
+
+  getOrderById(transId: string) {
+    return this.get(`/orders/${transId}`);
+  }
 }
 
 export default OrdersServices;

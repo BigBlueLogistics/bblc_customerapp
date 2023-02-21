@@ -60,6 +60,7 @@ function Orders() {
     message: "",
     data: null,
     status: "idle",
+    type: "",
   });
 
   const {
@@ -153,12 +154,28 @@ function Orders() {
     setSelectedGroupBy("");
   };
 
+  const handleCreate = () => {
+    onShowForm();
+    setFormOrder((prev) => ({ ...prev, type: "add", status: "idle" }));
+  };
+
   const onSave = async (orderData: IOrderData, actions: FormikHelpers<IOrderData>) => {
-    setFormOrder((prev) => ({ ...prev, status: "loading" }));
+    setFormOrder((prev) => ({ ...prev, message: "", data: null, status: "loading" }));
     try {
       const { data } = await ordersServices.createOrder(orderData);
       setFormOrder((prev) => ({ ...prev, message: data.message, status: "succeeded" }));
       actions.resetForm();
+    } catch (err: any) {
+      setFormOrder((prev) => ({ ...prev, message: err.message, status: "failed" }));
+    }
+  };
+
+  const onShowEdit = async (transId: string) => {
+    onShowForm();
+    setFormOrder((prev) => ({ ...prev, type: "edit", message: "", data: null, status: "loading" }));
+    try {
+      const { data } = await ordersServices.getOrderById(transId);
+      setFormOrder((prev) => ({ ...prev, data: data.data, status: "succeeded" }));
     } catch (err: any) {
       setFormOrder((prev) => ({ ...prev, message: err.message, status: "failed" }));
     }
@@ -283,7 +300,7 @@ function Orders() {
                 </MDTypography>
 
                 <MDBox my="auto" marginLeft="auto">
-                  <MDButton variant="outlined" onClick={onShowForm} sx={{ marginRight: "20px" }}>
+                  <MDButton variant="outlined" onClick={handleCreate} sx={{ marginRight: "20px" }}>
                     Create new
                   </MDButton>
                   <ActionIcon
@@ -366,7 +383,7 @@ function Orders() {
                 </MDBox>
                 <DataTable
                   table={{
-                    columns: tableHeaders,
+                    columns: tableHeaders({ onShowEdit }),
                     rows: tableOrders.data,
                   }}
                   isSorted={false}

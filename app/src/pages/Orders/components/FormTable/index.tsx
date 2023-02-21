@@ -54,7 +54,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
             name="requests"
             render={({ push, remove }) => (
               <>
-                {values.requests.length
+                {values && values.requests.length
                   ? values.requests.map(({ id }, index) => (
                       // eslint-disable-next-line react/no-array-index-key
                       <TableRow key={id}>

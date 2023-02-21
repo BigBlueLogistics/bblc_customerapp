@@ -37,6 +37,7 @@ export type ITableOrder = {
 };
 
 export type IFormOrderState = {
+  type: "add" | "edit" | "";
   status: IStatus;
   data: any;
   message: string;

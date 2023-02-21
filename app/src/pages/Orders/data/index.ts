@@ -1,10 +1,13 @@
+import { CellAction } from "../components/TableCell";
+import { IData } from "./types";
+
 export default function miscData() {
   const commonHeadersAttr = {
-    align: "right",
+    align: "left",
     Cell: ({ value }) => value || "",
   };
 
-  const tableHeaders = [
+  const tableHeaders = ({ onShowEdit }: IData) => [
     {
       Header: "Transaction No.",
       accessor: "transid",
@@ -19,15 +22,23 @@ export default function miscData() {
       Header: "Status",
       accessor: "status",
       ...commonHeadersAttr,
+      align: "center",
     },
     {
       Header: "Created at",
+      align: "left",
       Cell: ({ row }) => `${row.original.created_date} ${row.original.created_time}`,
     },
     {
       Header: "Last modified",
       accessor: "updated_at",
       ...commonHeadersAttr,
+    },
+    {
+      Header: "Actions",
+      align: "center",
+      cellProps: { onShowEdit },
+      Cell: CellAction,
     },
   ];
 
