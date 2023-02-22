@@ -14,7 +14,7 @@ function useId() {
     if (isMount.current) {
       id.current += 1;
     }
-    return id.current;
+    return `R${id.current}`;
   }, [isMount]);
 
   return generate;

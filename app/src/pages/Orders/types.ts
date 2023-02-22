@@ -19,7 +19,7 @@ export type IOrderData = {
   allow_notify: boolean;
   source_wh: string;
   requests: {
-    id: number;
+    id: string;
     material: string;
     description: string;
     qty: string;
@@ -37,8 +37,8 @@ export type ITableOrder = {
 };
 
 export type IFormOrderState = {
-  type: "add" | "edit" | "";
+  type: "add" | "edit" | "update";
   status: IStatus;
-  data: any;
+  data: IOrderData;
   message: string;
 };

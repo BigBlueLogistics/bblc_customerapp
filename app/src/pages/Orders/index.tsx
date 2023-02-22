@@ -60,7 +60,7 @@ function Orders() {
     message: "",
     data: null,
     status: "idle",
-    type: "",
+    type: "add",
   });
 
   const {
@@ -159,6 +159,7 @@ function Orders() {
     setFormOrder((prev) => ({ ...prev, type: "add", status: "idle" }));
   };
 
+  // TODO: add function for save Create and Update
   const onSave = async (orderData: IOrderData, actions: FormikHelpers<IOrderData>) => {
     setFormOrder((prev) => ({ ...prev, message: "", data: null, status: "loading" }));
     try {
@@ -275,8 +276,6 @@ function Orders() {
         onSave={onSave}
         data={formOrder}
         warehouseList={warehouseList}
-        isLoadingEdit={false}
-        isLoadingUpdate={false}
       />
 
       <MDBox pt={6} pb={3}>

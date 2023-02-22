@@ -8,8 +8,6 @@ export type IForm = {
   onClose: () => void;
   onSave: (data: IOrderData, actions: FormikHelpers<IOrderData>) => void;
   data: IFormOrderState;
-  isLoadingEdit: boolean;
-  isLoadingUpdate: boolean;
   warehouseList: { value: string | number; label: string }[];
 };
 

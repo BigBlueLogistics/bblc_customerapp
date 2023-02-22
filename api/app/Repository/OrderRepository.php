@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use Carbon\Carbon;
 use App\Facades\SapRfcFacade;
 use App\Interfaces\IOrderRepository;
 use App\Traits\StringEncode;
@@ -50,11 +51,13 @@ class OrderRepository implements IOrderRepository
         $products = $this->convert_latin1_to_utf8_recursive($result["T_SCWM_AQUA"]);
 
         $collectionProducts = collect($products)->map(function($item, $index){
+            $expiry = Carbon::parse($item['VFDAT'])->format('m-d-Y');
+
             return [
                 "id" => $index += 1,
                 "code" => $item['MATNR'],
                 "batch" => $item['CHARG'],
-                "expiry" => $item['VFDAT'],
+                "expiry" => $expiry,
                 "quantity" => round( (float)$item['QUAN'], 3)
             ];
         });

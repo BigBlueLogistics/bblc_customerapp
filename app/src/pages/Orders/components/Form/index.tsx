@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -12,28 +12,28 @@ import MDInput from "atoms/MDInput";
 import MDatePicker from "atoms/MDatePicker";
 import MDAlert2 from "atoms/MDAlert2";
 import SkeletonForm from "organisms/Skeleton/Form";
-import { Formik, Form, ArrayHelpers, FormikHelpers, FormikHandlers } from "formik";
+import {
+  Formik,
+  Form,
+  ArrayHelpers,
+  FormikHelpers,
+  FormikHandlers,
+  FormikFormProps,
+  FormikProps,
+} from "formik";
 import MDCheckbox from "atoms/MDCheckbox";
 import MDSelect from "atoms/MDSelect";
 import { ordersServices } from "services";
 import { useId } from "hooks";
 import selector from "selector";
-import { IOrderData } from "pages/Orders/types";
+import { IFormOrderState, IOrderData } from "pages/Orders/types";
 import FormTable from "../FormTable";
 import { IForm } from "./types";
 import validationSchema from "./validationSchema";
 import { IAutoCompleteMaterialData } from "../AutoCompleteMaterial/types";
 import { IAutoCompleteExpiryData } from "../AutoCompleteExpiry/types";
 
-function FormRequests({
-  open,
-  onClose,
-  onSave,
-  data,
-  warehouseList,
-  isLoadingEdit,
-  isLoadingUpdate,
-}: IForm) {
+function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
   const autoId = useId();
   const initialRowId = autoId();
   const { customerCode } = selector();
@@ -99,35 +99,29 @@ function FormRequests({
     }
   }, [customerCode]);
 
-  const fetchUnits = async (id: number, material: string) => {
+  const fetchUnits = async (material: string) => {
     try {
       const { data: resp } = await ordersServices.getUnits({
         params: { materialCode: material },
       });
-      if (resp) {
-        const units = resp.data;
-        setUnitList((prev) => ({ ...prev, [id]: units }));
-      }
+      return resp.data || [];
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 
-  const fetchExpiryBatch = async (id: number, material: string) => {
+  const fetchExpiryBatch = async (material: string, sourceWh: string) => {
     try {
       const { data: resp } = await ordersServices.getExpiryBatch({
-        params: { materialCode: material, warehouseNo },
+        params: { materialCode: material, warehouseNo: sourceWh },
       });
-      if (resp) {
-        const expiry = resp.data;
-        setExpiryBatchList((prev) => ({ ...prev, [id]: expiry }));
-      }
+      return resp.data || [];
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 
-  const clearUnits = (id: number) => {
+  const clearUnits = (id: string) => {
     const unitListClone = unitList;
     if (unitListClone[id]) {
       delete unitListClone[id];
@@ -137,7 +131,7 @@ function FormRequests({
     }
   };
 
-  const clearExpiryBatch = (id: number) => {
+  const clearExpiryBatch = (id: string) => {
     const expiryListClone = expiryBatchList;
     if (expiryListClone[id]) {
       delete expiryListClone[id];
@@ -147,10 +141,10 @@ function FormRequests({
     }
   };
 
-  const handleMaterialCode = (
+  const handleMaterialCode = async (
     value: IAutoCompleteMaterialData,
     reason: AutocompleteChangeReason,
-    id: number,
+    id: string,
     index: number,
     setValues: FormikHelpers<IOrderData>["setValues"]
   ) => {
@@ -165,8 +159,10 @@ function FormRequests({
 
         return clonePrev;
       });
-      fetchUnits(id, material);
-      fetchExpiryBatch(id, material);
+      const units = await fetchUnits(material);
+      const expiry = await fetchExpiryBatch(material, warehouseNo);
+      setUnitList((prev) => ({ ...prev, [id]: units }));
+      setExpiryBatchList((prev) => ({ ...prev, [id]: expiry }));
     }
 
     // Clear data of material and unit dropdown
@@ -180,31 +176,35 @@ function FormRequests({
         clonePrev.requests[index].units = "";
         clonePrev.requests[index].expiry = "";
         clonePrev.requests[index].batch = "";
+        clonePrev.requests[index].available = "";
 
         return clonePrev;
       });
     }
   };
 
-  const computeAvailableQty = (id: number, selectedExpiry: string, selectedBatch: string) => {
-    if (expiryBatchList[id]?.length) {
-      return expiryBatchList[id].reduce((totalQty, current) => {
-        let prevTotalQty = totalQty;
+  const computeAvailableQty = useCallback(
+    (id: string, selectedExpiry: string, selectedBatch: string) => {
+      if (expiryBatchList[id]?.length) {
+        return expiryBatchList[id].reduce((totalQty, current) => {
+          let prevTotalQty = totalQty;
 
-        if (selectedExpiry === current.expiry && selectedBatch === current.batch) {
-          prevTotalQty += current.quantity;
-        }
+          if (selectedExpiry === current.expiry && selectedBatch === current.batch) {
+            prevTotalQty += current.quantity;
+          }
 
-        return prevTotalQty;
-      }, 0);
-    }
-    return 0;
-  };
+          return prevTotalQty;
+        }, 0);
+      }
+      return 0;
+    },
+    [expiryBatchList]
+  );
 
   const handleExpiryBatch = (
     value: IAutoCompleteExpiryData,
     reason: AutocompleteChangeReason,
-    id: number,
+    id: string,
     index: number,
     setValues: FormikHelpers<IOrderData>["setValues"]
   ) => {
@@ -226,6 +226,7 @@ function FormRequests({
         const clonePrev = prev;
         clonePrev.requests[index].expiry = "";
         clonePrev.requests[index].batch = "";
+        clonePrev.requests[index].available = "";
 
         return clonePrev;
       });
@@ -241,7 +242,7 @@ function FormRequests({
     setWarehouseNo(e.target.value);
   };
 
-  const handleRemoveRow = (remove: ArrayHelpers["remove"], idx: number, id: number) => {
+  const handleRemoveRow = (remove: ArrayHelpers["remove"], idx: number, id: string) => {
     clearUnits(id);
     clearExpiryBatch(id);
 
@@ -256,22 +257,100 @@ function FormRequests({
     });
   };
 
+  const pickupDateValue = (dateVal: Date) => {
+    if (dateVal) {
+      return new Date(dateVal);
+    }
+    return null;
+  };
+
+  const getAllUnits = async (orderData: IOrderData["requests"]) => {
+    const allUnits = await Promise.all(
+      orderData.map(async ({ id, material }) => {
+        const unit = await fetchUnits(material);
+        return {
+          [id]: unit,
+        };
+      })
+    );
+
+    const objAllUnits = allUnits.reduce((prev, current) => {
+      const [key, value] = Object.entries(current)[0];
+      prev[key] = value;
+
+      return prev;
+    }, {});
+
+    setUnitList(objAllUnits);
+  };
+
+  const getAllExpiryBatch = async (orderData: IOrderData["requests"], sourceWh: string) => {
+    const allExpiry = await Promise.all(
+      orderData.map(async ({ id, material }) => {
+        const expiries = await fetchExpiryBatch(material, sourceWh);
+        return {
+          [id]: expiries,
+        };
+      })
+    );
+
+    const objAllExpiry = allExpiry.reduce((prev, current) => {
+      const [key, value] = Object.entries(current)[0];
+      prev[key] = value;
+
+      return prev;
+    }, {});
+
+    setExpiryBatchList(objAllExpiry);
+  };
+
+  // TODO
+  const onMountForm = useCallback(
+    (setValues: FormikProps<IOrderData>["setValues"]) => {
+      const { type, data: tableData, status } = data;
+      if (type === "edit" && status === "succeeded" && tableData?.id) {
+        setValues((prev) => {
+          const cloneRequests = prev.requests;
+          const newRequests = cloneRequests.map(({ id, expiry, batch }, idx) => {
+            return {
+              ...cloneRequests[idx],
+              available: computeAvailableQty(id, expiry, batch),
+            };
+          });
+
+          return { ...prev, requests: newRequests };
+        });
+      }
+    },
+    [computeAvailableQty, data]
+  );
+
   useEffect(() => {
     if (open) {
       fetchMaterialDescription();
     }
   }, [fetchMaterialDescription, open]);
 
-  console.log("edit", data.data);
-  console.log("initialValues", data.type === "add" ? initialValues : data.data);
+  useEffect(() => {
+    const { type, status, data: orderData } = data || {};
+
+    if (type === "edit" && status === "succeeded" && orderData?.id) {
+      setWarehouseNo(orderData.source_wh);
+      getAllUnits(orderData.requests);
+      getAllExpiryBatch(orderData.requests, orderData.source_wh);
+    }
+  }, [data]);
+
+  const isSaving = data.type !== "edit" && data.status === "loading";
+  const isFetchingData = data.type === "edit" && data.status === "loading";
 
   return (
     <Dialog open={open} fullWidth maxWidth="md">
-      {data.status === "loading" ? (
+      {isFetchingData ? (
         <SkeletonForm contentWidth={300} />
       ) : (
         <Formik
-          enableReinitialize
+          enableReinitialize={data.type !== "add"}
           validationSchema={validationSchema}
           initialValues={data.type === "add" ? initialValues : data.data}
           onSubmit={(validatedData: IOrderData, actions) => {
@@ -283,14 +362,13 @@ function FormRequests({
               <DialogTitle>Create Product Request</DialogTitle>
               {renderMessage()}
               <DialogContent sx={{ paddingTop: "20px !important" }}>
-                <input type="hidden" value={formikProp.values.transid} />
-                {console.log("transidz", formikProp.values.pickup_date)}
+                <input type="hidden" value={formikProp.values.id || ""} />
 
                 <MDBox mb={1} display="flex" justifyContent="space-between">
                   <MDatePicker
                     label="Pickup DateTime"
                     name="pickup_date"
-                    defaultValue={formikProp.values.pickup_date}
+                    defaultValue={pickupDateValue(formikProp.values.pickup_date)}
                     onChange={(date) => handlePickupDate(date, formikProp.setValues)}
                   />
                   <MDSelect
@@ -305,7 +383,7 @@ function FormRequests({
                     onChange={(e) => handleWarehouseNo(e, formikProp.handleChange)}
                   />
                 </MDBox>
-                {/*  <MDBox mb={1} display="flex" justifyContent="space-between">
+                <MDBox mb={1} display="flex" justifyContent="space-between">
                   <MDInput
                     autoCapitalize="characters"
                     margin="dense"
@@ -323,7 +401,7 @@ function FormRequests({
                   <MDCheckbox
                     label="Notify me every milestone"
                     name="allow_notify"
-                    checked={formikProp.values?.allow_notify || false}
+                    checked={formikProp.values?.allow_notify}
                     onChange={formikProp.handleChange}
                     sx={{ "& span:last-child": { fontWeight: "400" }, justifyContent: "end" }}
                   />
@@ -351,19 +429,20 @@ function FormRequests({
                     materials={materialList}
                     expiryBatch={expiryBatchList}
                     units={unitList}
+                    onMount={onMountForm}
                     handleMaterialCode={handleMaterialCode}
                     handleExpiryBatch={handleExpiryBatch}
                     handleRemoveRow={handleRemoveRow}
                     handleAddRow={handleAddRow}
                   />
-                </MDBox> */}
+                </MDBox>
               </DialogContent>
               <DialogActions>
                 <MDButton onClick={onClose}>Close</MDButton>
                 <MDButton
                   type="submit"
-                  disabled={isLoadingUpdate}
-                  loading={isLoadingUpdate}
+                  disabled={isSaving}
+                  loading={isSaving}
                   onClick={formikProp.handleSubmit}
                 >
                   Save

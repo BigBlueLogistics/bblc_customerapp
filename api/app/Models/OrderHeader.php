@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\OrderItems;
@@ -39,12 +40,28 @@ class OrderHeader extends Model
         }
     }
 
+    protected function lgnum(): Attribute
+    {
+        return Attribute::make(
+            set: function($value) { return str_replace('BB', 'WH', $value); } ,
+        );
+    }
+
+    protected function miles(): Attribute
+    {
+        return Attribute::make(
+            set: function($value) { return $value == "true" ? 1 : 0; } ,
+            get: function($value) { return $value == 1 ? true: false; } 
+        );
+    }
+
     public function withMapOrderDetails($request)
     {
         $collection = collect($request);
 
         return $collection->map(function ($field) {
             return [
+                'uuid' => $field['uuid'],
                 'transid' => $this->transid, 
                 'lgnum' => $this->lgnum, 
                 'matnr' => $field['material'],
@@ -59,14 +76,16 @@ class OrderHeader extends Model
 
     public function toFormattedOrderDetails()
     {
+        $warehouseNo = str_replace('WH', 'BB', $this->lgnum);
+
         return [
             'id' => $this->id, 
             'transid' => $this->transid, 
             'ref_number' => $this->ponum, 
-            'source_wh' => $this->lgnum, 
+            'source_wh' => $warehouseNo, 
+            'allow_notify' => $this->miles,
             'pickup_date' => $this->pudat, 
             'instruction' => $this->header,
-            'allow_notify' => $this->miles,
             'requests' => $this->mapFieldOrderItems()
         ];
     }
@@ -79,13 +98,15 @@ class OrderHeader extends Model
     public function mapFieldOrderItems()
     {
         return $this->hasManyOrderItems->map(function($item){
+            $expiry = Carbon::parse($item['vfdat'])->format('m-d-Y');
+
             return [
                 'id' => $item['id'],
                 'material' => $item['matnr'],
                 'qty' => $item['quan'],
                 'units' => $item['meinh'],
                 'batch' => $item['charg'],
-                'expiry' => $item['vfdat'],
+                'expiry' => $expiry,
             ];
         });
     }

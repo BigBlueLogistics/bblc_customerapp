@@ -1,0 +1,27 @@
+===== Header table
+TRANSID = unix timestamp (PRIMARY KEY)
+PUDAT = Pickup datetime
+PONUM = Reference number
+HEADER = Special instruction 
+LGNUM = Source warehouse 
+MILES = Update me every milestone (VALUE: 1 / 0)
+ERDAT = SERVER Date
+ERTIM = SERVER Time
+ERNAM = Current logged USER
+APSTAT = USER Type (sysadmin, user, suser)
+
+===== Items table
+TRANSID = unix timestamp (FOREIGN KEY)
+MATNR = Material
+QUAN = Quantity
+MEINH = Units
+CHARG = Batch
+VFDAT = Expiry
+
+====== Form DataTable ====
+
+Availabe Quanity = add up QUAN
+Quantity = input only quanity based on Availabe Quanity 
+Search = search a keyword related to Description then the result will display as dropdown in Material
+
+

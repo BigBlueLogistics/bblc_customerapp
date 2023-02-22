@@ -28,8 +28,9 @@ class CreateRequest extends FormRequest
             'ref_number' => ['required','numeric', 'digits:12'],
             'pickup_date' => ['date'],
             'requests' => ['required', 'array'],
+            'requests.*.uuid' => ['required', 'uuid'],
             'requests.*.material' => ['required', 'string'],
-            'requests.*.qty' => ['required', 'integer']
+            'requests.*.qty' => ['required', 'numeric']
         ];
     }
 }

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { useEffect } from "react";
 import { TableContainer, Table, TableCell, TableHead, TableBody, TableRow } from "@mui/material";
 import { FieldArray, FormikProps } from "formik";
 import Icon from "@mui/material/Icon";
@@ -20,6 +21,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
     units,
     materials,
     expiryBatch,
+    onMount,
     setValues,
     handleMaterialCode,
     handleExpiryBatch,
@@ -36,6 +38,12 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
     "Available Quantity",
     "",
   ];
+
+  useEffect(() => {
+    if (values.id) {
+      onMount(setValues);
+    }
+  }, [onMount, setValues, values.id]);
 
   return (
     <TableContainer sx={{ maxHeight: 440 }}>
@@ -95,7 +103,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                             variant="outlined"
                             withOptionKeys={false}
                             options={units[id] || []}
-                            value={values.requests[index].units || ""}
+                            value={units[id]?.length ? values.requests[index].units : ""}
                             sx={{ width: "150px" }}
                             onChange={handleChange}
                           />
@@ -104,7 +112,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                           <AutoCompleteExpiry
                             index={index}
                             options={expiryBatch[id] || []}
-                            value={values.requests[index].expiry || ""}
+                            value={expiryBatch[id]?.length ? values.requests[index].expiry : ""}
                             onChange={(value, reason) =>
                               handleExpiryBatch(value, reason, id, index, setValues)
                             }

@@ -86,14 +86,13 @@ class OrderController extends Controller
 
             $authUser = auth()->user();
             $currentDatetime = Carbon::now();
-            $warehouseNo = str_replace('BB', 'WH', $request->source_wh);
 
             // Insert order details
             $orderHeader = OrderHeader::create([
-                'lgnum' => $warehouseNo,
+                'lgnum' => $request->source_wh,
                 'ponum' => $request->ref_number,
                 'pudat' => $request->pickup_date,
-                'miles' => $request->allow_notify == 'true' ? 1 : 0,
+                'miles' => $request->allow_notify,
                 'header' => $request->instruction,
                 'ernam' => $authUser->id,
                 'apstat' => $authUser->role_id,
@@ -103,16 +102,16 @@ class OrderController extends Controller
 
             if ($orderHeader) {
                 $id = $orderHeader['transid'];
-                $orderId = OrderHeader::where('id', $id)->first(['transid', 'lgnum']);
+                $createdOrder = OrderHeader::where('id', $id)->first(['transid', 'lgnum']);
 
-                $mappedData = $orderId->withMapOrderDetails($request->requests);
+                $mappedData = $createdOrder->withMapOrderDetails($request->requests);
 
                 // Bulk insert order items
                 OrderItems::insert($mappedData);
             }
 
             return $this->sendResponse([
-                'id' => $orderId['transid'],
+                'id' => $createdOrder['transid'],
             ], 'Successfully created order request');
         } catch (Exception $e) {
             return $this->sendError($e);
@@ -122,9 +121,64 @@ class OrderController extends Controller
     public function edit($transId)
     {
         try {
-            $orders = OrderHeader::find($transId)->toFormattedOrderDetails();
+            $orders = OrderHeader::find($transId);
+
+            if($orders){
+                $orders = $orders->toFormattedOrderDetails();
+            }
 
             return $this->sendResponse($orders, 'request order details');
+        }
+        catch (Exception $e)
+        {
+            return $this->sendError($e);
+        }
+    }
+
+    protected function withUpdateMapOrderDetails(array $request, array $moreData = [])
+    {
+        $collection = collect($request);
+
+        return $collection->map(function ($field) use ($moreData) {
+            return [
+                ...$moreData,
+                'uuid'  => $field['uuid'],
+                'matnr' => $field['material'],
+                'quan'  => $field['qty'],
+                'meinh' => $field['units'],
+                'charg' => $field['batch'],
+                'vfdat' => $field['expiry'],
+            ];
+        })->all();
+    }
+
+    public function update(CreateRequest $request, $transId)
+    {
+        try{
+            $request->validated($request->all());
+
+            $header = OrderHeader::find($transId);
+
+            if(!$header){
+               return $this->sendError("Transaction ID not exists", 422);
+            }
+
+            $header->lgnum = $request->source_wh;
+            $header->ponum = $request->ref_number;
+            $header->pudat = $request->pickup_date;
+            $header->miles = $request->allow_notify;
+            $header->header= $request->instruction;
+            $isSuccess = $header->save();
+
+            if($isSuccess){
+                $mapRequests = $this->withUpdateMapOrderDetails($request->requests, ['lgnum' => $header->lgnum, 'transid' => $header->transid]);
+
+                // DB::unprepared('SET IDENTITY_INSERT order_items ON');
+                $items = OrderItems::upsert($mapRequests, ['uuid','transid'], ['lgnum','matnr','quan','meinh','charg','vfdat']);
+                // DB::unprepared('SET IDENTITY_INSERT order_items OFF');
+            }
+    
+            return $this->sendResponse($items);
         }
         catch (Exception $e)
         {

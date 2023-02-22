@@ -63,5 +63,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', [OrderController::class, 'index']);
         Route::get('/{transid}',[OrderController::class, 'edit'])->where('transid','^[0-9]+-[0-9]{10}$');
         Route::post('/create', [OrderController::class, 'create']);
+        Route::post('/update/{transid}', [OrderController::class, 'update'])->where('transid','^[0-9]+-[0-9]{10}$');
     });
 });
