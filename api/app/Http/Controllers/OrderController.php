@@ -173,12 +173,10 @@ class OrderController extends Controller
             if($isSuccess){
                 $mapRequests = $this->withUpdateMapOrderDetails($request->requests, ['lgnum' => $header->lgnum, 'transid' => $header->transid]);
 
-                // DB::unprepared('SET IDENTITY_INSERT order_items ON');
                 $items = OrderItems::upsert($mapRequests, ['uuid','transid'], ['lgnum','matnr','quan','meinh','charg','vfdat']);
-                // DB::unprepared('SET IDENTITY_INSERT order_items OFF');
             }
     
-            return $this->sendResponse($items);
+            return $this->sendResponse([], "Successfully update order request");
         }
         catch (Exception $e)
         {

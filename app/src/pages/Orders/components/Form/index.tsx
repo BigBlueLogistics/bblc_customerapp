@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -13,20 +12,12 @@ import MDInput from "atoms/MDInput";
 import MDatePicker from "atoms/MDatePicker";
 import MDAlert2 from "atoms/MDAlert2";
 import SkeletonForm from "organisms/Skeleton/Form";
-import {
-  Formik,
-  Form,
-  ArrayHelpers,
-  FormikHelpers,
-  FormikHandlers,
-  FormikFormProps,
-  FormikProps,
-} from "formik";
+import { Formik, Form, ArrayHelpers, FormikHelpers, FormikHandlers, FormikProps } from "formik";
 import MDCheckbox from "atoms/MDCheckbox";
 import MDSelect from "atoms/MDSelect";
 import { ordersServices } from "services";
 import selector from "selector";
-import { IFormOrderState, IOrderData } from "pages/Orders/types";
+import { IOrderData } from "pages/Orders/types";
 import FormTable from "../FormTable";
 import { IForm } from "./types";
 import validationSchema from "./validationSchema";
@@ -64,8 +55,11 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
   // const [materialCode, setMaterialCode] = useState("");
 
   const renderMessage = () => {
-    const { message, status: formStatus } = data;
-    if (formStatus === "succeeded" || formStatus === "failed") {
+    const { message, status: formStatus, type } = data;
+    if (
+      (type === "create" || type === "update") &&
+      (formStatus === "succeeded" || formStatus === "failed")
+    ) {
       const severity = formStatus === "succeeded" ? "success" : "error";
       return (
         <MDAlert2
@@ -303,7 +297,6 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
     setExpiryBatchList(objAllExpiry);
   };
 
-  // TODO
   const onMountForm = useCallback(
     (setValues: FormikProps<IOrderData>["setValues"]) => {
       const { type, data: tableData, status } = data;
@@ -342,6 +335,7 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
 
   const isSaving = data.type !== "edit" && data.status === "loading";
   const isFetchingData = data.type === "edit" && data.status === "loading";
+  const formHeaderTitle = data.type === "create" ? "Create" : "Update";
 
   return (
     <Dialog open={open} fullWidth maxWidth="md">
@@ -349,25 +343,25 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
         <SkeletonForm contentWidth={300} />
       ) : (
         <Formik
-          enableReinitialize={data.type !== "add"}
+          enableReinitialize={data.type === "edit"}
           validationSchema={validationSchema}
-          initialValues={data.type === "add" ? initialValues : data.data}
+          initialValues={data.type === "create" ? initialValues : data.data}
           onSubmit={(validatedData: IOrderData, actions) => {
             onSave(validatedData, actions);
           }}
         >
           {(formikProp) => (
             <Form role="form" onSubmit={formikProp.handleSubmit}>
-              <DialogTitle>Create Product Request</DialogTitle>
+              <DialogTitle>{formHeaderTitle} Product Request</DialogTitle>
               {renderMessage()}
               <DialogContent sx={{ paddingTop: "20px !important" }}>
-                <input type="hidden" value={formikProp.values.id || ""} />
+                <input type="hidden" value={formikProp.values?.id || ""} />
 
                 <MDBox mb={1} display="flex" justifyContent="space-between">
                   <MDatePicker
                     label="Pickup DateTime"
                     name="pickup_date"
-                    defaultValue={pickupDateValue(formikProp.values.pickup_date)}
+                    defaultValue={pickupDateValue(formikProp.values?.pickup_date)}
                     onChange={(date) => handlePickupDate(date, formikProp.setValues)}
                   />
                   <MDSelect
@@ -377,7 +371,7 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
                     optKeyValue="PLANT"
                     optKeyLabel="NAME1"
                     options={warehouseList}
-                    value={formikProp.values.source_wh}
+                    value={formikProp.values?.source_wh}
                     sx={{ width: 220 }}
                     onChange={(e) => handleWarehouseNo(e, formikProp.handleChange)}
                   />

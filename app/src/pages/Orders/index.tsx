@@ -60,7 +60,8 @@ function Orders() {
     message: "",
     data: null,
     status: "idle",
-    type: "add",
+    type: "create",
+    id: "",
   });
 
   const {
@@ -156,16 +157,21 @@ function Orders() {
 
   const handleCreate = () => {
     onShowForm();
-    setFormOrder((prev) => ({ ...prev, type: "add", status: "idle" }));
+    setFormOrder((prev) => ({ ...prev, type: "create", status: "idle", id: "" }));
   };
 
-  // TODO: add function for save Create and Update
   const onSave = async (orderData: IOrderData, actions: FormikHelpers<IOrderData>) => {
-    setFormOrder((prev) => ({ ...prev, message: "", data: null, status: "loading" }));
     try {
-      const { data } = await ordersServices.createOrder(orderData);
-      setFormOrder((prev) => ({ ...prev, message: data.message, status: "succeeded" }));
-      actions.resetForm();
+      if (formOrder.type === "create") {
+        setFormOrder((prev) => ({ ...prev, message: "", data: null, status: "loading" }));
+        const { data } = await ordersServices.createOrder(orderData);
+        setFormOrder((prev) => ({ ...prev, message: data.message, status: "succeeded" }));
+        actions.resetForm();
+      } else if (formOrder.type === "edit" || formOrder.type === "update") {
+        setFormOrder((prev) => ({ ...prev, message: "", type: "update", status: "loading" }));
+        const { data } = await ordersServices.updateOrder(formOrder.id, orderData);
+        setFormOrder((prev) => ({ ...prev, message: data.message, status: "succeeded" }));
+      }
     } catch (err: any) {
       setFormOrder((prev) => ({ ...prev, message: err.message, status: "failed" }));
     }
@@ -176,7 +182,7 @@ function Orders() {
     setFormOrder((prev) => ({ ...prev, type: "edit", message: "", data: null, status: "loading" }));
     try {
       const { data } = await ordersServices.getOrderById(transId);
-      setFormOrder((prev) => ({ ...prev, data: data.data, status: "succeeded" }));
+      setFormOrder((prev) => ({ ...prev, data: data.data, status: "succeeded", id: transId }));
     } catch (err: any) {
       setFormOrder((prev) => ({ ...prev, message: err.message, status: "failed" }));
     }
