@@ -23,6 +23,11 @@ export type IFormTable = {
     index: number,
     setValues: FormikHelpers<IOrderData>["setValues"]
   ) => void;
-  handleRemoveRow: (remove: ArrayHelpers["remove"], idx: number, uuid: string) => void;
+  handleRemoveRow: (
+    remove: ArrayHelpers["remove"],
+    setValues: FormikHelpers<IOrderData>["setValues"],
+    idx: number,
+    uuid: string
+  ) => void;
   handleAddRow: (push: ArrayHelpers["push"]) => void;
 };

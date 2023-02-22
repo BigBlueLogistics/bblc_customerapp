@@ -29,15 +29,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
     handleAddRow,
   } = props;
 
-  const tHeaders = [
-    // "Search",
-    "Material",
-    "Units",
-    "Expiry / Batch",
-    "Quantity",
-    "Available Quantity",
-    "",
-  ];
+  const tHeaders = ["Material", "Units", "Expiry / Batch", "Quantity", "Available Quantity", ""];
 
   useEffect(() => {
     if (values.id) {
@@ -64,28 +56,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
               <>
                 {values && values.requests.length
                   ? values.requests.map(({ uuid }, index) => (
-                      // eslint-disable-next-line react/no-array-index-key
                       <TableRow key={uuid}>
-                        {/* <TableCell>
-                          <MDInput
-                            margin="dense"
-                            name={`requests[${index}].search`}
-                            type="text"
-                            variant="standard"
-                            value={values.requests[index].search}
-                            error={
-                              touched?.requests && errors.requests
-                                ? Boolean(errors.requests[index].search)
-                                : false
-                            }
-                            helperText={
-                              touched?.requests && errors.requests
-                                ? errors.requests[index].search
-                                : null
-                            }
-                            onChange={handleChange}
-                          />
-                        </TableCell> */}
                         <TableCell>
                           <AutoCompleteMaterial
                             index={index}
@@ -150,7 +121,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                         <TableCell>
                           <MDButton
                             iconOnly
-                            onClick={() => handleRemoveRow(remove, index, uuid)}
+                            onClick={() => handleRemoveRow(remove, setValues, index, uuid)}
                             sx={{
                               "&:hover": { backgroundColor: "#ffcbc4" },
                             }}

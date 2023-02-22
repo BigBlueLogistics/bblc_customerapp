@@ -27,7 +27,9 @@ export type IOrderData = {
     batch: string;
     expiry: string;
     available: string;
+    created_at?: Date;
   }[];
+  requestsDelete?: string[];
 };
 
 export type ITableOrder = {

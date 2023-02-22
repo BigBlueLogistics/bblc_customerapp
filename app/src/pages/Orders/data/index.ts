@@ -31,7 +31,7 @@ export default function miscData() {
     },
     {
       Header: "Last modified",
-      accessor: "updated_at",
+      accessor: "last_modified",
       ...commonHeadersAttr,
     },
     {

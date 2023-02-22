@@ -12,19 +12,23 @@ class OrderHeader extends Model
 {
     use HasFactory;
 
+    const CREATED_AT = null;
+
     protected $table = 'order_header';
 
     protected $primaryKey = 'transid';
 
     protected $keyType = 'string';
 
-    public $timestamps = false;
-
     protected $fillable = [
         'ponum', 'header', 'lgnum',
         'miles', 'erdat', 'ertim',
         'apstat', 'transid', 'ernam',
-        'pudat'
+        'pudat', 
+    ];
+
+    protected $casts = [
+        'updated_at' => 'datetime',
     ];
 
     protected static function boot()
@@ -69,6 +73,7 @@ class OrderHeader extends Model
                 'meinh' => $field['units'],
                 'charg' => $field['batch'],
                 'vfdat' => $field['expiry'],
+                'created_at' => Carbon::now(),
             ];
         })->all();
     }
@@ -107,6 +112,7 @@ class OrderHeader extends Model
                 'units' => $item['meinh'],
                 'batch' => $item['charg'],
                 'expiry' => $expiry,
+                'created_at' => $item['created_at']
             ];
         });
     }

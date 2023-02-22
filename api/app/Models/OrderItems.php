@@ -11,12 +11,16 @@ class OrderItems extends Model
 
     protected $table = 'order_items';
 
-    public $timestamps = false;
-
     protected $fillable = [
         'transid', 'matnr', 'quan',
         'meinh', 'charg', 'vfdat',
         'lgnum'
     ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
 
 }

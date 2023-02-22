@@ -46,6 +46,7 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
         available: "",
       },
     ],
+    requestsDelete: [],
   });
   const [materialList, setMaterialList] = useState([]);
   const [expiryBatchList, setExpiryBatchList] = useState({ [initialRowId]: [] });
@@ -114,20 +115,20 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
     }
   };
 
-  const clearUnits = (id: string) => {
+  const clearUnits = (uuid: string) => {
     const unitListClone = unitList;
-    if (unitListClone[id]) {
-      delete unitListClone[id];
+    if (unitListClone[uuid]) {
+      delete unitListClone[uuid];
 
       //  Update unit list per row
       setUnitList(unitListClone);
     }
   };
 
-  const clearExpiryBatch = (id: string) => {
+  const clearExpiryBatch = (uuid: string) => {
     const expiryListClone = expiryBatchList;
-    if (expiryListClone[id]) {
-      delete expiryListClone[id];
+    if (expiryListClone[uuid]) {
+      delete expiryListClone[uuid];
 
       // Update expiry/batch list per row
       setExpiryBatchList(expiryListClone);
@@ -137,7 +138,7 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
   const handleMaterialCode = async (
     value: IAutoCompleteMaterialData,
     reason: AutocompleteChangeReason,
-    id: string,
+    uuid: string,
     index: number,
     setValues: FormikHelpers<IOrderData>["setValues"]
   ) => {
@@ -154,14 +155,14 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
       });
       const units = await fetchUnits(material);
       const expiry = await fetchExpiryBatch(material, warehouseNo);
-      setUnitList((prev) => ({ ...prev, [id]: units }));
-      setExpiryBatchList((prev) => ({ ...prev, [id]: expiry }));
+      setUnitList((prev) => ({ ...prev, [uuid]: units }));
+      setExpiryBatchList((prev) => ({ ...prev, [uuid]: expiry }));
     }
 
     // Clear data of material and unit dropdown
     if (reason === "clear") {
-      clearUnits(id);
-      clearExpiryBatch(id);
+      clearUnits(uuid);
+      clearExpiryBatch(uuid);
       setValues((prev) => {
         const clonePrev = prev;
         clonePrev.requests[index].material = "";
@@ -197,13 +198,13 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
   const handleExpiryBatch = (
     value: IAutoCompleteExpiryData,
     reason: AutocompleteChangeReason,
-    id: string,
+    uuid: string,
     index: number,
     setValues: FormikHelpers<IOrderData>["setValues"]
   ) => {
     if (reason === "selectOption" && value) {
       const { expiry, batch } = value;
-      const availabeQty = computeAvailableQty(id, expiry, batch);
+      const availabeQty = computeAvailableQty(uuid, expiry, batch);
       setValues((prev) => {
         const clonePrev = prev;
         clonePrev.requests[index].expiry = expiry;
@@ -235,9 +236,28 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
     setWarehouseNo(e.target.value);
   };
 
-  const handleRemoveRow = (remove: ArrayHelpers["remove"], idx: number, id: string) => {
-    clearUnits(id);
-    clearExpiryBatch(id);
+  const handleRemoveRow = (
+    remove: ArrayHelpers["remove"],
+    setValues: FormikHelpers<IOrderData>["setValues"],
+    idx: number,
+    uuid: string
+  ) => {
+    clearUnits(uuid);
+    clearExpiryBatch(uuid);
+
+    // Add the removed uuid
+    setValues((prev) => {
+      const canDeleteRequest = Boolean(prev.requests[idx]?.created_at);
+      if (canDeleteRequest) {
+        const requestsDelete = prev.requestsDelete ? [...prev.requestsDelete, uuid] : [uuid];
+        return {
+          ...prev,
+          requestsDelete,
+        };
+      }
+
+      return prev;
+    });
 
     // Remove row
     remove(idx);

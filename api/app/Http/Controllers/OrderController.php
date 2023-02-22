@@ -70,7 +70,7 @@ class OrderController extends Controller
                 'transid', 'ponum AS ref_number', 'apstat AS status',
                 Db::raw("FORMAT(erdat, 'MMM, dd yyyy') AS created_date"),
                 Db::raw("CONVERT(VARCHAR(11), CAST(ertim AS TIME), 100) AS created_time"),
-                'updated_at',
+                Db::raw("FORMAT(updated_at, 'MMM, dd yyyy hh:mmtt') AS last_modified"),
             ])->get();
 
             return $this->sendResponse($orders, 'get orders list');
@@ -87,7 +87,7 @@ class OrderController extends Controller
             $authUser = auth()->user();
             $currentDatetime = Carbon::now();
 
-            // Insert order details
+            // Insert order header
             $orderHeader = OrderHeader::create([
                 'lgnum' => $request->source_wh,
                 'ponum' => $request->ref_number,
@@ -122,7 +122,6 @@ class OrderController extends Controller
     {
         try {
             $orders = OrderHeader::find($transId);
-
             if($orders){
                 $orders = $orders->toFormattedOrderDetails();
             }
@@ -158,7 +157,6 @@ class OrderController extends Controller
             $request->validated($request->all());
 
             $header = OrderHeader::find($transId);
-
             if(!$header){
                return $this->sendError("Transaction ID not exists", 422);
             }
@@ -171,9 +169,18 @@ class OrderController extends Controller
             $isSuccess = $header->save();
 
             if($isSuccess){
+                // Get the inserted order header details
                 $mapRequests = $this->withUpdateMapOrderDetails($request->requests, ['lgnum' => $header->lgnum, 'transid' => $header->transid]);
 
-                $items = OrderItems::upsert($mapRequests, ['uuid','transid'], ['lgnum','matnr','quan','meinh','charg','vfdat']);
+                // Insert if uuid and transid not exist else it updates the record.
+                OrderItems::upsert($mapRequests, ['uuid','transid'], ['lgnum','matnr','quan','meinh','charg','vfdat']);
+                
+                // Delete existing order items
+                if($request->requestsDelete){
+                    OrderItems::whereIn('uuid', $request->requestsDelete)
+                    ->where('transid', $header->transid)
+                    ->delete();
+                }
             }
     
             return $this->sendResponse([], "Successfully update order request");
