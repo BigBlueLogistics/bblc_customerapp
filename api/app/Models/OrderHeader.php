@@ -101,7 +101,7 @@ class OrderHeader extends Model
             $expiry = Carbon::parse($item['vfdat'])->format('m-d-Y');
 
             return [
-                'id' => $item['id'],
+                'uuid' => $item['uuid'],
                 'material' => $item['matnr'],
                 'qty' => $item['quan'],
                 'units' => $item['meinh'],

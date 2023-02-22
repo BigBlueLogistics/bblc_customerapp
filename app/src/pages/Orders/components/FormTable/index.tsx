@@ -63,9 +63,9 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
             render={({ push, remove }) => (
               <>
                 {values && values.requests.length
-                  ? values.requests.map(({ id }, index) => (
+                  ? values.requests.map(({ uuid }, index) => (
                       // eslint-disable-next-line react/no-array-index-key
-                      <TableRow key={id}>
+                      <TableRow key={uuid}>
                         {/* <TableCell>
                           <MDInput
                             margin="dense"
@@ -92,7 +92,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                             options={materials || []}
                             value={values.requests[index].material || ""}
                             onChange={(value, reason) =>
-                              handleMaterialCode(value, reason, id, index, setValues)
+                              handleMaterialCode(value, reason, uuid, index, setValues)
                             }
                           />
                         </TableCell>
@@ -102,8 +102,8 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                             label="Select units"
                             variant="outlined"
                             withOptionKeys={false}
-                            options={units[id] || []}
-                            value={units[id]?.length ? values.requests[index].units : ""}
+                            options={units[uuid] || []}
+                            value={units[uuid]?.length ? values.requests[index].units : ""}
                             sx={{ width: "150px" }}
                             onChange={handleChange}
                           />
@@ -111,10 +111,10 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                         <TableCell>
                           <AutoCompleteExpiry
                             index={index}
-                            options={expiryBatch[id] || []}
-                            value={expiryBatch[id]?.length ? values.requests[index].expiry : ""}
+                            options={expiryBatch[uuid] || []}
+                            value={expiryBatch[uuid]?.length ? values.requests[index].expiry : ""}
                             onChange={(value, reason) =>
-                              handleExpiryBatch(value, reason, id, index, setValues)
+                              handleExpiryBatch(value, reason, uuid, index, setValues)
                             }
                           />
                         </TableCell>
@@ -150,7 +150,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                         <TableCell>
                           <MDButton
                             iconOnly
-                            onClick={() => handleRemoveRow(remove, index, id)}
+                            onClick={() => handleRemoveRow(remove, index, uuid)}
                             sx={{
                               "&:hover": { backgroundColor: "#ffcbc4" },
                             }}

@@ -19,7 +19,7 @@ export type IOrderData = {
   allow_notify: boolean;
   source_wh: string;
   requests: {
-    id: string;
+    uuid: string;
     material: string;
     description: string;
     qty: string;

@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { AutocompleteChangeReason } from "@mui/material/Autocomplete";
+import { v4 as uuidv4 } from "uuid";
 import MDBox from "atoms/MDBox";
 import MDButton from "atoms/MDButton";
 import MDTypography from "atoms/MDTypography";
@@ -24,7 +25,6 @@ import {
 import MDCheckbox from "atoms/MDCheckbox";
 import MDSelect from "atoms/MDSelect";
 import { ordersServices } from "services";
-import { useId } from "hooks";
 import selector from "selector";
 import { IFormOrderState, IOrderData } from "pages/Orders/types";
 import FormTable from "../FormTable";
@@ -34,8 +34,7 @@ import { IAutoCompleteMaterialData } from "../AutoCompleteMaterial/types";
 import { IAutoCompleteExpiryData } from "../AutoCompleteExpiry/types";
 
 function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
-  const autoId = useId();
-  const initialRowId = autoId();
+  const initialRowId = uuidv4();
   const { customerCode } = selector();
   const [initialValues] = useState<IOrderData>({
     id: "",
@@ -46,7 +45,7 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
     source_wh: "",
     requests: [
       {
-        id: initialRowId,
+        uuid: initialRowId,
         material: "",
         description: "",
         qty: "",
@@ -253,7 +252,7 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
   const handleAddRow = (push: ArrayHelpers["push"]) => {
     push({
       ...initialValues.requests[0],
-      id: autoId(),
+      uuid: uuidv4(),
     });
   };
 
@@ -266,10 +265,10 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
 
   const getAllUnits = async (orderData: IOrderData["requests"]) => {
     const allUnits = await Promise.all(
-      orderData.map(async ({ id, material }) => {
+      orderData.map(async ({ uuid, material }) => {
         const unit = await fetchUnits(material);
         return {
-          [id]: unit,
+          [uuid]: unit,
         };
       })
     );
@@ -286,10 +285,10 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
 
   const getAllExpiryBatch = async (orderData: IOrderData["requests"], sourceWh: string) => {
     const allExpiry = await Promise.all(
-      orderData.map(async ({ id, material }) => {
+      orderData.map(async ({ uuid, material }) => {
         const expiries = await fetchExpiryBatch(material, sourceWh);
         return {
-          [id]: expiries,
+          [uuid]: expiries,
         };
       })
     );
@@ -311,10 +310,10 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
       if (type === "edit" && status === "succeeded" && tableData?.id) {
         setValues((prev) => {
           const cloneRequests = prev.requests;
-          const newRequests = cloneRequests.map(({ id, expiry, batch }, idx) => {
+          const newRequests = cloneRequests.map(({ uuid, expiry, batch }, idx) => {
             return {
               ...cloneRequests[idx],
-              available: computeAvailableQty(id, expiry, batch),
+              available: computeAvailableQty(uuid, expiry, batch),
             };
           });
 
