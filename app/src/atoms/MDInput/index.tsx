@@ -3,13 +3,13 @@ import MDInputRoot from "atoms/MDInput/MDInputRoot";
 import { IMDInput } from "./types";
 
 const MDInput = forwardRef<HTMLDivElement, IMDInput>(
-  ({ error, success, disabled, ...rest }, ref) => (
+  ({ error, success, disabled, endAdornment, ...rest }, ref) => (
     <MDInputRoot
       error={error}
       disabled={disabled}
       {...rest}
       ref={ref}
-      ownerState={{ error, success, disabled }}
+      ownerState={{ error, success, disabled, endAdornment }}
     />
   )
 );
@@ -21,6 +21,7 @@ MDInput.defaultProps = {
   error: false,
   success: false,
   disabled: false,
+  endAdornment: true,
 };
 
 export default MDInput;

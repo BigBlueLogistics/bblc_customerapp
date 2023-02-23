@@ -4,6 +4,7 @@ export type IInput = Partial<{
   error: boolean;
   success: boolean;
   disabled: boolean;
+  endAdornment?: boolean;
 }>;
 
 export type IMDInput = IInput & TextFieldProps;
