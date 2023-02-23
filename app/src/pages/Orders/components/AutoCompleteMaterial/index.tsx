@@ -2,7 +2,14 @@ import TextField from "@mui/material/TextField";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { IAutoCompleteMaterialData, IAutoCompleteMaterial } from "./types";
 
-function AutoCompleteMaterial({ options, value, index, onChange }: IAutoCompleteMaterial) {
+function AutoCompleteMaterial({
+  options,
+  value,
+  index,
+  error,
+  helperText,
+  onChange,
+}: IAutoCompleteMaterial) {
   const filterOptions = createFilterOptions({
     matchFrom: "any",
     stringify: (option: IAutoCompleteMaterialData) => option.material + option.description,
@@ -23,7 +30,9 @@ function AutoCompleteMaterial({ options, value, index, onChange }: IAutoComplete
         return option.id.toString();
       }}
       sx={{ width: 250 }}
-      renderInput={(params) => <TextField {...params} label="Select material" />}
+      renderInput={(params) => (
+        <TextField error={error} helperText={helperText} {...params} label="Select material" />
+      )}
       renderOption={(props, option) => {
         return (
           <li key={option.id} {...props} style={{ display: "block" }}>

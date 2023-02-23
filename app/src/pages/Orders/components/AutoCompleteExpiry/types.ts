@@ -9,6 +9,8 @@ export type IAutoCompleteExpiryData = {
 
 export type IAutoCompleteExpiry = {
   index: number;
+  error?: boolean;
+  helperText?: string;
   options: IAutoCompleteExpiryData[];
   onChange: (value: IAutoCompleteExpiryData, reason: AutocompleteChangeReason) => void;
   value: string;

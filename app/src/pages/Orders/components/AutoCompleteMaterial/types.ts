@@ -8,6 +8,8 @@ export type IAutoCompleteMaterialData = {
 
 export type IAutoCompleteMaterial = {
   index: number;
+  error?: boolean;
+  helperText?: string;
   options: IAutoCompleteMaterialData[];
   onChange: (value: IAutoCompleteMaterialData, reason: AutocompleteChangeReason) => void;
   value: string;

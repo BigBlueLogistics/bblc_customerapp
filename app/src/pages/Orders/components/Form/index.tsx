@@ -390,6 +390,8 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
                     variant="outlined"
                     optKeyValue="PLANT"
                     optKeyLabel="NAME1"
+                    error={formikProp.touched.source_wh && Boolean(formikProp.errors.source_wh)}
+                    helperText={formikProp.touched.source_wh ? formikProp.errors.source_wh : ""}
                     options={warehouseList}
                     value={formikProp.values?.source_wh}
                     sx={{ width: 220 }}
@@ -430,8 +432,6 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
                     fullWidth
                     variant="standard"
                     value={formikProp.values?.instruction || ""}
-                    error={formikProp.touched.instruction && Boolean(formikProp.errors.instruction)}
-                    helperText={formikProp.touched.instruction ? formikProp.errors.instruction : ""}
                     onChange={formikProp.handleChange}
                   />
                 </MDBox>

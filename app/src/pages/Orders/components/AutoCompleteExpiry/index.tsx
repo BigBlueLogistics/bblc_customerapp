@@ -2,7 +2,14 @@ import TextField from "@mui/material/TextField";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { IAutoCompleteExpiryData, IAutoCompleteExpiry } from "./types";
 
-function AutoCompleteExpiry({ options, value, index, onChange }: IAutoCompleteExpiry) {
+function AutoCompleteExpiry({
+  options,
+  value,
+  index,
+  error,
+  helperText,
+  onChange,
+}: IAutoCompleteExpiry) {
   const filterOptions = createFilterOptions({
     matchFrom: "any",
     stringify: (option: IAutoCompleteExpiryData) => option.expiry + option.batch,
@@ -23,7 +30,9 @@ function AutoCompleteExpiry({ options, value, index, onChange }: IAutoCompleteEx
         return option.id.toString();
       }}
       sx={{ width: 250 }}
-      renderInput={(params) => <TextField {...params} label="Select expiry" />}
+      renderInput={(params) => (
+        <TextField {...params} error={error} helperText={helperText} label="Select expiry" />
+      )}
       renderOption={(props, option) => {
         return (
           <li key={option.id} {...props} style={{ display: "block" }}>

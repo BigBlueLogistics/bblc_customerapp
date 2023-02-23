@@ -12,4 +12,13 @@ export default yup.object({
       test: (value) => String(value).length === 12,
     }),
   source_wh: yup.string().required("required"),
+  requests: yup
+    .array(
+      yup.object({
+        material: yup.string().required("required"),
+        units: yup.string().required("required"),
+        qty: yup.number().required("required"),
+      })
+    )
+    .min(1, "Should have atlease one item"),
 });
