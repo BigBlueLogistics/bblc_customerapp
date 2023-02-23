@@ -5,6 +5,7 @@ export type IMDSelect = {
   name?: string;
   label?: string;
   helperText?: string;
+  error?: boolean;
   onChange: (e: any) => void;
   showArrowIcon?: boolean;
   optKeyValue?: string;

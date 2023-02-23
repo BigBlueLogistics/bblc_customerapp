@@ -1,3 +1,4 @@
+import FormHelperText from "@mui/material/FormHelperText";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import MDFormControlRoot from "atoms/MDSelect/MDFormControlRoot";
@@ -12,6 +13,7 @@ function MDSelect({
   options,
   value,
   label,
+  error,
   helperText,
   showArrowIcon,
   optKeyValue,
@@ -62,9 +64,11 @@ function MDSelect({
         label={label}
         onChange={onChange}
         ownerState={{ showArrowIcon, variant }}
+        error={error}
       >
         {renderOptionsWithCustomKeys()}
       </MDSelectRoot>
+      {helperText && <FormHelperText error={error}>{helperText}</FormHelperText>}
     </MDFormControlRoot>
   );
 }
