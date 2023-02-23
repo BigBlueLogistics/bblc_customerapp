@@ -71,7 +71,9 @@ class OrderController extends Controller
                 Db::raw("FORMAT(erdat, 'MMM, dd yyyy') AS created_date"),
                 Db::raw("CONVERT(VARCHAR(11), CAST(ertim AS TIME), 100) AS created_time"),
                 Db::raw("FORMAT(updated_at, 'MMM, dd yyyy hh:mmtt') AS last_modified"),
-            ])->get();
+            ])
+            ->where('ernam', auth()->id())
+            ->get();
 
             return $this->sendResponse($orders, 'get orders list');
         } catch (Exception $e) {

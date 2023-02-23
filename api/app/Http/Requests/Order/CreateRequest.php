@@ -26,7 +26,7 @@ class CreateRequest extends FormRequest
         return [
             'source_wh' => ['required','string'],
             'ref_number' => ['required','numeric', 'digits:12'],
-            'pickup_date' => ['date'],
+            'pickup_date' => ['nullable','date'],
             'requests' => ['required', 'array'],
             'requests.*.uuid' => ['required', 'uuid'],
             'requests.*.material' => ['required', 'string'],
