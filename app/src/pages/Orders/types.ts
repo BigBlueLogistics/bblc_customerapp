@@ -26,7 +26,7 @@ export type IOrderData = {
     units: string;
     batch: string;
     expiry: string;
-    available: string;
+    available: string | number;
     created_at?: Date;
   }[];
   requestsDelete?: string[];

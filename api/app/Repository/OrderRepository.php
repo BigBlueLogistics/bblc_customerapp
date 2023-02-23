@@ -50,17 +50,22 @@ class OrderRepository implements IOrderRepository
 
         $products = $this->convert_latin1_to_utf8_recursive($result["T_SCWM_AQUA"]);
 
-        $collectionProducts = collect($products)->map(function($item, $index){
-            $expiry = Carbon::parse($item['VFDAT'])->format('m-d-Y');
-
-            return [
-                "id" => $index += 1,
-                "code" => $item['MATNR'],
-                "batch" => $item['CHARG'],
-                "expiry" => $expiry,
-                "quantity" => round( (float)$item['QUAN'], 3)
-            ];
-        });
+        $collectionProducts = collect($products)
+            ->filter(function($item){
+                return $item['LGPLA'] !== 'GI_ZONE' && $item['CAT'] === 'F1';
+            })
+            ->map(function($item, $index){
+                $expiry = Carbon::parse($item['VFDAT'])->format('m-d-Y');
+                    
+                    return [
+                        "id" => $index += 1,
+                        "code" => $item['MATNR'],
+                        "batch" => $item['CHARG'],
+                        "expiry" => $expiry,
+                        "quantity" => round( (float)$item['QUAN'], 3)
+                    ];
+            })
+            ->values();
 
         return $collectionProducts;
     }

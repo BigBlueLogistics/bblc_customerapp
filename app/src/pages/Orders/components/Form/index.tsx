@@ -135,6 +135,36 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
     }
   };
 
+  const computeAvailableQty = useCallback(
+    (uuid: string, selectedExpiry: string, selectedBatch: string) => {
+      if (expiryBatchList[uuid]?.length) {
+        return expiryBatchList[uuid].reduce((totalQty, current) => {
+          let prevTotalQty = totalQty;
+
+          if (selectedExpiry === current.expiry && selectedBatch === current.batch) {
+            prevTotalQty += current.quantity;
+          }
+
+          return prevTotalQty;
+        }, 0);
+      }
+      return 0;
+    },
+    [expiryBatchList]
+  );
+
+  const computeAllAvailableQty = (list: { [key: string]: any }[]) => {
+    if (list?.length) {
+      return list.reduce((totalQty, current) => {
+        let prevTotalQty = Number(totalQty);
+        prevTotalQty += current.quantity;
+
+        return prevTotalQty;
+      }, 0);
+    }
+    return 0;
+  };
+
   const handleMaterialCode = async (
     value: IAutoCompleteMaterialData,
     reason: AutocompleteChangeReason,
@@ -153,10 +183,18 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
 
         return clonePrev;
       });
+
       const units = await fetchUnits(material);
       const expiry = await fetchExpiryBatch(material, warehouseNo);
       setUnitList((prev) => ({ ...prev, [uuid]: units }));
       setExpiryBatchList((prev) => ({ ...prev, [uuid]: expiry }));
+
+      // Auto-fill available qty
+      setValues((prev) => {
+        const clonePrev = prev;
+        clonePrev.requests[index].available = computeAllAvailableQty(expiry);
+        return clonePrev;
+      });
     }
 
     // Clear data of material and unit dropdown
@@ -176,24 +214,6 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
       });
     }
   };
-
-  const computeAvailableQty = useCallback(
-    (id: string, selectedExpiry: string, selectedBatch: string) => {
-      if (expiryBatchList[id]?.length) {
-        return expiryBatchList[id].reduce((totalQty, current) => {
-          let prevTotalQty = totalQty;
-
-          if (selectedExpiry === current.expiry && selectedBatch === current.batch) {
-            prevTotalQty += current.quantity;
-          }
-
-          return prevTotalQty;
-        }, 0);
-      }
-      return 0;
-    },
-    [expiryBatchList]
-  );
 
   const handleExpiryBatch = (
     value: IAutoCompleteExpiryData,
@@ -358,7 +378,7 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
   const formHeaderTitle = data.type === "create" ? "Create" : "Update";
 
   return (
-    <Dialog open={open} fullWidth maxWidth="md">
+    <Dialog open={open} fullWidth maxWidth="lg">
       {isFetchingData ? (
         <SkeletonForm contentWidth={300} />
       ) : (
@@ -451,8 +471,11 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
                 </MDBox>
               </DialogContent>
               <DialogActions>
-                <MDButton onClick={onClose}>Close</MDButton>
+                <MDButton color="error" onClick={onClose}>
+                  Close
+                </MDButton>
                 <MDButton
+                  color="success"
                   type="submit"
                   disabled={isSaving}
                   loading={isSaving}

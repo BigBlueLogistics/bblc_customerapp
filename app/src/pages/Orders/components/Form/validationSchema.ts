@@ -2,15 +2,10 @@ import * as yup from "yup";
 
 export default yup.object({
   ref_number: yup
-    .number()
-    .typeError("not a number")
+    .string()
     .required("required")
-    .test({
-      name: "exact-digits",
-      message: "Number of digits must 12",
-      exclusive: true,
-      test: (value) => String(value).length === 12,
-    }),
+    .length(12, "Number of digits must 12")
+    .matches(/^\d+$/gi, "Numbers only"),
   source_wh: yup.string().required("required"),
   requests: yup
     .array(

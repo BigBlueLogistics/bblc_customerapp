@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect } from "react";
 import { TableContainer, Table, TableCell, TableHead, TableBody, TableRow } from "@mui/material";
-import { FieldArray, FormikProps, FormikErrors } from "formik";
+import { FieldArray, FormikProps } from "formik";
 import Icon from "@mui/material/Icon";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
 import MDSelect from "atoms/MDSelect";
 import MDTypography from "atoms/MDTypography";
 import { IOrderData } from "pages/Orders/types";
+import TableBodyCell from "./TableBodyCell";
 import AutoCompleteMaterial from "../AutoCompleteMaterial";
 import AutoCompleteExpiry from "../AutoCompleteExpiry";
 import { IFormTable } from "./types";
@@ -36,9 +37,6 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
       onMount(setValues);
     }
   }, [onMount, setValues, values.id]);
-
-  console.log("errors", errors);
-  console.log("touched", touched);
 
   const displayError = (idx: number, fieldName: string) => {
     if (
@@ -79,7 +77,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                 {values && values.requests.length
                   ? values.requests.map(({ uuid }, index) => (
                       <TableRow key={uuid}>
-                        <TableCell>
+                        <TableBodyCell>
                           <AutoCompleteMaterial
                             index={index}
                             options={materials || []}
@@ -90,8 +88,8 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                               handleMaterialCode(value, reason, uuid, index, setValues)
                             }
                           />
-                        </TableCell>
-                        <TableCell>
+                        </TableBodyCell>
+                        <TableBodyCell>
                           <MDSelect
                             name={`requests[${index}].units`}
                             label="Select units"
@@ -104,8 +102,8 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                             helperText={displayError(index, "units")}
                             onChange={handleChange}
                           />
-                        </TableCell>
-                        <TableCell>
+                        </TableBodyCell>
+                        <TableBodyCell>
                           <AutoCompleteExpiry
                             index={index}
                             options={expiryBatch[uuid] || []}
@@ -114,8 +112,8 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                               handleExpiryBatch(value, reason, uuid, index, setValues)
                             }
                           />
-                        </TableCell>
-                        <TableCell>
+                        </TableBodyCell>
+                        <TableBodyCell>
                           <MDInput
                             margin="dense"
                             name={`requests[${index}].qty`}
@@ -127,17 +125,17 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                             endAdornment={false}
                             onChange={handleChange}
                           />
-                        </TableCell>
-                        <TableCell>
+                        </TableBodyCell>
+                        <TableBodyCell>
                           <MDTypography
                             sx={({ typography: { pxToRem } }) => ({
                               fontSize: pxToRem(14),
                             })}
                           >
-                            {values.requests[index].available || ""}
+                            {values.requests[index].available || 0}
                           </MDTypography>
-                        </TableCell>
-                        <TableCell>
+                        </TableBodyCell>
+                        <TableBodyCell>
                           <MDButton
                             iconOnly
                             onClick={() => handleRemoveRow(remove, setValues, index, uuid)}
@@ -149,13 +147,13 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                               highlight_off
                             </Icon>
                           </MDButton>
-                        </TableCell>
+                        </TableBodyCell>
                       </TableRow>
                     ))
                   : null}
 
                 <TableRow>
-                  <TableCell colSpan={tHeaders.length}>
+                  <TableBodyCell colSpan={tHeaders.length}>
                     <MDButton
                       variant="outlined"
                       color="info"
@@ -164,7 +162,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                     >
                       Add row
                     </MDButton>
-                  </TableCell>
+                  </TableBodyCell>
                 </TableRow>
               </>
             )}
