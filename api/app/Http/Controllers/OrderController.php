@@ -96,8 +96,9 @@ class OrderController extends Controller
                 'pudat' => $request->pickup_date,
                 'miles' => $request->allow_notify,
                 'header' => $request->instruction,
+                'kunnr' => $authUser->company->customer_code,
                 'ernam' => $authUser->id,
-                'apstat' => $authUser->role_id,
+                'apstat' => 0,
                 'erdat' => $currentDatetime->format('m/d/Y'),
                 'ertim' => $currentDatetime->format('H:i:s'),
             ]);

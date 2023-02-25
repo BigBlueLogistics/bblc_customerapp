@@ -24,7 +24,7 @@ class OrderHeader extends Model
         'ponum', 'header', 'lgnum',
         'miles', 'erdat', 'ertim',
         'apstat', 'transid', 'ernam',
-        'pudat', 
+        'pudat', 'kunnr'
     ];
 
     protected $casts = [
