@@ -15,5 +15,5 @@ export default yup.object({
         qty: yup.number().required("required"),
       })
     )
-    .min(1, "Should have atlease one item"),
+    .min(1, "Required to input one item! Please ADD ROW"),
 });

@@ -38,7 +38,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
     }
   }, [onMount, setValues, values.id]);
 
-  const displayError = (idx: number, fieldName: string) => {
+  const displayRowError = (idx: number, fieldName: string) => {
     if (
       touched?.requests &&
       errors?.requests &&
@@ -53,8 +53,23 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
       }
       return "";
     }
-
     return "";
+  };
+
+  const renderMainError = () => {
+    if (touched?.requests && errors?.requests && typeof errors?.requests === "string") {
+      return (
+        <TableRow>
+          <TableBodyCell colSpan={tHeaders.length}>
+            <MDTypography color="error" variant="caption">
+              {errors.requests}
+            </MDTypography>
+          </TableBodyCell>
+        </TableRow>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -70,6 +85,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
           </TableRow>
         </TableHead>
         <TableBody>
+          {renderMainError()}
           <FieldArray
             name="requests"
             render={({ push, remove }) => (
@@ -82,8 +98,8 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                             index={index}
                             options={materials || []}
                             value={values.requests[index].material || ""}
-                            error={Boolean(displayError(index, "material"))}
-                            helperText={displayError(index, "material")}
+                            error={Boolean(displayRowError(index, "material"))}
+                            helperText={displayRowError(index, "material")}
                             onChange={(value, reason) =>
                               handleMaterialCode(value, reason, uuid, index, setValues)
                             }
@@ -98,8 +114,8 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                             options={units[uuid] || []}
                             value={units[uuid]?.length ? values.requests[index].units : ""}
                             sx={{ width: "150px" }}
-                            error={Boolean(displayError(index, "units"))}
-                            helperText={displayError(index, "units")}
+                            error={Boolean(displayRowError(index, "units"))}
+                            helperText={displayRowError(index, "units")}
                             onChange={handleChange}
                           />
                         </TableBodyCell>
@@ -120,8 +136,8 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                             type="text"
                             variant="standard"
                             value={values.requests[index].qty || ""}
-                            error={Boolean(displayError(index, "qty"))}
-                            helperText={displayError(index, "qty")}
+                            error={Boolean(displayRowError(index, "qty"))}
+                            helperText={displayRowError(index, "qty")}
                             endAdornment={false}
                             onChange={handleChange}
                           />
