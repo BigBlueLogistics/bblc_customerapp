@@ -12,6 +12,7 @@ use App\Models\OrderItems;
 use App\Traits\HttpResponse;
 use Carbon\Carbon;
 use DB;
+use Exception;
 
 class OrderController extends Controller
 {
@@ -161,7 +162,7 @@ class OrderController extends Controller
 
             $header = OrderHeader::find($transId);
             if(!$header){
-               return $this->sendError("Transaction ID not exists", 422);
+               return $this->sendError("Transaction ID not exists");
             }
 
             $header->lgnum = $request->source_wh;
@@ -186,7 +187,31 @@ class OrderController extends Controller
                 }
             }
     
-            return $this->sendResponse([], "Successfully update order request");
+            return $this->sendResponse(null, "Successfully update order request");
+        }
+        catch (Exception $e)
+        {
+            return $this->sendError($e);
+        }
+    }
+
+    public function cancel($transId)
+    {
+        try{
+            $header = OrderHeader::find($transId);
+
+            if(!$header){
+                return $this->sendError("Transaction ID not exists");
+            }
+            if($header->apstat > 0){
+                return $this->sendError("Cannot cancel this request", 422);
+            }
+
+            // 6 = cancelled
+            $header->apstat = 6;
+            $header->save();
+
+            return $this->sendResponse(null,"Request has been cancel");
         }
         catch (Exception $e)
         {
