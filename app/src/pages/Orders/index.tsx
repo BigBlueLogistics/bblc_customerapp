@@ -23,11 +23,19 @@ import { inventoryServices, ordersServices } from "services";
 import { AxiosError } from "axios";
 import miscData from "./data";
 import selector from "./selector";
-import { INotifyDownload, IGroupBy, IOrderData, IFormOrderState, ITableOrder } from "./types";
+import {
+  INotifyDownload,
+  IGroupBy,
+  IOrderData,
+  IFormOrderState,
+  ITableOrder,
+  IFormOrderConfirmation,
+} from "./types";
 import Form from "./components/Form";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import { IMenuAction } from "./components/MenuAction/types";
+import CancelConfirmation from "./components/CancelConfirmation";
 
 function Orders() {
   const dispatch = useAppDispatch();
@@ -61,6 +69,12 @@ function Orders() {
     data: null,
     status: "idle",
     type: "create",
+    id: "",
+  });
+  const [formOrderConfirmation, setFormOrderConfirmation] = useState<IFormOrderConfirmation>({
+    status: "idle",
+    message: "",
+    openConfirmation: false,
     id: "",
   });
 
@@ -158,6 +172,24 @@ function Orders() {
   const handleCreate = () => {
     onShowForm();
     setFormOrder((prev) => ({ ...prev, type: "create", status: "idle", id: "" }));
+  };
+
+  const onShowCancelConfirmation = (transId: string) => {
+    setFormOrderConfirmation((prev) => ({ ...prev, openConfirmation: true, id: transId }));
+  };
+
+  const onCloseCancelConfirmation = () => {
+    setFormOrderConfirmation({ id: "", status: "idle", message: "", openConfirmation: false });
+  };
+
+  const onCancelYes = async (transId: string) => {
+    setFormOrderConfirmation((prev) => ({ ...prev, message: "", status: "loading" }));
+    try {
+      const { data } = await ordersServices.cancelOrder(transId);
+      setFormOrderConfirmation((prev) => ({ ...prev, message: data.message, status: "succeeded" }));
+    } catch (err: any) {
+      setFormOrderConfirmation((prev) => ({ ...prev, message: err.message, status: "failed" }));
+    }
   };
 
   const onSave = async (orderData: IOrderData, actions: FormikHelpers<IOrderData>) => {
@@ -282,6 +314,15 @@ function Orders() {
         onSave={onSave}
         data={formOrder}
         warehouseList={warehouseList}
+        onShowCancelConfirmation={onShowCancelConfirmation}
+      />
+
+      <CancelConfirmation
+        openConfirmation={formOrderConfirmation.openConfirmation}
+        transId={formOrderConfirmation.id}
+        isLoading={formOrderConfirmation.status === "loading"}
+        OnCancelYes={onCancelYes}
+        OnCancelNo={onCloseCancelConfirmation}
       />
 
       <MDBox pt={6} pb={3}>
@@ -388,7 +429,7 @@ function Orders() {
                 </MDBox>
                 <DataTable
                   table={{
-                    columns: tableHeaders({ onShowEdit }),
+                    columns: tableHeaders({ onShowEdit, onShowCancelConfirmation }),
                     rows: tableOrders.data,
                   }}
                   isSorted={false}

@@ -7,6 +7,7 @@ export type IForm = {
   open: boolean;
   onClose: () => void;
   onSave: (data: IOrderData, actions: FormikHelpers<IOrderData>) => void;
+  onShowCancelConfirmation: (transid: string) => void;
   data: IFormOrderState;
   warehouseList: { value: string | number; label: string }[];
 };

@@ -24,7 +24,14 @@ import validationSchema from "./validationSchema";
 import { IAutoCompleteMaterialData } from "../AutoCompleteMaterial/types";
 import { IAutoCompleteExpiryData } from "../AutoCompleteExpiry/types";
 
-function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
+function FormRequests({
+  open,
+  onClose,
+  onSave,
+  onShowCancelConfirmation,
+  data,
+  warehouseList,
+}: IForm) {
   const initialRowId = uuidv4();
   const { customerCode } = selector();
   const [initialValues] = useState<IOrderData>({
@@ -376,6 +383,8 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
   const isSaving = data.type !== "edit" && data.status === "loading";
   const isFetchingData = data.type === "edit" && data.status === "loading";
   const formHeaderTitle = data.type === "create" ? "Create" : "Update";
+  const isUpdate = data.type === "edit" || data.type === "update";
+  // const canCancel = data.data.status === 0;
 
   return (
     <Dialog open={open} fullWidth maxWidth="lg">
@@ -470,19 +479,27 @@ function FormRequests({ open, onClose, onSave, data, warehouseList }: IForm) {
                   />
                 </MDBox>
               </DialogContent>
-              <DialogActions>
-                <MDButton color="error" onClick={onClose}>
-                  Close
-                </MDButton>
-                <MDButton
-                  color="success"
-                  type="submit"
-                  disabled={isSaving}
-                  loading={isSaving}
-                  onClick={formikProp.handleSubmit}
-                >
-                  Save
-                </MDButton>
+              <DialogActions sx={{ justifyContent: isUpdate ? "space-between" : "flex-end" }}>
+                {isUpdate || (
+                  <MDButton color="warning" onClick={() => onShowCancelConfirmation(data.id)}>
+                    Cancel Request
+                  </MDButton>
+                )}
+                <MDBox>
+                  <MDButton color="error" onClick={onClose}>
+                    Close
+                  </MDButton>
+                  <MDButton
+                    color="success"
+                    type="submit"
+                    sx={{ marginLeft: 2 }}
+                    disabled={isSaving}
+                    loading={isSaving}
+                    onClick={formikProp.handleSubmit}
+                  >
+                    Save
+                  </MDButton>
+                </MDBox>
               </DialogActions>
             </Form>
           )}

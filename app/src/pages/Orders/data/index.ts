@@ -7,7 +7,7 @@ export default function miscData() {
     Cell: ({ value }) => value || "",
   };
 
-  const tableHeaders = ({ onShowEdit }: IData) => [
+  const tableHeaders = ({ onShowEdit, onShowCancelConfirmation }: IData) => [
     {
       Header: "Transaction No.",
       accessor: "transid",
@@ -37,7 +37,7 @@ export default function miscData() {
     {
       Header: "Actions",
       align: "center",
-      cellProps: { onShowEdit },
+      cellProps: { onShowEdit, onShowCancelConfirmation },
       Cell: CellAction,
     },
   ];

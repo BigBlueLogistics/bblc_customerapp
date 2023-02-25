@@ -45,3 +45,10 @@ export type IFormOrderState = {
   data: IOrderData;
   message: string;
 };
+
+export type IFormOrderConfirmation = {
+  id: string;
+  openConfirmation: boolean;
+  status: IStatus;
+  message: string;
+};
