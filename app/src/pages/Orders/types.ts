@@ -1,6 +1,6 @@
 import { IStatus } from "types/status";
 
-export type INotifyDownload = {
+export type INotifyOrder = {
   open: boolean;
   message?: string;
   title?: string;

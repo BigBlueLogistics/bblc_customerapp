@@ -24,7 +24,7 @@ import { AxiosError } from "axios";
 import miscData from "./data";
 import selector from "./selector";
 import {
-  INotifyDownload,
+  INotifyOrder,
   IGroupBy,
   IOrderData,
   IFormOrderState,
@@ -41,14 +41,13 @@ function Orders() {
   const dispatch = useAppDispatch();
   const { customerCode } = selector();
   const { tableHeaders, groupByData } = miscData();
-  const initialStateNotification: INotifyDownload = {
+  const initialStateNotification: INotifyOrder = {
     open: false,
     message: "",
     title: "",
     color: "primary",
   };
-  const [showNotifyDownload, setShowNotifyDownload] =
-    useState<INotifyDownload>(initialStateNotification);
+  const [showNotify, setShowNotify] = useState<INotifyOrder>(initialStateNotification);
   const [selectedGroupBy, setSelectedGroupBy] = useState<IGroupBy>("");
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -87,11 +86,11 @@ function Orders() {
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
 
-  const openNotifyDownload = ({ open, message, title, color }: INotifyDownload) => {
-    setShowNotifyDownload({ open, message, title, color });
+  const openNotify = ({ open, message, title, color }: INotifyOrder) => {
+    setShowNotify({ open, message, title, color });
   };
-  const closeNotifyDownload = () => {
-    setShowNotifyDownload((prevState) => ({ ...prevState, open: false }));
+  const closeNotify = () => {
+    setShowNotify((prevState) => ({ ...prevState, open: false }));
   };
 
   const onShowForm = () => {
@@ -179,14 +178,19 @@ function Orders() {
   };
 
   const onCloseCancelConfirmation = () => {
-    setFormOrderConfirmation({ id: "", status: "idle", message: "", openConfirmation: false });
+    setFormOrderConfirmation((prev) => ({
+      ...prev,
+      openConfirmation: false,
+    }));
   };
 
-  const onCancelYes = async (transId: string) => {
+  const onCancelOrderYes = async (transId: string) => {
     setFormOrderConfirmation((prev) => ({ ...prev, message: "", status: "loading" }));
     try {
       const { data } = await ordersServices.cancelOrder(transId);
       setFormOrderConfirmation((prev) => ({ ...prev, message: data.message, status: "succeeded" }));
+      onCloseForm();
+      onCloseCancelConfirmation();
     } catch (err: any) {
       setFormOrderConfirmation((prev) => ({ ...prev, message: err.message, status: "failed" }));
     }
@@ -232,8 +236,18 @@ function Orders() {
   }, [error, dispatch]);
 
   useEffect(() => {
+    const { status: confirmationStatus, id: tranId } = formOrderConfirmation;
     const { message } = downloadError || {};
     let notificationMsg = initialStateNotification;
+
+    if (!showForm && confirmationStatus === "succeeded") {
+      notificationMsg = {
+        open: true,
+        message: `Transaction No. [${tranId}]`,
+        title: "Cancelled request",
+        color: "warning",
+      };
+    }
 
     if (!message && downloadStatus === "loading") {
       notificationMsg = {
@@ -259,10 +273,10 @@ function Orders() {
         color: "error",
       };
     }
-    openNotifyDownload(notificationMsg);
+    openNotify(notificationMsg);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [downloadError, downloadStatus]);
+  }, [downloadError, downloadStatus, formOrderConfirmation]);
 
   const menuItemsAction: IMenuAction["items"] = [
     {
@@ -299,13 +313,13 @@ function Orders() {
       )}
 
       <MDSnackbar
-        color={showNotifyDownload.color}
+        color={showNotify.color}
         icon="info"
-        title={showNotifyDownload.title}
-        content={showNotifyDownload.message}
+        title={showNotify.title}
+        content={showNotify.message}
         dateTime="now"
-        open={showNotifyDownload.open}
-        close={closeNotifyDownload}
+        open={showNotify.open}
+        close={closeNotify}
       />
 
       <Form
@@ -321,7 +335,7 @@ function Orders() {
         openConfirmation={formOrderConfirmation.openConfirmation}
         transId={formOrderConfirmation.id}
         isLoading={formOrderConfirmation.status === "loading"}
-        OnCancelYes={onCancelYes}
+        OnCancelYes={onCancelOrderYes}
         OnCancelNo={onCloseCancelConfirmation}
       />
 

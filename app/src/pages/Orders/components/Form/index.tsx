@@ -384,6 +384,7 @@ function FormRequests({
   const isFetchingData = data.type === "edit" && data.status === "loading";
   const formHeaderTitle = data.type === "create" ? "Create" : "Update";
   const isUpdate = data.type === "edit" || data.type === "update";
+  // TODO: add field status in fetching order by id
   // const canCancel = data.data.status === 0;
 
   return (
@@ -480,7 +481,7 @@ function FormRequests({
                 </MDBox>
               </DialogContent>
               <DialogActions sx={{ justifyContent: isUpdate ? "space-between" : "flex-end" }}>
-                {isUpdate || (
+                {isUpdate && (
                   <MDButton color="warning" onClick={() => onShowCancelConfirmation(data.id)}>
                     Cancel Request
                   </MDButton>

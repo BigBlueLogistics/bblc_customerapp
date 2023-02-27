@@ -24,7 +24,7 @@ function CellAction(props: ITableCellProps) {
         </IconButton>
       </Tooltip>
 
-      {status === 0 ? (
+      {Number(status) === 0 ? (
         <Tooltip title="Cancel request" placement="top">
           <IconButton
             aria-label="cancel"

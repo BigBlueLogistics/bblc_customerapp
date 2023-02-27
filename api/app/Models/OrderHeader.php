@@ -91,6 +91,7 @@ class OrderHeader extends Model
             'allow_notify' => $this->miles,
             'pickup_date' => $this->pudat, 
             'instruction' => $this->header,
+            'status' => $this->apstat,
             'requests' => $this->mapFieldOrderItems()
         ];
     }
