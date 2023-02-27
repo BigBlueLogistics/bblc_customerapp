@@ -74,6 +74,7 @@ class OrderController extends Controller
                 Db::raw("FORMAT(updated_at, 'MMM, dd yyyy hh:mmtt') AS last_modified"),
             ])
             ->where('ernam', auth()->id())
+            ->where('apstat','!=', 6)
             ->get();
 
             return $this->sendResponse($orders, 'get orders list');
