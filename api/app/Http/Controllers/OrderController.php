@@ -9,6 +9,7 @@ use App\Http\Requests\Order\ProductUnitsRequest;
 use App\Interfaces\IOrderRepository;
 use App\Models\OrderHeader;
 use App\Models\OrderItems;
+use App\Models\OrderStatus;
 use App\Traits\HttpResponse;
 use Carbon\Carbon;
 use DB;
@@ -68,13 +69,14 @@ class OrderController extends Controller
     {
         try {
             $orders = OrderHeader::select([
-                'transid', 'ponum AS ref_number', 'apstat AS status',
-                Db::raw("FORMAT(erdat, 'MMM, dd yyyy') AS created_date"),
-                Db::raw("CONVERT(VARCHAR(11), CAST(ertim AS TIME), 100) AS created_time"),
-                Db::raw("FORMAT(updated_at, 'MMM, dd yyyy hh:mmtt') AS last_modified"),
+                'order_header.transid', 'order_header.ponum AS ref_number', 'order_status.name AS status',
+                Db::raw("FORMAT(order_header.erdat, 'MMM, dd yyyy') AS created_date"),
+                Db::raw("CONVERT(VARCHAR(11), CAST(order_header.ertim AS TIME), 100) AS created_time"),
+                Db::raw("FORMAT(order_header.updated_at, 'MMM, dd yyyy hh:mmtt') AS last_modified"),
             ])
             ->where('ernam', auth()->id())
             ->where('apstat','!=', 6)
+            ->leftjoin('order_status','order_header.apstat', '=','order_status.id')
             ->get();
 
             return $this->sendResponse($orders, 'get orders list');

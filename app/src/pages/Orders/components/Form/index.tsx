@@ -41,6 +41,7 @@ function FormRequests({
     instruction: "",
     allow_notify: false,
     source_wh: "",
+    status: "",
     requests: [
       {
         uuid: initialRowId,
@@ -385,7 +386,7 @@ function FormRequests({
   const formHeaderTitle = data.type === "create" ? "Create" : "Update";
   const isUpdate = data.type === "edit" || data.type === "update";
   // TODO: add field status in fetching order by id
-  // const canCancel = data.data.status === 0;
+  const canCancel = isUpdate && data.data?.status === "order create";
 
   return (
     <Dialog open={open} fullWidth maxWidth="lg">
@@ -480,8 +481,8 @@ function FormRequests({
                   />
                 </MDBox>
               </DialogContent>
-              <DialogActions sx={{ justifyContent: isUpdate ? "space-between" : "flex-end" }}>
-                {isUpdate && (
+              <DialogActions sx={{ justifyContent: canCancel ? "space-between" : "flex-end" }}>
+                {canCancel && (
                   <MDButton color="warning" onClick={() => onShowCancelConfirmation(data.id)}>
                     Cancel Request
                   </MDButton>

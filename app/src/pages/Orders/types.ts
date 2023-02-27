@@ -18,6 +18,7 @@ export type IOrderData = {
   instruction: string;
   allow_notify: boolean;
   source_wh: string;
+  status: string;
   requests: {
     uuid: string;
     material: string;

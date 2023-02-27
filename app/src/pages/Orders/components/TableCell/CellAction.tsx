@@ -24,7 +24,7 @@ function CellAction(props: ITableCellProps) {
         </IconButton>
       </Tooltip>
 
-      {Number(status) === 0 ? (
+      {String(status).toLowerCase() === "order create" ? (
         <Tooltip title="Cancel request" placement="top">
           <IconButton
             aria-label="cancel"

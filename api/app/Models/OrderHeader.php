@@ -19,7 +19,7 @@ class OrderHeader extends Model
     protected $primaryKey = 'transid';
 
     protected $keyType = 'string';
-
+    
     protected $fillable = [
         'ponum', 'header', 'lgnum',
         'miles', 'erdat', 'ertim',
@@ -91,7 +91,7 @@ class OrderHeader extends Model
             'allow_notify' => $this->miles,
             'pickup_date' => $this->pudat, 
             'instruction' => $this->header,
-            'status' => $this->apstat,
+            'status' =>  $this->status->name,
             'requests' => $this->mapFieldOrderItems()
         ];
     }
@@ -116,5 +116,10 @@ class OrderHeader extends Model
                 'created_at' => $item['created_at']
             ];
         });
+    }
+
+    public function status()
+    {
+        return $this->hasOne(OrderStatus::class,'id','apstat');
     }
 }
