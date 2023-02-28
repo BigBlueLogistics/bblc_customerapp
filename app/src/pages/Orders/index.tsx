@@ -91,6 +91,8 @@ function Orders() {
   };
   const closeNotify = () => {
     setShowNotify((prevState) => ({ ...prevState, open: false }));
+    setFormOrder((prevState) => ({ ...prevState, status: "idle" }));
+    setFormOrderConfirmation((prevState) => ({ ...prevState, status: "idle" }));
   };
 
   const onShowForm = () => {
@@ -99,6 +101,7 @@ function Orders() {
 
   const onCloseForm = () => {
     setShowForm(false);
+    setFormOrder((prevState) => ({ ...prevState, status: "idle" }));
   };
 
   const onChangeGroupBy = (e: ChangeEvent<HTMLInputElement>) => {
@@ -225,6 +228,16 @@ function Orders() {
   };
 
   useEffect(() => {
+    const { status, type } = formOrder;
+    const { status: confirmationStatus, openConfirmation } = formOrderConfirmation;
+    if (
+      ((type === "create" || type === "update") && status === "succeeded") ||
+      (!openConfirmation && confirmationStatus === "succeeded")
+    )
+      fetchOrderList();
+  }, [formOrder, formOrderConfirmation]);
+
+  useEffect(() => {
     fetchOrderList();
     fetchWarehouseList();
   }, []);
@@ -236,14 +249,14 @@ function Orders() {
   }, [error, dispatch]);
 
   useEffect(() => {
-    const { status: confirmationStatus, id: tranId } = formOrderConfirmation;
+    const { status: confirmationStatus, id: transId, openConfirmation } = formOrderConfirmation;
     const { message } = downloadError || {};
     let notificationMsg = initialStateNotification;
 
-    if (!showForm && confirmationStatus === "succeeded") {
+    if (!showForm && !openConfirmation && confirmationStatus === "succeeded") {
       notificationMsg = {
         open: true,
-        message: `Transaction No. [${tranId}]`,
+        message: `Transaction No. [${transId}]`,
         title: "Cancelled request",
         color: "warning",
       };
