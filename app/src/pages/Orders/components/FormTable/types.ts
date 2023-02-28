@@ -8,6 +8,7 @@ export type IFormTable = {
   materials: IAutoCompleteMaterialData[];
   expiryBatch: { [key: string]: IAutoCompleteExpiryData[] };
   units: { [key: string]: string[] };
+  selectedMaterialCodes: { [key: string]: any };
   onMount: (setValues: FormikProps<IOrderData>["setValues"]) => void;
   handleMaterialCode: (
     value: IAutoCompleteMaterialData,

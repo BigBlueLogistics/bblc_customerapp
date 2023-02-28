@@ -61,7 +61,7 @@ function FormRequests({
   const [unitList, setUnitList] = useState({ [initialRowId]: [] });
 
   const [warehouseNo, setWarehouseNo] = useState("");
-  // const [materialCode, setMaterialCode] = useState("");
+  const [selectedMaterialCodes, setMaterialCodes] = useState({});
 
   const renderMessage = () => {
     const { message, status: formStatus, type } = data;
@@ -143,18 +143,28 @@ function FormRequests({
     }
   };
 
+  const clearSelectedMaterialCodes = (uuid: string) => {
+    setMaterialCodes((prev) => {
+      const cloneMaterial = prev;
+      delete cloneMaterial[uuid];
+      return cloneMaterial;
+    });
+  };
+
   const computeAvailableQty = useCallback(
     (uuid: string, selectedExpiry: string, selectedBatch: string) => {
       if (expiryBatchList[uuid]?.length) {
-        return expiryBatchList[uuid].reduce((totalQty, current) => {
-          let prevTotalQty = totalQty;
+        return expiryBatchList[uuid]
+          .reduce((totalQty, current) => {
+            let prevTotalQty = totalQty;
 
-          if (selectedExpiry === current.expiry && selectedBatch === current.batch) {
-            prevTotalQty += current.quantity;
-          }
+            if (selectedExpiry === current.expiry && selectedBatch === current.batch) {
+              prevTotalQty += current.quantity;
+            }
 
-          return prevTotalQty;
-        }, 0);
+            return prevTotalQty;
+          }, 0)
+          .toFixed(3);
       }
       return 0;
     },
@@ -163,12 +173,14 @@ function FormRequests({
 
   const computeAllAvailableQty = (list: { [key: string]: any }[]) => {
     if (list?.length) {
-      return list.reduce((totalQty, current) => {
-        let prevTotalQty = Number(totalQty);
-        prevTotalQty += current.quantity;
+      return list
+        .reduce((totalQty, current) => {
+          let prevTotalQty = Number(totalQty);
+          prevTotalQty += current.quantity;
 
-        return prevTotalQty;
-      }, 0);
+          return prevTotalQty;
+        }, 0)
+        .toFixed(3);
     }
     return 0;
   };
@@ -184,6 +196,7 @@ function FormRequests({
     // And fetch units, expiry and batch.
     if (reason === "selectOption" && value) {
       const { material, description } = value;
+      setMaterialCodes((prev) => ({ ...prev, [uuid]: material }));
       setValues((prev) => {
         const clonePrev = prev;
         clonePrev.requests[index].material = material;
@@ -209,6 +222,7 @@ function FormRequests({
     if (reason === "clear") {
       clearUnits(uuid);
       clearExpiryBatch(uuid);
+      clearSelectedMaterialCodes(uuid);
       setValues((prev) => {
         const clonePrev = prev;
         clonePrev.requests[index].material = "";
@@ -272,6 +286,7 @@ function FormRequests({
   ) => {
     clearUnits(uuid);
     clearExpiryBatch(uuid);
+    clearSelectedMaterialCodes(uuid);
 
     // Add the removed uuid
     setValues((prev) => {
@@ -345,6 +360,17 @@ function FormRequests({
     setExpiryBatchList(objAllExpiry);
   };
 
+  const getAllSelectedMaterial = (orderData: IOrderData["requests"]) => {
+    let selectedMaterials = {};
+    if (orderData.length) {
+      selectedMaterials = orderData.reduce((prev, { uuid, material }) => {
+        prev[uuid] = material;
+        return prev;
+      }, {});
+    }
+    setMaterialCodes(selectedMaterials);
+  };
+
   const onMountForm = useCallback(
     (setValues: FormikProps<IOrderData>["setValues"]) => {
       const { type, data: tableData, status } = data;
@@ -365,19 +391,30 @@ function FormRequests({
     [computeAvailableQty, data]
   );
 
+  // Open form
   useEffect(() => {
     if (open && customerCode && warehouseNo) {
       fetchMaterialDescription(customerCode, warehouseNo);
     }
   }, [fetchMaterialDescription, customerCode, warehouseNo, open]);
 
+  // Close form
+  useEffect(() => {
+    if (!open) {
+      setMaterialCodes({});
+    }
+  }, [open]);
+
+  // Fetching data when editing record
   useEffect(() => {
     const { type, status, data: orderData } = data || {};
 
     if (type === "edit" && status === "succeeded" && orderData?.id) {
-      setWarehouseNo(orderData.source_wh);
-      getAllUnits(orderData.requests);
-      getAllExpiryBatch(orderData.requests, orderData.source_wh);
+      const { source_wh: sourceWh, requests } = orderData;
+      setWarehouseNo(sourceWh);
+      getAllUnits(requests);
+      getAllExpiryBatch(requests, sourceWh);
+      getAllSelectedMaterial(requests);
     }
   }, [data]);
 
@@ -472,6 +509,7 @@ function FormRequests({
                     materials={materialList}
                     expiryBatch={expiryBatchList}
                     units={unitList}
+                    selectedMaterialCodes={selectedMaterialCodes}
                     onMount={onMountForm}
                     handleMaterialCode={handleMaterialCode}
                     handleExpiryBatch={handleExpiryBatch}

@@ -22,6 +22,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
     units,
     materials,
     expiryBatch,
+    selectedMaterialCodes,
     onMount,
     setValues,
     handleMaterialCode,
@@ -103,6 +104,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                             onChange={(value, reason) =>
                               handleMaterialCode(value, reason, uuid, index, setValues)
                             }
+                            optionsDisabled={Object.values(selectedMaterialCodes)}
                           />
                         </TableBodyCell>
                         <TableBodyCell>
