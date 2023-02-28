@@ -491,16 +491,18 @@ function FormRequests({
                   <MDButton color="error" onClick={onClose}>
                     Close
                   </MDButton>
-                  <MDButton
-                    color="success"
-                    type="submit"
-                    sx={{ marginLeft: 2 }}
-                    disabled={isSaving}
-                    loading={isSaving}
-                    onClick={formikProp.handleSubmit}
-                  >
-                    Save
-                  </MDButton>
+                  {canCancel && (
+                    <MDButton
+                      color="success"
+                      type="submit"
+                      sx={{ marginLeft: 2 }}
+                      disabled={isSaving}
+                      loading={isSaving}
+                      onClick={formikProp.handleSubmit}
+                    >
+                      Save
+                    </MDButton>
+                  )}
                 </MDBox>
               </DialogActions>
             </Form>

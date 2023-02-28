@@ -1,7 +1,11 @@
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import MDBox from "atoms/MDBox";
-import { Edit as EditIcon, Cancel as CancelIcon } from "@mui/icons-material";
+import {
+  Edit as EditIcon,
+  Cancel as CancelIcon,
+  RemoveRedEye as EyeIcon,
+} from "@mui/icons-material";
 import { ITableCellProps } from "types/reactTable";
 
 function CellAction(props: ITableCellProps) {
@@ -15,16 +19,21 @@ function CellAction(props: ITableCellProps) {
   } = props;
 
   const { transid, status } = row.original;
+  const canUpdate = String(status).toLowerCase() === "order create";
 
   return (
     <MDBox display="flex" width="fit-content" alignItems="center">
-      <Tooltip title="Edit" placement="top">
-        <IconButton aria-label="edit" color="success" onClick={() => onShowEdit(transid)}>
-          <EditIcon />
+      <Tooltip title={canUpdate ? "Edit" : "View"} placement="top">
+        <IconButton
+          aria-label={canUpdate ? "edit" : "view"}
+          color={canUpdate ? "success" : "info"}
+          onClick={() => onShowEdit(transid)}
+        >
+          {canUpdate ? <EditIcon /> : <EyeIcon />}
         </IconButton>
       </Tooltip>
 
-      {String(status).toLowerCase() === "order create" ? (
+      {canUpdate ? (
         <Tooltip title="Cancel request" placement="top">
           <IconButton
             aria-label="cancel"

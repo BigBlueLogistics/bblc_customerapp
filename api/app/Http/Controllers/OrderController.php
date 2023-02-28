@@ -168,6 +168,10 @@ class OrderController extends Controller
                return $this->sendError("Transaction ID not exists");
             }
 
+            if($header->apstat != 0){
+                return $this->sendError("Sorry! this order cannot no longer to update.");
+            }
+
             $header->lgnum = $request->source_wh;
             $header->ponum = $request->ref_number;
             $header->pudat = $request->pickup_date;
