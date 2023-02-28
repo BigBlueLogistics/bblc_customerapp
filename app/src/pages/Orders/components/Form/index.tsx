@@ -88,10 +88,10 @@ function FormRequests({
     return null;
   };
 
-  const fetchMaterialDescription = useCallback(async () => {
+  const fetchMaterialDescription = useCallback(async (code: string, warehouse: string) => {
     try {
       const { data: resp } = await ordersServices.getMaterialDescription({
-        params: { customerCode },
+        params: { customerCode: code, warehouseNo: warehouse },
       });
       if (resp) {
         setMaterialList(resp.data);
@@ -99,7 +99,7 @@ function FormRequests({
     } catch (error) {
       console.log(error);
     }
-  }, [customerCode]);
+  }, []);
 
   const fetchUnits = async (material: string) => {
     try {
@@ -366,10 +366,10 @@ function FormRequests({
   );
 
   useEffect(() => {
-    if (open) {
-      fetchMaterialDescription();
+    if (open && customerCode && warehouseNo) {
+      fetchMaterialDescription(customerCode, warehouseNo);
     }
-  }, [fetchMaterialDescription, open]);
+  }, [fetchMaterialDescription, customerCode, warehouseNo, open]);
 
   useEffect(() => {
     const { type, status, data: orderData } = data || {};
@@ -385,7 +385,6 @@ function FormRequests({
   const isFetchingData = data.type === "edit" && data.status === "loading";
   const formHeaderTitle = data.type === "create" ? "Create" : "Update";
   const isUpdate = data.type === "edit" || data.type === "update";
-  // TODO: add field status in fetching order by id
   const canCancel = isUpdate && data.data?.status === "order create";
 
   return (
@@ -491,7 +490,7 @@ function FormRequests({
                   <MDButton color="error" onClick={onClose}>
                     Close
                   </MDButton>
-                  {canCancel && (
+                  {canCancel || !isUpdate ? (
                     <MDButton
                       color="success"
                       type="submit"
@@ -502,7 +501,7 @@ function FormRequests({
                     >
                       Save
                     </MDButton>
-                  )}
+                  ) : null}
                 </MDBox>
               </DialogActions>
             </Form>

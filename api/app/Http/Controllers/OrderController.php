@@ -31,9 +31,9 @@ class OrderController extends Controller
         try {
             $request->validated($request->all());
 
-            $result = $this->order->materialAndDescription($request->customerCode);
+            $result = $this->order->materialAndDescription($request->customerCode, $request->warehouseNo);
 
-            return $this->sendResponse($result, 'descriptions');
+            return $this->sendResponse($result, 'materials and descriptions');
         } catch (Exception $e) {
             return $this->sendError($e);
         }

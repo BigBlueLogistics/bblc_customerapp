@@ -27,7 +27,7 @@ function AutoCompleteMaterial({
         if (typeof option === "string") {
           return option;
         }
-        return option.id.toString();
+        return option.material;
       }}
       sx={{ width: 250 }}
       renderInput={(params) => (

@@ -24,7 +24,8 @@ class MaterialRequest extends FormRequest
     public function rules()
     {
         return [
-            'customerCode' => ['required','string']
+            'customerCode' => ['required','string'],
+            'warehouseNo' => ['required','string'],
         ];
     }
 }

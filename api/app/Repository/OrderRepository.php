@@ -11,32 +11,34 @@ class OrderRepository implements IOrderRepository
 {
     use StringEncode;
 
-    public function materialAndDescription($customerCode)
+    public function materialAndDescription($customerCode, $warehouseNo)
     {
-        $mandt = SapRfcFacade::getMandt();
-        $makt = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-        ->param('QUERY_TABLE', 'MAKT')
-        ->param('DELIMITER', ';')
-        ->param('OPTIONS', [
-            ['TEXT' => "MANDT EQ {$mandt}"],
-            ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
-        ])
-        ->param('FIELDS', [
-            ['FIELDNAME' => 'MATNR'], // material
-            ['FIELDNAME' => 'MAKTX'], // description
-        ])
-        ->getDataToArray();
+        $warehouseNo = str_replace('BB', 'WH', $warehouseNo);
 
-        $collectionMakt = collect($makt)->map(function($item, $index){
-            return [
-                "id" => $index += 1,
-                "material" => $item['MATNR'],
-                "description" => $item['MAKTX'],
-            ];
-        });
+        $result = SapRfcFacade::functionModule('ZFM_EWM_TABLEREAD')
+        ->param('IV_CUSTOMER', $customerCode)
+        ->param('IV_WAREHOUSENO', $warehouseNo)
+        ->getData();
 
+        $products = $this->convert_latin1_to_utf8_recursive($result["T_SCWM_AQUA"]);
 
-        return $collectionMakt;
+        $collectionProducts = collect($products)
+            ->unique(function($item){
+                return $item['MATNR'].$item['MAKTX'];
+            })
+            ->filter(function($item){
+                return $item['LGPLA'] !== 'GI_ZONE' && $item['CAT'] === 'F1';
+            })
+            ->map(function($item, $index){                
+                    return [
+                        "id" => $index += 1,
+                        "material" => $item['MATNR'],
+                        "description" => $item['MAKTX'],
+                    ];
+            })
+            ->values()->all();
+
+        return $collectionProducts;
     }
 
     public function expiryBatch($materialCode, $warehouseNo)
