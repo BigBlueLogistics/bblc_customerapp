@@ -21,7 +21,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
     units,
     materials,
     expiryBatch,
-    selectedMaterialCodes,
+    selectedRowValues,
     onMount,
     setValues,
     handleMaterialCode,
@@ -92,7 +92,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
             render={({ push, remove }) => (
               <>
                 {values && values.requests.length
-                  ? values.requests.map(({ uuid }, index) => (
+                  ? values.requests.map(({ uuid, material, units: rowUnit }, index) => (
                       <TableRow key={uuid}>
                         <TableBodyCell>
                           <AutoCompleteMaterial
@@ -104,7 +104,6 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                             onChange={(value, reason) =>
                               handleMaterialCode(value, reason, uuid, index, setValues)
                             }
-                            optionsDisabled={Object.values(selectedMaterialCodes)}
                           />
                         </TableBodyCell>
                         <TableBodyCell>
@@ -114,9 +113,10 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                             value={units[uuid]?.length ? values.requests[index].units : ""}
                             error={Boolean(displayRowError(index, "units"))}
                             helperText={displayRowError(index, "units")}
-                            onChange={(value, reason) => {
-                              handleUnits(value, reason, uuid, index, setValues);
-                            }}
+                            onChange={(value, reason) =>
+                              handleUnits(value, rowUnit, material, reason, index, setValues)
+                            }
+                            optionsDisabled={selectedRowValues[values.requests[index].material]}
                           />
                         </TableBodyCell>
                         <TableBodyCell>
@@ -154,7 +154,9 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                         <TableBodyCell>
                           <MDButton
                             iconOnly
-                            onClick={() => handleRemoveRow(remove, setValues, index, uuid)}
+                            onClick={() =>
+                              handleRemoveRow(remove, setValues, index, uuid, material, rowUnit)
+                            }
                             sx={{
                               "&:hover": { backgroundColor: "#ffcbc4" },
                             }}

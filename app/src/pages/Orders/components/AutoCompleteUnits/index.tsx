@@ -8,7 +8,7 @@ function AutoCompleteUnits({
   index,
   error,
   helperText,
-  // optionsDisabled,
+  optionsDisabled = [],
   onChange,
 }: IAutoCompleteUnits) {
   const filterOptions = createFilterOptions({
@@ -24,9 +24,9 @@ function AutoCompleteUnits({
       options={options}
       noOptionsText="No units"
       filterOptions={filterOptions}
-      // getOptionDisabled={(option) => {
-      //   return optionsDisabled.includes(option);
-      // }}
+      getOptionDisabled={(option) => {
+        return optionsDisabled.includes(option);
+      }}
       sx={{ width: 150 }}
       renderInput={(params) => (
         <TextField error={error} helperText={helperText} {...params} label="Select unit" />

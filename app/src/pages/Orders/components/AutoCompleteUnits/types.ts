@@ -7,7 +7,7 @@ export type IAutoCompleteUnits = {
   error?: boolean;
   helperText?: string;
   options: IAutoCompleteUnitsData[];
-  // optionsDisabled: string[];
+  optionsDisabled: string[];
   onChange: (value: IAutoCompleteUnitsData, reason: AutocompleteChangeReason) => void;
   value: string;
 };

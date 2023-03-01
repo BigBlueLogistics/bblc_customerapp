@@ -9,7 +9,7 @@ export type IFormTable = {
   materials: IAutoCompleteMaterialData[];
   expiryBatch: { [key: string]: IAutoCompleteExpiryData[] };
   units: { [key: string]: string[] };
-  selectedMaterialCodes: { [key: string]: any };
+  selectedRowValues: { [key: string]: string[] };
   onMount: (setValues: FormikProps<IOrderData>["setValues"]) => void;
   handleMaterialCode: (
     value: IAutoCompleteMaterialData,
@@ -20,8 +20,9 @@ export type IFormTable = {
   ) => void;
   handleUnits: (
     value: IAutoCompleteUnitsData,
+    prevUnit: string,
+    valueMaterial: string,
     reason: AutocompleteChangeReason,
-    uuid: string,
     index: number,
     setValues: FormikHelpers<IOrderData>["setValues"]
   ) => void;
@@ -36,7 +37,9 @@ export type IFormTable = {
     remove: ArrayHelpers["remove"],
     setValues: FormikHelpers<IOrderData>["setValues"],
     idx: number,
-    uuid: string
+    uuid: string,
+    material: string,
+    unit: string
   ) => void;
   handleAddRow: (push: ArrayHelpers["push"]) => void;
 };

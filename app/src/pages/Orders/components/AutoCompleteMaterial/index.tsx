@@ -8,7 +8,6 @@ function AutoCompleteMaterial({
   index,
   error,
   helperText,
-  optionsDisabled,
   onChange,
 }: IAutoCompleteMaterial) {
   const filterOptions = createFilterOptions({
@@ -29,9 +28,6 @@ function AutoCompleteMaterial({
           return option;
         }
         return option.material;
-      }}
-      getOptionDisabled={(option) => {
-        return optionsDisabled.includes(option.material);
       }}
       sx={{ width: 250 }}
       renderInput={(params) => (
