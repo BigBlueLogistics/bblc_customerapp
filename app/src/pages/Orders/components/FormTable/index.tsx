@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect } from "react";
 import { TableContainer, Table, TableCell, TableHead, TableBody, TableRow } from "@mui/material";
 import { FieldArray, FormikProps } from "formik";
 import Icon from "@mui/material/Icon";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
-import MDSelect from "atoms/MDSelect";
 import MDTypography from "atoms/MDTypography";
 import { IOrderData } from "pages/Orders/types";
 import TableBodyCell from "./TableBodyCell";
 import AutoCompleteMaterial from "../AutoCompleteMaterial";
+import AutoCompleteUnits from "../AutoCompleteUnits";
 import AutoCompleteExpiry from "../AutoCompleteExpiry";
 import { IFormTable } from "./types";
 
@@ -26,6 +25,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
     onMount,
     setValues,
     handleMaterialCode,
+    handleUnits,
     handleExpiryBatch,
     handleRemoveRow,
     handleAddRow,
@@ -108,17 +108,15 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                           />
                         </TableBodyCell>
                         <TableBodyCell>
-                          <MDSelect
-                            name={`requests[${index}].units`}
-                            label="Select units"
-                            variant="outlined"
-                            withOptionKeys={false}
+                          <AutoCompleteUnits
+                            index={index}
                             options={units[uuid] || []}
                             value={units[uuid]?.length ? values.requests[index].units : ""}
-                            sx={{ width: "150px" }}
                             error={Boolean(displayRowError(index, "units"))}
                             helperText={displayRowError(index, "units")}
-                            onChange={handleChange}
+                            onChange={(value, reason) => {
+                              handleUnits(value, reason, uuid, index, setValues);
+                            }}
                           />
                         </TableBodyCell>
                         <TableBodyCell>

@@ -3,6 +3,7 @@ import { ArrayHelpers, FormikHelpers, FormikProps } from "formik";
 import { IOrderData } from "pages/Orders/types";
 import { IAutoCompleteExpiryData } from "../AutoCompleteExpiry/types";
 import { IAutoCompleteMaterialData } from "../AutoCompleteMaterial/types";
+import { IAutoCompleteUnitsData } from "../AutoCompleteUnits/types";
 
 export type IFormTable = {
   materials: IAutoCompleteMaterialData[];
@@ -12,6 +13,13 @@ export type IFormTable = {
   onMount: (setValues: FormikProps<IOrderData>["setValues"]) => void;
   handleMaterialCode: (
     value: IAutoCompleteMaterialData,
+    reason: AutocompleteChangeReason,
+    uuid: string,
+    index: number,
+    setValues: FormikHelpers<IOrderData>["setValues"]
+  ) => void;
+  handleUnits: (
+    value: IAutoCompleteUnitsData,
     reason: AutocompleteChangeReason,
     uuid: string,
     index: number,

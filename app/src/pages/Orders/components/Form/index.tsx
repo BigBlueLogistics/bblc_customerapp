@@ -23,6 +23,7 @@ import { IForm } from "./types";
 import validationSchema from "./validationSchema";
 import { IAutoCompleteMaterialData } from "../AutoCompleteMaterial/types";
 import { IAutoCompleteExpiryData } from "../AutoCompleteExpiry/types";
+import { IAutoCompleteUnitsData } from "../AutoCompleteUnits/types";
 
 function FormRequests({
   open,
@@ -231,6 +232,32 @@ function FormRequests({
         clonePrev.requests[index].expiry = "";
         clonePrev.requests[index].batch = "";
         clonePrev.requests[index].available = "";
+
+        return clonePrev;
+      });
+    }
+  };
+
+  const handleUnits = (
+    value: IAutoCompleteUnitsData,
+    reason: AutocompleteChangeReason,
+    uuid: string,
+    index: number,
+    setValues: FormikHelpers<IOrderData>["setValues"]
+  ) => {
+    if (reason === "selectOption" && value) {
+      setValues((prev) => {
+        const clonePrev = prev;
+        clonePrev.requests[index].units = value;
+
+        return clonePrev;
+      });
+    }
+
+    if (reason === "clear") {
+      setValues((prev) => {
+        const clonePrev = prev;
+        clonePrev.requests[index].units = "";
 
         return clonePrev;
       });
@@ -512,6 +539,7 @@ function FormRequests({
                     selectedMaterialCodes={selectedMaterialCodes}
                     onMount={onMountForm}
                     handleMaterialCode={handleMaterialCode}
+                    handleUnits={handleUnits}
                     handleExpiryBatch={handleExpiryBatch}
                     handleRemoveRow={handleRemoveRow}
                     handleAddRow={handleAddRow}
