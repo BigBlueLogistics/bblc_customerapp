@@ -1,4 +1,5 @@
 import { SxProps, Theme } from "@mui/material";
+import { ReactDatePickerProps } from "react-datepicker";
 
 export type IDatePick = {
   value?: string | number;
@@ -15,4 +16,4 @@ export type IMDatePicker = {
   inputStyle?: SxProps<Theme>;
   label?: string;
   disabled?: boolean;
-};
+} & ReactDatePickerProps;

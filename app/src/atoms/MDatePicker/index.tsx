@@ -40,6 +40,7 @@ function MDateRangePicker({
   inputStyle,
   disabled,
   defaultValue = null,
+  ...rest
 }: IMDatePicker) {
   const [selectedDate, setSelectedDate] = useState(defaultValue);
 
@@ -62,6 +63,7 @@ function MDateRangePicker({
         strictParsing
         name={name}
         customInput={<DatePickInput inputStyle={inputStyle} label={label} />}
+        {...rest}
       />
     </MDatePickerRoot>
   );

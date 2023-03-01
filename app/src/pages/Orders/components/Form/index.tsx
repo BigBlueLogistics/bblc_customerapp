@@ -514,6 +514,8 @@ function FormRequests({
                   <MDatePicker
                     label="Pickup DateTime"
                     name="pickup_date"
+                    autoComplete="off"
+                    minDate={new Date()}
                     defaultValue={pickupDateValue(formikProp.values?.pickup_date)}
                     onChange={(date) => handlePickupDate(date, formikProp.setValues)}
                   />
@@ -539,6 +541,7 @@ function FormRequests({
                     label="Reference Number"
                     type="text"
                     variant="standard"
+                    autoComplete="off"
                     inputProps={{ inputMode: "numeric", pattern: "[0-9]{12}" }}
                     value={formikProp.values?.ref_number || ""}
                     error={formikProp.touched.ref_number && Boolean(formikProp.errors.ref_number)}

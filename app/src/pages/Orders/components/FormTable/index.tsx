@@ -135,6 +135,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
                             name={`requests[${index}].qty`}
                             type="text"
                             variant="standard"
+                            autoComplete="off"
                             value={values.requests[index].qty || ""}
                             error={Boolean(displayRowError(index, "qty"))}
                             helperText={displayRowError(index, "qty")}
