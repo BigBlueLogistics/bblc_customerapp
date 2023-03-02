@@ -8,11 +8,11 @@ import { IMDatePicker, IDatePick } from "./types";
 import "react-datepicker/dist/react-datepicker.css";
 
 const DatePickInput = forwardRef<HTMLInputElement, IDatePick>(
-  ({ value, onClick, label, inputStyle, ...rest }, ref) => {
+  ({ value, onClick, label, inputStyle, variant, ...rest }, ref) => {
     return (
       <DatePickInputRoot
         type="text"
-        variant="standard"
+        variant={variant}
         ref={ref}
         onClick={onClick}
         sx={inputStyle}
@@ -32,7 +32,7 @@ const DatePickInput = forwardRef<HTMLInputElement, IDatePick>(
 );
 DatePickInput.displayName = "DatePickInput";
 
-function MDateRangePicker({
+function MDatePicker({
   onChange,
   name,
   label,
@@ -40,6 +40,7 @@ function MDateRangePicker({
   inputStyle,
   disabled,
   defaultValue = null,
+  inputVariant = "standard",
   ...rest
 }: IMDatePicker) {
   const [selectedDate, setSelectedDate] = useState(defaultValue);
@@ -62,11 +63,11 @@ function MDateRangePicker({
         disabled={disabled}
         strictParsing
         name={name}
-        customInput={<DatePickInput inputStyle={inputStyle} label={label} />}
+        customInput={<DatePickInput inputStyle={inputStyle} label={label} variant={inputVariant} />}
         {...rest}
       />
     </MDatePickerRoot>
   );
 }
 
-export default MDateRangePicker;
+export default MDatePicker;

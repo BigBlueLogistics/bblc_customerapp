@@ -1,4 +1,4 @@
-import { SxProps, Theme } from "@mui/material";
+import { SxProps, Theme, TextFieldProps } from "@mui/material";
 import { ReactDatePickerProps } from "react-datepicker";
 
 export type IDatePick = {
@@ -6,6 +6,7 @@ export type IDatePick = {
   onClick?: () => void;
   label?: string;
   inputStyle?: SxProps<Theme>;
+  variant?: TextFieldProps["variant"];
 };
 
 export type IMDatePicker = {
@@ -16,4 +17,5 @@ export type IMDatePicker = {
   inputStyle?: SxProps<Theme>;
   label?: string;
   disabled?: boolean;
+  inputVariant?: TextFieldProps["variant"];
 } & ReactDatePickerProps;

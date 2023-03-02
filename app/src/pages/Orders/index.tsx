@@ -7,7 +7,7 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDSelect from "atoms/MDSelect";
 import MDSnackbar from "atoms/MDSnackbar";
-import MDateRangePicker from "atoms/MDateRangePicker";
+import MDatePicker from "atoms/MDatePicker";
 import MDButton from "atoms/MDButton";
 import Icon from "@mui/material/Icon";
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
@@ -25,7 +25,6 @@ import miscData from "./data";
 import selector from "./selector";
 import {
   INotifyOrder,
-  IGroupBy,
   IOrderData,
   IFormOrderState,
   ITableOrder,
@@ -40,7 +39,7 @@ import CancelConfirmation from "./components/CancelConfirmation";
 function Orders() {
   const dispatch = useAppDispatch();
   const { customerCode } = selector();
-  const { tableHeaders, groupByData } = miscData();
+  const { tableHeaders } = miscData();
   const initialStateNotification: INotifyOrder = {
     open: false,
     message: "",
@@ -48,7 +47,6 @@ function Orders() {
     color: "primary",
   };
   const [showNotify, setShowNotify] = useState<INotifyOrder>(initialStateNotification);
-  const [selectedGroupBy, setSelectedGroupBy] = useState<IGroupBy>("");
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [, setDateRange] = useState(null);
@@ -102,10 +100,6 @@ function Orders() {
   const onCloseForm = () => {
     setShowForm(false);
     setFormOrder((prevState) => ({ ...prevState, status: "idle" }));
-  };
-
-  const onChangeGroupBy = (e: ChangeEvent<HTMLInputElement>) => {
-    setSelectedGroupBy(e.target.value as IGroupBy);
   };
 
   const onChangeWarehouse = (e: ChangeEvent<HTMLInputElement>) => {
@@ -168,7 +162,6 @@ function Orders() {
 
   const onClear = () => {
     setSelectedWarehouse("");
-    setSelectedGroupBy("");
   };
 
   const handleCreate = () => {
@@ -411,7 +404,7 @@ function Orders() {
                     })}
                   >
                     <MDSelect
-                      label="Warehouse"
+                      label="Status"
                       variant="outlined"
                       onChange={onChangeWarehouse}
                       options={warehouseList}
@@ -421,17 +414,20 @@ function Orders() {
                       optKeyLabel="NAME1"
                     />
 
-                    <MDSelect
-                      label="Group by"
-                      variant="outlined"
-                      onChange={onChangeGroupBy}
-                      options={groupByData.stock}
-                      value={selectedGroupBy}
-                      showArrowIcon
-                    />
+                    <MDBox margin="8px">
+                      <MDatePicker
+                        label="Created at"
+                        onChange={onChangeDateRange}
+                        inputVariant="outlined"
+                      />
+                    </MDBox>
 
                     <MDBox margin="8px">
-                      <MDateRangePicker label="Dates.." onChange={onChangeDateRange} />
+                      <MDatePicker
+                        label="Last modified"
+                        onChange={onChangeDateRange}
+                        inputVariant="outlined"
+                      />
                     </MDBox>
 
                     <MDButton
