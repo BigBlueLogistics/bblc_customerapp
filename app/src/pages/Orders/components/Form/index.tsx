@@ -511,14 +511,6 @@ function FormRequests({
                 <input type="hidden" value={formikProp.values?.id || ""} />
 
                 <MDBox mb={1} display="flex" justifyContent="space-between">
-                  <MDatePicker
-                    label="Pickup DateTime"
-                    name="pickup_date"
-                    autoComplete="off"
-                    minDate={new Date()}
-                    defaultValue={pickupDateValue(formikProp.values?.pickup_date)}
-                    onChange={(date) => handlePickupDate(date, formikProp.setValues)}
-                  />
                   <MDSelect
                     name="source_wh"
                     label="Source warehouse"
@@ -532,10 +524,10 @@ function FormRequests({
                     sx={{ width: 220 }}
                     onChange={(e) => handleWarehouseNo(e, formikProp.handleChange)}
                   />
-                </MDBox>
-                <MDBox mb={1} display="flex" justifyContent="space-between">
                   <MDInput
                     autoCapitalize="characters"
+                    fullWidth
+                    sx={{ width: "22%" }}
                     margin="dense"
                     name="ref_number"
                     label="Reference Number"
@@ -547,6 +539,16 @@ function FormRequests({
                     error={formikProp.touched.ref_number && Boolean(formikProp.errors.ref_number)}
                     helperText={formikProp.touched.ref_number ? formikProp.errors.ref_number : ""}
                     onChange={formikProp.handleChange}
+                  />
+                </MDBox>
+                <MDBox mb={1} display="flex" justifyContent="space-between">
+                  <MDatePicker
+                    label="Pickup DateTime"
+                    name="pickup_date"
+                    autoComplete="off"
+                    minDate={new Date()}
+                    defaultValue={pickupDateValue(formikProp.values?.pickup_date)}
+                    onChange={(date) => handlePickupDate(date, formikProp.setValues)}
                   />
 
                   <MDCheckbox
