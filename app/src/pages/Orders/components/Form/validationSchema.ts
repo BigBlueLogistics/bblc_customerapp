@@ -4,8 +4,8 @@ export default yup.object({
   ref_number: yup
     .string()
     .required("required")
-    .length(12, "Number of digits must 12")
-    .matches(/^\d+$/gi, "Numbers only"),
+    .length(12, "number of digits must 12")
+    .matches(/^\d+$/gi, "numbers only"),
   source_wh: yup.string().required("required"),
   requests: yup
     .array(
