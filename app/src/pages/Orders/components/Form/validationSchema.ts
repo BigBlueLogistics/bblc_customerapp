@@ -5,8 +5,12 @@ export default yup.object({
     .string()
     .required("required")
     .max(12, "maximum of 12 characters")
-    .matches(/^[^'%"]+$/i, "alphanumerics only"),
+    .matches(/^[^'%"]+$/i, `not allowed characters: '%"`),
   source_wh: yup.string().required("required"),
+  instruction: yup
+    .string()
+    .nullable()
+    .matches(/^[^'%"]+$/i, `not allowed characters: '%"`),
   requests: yup
     .array(
       yup.object({

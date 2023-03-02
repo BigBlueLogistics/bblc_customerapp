@@ -559,7 +559,7 @@ function FormRequests({
                     sx={{ "& span:last-child": { fontWeight: "400" }, justifyContent: "end" }}
                   />
                 </MDBox>
-                <MDBox mb={1}>
+                <MDBox mb={2}>
                   <MDInput
                     margin="dense"
                     name="instruction"
@@ -569,6 +569,8 @@ function FormRequests({
                     multiline
                     fullWidth
                     variant="standard"
+                    error={formikProp.touched.instruction && Boolean(formikProp.errors.instruction)}
+                    helperText={formikProp.touched.instruction ? formikProp.errors.instruction : ""}
                     value={formikProp.values?.instruction || ""}
                     onChange={formikProp.handleChange}
                   />
