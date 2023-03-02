@@ -225,4 +225,16 @@ class OrderController extends Controller
             return $this->sendError($e);
         }
     }
+
+    public function statusList()
+    {
+        try{
+            $status = OrderStatus::select(['id','name'])->get();
+
+            return $this->sendResponse($status, "Order status list");
+        }
+        catch (Exception $e){
+            return $this->sendError($e);
+        }
+    }
 }
