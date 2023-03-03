@@ -6,6 +6,7 @@ use App\Http\Requests\Order\CreateRequest;
 use App\Http\Requests\Order\ExpiryBatchRequest;
 use App\Http\Requests\Order\MaterialRequest;
 use App\Http\Requests\Order\ProductUnitsRequest;
+use App\Http\Requests\Order\ListRequest;
 use App\Interfaces\IOrderRepository;
 use App\Models\OrderHeader;
 use App\Models\OrderItems;
@@ -65,9 +66,15 @@ class OrderController extends Controller
         }
     }
 
-    public function index()
+    public function index(ListRequest $request)
     {
         try {
+            $request->validated($request->all());
+
+            $filterStatus = $request->input('status');
+            $filterCreatedAt = $request->input('created_at');
+            $filterModifiedAt = $request->input('last_modified');
+
             $orders = OrderHeader::select([
                 'order_header.transid', 'order_header.ponum AS ref_number', 'order_status.name AS status',
                 Db::raw("FORMAT(order_header.erdat, 'MMM, dd yyyy') AS created_date"),
@@ -76,6 +83,15 @@ class OrderController extends Controller
             ])
             ->where('ernam', auth()->id())
             ->where('apstat','!=', 6)
+            ->when($filterStatus, function($query, $filterStatus){
+                $query->where('apstat', '=', $filterStatus);
+            })
+            ->when($filterCreatedAt, function($query, $filterCreatedAt){
+                $query->whereDate('erdat', '=', Carbon::parse($filterCreatedAt));
+            })
+            ->when($filterModifiedAt, function($query, $filterModifiedAt){
+                $query->whereDate('order_header.updated_at', '=', Carbon::parse($filterModifiedAt));
+            })
             ->leftjoin('order_status','order_header.apstat', '=','order_status.id')
             ->get();
 
@@ -229,7 +245,9 @@ class OrderController extends Controller
     public function statusList()
     {
         try{
-            $status = OrderStatus::select(['id','name'])->get();
+            $status = OrderStatus::select(['id','name'])
+            ->where('id','!=', '6')
+            ->get();
 
             return $this->sendResponse($status, "Order status list");
         }
