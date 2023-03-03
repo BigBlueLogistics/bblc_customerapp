@@ -19,6 +19,7 @@ function MDSelect({
   optKeyValue,
   optKeyLabel,
   withOptionKeys,
+  itemStyle,
   ...rest
 }: IMDSelect) {
   const renderOptionsWithoutCustomKeys = () => {
@@ -27,7 +28,7 @@ function MDSelect({
       options.map((optValue, idx) => (
         // @ts-ignore
         // eslint-disable-next-line react/no-array-index-key
-        <MenuItem key={idx} value={optValue}>
+        <MenuItem key={idx} value={optValue} sx={itemStyle}>
           {optValue}
         </MenuItem>
       ))
@@ -42,7 +43,7 @@ function MDSelect({
       return (
         options?.length &&
         options.map((opt) => (
-          <MenuItem key={opt[customOptValue]} value={opt[customOptValue]}>
+          <MenuItem key={opt[customOptValue]} value={opt[customOptValue]} sx={itemStyle}>
             {opt[customOptLabel]}
           </MenuItem>
         ))

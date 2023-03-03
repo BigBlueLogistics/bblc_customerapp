@@ -13,6 +13,7 @@ export type IMDSelect = {
   options: { value: string | number; label: string }[] | string[];
   value: string | number;
   sx?: SxProps;
+  itemStyle?: SxProps;
   withOptionKeys?: boolean;
 };
 
