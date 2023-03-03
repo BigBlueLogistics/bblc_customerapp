@@ -39,6 +39,7 @@ function MDatePicker({
   containerStyle,
   inputStyle,
   disabled,
+  showTimeInput,
   defaultValue = null,
   inputVariant = "standard",
   ...rest
@@ -57,7 +58,7 @@ function MDatePicker({
         selected={selectedDate}
         onChange={onChangeDate}
         isClearable
-        showTimeInput
+        showTimeInput={showTimeInput}
         timeInputLabel="Time:"
         dateFormat="MM/dd/yyyy h:mm aa"
         disabled={disabled}
