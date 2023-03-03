@@ -5,6 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { AutocompleteChangeReason } from "@mui/material/Autocomplete";
 import { v4 as uuidv4 } from "uuid";
+import { format } from "date-fns";
 import MDBox from "atoms/MDBox";
 import MDButton from "atoms/MDButton";
 import MDTypography from "atoms/MDTypography";
@@ -325,7 +326,7 @@ function FormRequests({
   };
 
   const handlePickupDate = (date: Date, setValues: FormikHelpers<IOrderData>["setValues"]) => {
-    setValues((prev) => ({ ...prev, pickup_date: date }));
+    setValues((prev) => ({ ...prev, pickup_date: date?.toLocaleString() }));
   };
 
   const handleWarehouseNo = (e: any, handleChange: FormikHandlers["handleChange"]) => {
@@ -377,7 +378,7 @@ function FormRequests({
     });
   };
 
-  const pickupDateValue = (dateVal: Date) => {
+  const convertPickupToDate = (dateVal: string) => {
     if (dateVal) {
       return new Date(dateVal);
     }
@@ -500,7 +501,17 @@ function FormRequests({
           validationSchema={validationSchema}
           initialValues={data.type === "create" ? initialValues : data.data}
           onSubmit={(validatedData: IOrderData, actions) => {
-            onSave(validatedData, actions);
+            const formattedPickupDate = format(
+              convertPickupToDate(validatedData.pickup_date),
+              "MM/dd/yyyy HH:mm:ss"
+            );
+            onSave(
+              {
+                ...validatedData,
+                pickup_date: formattedPickupDate,
+              },
+              actions
+            );
           }}
         >
           {(formikProp) => (
@@ -546,8 +557,9 @@ function FormRequests({
                     label="Pickup DateTime"
                     name="pickup_date"
                     autoComplete="off"
+                    showTimeInput
                     minDate={new Date()}
-                    defaultValue={pickupDateValue(formikProp.values?.pickup_date)}
+                    selected={convertPickupToDate(formikProp.values?.pickup_date)}
                     onChange={(date) => handlePickupDate(date, formikProp.setValues)}
                   />
 

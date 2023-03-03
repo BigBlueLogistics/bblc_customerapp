@@ -92,9 +92,16 @@ export default function miscData() {
     ],
   };
 
+  const initialFiltered = {
+    status: "",
+    createdAt: null,
+    lastModified: null,
+  };
+
   return {
     tableHeaders,
     typeReportsData,
     groupByData,
+    initialFiltered,
   };
 }

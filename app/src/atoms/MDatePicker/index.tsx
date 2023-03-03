@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { forwardRef } from "react";
 import Icon from "@mui/material/Icon";
 import InputAdornment from "@mui/material/InputAdornment";
 import DatePicker from "react-datepicker";
@@ -8,7 +8,7 @@ import { IMDatePicker, IDatePick } from "./types";
 import "react-datepicker/dist/react-datepicker.css";
 
 const DatePickInput = forwardRef<HTMLInputElement, IDatePick>(
-  ({ value, onClick, label, inputStyle, variant, ...rest }, ref) => {
+  ({ value, onClick, label, inputStyle, variant }, ref) => {
     return (
       <DatePickInputRoot
         type="text"
@@ -25,7 +25,6 @@ const DatePickInput = forwardRef<HTMLInputElement, IDatePick>(
             </InputAdornment>
           ),
         }}
-        {...rest}
       />
     );
   }
@@ -40,23 +39,16 @@ function MDatePicker({
   inputStyle,
   disabled,
   showTimeInput,
-  defaultValue = null,
+  selected,
+  value,
   inputVariant = "standard",
   ...rest
 }: IMDatePicker) {
-  const [selectedDate, setSelectedDate] = useState(defaultValue);
-
-  const onChangeDate = (date: Date) => {
-    setSelectedDate(date);
-
-    onChange(date);
-  };
-
   return (
     <MDatePickerRoot sx={containerStyle}>
       <DatePicker
-        selected={selectedDate}
-        onChange={onChangeDate}
+        selected={selected}
+        onChange={onChange}
         isClearable
         showTimeInput={showTimeInput}
         timeInputLabel="Time:"
@@ -64,7 +56,14 @@ function MDatePicker({
         disabled={disabled}
         strictParsing
         name={name}
-        customInput={<DatePickInput inputStyle={inputStyle} label={label} variant={inputVariant} />}
+        customInput={
+          <DatePickInput
+            inputStyle={inputStyle}
+            label={label}
+            variant={inputVariant}
+            value={value}
+          />
+        }
         {...rest}
       />
     </MDatePickerRoot>

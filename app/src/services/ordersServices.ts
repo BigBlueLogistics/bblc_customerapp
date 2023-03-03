@@ -33,6 +33,10 @@ class OrdersServices extends HttpAdapter {
   cancelOrder(transId: string) {
     return this.post(`/orders/cancel/${transId}`);
   }
+
+  getStatusList() {
+    return this.get("/orders/status/list");
+  }
 }
 
 export default OrdersServices;

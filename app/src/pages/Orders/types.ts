@@ -13,7 +13,7 @@ export type IGroupBy = IGroupByWhSnapshot | IGroupByAging;
 
 export type IOrderData = {
   id: string;
-  pickup_date: Date | null;
+  pickup_date: string | null;
   ref_number: string;
   instruction: string;
   allow_notify: boolean;
@@ -33,6 +33,11 @@ export type IOrderData = {
   requestsDelete?: string[];
 };
 
+export type IFiltered = {
+  status: string;
+  createdAt: Date | null;
+  lastModified: Date | null;
+};
 export type ITableOrder = {
   status: IStatus;
   data: any;

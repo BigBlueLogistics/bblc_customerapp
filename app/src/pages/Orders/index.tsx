@@ -14,21 +14,19 @@ import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
 import DataTable from "organisms/Tables/DataTable";
-import { useDownloadFile, useAppDispatch } from "hooks";
+import { useAppDispatch } from "hooks";
 import { setIsAuthenticated } from "redux/auth/action";
 
-import MDImageIcon from "atoms/MDImageIcon";
-import excel from "assets/images/icons/excel.png";
 import { inventoryServices, ordersServices } from "services";
 import { AxiosError } from "axios";
 import miscData from "./data";
-import selector from "./selector";
 import {
   INotifyOrder,
   IOrderData,
   IFormOrderState,
   ITableOrder,
   IFormOrderConfirmation,
+  IFiltered,
 } from "./types";
 import Form from "./components/Form";
 import MenuAction from "./components/MenuAction";
@@ -38,8 +36,7 @@ import CancelConfirmation from "./components/CancelConfirmation";
 
 function Orders() {
   const dispatch = useAppDispatch();
-  const { customerCode } = selector();
-  const { tableHeaders } = miscData();
+  const { tableHeaders, initialFiltered } = miscData();
   const initialStateNotification: INotifyOrder = {
     open: false,
     message: "",
@@ -47,14 +44,14 @@ function Orders() {
     color: "primary",
   };
   const [showNotify, setShowNotify] = useState<INotifyOrder>(initialStateNotification);
-  const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [, setDateRange] = useState(null);
   const [warehouseList, setWarehouseList] = useState([]);
+  const [statusList, setStatusList] = useState([]);
   const [action, setAction] = useState(null);
-  const [toggleFilter, setToggleFilter] = useState(false);
-
   const [error, setError] = useState<AxiosError | null>(null);
+  const [toggleFilter, setToggleFilter] = useState(false);
+  const [filtered, setFiltered] = useState<IFiltered>(initialFiltered);
+
   const [tableOrders, setTableOrders] = useState<ITableOrder>({
     message: "",
     data: [],
@@ -75,12 +72,6 @@ function Orders() {
     id: "",
   });
 
-  const {
-    downloadFile,
-    status: downloadStatus,
-    error: downloadError,
-    filename,
-  } = useDownloadFile();
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
 
@@ -102,23 +93,33 @@ function Orders() {
     setFormOrder((prevState) => ({ ...prevState, status: "idle" }));
   };
 
-  const onChangeWarehouse = (e: ChangeEvent<HTMLInputElement>) => {
-    setSelectedWarehouse(e.target.value);
+  const onChangeStatus = (e: ChangeEvent<HTMLInputElement>) => {
+    setFiltered((prev) => ({ ...prev, status: e.target.value }));
   };
 
-  const onChangeDateRange = (dates) => {
-    setDateRange(dates);
+  const onCreatedAt = (date: Date) => {
+    setFiltered((prev) => ({ ...prev, createdAt: date }));
+  };
+
+  const onLastModified = (date: Date) => {
+    setFiltered((prev) => ({ ...prev, lastModified: date }));
   };
 
   const onToggleFilter = () => {
     setToggleFilter((prevState) => !prevState);
   };
 
-  const fetchOrderList = async () => {
+  const fetchOrderList = async ({ status, createdAt, lastModified }: IFiltered) => {
     setTableOrders((prev) => ({ ...prev, status: "loading" }));
 
     try {
-      const { data: rows } = await ordersServices.getOrderList();
+      const { data: rows } = await ordersServices.getOrderList({
+        params: {
+          status: String(status) || null,
+          created_at: createdAt?.toLocaleDateString(),
+          last_modified: lastModified?.toLocaleDateString(),
+        },
+      });
       setTableOrders({
         status: "succeeded",
         data: rows.data,
@@ -139,29 +140,28 @@ function Orders() {
     }
   };
 
-  const exportFile = (format: "xlsx" | "csv") => {
-    const data = { customer_code: customerCode, warehouse: selectedWarehouse, format };
+  const fetchStatusList = async () => {
+    try {
+      const { data: rows } = await ordersServices.getStatusList();
 
-    const fileName = `${customerCode}-${selectedWarehouse}.${format}`;
-    downloadFile({
-      url: "/inventory/export-excel",
-      filename: fileName,
-      data,
-    });
-    closeAction();
+      setStatusList(rows.data);
+    } catch (err) {
+      setError(err);
+    }
   };
 
   const onRefresh = () => {
-    fetchOrderList();
+    fetchOrderList(filtered);
     closeAction();
   };
 
   const onFilter = () => {
-    fetchOrderList();
+    fetchOrderList(filtered);
   };
 
   const onClear = () => {
-    setSelectedWarehouse("");
+    setFiltered(initialFiltered);
+    fetchOrderList(initialFiltered);
   };
 
   const handleCreate = () => {
@@ -220,6 +220,7 @@ function Orders() {
     }
   };
 
+  // Refresh order list after create and update
   useEffect(() => {
     const { status, type } = formOrder;
     const { status: confirmationStatus, openConfirmation } = formOrderConfirmation;
@@ -227,12 +228,17 @@ function Orders() {
       ((type === "create" || type === "update") && status === "succeeded") ||
       (!openConfirmation && confirmationStatus === "succeeded")
     )
-      fetchOrderList();
+      fetchOrderList(filtered);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formOrder, formOrderConfirmation]);
 
   useEffect(() => {
-    fetchOrderList();
+    fetchOrderList(initialFiltered);
     fetchWarehouseList();
+    fetchStatusList();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -243,7 +249,6 @@ function Orders() {
 
   useEffect(() => {
     const { status: confirmationStatus, id: transId, openConfirmation } = formOrderConfirmation;
-    const { message } = downloadError || {};
     let notificationMsg = initialStateNotification;
 
     if (!showForm && !openConfirmation && confirmationStatus === "succeeded") {
@@ -254,35 +259,10 @@ function Orders() {
         color: "warning",
       };
     }
-
-    if (!message && downloadStatus === "loading") {
-      notificationMsg = {
-        open: true,
-        message: `Please wait exporting file [${filename}]`,
-        title: "Exporting File",
-        color: "info",
-      };
-    }
-    if (!message && downloadStatus === "success") {
-      notificationMsg = {
-        open: true,
-        message: `You can now open [${filename}]`,
-        title: "Export file complete!",
-        color: "success",
-      };
-    }
-    if (message && downloadStatus === "failed") {
-      notificationMsg = {
-        open: true,
-        message,
-        title: "Failed to export file",
-        color: "error",
-      };
-    }
     openNotify(notificationMsg);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [downloadError, downloadStatus, formOrderConfirmation]);
+  }, [formOrderConfirmation]);
 
   const menuItemsAction: IMenuAction["items"] = [
     {
@@ -293,20 +273,6 @@ function Orders() {
       ),
       label: "Refresh",
       onClick: onRefresh,
-    },
-    {
-      icon: <MDImageIcon src={excel} alt="export-excel-icon" width={18} height={18} />,
-      label: "Export as XLS file",
-      onClick: () => exportFile("xlsx"),
-    },
-    {
-      icon: (
-        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">
-          description
-        </Icon>
-      ),
-      label: "Export as CSV file",
-      onClick: () => exportFile("csv"),
     },
   ];
 
@@ -406,27 +372,36 @@ function Orders() {
                     <MDSelect
                       label="Status"
                       variant="outlined"
-                      onChange={onChangeWarehouse}
-                      options={warehouseList}
-                      value={selectedWarehouse}
+                      onChange={onChangeStatus}
+                      options={statusList}
+                      value={filtered.status}
                       showArrowIcon
-                      optKeyValue="PLANT"
-                      optKeyLabel="NAME1"
+                      optKeyValue="id"
+                      optKeyLabel="name"
+                      itemStyle={{
+                        textTransform: "uppercase",
+                      }}
                     />
 
                     <MDBox margin="8px">
                       <MDatePicker
                         label="Created at"
-                        onChange={onChangeDateRange}
+                        onChange={onCreatedAt}
                         inputVariant="outlined"
+                        dateFormat="MM/dd/yyyy"
+                        selected={filtered.createdAt}
+                        inputStyle={{ "& .MuiInputBase-root": { backgroundColor: "#fff" } }}
                       />
                     </MDBox>
 
                     <MDBox margin="8px">
                       <MDatePicker
                         label="Last modified"
-                        onChange={onChangeDateRange}
+                        onChange={onLastModified}
                         inputVariant="outlined"
+                        dateFormat="MM/dd/yyyy"
+                        selected={filtered.lastModified}
+                        inputStyle={{ "& .MuiInputBase-root": { backgroundColor: "#fff" } }}
                       />
                     </MDBox>
 
