@@ -189,6 +189,9 @@ function FormRequests({
         const clonePrev = prev;
         clonePrev.requests[index].material = material;
         clonePrev.requests[index].description = description;
+        clonePrev.requests[index].units = "";
+        clonePrev.requests[index].expiry = "";
+        clonePrev.requests[index].batch = "";
 
         return clonePrev;
       });
