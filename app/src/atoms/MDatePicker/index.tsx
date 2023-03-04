@@ -6,6 +6,7 @@ import DatePickInputRoot from "./DatePickInputRoot";
 import MDatePickerRoot from "./MDatePickerRoot";
 import { IMDatePicker, IDatePick } from "./types";
 import "react-datepicker/dist/react-datepicker.css";
+import "./styles.css";
 
 const DatePickInput = forwardRef<HTMLInputElement, IDatePick>(
   ({ value, onClick, label, inputStyle, variant }, ref) => {
