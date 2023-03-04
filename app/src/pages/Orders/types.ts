@@ -46,7 +46,7 @@ export type ITableOrder = {
 
 export type IFormOrderState = {
   id: string;
-  type: "create" | "edit" | "update";
+  type: "create" | "edit" | "update" | "view";
   status: IStatus;
   data: IOrderData;
   message: string;

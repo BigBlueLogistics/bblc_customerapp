@@ -441,7 +441,7 @@ function FormRequests({
   const onMountForm = useCallback(
     (setValues: FormikProps<IOrderData>["setValues"]) => {
       const { type, data: tableData, status } = data;
-      if (type === "edit" && status === "succeeded" && tableData?.id) {
+      if ((type === "edit" || type === "view") && status === "succeeded" && tableData?.id) {
         setValues((prev) => {
           const cloneRequests = prev.requests;
           const newRequests = cloneRequests.map(({ uuid, expiry, batch }, idx) => {
@@ -476,7 +476,7 @@ function FormRequests({
   useEffect(() => {
     const { type, status, data: orderData } = data || {};
 
-    if (type === "edit" && status === "succeeded" && orderData?.id) {
+    if ((type === "edit" || type === "view") && status === "succeeded" && orderData?.id) {
       const { source_wh: sourceWh, requests } = orderData;
       setWarehouseNo(sourceWh);
       getAllUnits(requests);
@@ -486,9 +486,11 @@ function FormRequests({
   }, [data]);
 
   const isSaving = data.type !== "edit" && data.status === "loading";
-  const isFetchingData = data.type === "edit" && data.status === "loading";
-  const formHeaderTitle = data.type === "create" ? "Create" : "Update";
+  const isFetchingData =
+    (data.type === "edit" || data.type === "view") && data.status === "loading";
   const isUpdate = data.type === "edit" || data.type === "update";
+  const isView = data.type === "view";
+  const formHeaderTitle = isUpdate ? "update" : data.type;
   const canCancel = isUpdate && data.data?.status === "order create";
 
   return (
@@ -497,7 +499,7 @@ function FormRequests({
         <SkeletonForm contentWidth={300} />
       ) : (
         <Formik
-          enableReinitialize={data.type === "edit"}
+          enableReinitialize={data.type === "edit" || data.type === "view"}
           validationSchema={validationSchema}
           initialValues={data.type === "create" ? initialValues : data.data}
           onSubmit={(validatedData: IOrderData, actions) => {
@@ -516,9 +518,13 @@ function FormRequests({
         >
           {(formikProp) => (
             <Form role="form" onSubmit={formikProp.handleSubmit}>
-              <DialogTitle>{formHeaderTitle} Product Request</DialogTitle>
+              <DialogTitle sx={{ textTransform: "capitalize" }}>
+                {formHeaderTitle} Product Request
+              </DialogTitle>
               {renderMessage()}
-              <DialogContent sx={{ paddingTop: "20px !important" }}>
+              <DialogContent
+                sx={{ paddingTop: "20px !important", pointerEvents: isView ? "none" : "unset" }}
+              >
                 <input type="hidden" value={formikProp.values?.id || ""} />
 
                 <MDBox mb={1} display="flex" justifyContent="space-between">
@@ -614,7 +620,7 @@ function FormRequests({
                   <MDButton color="error" onClick={onClose}>
                     Close
                   </MDButton>
-                  {canCancel || !isUpdate ? (
+                  {canCancel || !isView ? (
                     <MDButton
                       color="success"
                       type="submit"

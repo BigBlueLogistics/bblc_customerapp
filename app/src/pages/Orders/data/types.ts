@@ -1,4 +1,6 @@
+import { IFormOrderState } from "../types";
+
 export type IData = {
-  onShowEdit: (transid: string) => void;
+  onShowEdit: (transid: string, type: IFormOrderState["type"]) => void;
   onShowCancelConfirmation: (transid: string) => void;
 };

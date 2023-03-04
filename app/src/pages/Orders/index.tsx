@@ -10,6 +10,7 @@ import MDSnackbar from "atoms/MDSnackbar";
 import MDatePicker from "atoms/MDatePicker";
 import MDButton from "atoms/MDButton";
 import Icon from "@mui/material/Icon";
+// import { format } from "date-fns";
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
@@ -49,7 +50,7 @@ function Orders() {
   const [statusList, setStatusList] = useState([]);
   const [action, setAction] = useState(null);
   const [error, setError] = useState<AxiosError | null>(null);
-  const [toggleFilter, setToggleFilter] = useState(false);
+  const [toggleFilter, setToggleFilter] = useState(true);
   const [filtered, setFiltered] = useState<IFiltered>(initialFiltered);
 
   const [tableOrders, setTableOrders] = useState<ITableOrder>({
@@ -209,9 +210,9 @@ function Orders() {
     }
   };
 
-  const onShowEdit = async (transId: string) => {
+  const onShowEdit = async (transId: string, type: IFormOrderState["type"]) => {
     onShowForm();
-    setFormOrder((prev) => ({ ...prev, type: "edit", message: "", data: null, status: "loading" }));
+    setFormOrder((prev) => ({ ...prev, type, message: "", data: null, status: "loading" }));
     try {
       const { data } = await ordersServices.getOrderById(transId);
       setFormOrder((prev) => ({ ...prev, data: data.data, status: "succeeded", id: transId }));
@@ -389,6 +390,7 @@ function Orders() {
                         onChange={onCreatedAt}
                         inputVariant="outlined"
                         dateFormat="MM/dd/yyyy"
+                        minTime={new Date()}
                         selected={filtered.createdAt}
                         inputStyle={{ "& .MuiInputBase-root": { backgroundColor: "#fff" } }}
                       />

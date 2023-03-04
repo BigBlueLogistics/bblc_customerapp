@@ -20,6 +20,7 @@ function CellAction(props: ITableCellProps) {
 
   const { transid, status } = row.original;
   const canUpdate = String(status).toLowerCase() === "order create";
+  const formType = canUpdate ? "edit" : "view";
 
   return (
     <MDBox display="flex" width="fit-content" alignItems="center">
@@ -27,7 +28,7 @@ function CellAction(props: ITableCellProps) {
         <IconButton
           aria-label={canUpdate ? "edit" : "view"}
           color={canUpdate ? "success" : "info"}
-          onClick={() => onShowEdit(transid)}
+          onClick={() => onShowEdit(transid, formType)}
         >
           {canUpdate ? <EditIcon /> : <EyeIcon />}
         </IconButton>
