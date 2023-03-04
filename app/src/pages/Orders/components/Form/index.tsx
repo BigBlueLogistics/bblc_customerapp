@@ -40,18 +40,15 @@ function FormRequests({
   initialOrder.requests[0].uuid = initialRowId;
   const { customerCode } = selector();
   const [materialList, setMaterialList] = useState([]);
-  const [expiryBatchList, setExpiryBatchList] = useState({ [initialRowId]: [] });
-  const [unitList, setUnitList] = useState({ [initialRowId]: [] });
+  const [expiryBatchList, setExpiryBatchList] = useState({});
+  const [unitList, setUnitList] = useState({});
 
   const [warehouseNo, setWarehouseNo] = useState("");
   const [selectedRowValues, setSelectedRowValues] = useState({});
 
   const renderMessage = () => {
     const { message, status: formStatus, type } = data;
-    if (
-      (type === "create" || type === "update") &&
-      (formStatus === "succeeded" || formStatus === "failed")
-    ) {
+    if (type === "update" && (formStatus === "succeeded" || formStatus === "failed")) {
       const severity = formStatus === "succeeded" ? "success" : "error";
       return (
         <MDAlert2
@@ -449,7 +446,11 @@ function FormRequests({
   // Close form
   useEffect(() => {
     if (!open) {
+      console.log("close form");
       setSelectedRowValues({});
+      setExpiryBatchList({});
+      setUnitList({});
+      setMaterialList([]);
     }
   }, [open]);
 
