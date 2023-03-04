@@ -10,7 +10,6 @@ import MDSnackbar from "atoms/MDSnackbar";
 import MDatePicker from "atoms/MDatePicker";
 import MDButton from "atoms/MDButton";
 import Icon from "@mui/material/Icon";
-// import { format } from "date-fns";
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
@@ -37,14 +36,8 @@ import CancelConfirmation from "./components/CancelConfirmation";
 
 function Orders() {
   const dispatch = useAppDispatch();
-  const { tableHeaders, initialFiltered } = miscData();
-  const initialStateNotification: INotifyOrder = {
-    open: false,
-    message: "",
-    title: "",
-    color: "primary",
-  };
-  const [showNotify, setShowNotify] = useState<INotifyOrder>(initialStateNotification);
+  const { tableHeaders, initialFiltered, initialNotification } = miscData();
+  const [showNotify, setShowNotify] = useState<INotifyOrder>(initialNotification);
   const [showForm, setShowForm] = useState(false);
   const [warehouseList, setWarehouseList] = useState([]);
   const [statusList, setStatusList] = useState([]);
@@ -91,7 +84,6 @@ function Orders() {
 
   const onCloseForm = () => {
     setShowForm(false);
-    setFormOrder((prevState) => ({ ...prevState, status: "idle" }));
   };
 
   const onChangeStatus = (e: ChangeEvent<HTMLInputElement>) => {
@@ -197,13 +189,18 @@ function Orders() {
     try {
       if (formOrder.type === "create") {
         setFormOrder((prev) => ({ ...prev, message: "", data: null, status: "loading" }));
-        const { data } = await ordersServices.createOrder(orderData);
-        setFormOrder((prev) => ({ ...prev, message: data.message, status: "succeeded" }));
+        const {
+          data: { message, data },
+        } = await ordersServices.createOrder(orderData);
+        setFormOrder((prev) => ({ ...prev, message, id: data.id, status: "succeeded" }));
         actions.resetForm();
+        onCloseForm();
       } else if (formOrder.type === "edit" || formOrder.type === "update") {
         setFormOrder((prev) => ({ ...prev, message: "", type: "update", status: "loading" }));
-        const { data } = await ordersServices.updateOrder(formOrder.id, orderData);
-        setFormOrder((prev) => ({ ...prev, message: data.message, status: "succeeded" }));
+        const {
+          data: { message },
+        } = await ordersServices.updateOrder(formOrder.id, orderData);
+        setFormOrder((prev) => ({ ...prev, message, status: "succeeded" }));
       }
     } catch (err: any) {
       setFormOrder((prev) => ({ ...prev, message: err.message, status: "failed" }));
@@ -249,21 +246,36 @@ function Orders() {
   }, [error, dispatch]);
 
   useEffect(() => {
-    const { status: confirmationStatus, id: transId, openConfirmation } = formOrderConfirmation;
-    let notificationMsg = initialStateNotification;
+    const {
+      status: confirmationStatus,
+      id: confirmationTransid,
+      openConfirmation,
+    } = formOrderConfirmation;
+    const {
+      status: orderStatus,
+      id: orderTransid,
+      message: orderMessage,
+      type: orderType,
+    } = formOrder;
 
     if (!showForm && !openConfirmation && confirmationStatus === "succeeded") {
-      notificationMsg = {
+      openNotify({
         open: true,
-        message: `Transaction No. [${transId}]`,
+        message: `Transaction No. ${confirmationTransid}`,
         title: "Cancelled request",
         color: "warning",
-      };
+      });
     }
-    openNotify(notificationMsg);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formOrderConfirmation]);
+    if (!showForm && orderType === "create" && orderStatus === "succeeded") {
+      openNotify({
+        open: true,
+        message: `Transaction No. ${orderTransid}`,
+        title: orderMessage,
+        color: "success",
+      });
+    }
+  }, [showForm, formOrderConfirmation, formOrder]);
 
   const menuItemsAction: IMenuAction["items"] = [
     {

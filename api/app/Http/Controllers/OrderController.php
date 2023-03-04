@@ -136,7 +136,7 @@ class OrderController extends Controller
 
             return $this->sendResponse([
                 'id' => $createdOrder['transid'],
-            ], 'Successfully created order request');
+            ], 'Successfully created request');
         } catch (Exception $e) {
             return $this->sendError($e);
         }

@@ -20,6 +20,7 @@ import { ordersServices } from "services";
 import selector from "selector";
 import { IOrderData } from "pages/Orders/types";
 import FormTable from "../FormTable";
+import miscData from "../../data";
 import { IForm } from "./types";
 import validationSchema from "./validationSchema";
 import { IAutoCompleteMaterialData } from "../AutoCompleteMaterial/types";
@@ -34,30 +35,10 @@ function FormRequests({
   data,
   warehouseList,
 }: IForm) {
+  const { initialOrder } = miscData();
   const initialRowId = uuidv4();
+  initialOrder.requests[0].uuid = initialRowId;
   const { customerCode } = selector();
-  const [initialValues] = useState<IOrderData>({
-    id: "",
-    pickup_date: null,
-    ref_number: "",
-    instruction: "",
-    allow_notify: false,
-    source_wh: "",
-    status: "",
-    requests: [
-      {
-        uuid: initialRowId,
-        material: "",
-        description: "",
-        qty: "",
-        units: "",
-        batch: "",
-        expiry: "",
-        available: "",
-      },
-    ],
-    requestsDelete: [],
-  });
   const [materialList, setMaterialList] = useState([]);
   const [expiryBatchList, setExpiryBatchList] = useState({ [initialRowId]: [] });
   const [unitList, setUnitList] = useState({ [initialRowId]: [] });
@@ -501,7 +482,7 @@ function FormRequests({
         <Formik
           enableReinitialize={data.type === "edit" || data.type === "view"}
           validationSchema={validationSchema}
-          initialValues={data.type === "create" ? initialValues : data.data}
+          initialValues={data.type === "create" ? initialOrder : data.data}
           onSubmit={(validatedData: IOrderData, actions) => {
             const formattedPickupDate = format(
               convertPickupToDate(validatedData.pickup_date),

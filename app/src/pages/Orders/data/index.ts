@@ -1,4 +1,5 @@
 import { CellAction } from "../components/TableCell";
+import { INotifyOrder, IOrderData } from "../types";
 import { IData } from "./types";
 
 export default function miscData() {
@@ -98,10 +99,42 @@ export default function miscData() {
     lastModified: null,
   };
 
+  const initialNotification: INotifyOrder = {
+    open: false,
+    message: "",
+    title: "",
+    color: "primary",
+  };
+
+  const initialOrder: IOrderData = {
+    id: "",
+    pickup_date: null,
+    ref_number: "",
+    instruction: "",
+    allow_notify: false,
+    source_wh: "",
+    status: "",
+    requests: [
+      {
+        uuid: "",
+        material: "",
+        description: "",
+        qty: "",
+        units: "",
+        batch: "",
+        expiry: "",
+        available: "",
+      },
+    ],
+    requestsDelete: [],
+  };
+
   return {
     tableHeaders,
     typeReportsData,
     groupByData,
     initialFiltered,
+    initialNotification,
+    initialOrder,
   };
 }
