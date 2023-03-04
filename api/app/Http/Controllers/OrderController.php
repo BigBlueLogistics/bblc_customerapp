@@ -119,6 +119,7 @@ class OrderController extends Controller
                 'kunnr' => $authUser->company->customer_code,
                 'ernam' => $authUser->id,
                 'apstat' => 0,
+                'access' => 0,
                 'erdat' => $currentDatetime->format('m/d/Y'),
                 'ertim' => $currentDatetime->format('H:i:s'),
             ]);
