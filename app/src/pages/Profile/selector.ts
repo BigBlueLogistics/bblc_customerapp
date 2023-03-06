@@ -8,12 +8,14 @@ export default () => {
     fname,
     lname,
     email,
+    role_name: roleName,
     customer_code: customerCode,
   } = successfulRequests[signIn.fulfilled.type]?.data || {};
 
   return {
     name: `${fname} ${lname}`,
     email,
+    roleName,
     customerCode,
   };
 };

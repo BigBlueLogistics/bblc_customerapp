@@ -27,7 +27,7 @@ import { IDashboardNavbar, CSSPosition } from "./types";
 
 function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
   const reduxDispatch = useAppDispatch();
-  const { name } = selector();
+  const { name, customerCode } = selector();
   const [navbarType, setNavbarType] = useState("sticky");
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, darkMode } = controller;
@@ -145,7 +145,7 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
             <MDBox pr={1}>
               <MDTypography
                 variant="h6"
-                component="span"
+                component="div"
                 fontWeight="regular"
                 textTransform="capitalize"
                 sx={({ typography: { pxToRem } }) => ({
@@ -153,6 +153,18 @@ function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
                 })}
               >
                 {name}
+              </MDTypography>
+              <MDTypography
+                variant="h6"
+                component="div"
+                fontWeight="regular"
+                textTransform="uppercase"
+                sx={({ typography: { pxToRem }, palette: { text } }) => ({
+                  fontSize: pxToRem(11),
+                  color: text.main,
+                })}
+              >
+                {customerCode}
               </MDTypography>
             </MDBox>
             <MDBox color={light ? "white" : "inherit"}>

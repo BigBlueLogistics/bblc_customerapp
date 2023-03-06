@@ -16,7 +16,7 @@ import { IHeader } from "./types";
 
 function Header({ children }: IHeader) {
   const [tabsOrientation, setTabsOrientation] = useState<"horizontal" | "vertical">("horizontal");
-  const { name } = selector();
+  const { name, customerCode } = selector();
 
   useEffect(() => {
     // A function that sets the orientation state of the tabs.
@@ -84,7 +84,7 @@ function Header({ children }: IHeader) {
                 {name}
               </MDTypography>
               <MDTypography variant="button" color="text" fontWeight="regular">
-                User
+                {customerCode}
               </MDTypography>
             </MDBox>
           </Grid>

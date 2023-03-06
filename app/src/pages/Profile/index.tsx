@@ -22,7 +22,7 @@ import selector from "./selector";
 function Profile() {
   const [status, setStatus] = useState<IStatus>("idle");
   const [statusMsg, setStatusMsg] = useState(null);
-  const { name, email, customerCode } = selector();
+  const { name, email, roleName } = selector();
   const capitalizeName = capitalizeWord(name);
 
   const onChangePass = async (values: ChangePassType) => {
@@ -71,7 +71,7 @@ function Profile() {
                 description={`Hi, ${capitalizeName} , Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality).`}
                 info={{
                   fullName: capitalizeWord(capitalizeName),
-                  code: customerCode,
+                  role: capitalizeWord(roleName),
                   email,
                 }}
                 action={{ route: "", tooltip: "Edit Profile" }}
