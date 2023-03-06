@@ -18,6 +18,7 @@ function MDSnackbar({
   content,
   close,
   bgWhite,
+  autoHideDuration,
   ...rest
 }: IMDSnackbar) {
   const [controller] = useMaterialUIController();
@@ -44,11 +45,12 @@ function MDSnackbar({
   return (
     <Snackbar
       TransitionComponent={Fade}
-      autoHideDuration={5000}
+      autoHideDuration={autoHideDuration}
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "right",
       }}
+      onClose={close}
       {...rest}
       action={
         <IconButton size="small" aria-label="close" color="inherit" onClick={() => close()}>
@@ -135,6 +137,7 @@ function MDSnackbar({
 MDSnackbar.defaultProps = {
   bgWhite: false,
   color: "info",
+  autoHideDuration: 5000,
 };
 
 export default MDSnackbar;
