@@ -449,7 +449,6 @@ function FormRequests({
   // Close form
   useEffect(() => {
     if (!open) {
-      console.log("close form");
       setSelectedRowValues({});
       setExpiryBatchList({});
       setUnitList({});
@@ -470,13 +469,15 @@ function FormRequests({
     }
   }, [data]);
 
-  const isSaving = data.type !== "edit" && data.status === "loading";
+  const isSaving =
+    data.type !== "edit" && data.type !== "confirmation" && data.status === "loading";
   const isFetchingData =
     (data.type === "edit" || data.type === "view") && data.status === "loading";
   const isUpdate = data.type === "edit" || data.type === "update";
+  const isCreate = data.type === "create";
   const isView = data.type === "view";
   const formHeaderTitle = isUpdate ? "update" : data.type;
-  const canCancel = isUpdate && data.data?.status === "order create";
+  const canCancel = !isCreate && data.data?.status === "order create";
 
   return (
     <Dialog open={open} fullWidth maxWidth="lg">

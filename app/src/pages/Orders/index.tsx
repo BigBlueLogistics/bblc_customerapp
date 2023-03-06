@@ -20,14 +20,7 @@ import { setIsAuthenticated } from "redux/auth/action";
 import { inventoryServices, ordersServices } from "services";
 import { AxiosError } from "axios";
 import miscData from "./data";
-import {
-  INotifyOrder,
-  IOrderData,
-  IFormOrderState,
-  ITableOrder,
-  IFormOrderConfirmation,
-  IFiltered,
-} from "./types";
+import { INotifyOrder, IOrderData, IFormOrderState, ITableOrder, IFiltered } from "./types";
 import Form from "./components/Form";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
@@ -58,12 +51,7 @@ function Orders() {
     status: "idle",
     type: "create",
     id: "",
-  });
-  const [formOrderConfirmation, setFormOrderConfirmation] = useState<IFormOrderConfirmation>({
-    status: "idle",
-    message: "",
     openConfirmation: false,
-    id: "",
   });
 
   const openAction = ({ currentTarget }) => setAction(currentTarget);
@@ -74,8 +62,14 @@ function Orders() {
   };
   const closeNotify = () => {
     setShowNotify((prevState) => ({ ...prevState, open: false }));
-    setFormOrder((prevState) => ({ ...prevState, status: "idle" }));
-    setFormOrderConfirmation((prevState) => ({ ...prevState, status: "idle" }));
+    setFormOrder({
+      message: "",
+      data: null,
+      status: "idle",
+      type: "create",
+      id: "",
+      openConfirmation: false,
+    });
   };
 
   const onShowForm = () => {
@@ -163,25 +157,35 @@ function Orders() {
   };
 
   const onShowCancelConfirmation = (transId: string) => {
-    setFormOrderConfirmation((prev) => ({ ...prev, openConfirmation: true, id: transId }));
+    setFormOrder((prev) => ({
+      ...prev,
+      type: "confirmation",
+      openConfirmation: true,
+      id: transId,
+    }));
   };
 
   const onCloseCancelConfirmation = () => {
-    setFormOrderConfirmation((prev) => ({
+    setFormOrder((prev) => ({
       ...prev,
       openConfirmation: false,
     }));
   };
 
   const onCancelOrderYes = async (transId: string) => {
-    setFormOrderConfirmation((prev) => ({ ...prev, message: "", status: "loading" }));
+    setFormOrder((prev) => ({ ...prev, message: "", status: "loading" }));
     try {
       const { data } = await ordersServices.cancelOrder(transId);
-      setFormOrderConfirmation((prev) => ({ ...prev, message: data.message, status: "succeeded" }));
+      setFormOrder((prev) => ({
+        ...prev,
+        type: "cancel",
+        openConfirmation: false,
+        message: data.message,
+        status: "succeeded",
+      }));
       onCloseForm();
-      onCloseCancelConfirmation();
     } catch (err: any) {
-      setFormOrderConfirmation((prev) => ({ ...prev, message: err.message, status: "failed" }));
+      setFormOrder((prev) => ({ ...prev, message: err.message, status: "failed" }));
     }
   };
 
@@ -218,18 +222,14 @@ function Orders() {
     }
   };
 
-  // Refresh order list after create and update
+  // Refresh order list after create, update and cancel.
   useEffect(() => {
     const { status, type } = formOrder;
-    const { status: confirmationStatus, openConfirmation } = formOrderConfirmation;
-    if (
-      ((type === "create" || type === "update") && status === "succeeded") ||
-      (!openConfirmation && confirmationStatus === "succeeded")
-    )
+    if ((type === "create" || type === "update" || type === "cancel") && status === "succeeded") {
       fetchOrderList(filtered);
-
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formOrder, formOrderConfirmation]);
+  }, [formOrder]);
 
   useEffect(() => {
     fetchOrderList(initialFiltered);
@@ -247,21 +247,16 @@ function Orders() {
 
   useEffect(() => {
     const {
-      status: confirmationStatus,
-      id: confirmationTransid,
-      openConfirmation,
-    } = formOrderConfirmation;
-    const {
       status: orderStatus,
       id: orderTransid,
       message: orderMessage,
       type: orderType,
     } = formOrder;
 
-    if (!showForm && !openConfirmation && confirmationStatus === "succeeded") {
+    if (!showForm && orderType === "cancel" && orderStatus === "succeeded") {
       openNotify({
         open: true,
-        message: `Transaction No. ${confirmationTransid}`,
+        message: `Transaction No. ${orderTransid}`,
         title: "Cancelled request",
         color: "warning",
       });
@@ -275,7 +270,7 @@ function Orders() {
         color: "success",
       });
     }
-  }, [showForm, formOrderConfirmation, formOrder]);
+  }, [showForm, formOrder]);
 
   const menuItemsAction: IMenuAction["items"] = [
     {
@@ -317,9 +312,9 @@ function Orders() {
       />
 
       <CancelConfirmation
-        openConfirmation={formOrderConfirmation.openConfirmation}
-        transId={formOrderConfirmation.id}
-        isLoading={formOrderConfirmation.status === "loading"}
+        openConfirmation={formOrder.openConfirmation}
+        transId={formOrder.id}
+        isLoading={formOrder.status === "loading"}
         OnCancelYes={onCancelOrderYes}
         OnCancelNo={onCloseCancelConfirmation}
       />

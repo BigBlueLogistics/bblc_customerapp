@@ -46,15 +46,9 @@ export type ITableOrder = {
 
 export type IFormOrderState = {
   id: string;
-  type: "create" | "edit" | "update" | "view";
+  type: "create" | "edit" | "update" | "view" | "confirmation" | "cancel";
   status: IStatus;
   data: IOrderData;
   message: string;
-};
-
-export type IFormOrderConfirmation = {
-  id: string;
   openConfirmation: boolean;
-  status: IStatus;
-  message: string;
 };
