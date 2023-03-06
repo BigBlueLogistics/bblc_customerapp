@@ -31,6 +31,8 @@ function Inventory() {
   const { customerCode } = selector();
   const { tableHeaders } = miscData();
   const initialStateNotification: INotifyDownload = {
+    key: 0,
+    autoHideDuration: null,
     open: false,
     message: "",
     title: "",
@@ -56,8 +58,15 @@ function Inventory() {
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
 
-  const openNotifyDownload = ({ open, message, title, color }: INotifyDownload) => {
-    setShowNotifyDownload({ open, message, title, color });
+  const openNotifyDownload = ({
+    key,
+    open,
+    message,
+    title,
+    color,
+    autoHideDuration,
+  }: INotifyDownload) => {
+    setShowNotifyDownload({ key, open, message, title, color, autoHideDuration });
   };
   const closeNotifyDownload = () => {
     setShowNotifyDownload((prevState) => ({ ...prevState, open: false }));
@@ -133,26 +142,32 @@ function Inventory() {
 
     if (!message && downloadStatus === "loading") {
       notificationMsg = {
+        key: 1,
         open: true,
         message: `Please wait exporting file [${filename}]`,
         title: "Exporting File",
         color: "info",
+        autoHideDuration: null,
       };
     }
     if (!message && downloadStatus === "success") {
       notificationMsg = {
+        key: 2,
         open: true,
         message: `You can now open [${filename}]`,
         title: "Export file complete!",
         color: "success",
+        autoHideDuration: 5000,
       };
     }
     if (message && downloadStatus === "failed") {
       notificationMsg = {
+        key: 3,
         open: true,
         message,
         title: "Failed to export file",
         color: "error",
+        autoHideDuration: 5000,
       };
     }
     openNotifyDownload(notificationMsg);
@@ -192,13 +207,16 @@ function Inventory() {
 
       {tableStatus === "failed" && <MDTypography variant="body2">{error.message}</MDTypography>}
 
+      {console.log("autoHideduration", showNotifyDownload.autoHideDuration)}
       <MDSnackbar
+        key={showNotifyDownload.key}
         color={showNotifyDownload.color}
         icon="info"
         title={showNotifyDownload.title}
         content={showNotifyDownload.message}
         dateTime="now"
         open={showNotifyDownload.open}
+        autoHideDuration={showNotifyDownload.autoHideDuration}
         close={closeNotifyDownload}
       />
 
