@@ -5,18 +5,19 @@ import MDBox from "atoms/MDBox";
 import MDAlertCloseIcon from "atoms/MDAlert2/MDAlertCloseIcon";
 import IMDAlert from "./types";
 
-function MDAlert2({ severity, dismissible, autoUnmount, sx, children }: IMDAlert) {
+function MDAlert2({ severity, dismissible, autoHideDuration, sx, children }: IMDAlert) {
   const [alertStatus, setAlertStatus] = useState("mount");
 
   const handleAlertStatus = () => setAlertStatus("fadeOut");
 
   useEffect(() => {
-    if (autoUnmount) {
+    if (autoHideDuration) {
+      const duration = autoHideDuration < 1000 ? 1000 : autoHideDuration;
       setTimeout(() => {
         setAlertStatus("unmount");
-      }, 1000 * 15);
+      }, duration);
     }
-  }, [autoUnmount]);
+  }, [autoHideDuration]);
 
   // The base template for the alert
   const alertTemplate = (mount = true) => (
@@ -56,7 +57,7 @@ function MDAlert2({ severity, dismissible, autoUnmount, sx, children }: IMDAlert
 MDAlert2.defaultProps = {
   severity: "info",
   variant: "standard",
-  autoUnmount: false,
+  autoHideDuration: 10000,
   dismissible: false,
 };
 

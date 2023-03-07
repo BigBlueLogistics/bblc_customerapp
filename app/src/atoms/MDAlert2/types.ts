@@ -5,7 +5,7 @@ type IMDAlert = {
   severity?: AlertProps["color"];
   variant?: AlertProps["variant"];
   dismissible?: boolean;
-  autoUnmount?: boolean;
+  autoHideDuration?: number | null;
   children: React.ReactNode;
   sx?: SxProps<Theme>;
 };
