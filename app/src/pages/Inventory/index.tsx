@@ -44,7 +44,7 @@ function Inventory() {
   const [warehouseList, setWarehouseList] = useState([]);
   const [rowsInventory, setRowsInventory] = useState([]);
   const [action, setAction] = useState(null);
-  const [toggleFilter, setToggleFilter] = useState(false);
+  const [toggleFilter, setToggleFilter] = useState(true);
 
   const [tableStatus, setTableStatus] = useState<IStatus>("idle");
   const [error, setError] = useState<AxiosError | null>(null);

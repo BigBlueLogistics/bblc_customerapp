@@ -50,7 +50,7 @@ function Reports() {
   const [rowsReport, setRowsReport] = useState([]);
   const [groupByKey, setGroupByKey] = useState<IGroupByKey>("stock");
   const [action, setAction] = useState(null);
-  const [toggleFilter, setToggleFilter] = useState(false);
+  const [toggleFilter, setToggleFilter] = useState(true);
 
   const [tableStatus, setTableStatus] = useState<IStatus>("idle");
   const [error, setError] = useState<AxiosError | null>(null);
