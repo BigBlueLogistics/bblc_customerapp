@@ -106,7 +106,7 @@ class ReportsRepository implements IReportsRepository
                         $transformData['batch'] = $group[0][$fieldName];
                     }
                     if ($groupBy == 'expiry') {
-                        $transformData['expiry'] = $group[0][$fieldName];
+                        $transformData['expiry'] = Carbon::parse($group[0][$fieldName])->format('m/d/Y');
                     }
 
                     return $transformData;
