@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
-import MDAlert from "atoms/MDAlert";
+import MDAlertGradient from "atoms/MDAlertGradient";
 import MDButton from "atoms/MDButton";
 import MDSnackbar from "atoms/MDSnackbar";
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
@@ -100,30 +100,30 @@ function Notifications() {
                 <MDTypography variant="h5">Alerts</MDTypography>
               </MDBox>
               <MDBox pt={2} px={2}>
-                <MDAlert color="primary" dismissible>
+                <MDAlertGradient color="primary" dismissible>
                   {alertContent("primary")}
-                </MDAlert>
-                <MDAlert color="secondary" dismissible>
+                </MDAlertGradient>
+                <MDAlertGradient color="secondary" dismissible>
                   {alertContent("secondary")}
-                </MDAlert>
-                <MDAlert color="success" dismissible>
+                </MDAlertGradient>
+                <MDAlertGradient color="success" dismissible>
                   {alertContent("success")}
-                </MDAlert>
-                <MDAlert color="error" dismissible>
+                </MDAlertGradient>
+                <MDAlertGradient color="error" dismissible>
                   {alertContent("error")}
-                </MDAlert>
-                <MDAlert color="warning" dismissible>
+                </MDAlertGradient>
+                <MDAlertGradient color="warning" dismissible>
                   {alertContent("warning")}
-                </MDAlert>
-                <MDAlert color="info" dismissible>
+                </MDAlertGradient>
+                <MDAlertGradient color="info" dismissible>
                   {alertContent("info")}
-                </MDAlert>
-                <MDAlert color="light" dismissible>
+                </MDAlertGradient>
+                <MDAlertGradient color="light" dismissible>
                   {alertContent("light")}
-                </MDAlert>
-                <MDAlert color="dark" dismissible>
+                </MDAlertGradient>
+                <MDAlertGradient color="dark" dismissible>
                   {alertContent("dark")}
-                </MDAlert>
+                </MDAlertGradient>
               </MDBox>
             </Card>
           </Grid>
