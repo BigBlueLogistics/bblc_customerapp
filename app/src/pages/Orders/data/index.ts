@@ -1,4 +1,4 @@
-import { CellAction } from "../components/TableCell";
+import { CellAction, CellStatus } from "../components/TableCell";
 import { INotifyOrder, IOrderData } from "../types";
 import { IData } from "./types";
 
@@ -22,8 +22,8 @@ export default function miscData() {
     {
       Header: "Status",
       accessor: "status",
-      ...commonHeadersAttr,
       align: "center",
+      Cell: CellStatus,
     },
     {
       Header: "Created at",
