@@ -1,11 +1,11 @@
 import { MouseEventHandler, useState } from "react";
 import Fade from "@mui/material/Fade";
 import MDBox from "atoms/MDBox";
-import MDAlertRoot from "atoms/MDAlert/MDAlertRoot";
-import MDAlertCloseIcon from "atoms/MDAlert/MDAlertCloseIcon";
+import MDAlertRoot from "atoms/MDAlertGradient/MDAlertRoot";
+import MDAlertCloseIcon from "atoms/MDAlertGradient/MDAlertCloseIcon";
 import IMDAlert from "./types";
 
-function MDAlert({ color, dismissible, children, ...rest }: IMDAlert) {
+function MDAlertGradient({ color, dismissible, children, ...rest }: IMDAlert) {
   const [alertStatus, setAlertStatus] = useState("mount");
 
   const handleAlertStatus = () => setAlertStatus("fadeOut");
@@ -43,9 +43,9 @@ function MDAlert({ color, dismissible, children, ...rest }: IMDAlert) {
 }
 
 // Setting default values for the props of MDAlert
-MDAlert.defaultProps = {
+MDAlertGradient.defaultProps = {
   color: "info",
   dismissible: false,
 };
 
-export default MDAlert;
+export default MDAlertGradient;
