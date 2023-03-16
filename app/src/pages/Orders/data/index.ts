@@ -113,7 +113,7 @@ export default function miscData() {
     instruction: "",
     allow_notify: false,
     source_wh: "",
-    status: "",
+    status: { id: null, name: "" },
     requests: [
       {
         uuid: "",

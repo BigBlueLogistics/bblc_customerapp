@@ -49,7 +49,7 @@ function Orders() {
     message: "",
     data: null,
     status: "idle",
-    type: "create",
+    type: "",
     id: "",
     openConfirmation: false,
   });
@@ -62,14 +62,6 @@ function Orders() {
   };
   const closeNotify = () => {
     setShowNotify((prevState) => ({ ...prevState, open: false }));
-    setFormOrder({
-      message: "",
-      data: null,
-      status: "idle",
-      type: "create",
-      id: "",
-      openConfirmation: false,
-    });
   };
 
   const onShowForm = () => {
@@ -153,12 +145,20 @@ function Orders() {
 
   const handleCreate = () => {
     onShowForm();
-    setFormOrder((prev) => ({ ...prev, type: "create", status: "idle", id: "" }));
+    setFormOrder({
+      message: "",
+      data: null,
+      status: "idle",
+      type: "create",
+      id: "",
+      openConfirmation: false,
+    });
   };
 
   const onShowCancelConfirmation = (transId: string) => {
     setFormOrder((prev) => ({
       ...prev,
+      status: "idle",
       type: "confirmation",
       openConfirmation: true,
       id: transId,

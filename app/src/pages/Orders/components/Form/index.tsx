@@ -35,6 +35,7 @@ function FormRequests({
   data,
   warehouseList,
 }: IForm) {
+  console.log("onShowEdit formData", data);
   const { initialOrder } = miscData();
   const initialRowId = uuidv4();
   initialOrder.requests[0].uuid = initialRowId;
@@ -477,7 +478,7 @@ function FormRequests({
   const isCreate = data.type === "create";
   const isView = data.type === "view";
   const formHeaderTitle = isUpdate ? "update" : data.type;
-  const canCancel = !isCreate && data.data?.status === "order create";
+  const canCancel = !isCreate && data.data?.status.id === 0;
 
   return (
     <Dialog open={open} fullWidth maxWidth="lg">

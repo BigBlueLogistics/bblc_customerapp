@@ -5,7 +5,7 @@ function CellStatus(props: ITableCellProps) {
   const { row } = props;
 
   const { status } = row.original;
-  const statusColor = String(status).toLowerCase() === "order create" ? "success" : "info";
+  const statusColor = status.id === 0 ? "success" : "info";
 
   return (
     <MDBadge
@@ -13,7 +13,7 @@ function CellStatus(props: ITableCellProps) {
       size="xs"
       variant="gradient"
       sx={({ typography: { pxToRem } }) => ({ "& .MuiBadge-badge": { fontSize: pxToRem(11) } })}
-      badgeContent={status}
+      badgeContent={status.name}
     />
   );
 }

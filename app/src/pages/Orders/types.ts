@@ -1,5 +1,7 @@
 import { IStatus } from "types/status";
 
+type LooseType<T extends string> = T | Omit<string, T>;
+
 export type INotifyOrder = {
   open: boolean;
   message?: string;
@@ -18,7 +20,10 @@ export type IOrderData = {
   instruction: string;
   allow_notify: boolean;
   source_wh: string;
-  status: string;
+  status: {
+    id: number;
+    name: string;
+  };
   requests: {
     uuid: string;
     material: string;
@@ -46,7 +51,7 @@ export type ITableOrder = {
 
 export type IFormOrderState = {
   id: string;
-  type: "create" | "edit" | "update" | "view" | "confirmation" | "cancel";
+  type: LooseType<"create" | "edit" | "update" | "view" | "confirmation" | "cancel">;
   status: IStatus;
   data: IOrderData;
   message: string;

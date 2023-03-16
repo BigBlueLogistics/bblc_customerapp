@@ -18,8 +18,8 @@ function CellAction(props: ITableCellProps) {
     row,
   } = props;
 
-  const { transid, status } = row.original;
-  const canUpdate = String(status).toLowerCase() === "order create";
+  const { transid, status_id: statusId } = row.original;
+  const canUpdate = Number(statusId) === 0;
   const formType = canUpdate ? "edit" : "view";
 
   return (
