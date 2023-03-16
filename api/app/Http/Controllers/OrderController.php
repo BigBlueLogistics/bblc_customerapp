@@ -77,6 +77,7 @@ class OrderController extends Controller
 
             $orders = OrderHeader::select([
                 'order_header.transid', 'order_header.ponum AS ref_number', 'order_status.name AS status',
+                'order_status.id AS status_id',
                 Db::raw("FORMAT(order_header.erdat, 'MMM, dd yyyy') AS created_date"),
                 Db::raw("CONVERT(VARCHAR(11), CAST(order_header.ertim AS TIME), 100) AS created_time"),
                 Db::raw("FORMAT(order_header.updated_at, 'MMM, dd yyyy hh:mmtt') AS last_modified"),

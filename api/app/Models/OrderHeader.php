@@ -91,7 +91,7 @@ class OrderHeader extends Model
             'allow_notify' => $this->miles,
             'pickup_date' => $this->pudat, 
             'instruction' => $this->header,
-            'status' =>  $this->status->name,
+            'status' =>  $this->status->only(['id','name']),
             'requests' => $this->mapFieldOrderItems()
         ];
     }
@@ -120,6 +120,6 @@ class OrderHeader extends Model
 
     public function status()
     {
-        return $this->hasOne(OrderStatus::class,'id','apstat');
+        return $this->hasOne(OrderStatus::class, 'id', 'apstat');
     }
 }
