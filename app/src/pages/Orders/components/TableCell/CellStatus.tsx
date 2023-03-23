@@ -4,8 +4,8 @@ import { ITableCellProps } from "types/reactTable";
 function CellStatus(props: ITableCellProps) {
   const { row } = props;
 
-  const { status } = row.original;
-  const statusColor = status.id === 0 ? "success" : "info";
+  const { status, status_id: statusId } = row.original;
+  const statusColor = Number(statusId) === 0 ? "success" : "info";
 
   return (
     <MDBadge
@@ -13,7 +13,7 @@ function CellStatus(props: ITableCellProps) {
       size="xs"
       variant="gradient"
       sx={({ typography: { pxToRem } }) => ({ "& .MuiBadge-badge": { fontSize: pxToRem(11) } })}
-      badgeContent={status.name}
+      badgeContent={status}
     />
   );
 }
