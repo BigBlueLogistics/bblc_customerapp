@@ -160,9 +160,10 @@ function Reports() {
   };
 
   const onClear = () => {
-    setSelectedReport("");
+    setSelectedReport("wh-snapshot");
     setSelectedWarehouse("");
     setSelectedGroupBy("");
+    setRowsReport([]);
   };
 
   useEffect(() => {
@@ -338,7 +339,7 @@ function Reports() {
                       variant="outlined"
                       onChange={onChangeGroupBy}
                       options={groupByData[groupByKey]}
-                      value={selectedGroupBy}
+                      value={selectedGroupBy as number | string}
                       showArrowIcon
                     />
 

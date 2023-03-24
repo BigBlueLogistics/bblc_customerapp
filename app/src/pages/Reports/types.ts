@@ -1,3 +1,5 @@
+import { LooseType } from "types/utility";
+
 export type INotifyDownload = {
   key: string | number;
   open: boolean;
@@ -7,6 +9,6 @@ export type INotifyDownload = {
   color: "info" | "error" | "light" | "primary" | "secondary" | "success" | "warning" | "dark";
 };
 
-export type IGroupByWhSnapshot = "batch" | "expiry" | "material" | "";
-export type IGroupByAging = "expiration" | "receiving" | "production" | "";
-export type IGroupBy = IGroupByWhSnapshot | IGroupByAging;
+export type IGroupByWhSnapshot = "batch" | "expiry" | "material";
+export type IGroupByAging = "expiration" | "receiving" | "production";
+export type IGroupBy = LooseType<IGroupByWhSnapshot | IGroupByAging>;

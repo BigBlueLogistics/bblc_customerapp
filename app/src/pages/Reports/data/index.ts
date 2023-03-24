@@ -206,5 +206,5 @@ export default function miscData() {
 
 const { groupByData, tableHeaders } = miscData();
 
-export type ITableHeadersKey = keyof typeof tableHeaders | "";
-export type IGroupByKey = keyof typeof groupByData | "";
+export type ITableHeadersKey = keyof typeof tableHeaders;
+export type IGroupByKey = keyof typeof groupByData;
