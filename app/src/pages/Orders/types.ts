@@ -1,6 +1,5 @@
 import { IStatus } from "types/status";
-
-type LooseType<T extends string> = T | Omit<string, T>;
+import { LooseType } from "types/utility";
 
 export type INotifyOrder = {
   open: boolean;
