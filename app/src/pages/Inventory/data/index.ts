@@ -6,7 +6,6 @@ export default function miscData() {
       { Header: "Material Code", accessor: "materialCode", width: "20%", align: "left" },
       { Header: "Description", accessor: "description", align: "left" },
       { Header: "Fixed Weight", accessor: "fixedWt", align: "left" },
-      { Header: "Unit", accessor: "unit", align: "left" },
       {
         Header: "Available Stocks",
         accessor: "availableQty",
