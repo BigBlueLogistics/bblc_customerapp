@@ -82,7 +82,7 @@
 
             <td>{{ $inventory['materialCode'] }}</td>
             <td>{{ $inventory['description'] }}</td>
-            <td>{{ $inventory['fixedWt'] }} / {{ $inventory['unit'] }}</td>
+            <td>{{ $inventory['fixedWt'] }}</td>
             @if ($groupBy === 'batch')
                 <td>{{ $inventory['batch']}}</td>
             @elseif ($groupBy === 'expiry')

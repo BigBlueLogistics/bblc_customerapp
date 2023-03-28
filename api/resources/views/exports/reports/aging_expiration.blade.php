@@ -74,7 +74,7 @@
 
             <td>{{ $inventory['materialCode'] }}</td>
             <td>{{ $inventory['description'] }}</td>
-            <td>{{ $inventory['fixedWt'] }} / {{ $inventory['unit'] }}</td>
+            <td>{{ $inventory['fixedWt'] }}</td>
             <td>{{ $rndQtyExp120 = $inventory['qty_exp_120'] }}</td>
             <td>{{ $rndQtyExp60 = $inventory['qty_exp_60'] }}</td>
             <td>{{ $rndQtyExp30 = $inventory['qty_exp_30'] }}</td>

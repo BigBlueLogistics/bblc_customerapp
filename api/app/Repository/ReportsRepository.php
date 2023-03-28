@@ -175,8 +175,7 @@ class ReportsRepository implements IReportsRepository
                     $res['availableWt'] = $availableWt;
                     $res['allocatedWt'] = $allocatedWt;
                     $res['restrictedWt'] = $restrictedWt;
-                    $res['fixedWt'] = $fixedWt;
-                    $res['unit'] = $unit;
+                    $res['fixedWt'] = $fixedWt." / ".$unit;
 
                     return array_merge($data, $res);
                 })
@@ -488,8 +487,7 @@ class ReportsRepository implements IReportsRepository
 
                             return [
                                 ...$data,
-                                'fixedWt' => $fixedWt,
-                                'unit' => $unit,
+                                'fixedWt' => $fixedWt." / ".$unit,
                                 'totalQty' => round($total, 3),
                             ];
                         })
