@@ -11,7 +11,7 @@ import reportsHorizontalData from "pages/Indicators/data/reportsHorizontalData";
 import reportsLineChartData from "pages/Indicators/data/reportsLineChartData";
 
 function Indicators() {
-  const { sales, tasks } = reportsLineChartData;
+  const { sales } = reportsLineChartData;
 
   return (
     <DashboardLayout>
@@ -80,7 +80,7 @@ function Indicators() {
         </Grid>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
@@ -92,17 +92,6 @@ function Indicators() {
                   }
                   date="updated 4 min ago"
                   chart={sales}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="Inbound/Outbound by Weight and Pallets"
-                  description="Current"
-                  date="just updated"
-                  chart={tasks}
                 />
               </MDBox>
             </Grid>
@@ -120,17 +109,16 @@ function Indicators() {
                 />
               </MDBox>
             </Grid>
-            {/* <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6}>
               <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="Inbound/Outbound by Weight and Pallets"
-                  description="Current"
-                  date="just updated"
-                  chart={tasks}
+                <HorizontalBarChart
+                  icon={{ color: "primary", component: "splitscreen" }}
+                  title="Title here"
+                  description={" "}
+                  chart={reportsHorizontalData}
                 />
               </MDBox>
-            </Grid> */}
+            </Grid>
           </Grid>
         </MDBox>
       </MDBox>
