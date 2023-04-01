@@ -207,7 +207,6 @@ function Inventory() {
 
       {tableStatus === "failed" && <MDTypography variant="body2">{error.message}</MDTypography>}
 
-      {console.log("autoHideduration", showNotifyDownload.autoHideDuration)}
       <MDSnackbar
         key={showNotifyDownload.key}
         color={showNotifyDownload.color}
