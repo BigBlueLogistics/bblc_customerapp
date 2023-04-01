@@ -13,7 +13,7 @@
 // 11. The `access` key is used to determine if route is set to public or protected.
 // 12. The `allowedRoles` key is used for permission to access the route.
 
-// import Dashboard from "pages/dashboard";
+import Dashboard from "pages/dashboard";
 // import Tables from "pages/tables";
 // import Billing from "pages/billing";
 // import RTL from "pages/rtl";
@@ -189,7 +189,7 @@ const routes: RoutesType = [
     key: "indicators",
     icon: <MoveDownIcon />,
     route: "/indicators",
-    component: <UnderConstruction />,
+    component: <Dashboard />,
     access: "protected",
     allowedRoles: ["sysadmin", "user"],
   },

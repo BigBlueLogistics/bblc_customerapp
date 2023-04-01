@@ -3,16 +3,12 @@ import MDBox from "atoms/MDBox";
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
-import ReportsBarChart from "organisms/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "organisms/Charts/LineCharts/ReportsLineChart";
+import HorizontalBarChart from "organisms/Charts/BarCharts/HorizontalBarChart";
 import ComplexStatisticsCard from "organisms/Cards/StatisticsCards/ComplexStatisticsCard";
 
-import reportsBarChartData from "pages/dashboard/data/reportsBarChartData";
+import reportsHorizontalData from "pages/dashboard/data/reportsHorizontalData";
 import reportsLineChartData from "pages/dashboard/data/reportsLineChartData";
-
-// Dashboard components
-import Projects from "pages/dashboard/components/Projects";
-import OrdersOverview from "pages/dashboard/components/OrdersOverview";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
@@ -27,12 +23,12 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="dark"
                 icon="weekend"
-                title="Inbound"
+                title="Inbound Weight"
                 count={0}
                 percentage={{
                   color: "success",
-                  amount: "0",
-                  label: "than lask week",
+                  amount: "",
+                  label: "Today",
                 }}
               />
             </MDBox>
@@ -41,12 +37,12 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
-                title="Outbound"
+                title="Outbound Weight"
                 count="0"
                 percentage={{
                   color: "success",
-                  amount: "0",
-                  label: "than last month",
+                  amount: "",
+                  label: "Today",
                 }}
               />
             </MDBox>
@@ -56,12 +52,12 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="success"
                 icon="store"
-                title="Total picking"
+                title="Total Transaction"
                 count="0"
                 percentage={{
                   color: "success",
-                  amount: "0",
-                  label: "than yesterday",
+                  amount: "",
+                  label: "Today",
                 }}
               />
             </MDBox>
@@ -71,12 +67,12 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
-                title="Complete picking"
+                title="Active SKU"
                 count="0"
                 percentage={{
                   color: "success",
                   amount: "",
-                  label: "Just updated",
+                  label: "Today",
                 }}
               />
             </MDBox>
@@ -84,22 +80,11 @@ function Dashboard() {
         </Grid>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="Ave. Movement Material"
-                  description="Daily"
-                  date="updated 1 min ago"
-                  chart={reportsBarChartData}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="Ave. Movement Material"
+                  title="Inbound/Outbound by Transactions"
                   description={
                     <>
                       (<strong>+15%</strong>) weekly.
@@ -110,11 +95,11 @@ function Dashboard() {
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
-                  title="Volume By Material"
+                  title="Inbound/Outbound by Weight and Pallets"
                   description="Current"
                   date="just updated"
                   chart={tasks}
@@ -123,14 +108,29 @@ function Dashboard() {
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox>
+        <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
+            <Grid item xs={12} md={6}>
+              <MDBox mb={3}>
+                <HorizontalBarChart
+                  icon={{ color: "info", component: "splitscreen" }}
+                  title="Title here"
+                  description={" "}
+                  chart={reportsHorizontalData}
+                />
+              </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <OrdersOverview />
-            </Grid>
+            {/* <Grid item xs={12} md={6}>
+              <MDBox mb={3}>
+                <ReportsLineChart
+                  color="dark"
+                  title="Inbound/Outbound by Weight and Pallets"
+                  description="Current"
+                  date="just updated"
+                  chart={tasks}
+                />
+              </MDBox>
+            </Grid> */}
           </Grid>
         </MDBox>
       </MDBox>

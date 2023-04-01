@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMemo } from "react";
 import { Bar } from "react-chartjs-2";
 import Card from "@mui/material/Card";
