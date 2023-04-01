@@ -7,10 +7,10 @@ import ReportsLineChart from "organisms/Charts/LineCharts/ReportsLineChart";
 import HorizontalBarChart from "organisms/Charts/BarCharts/HorizontalBarChart";
 import ComplexStatisticsCard from "organisms/Cards/StatisticsCards/ComplexStatisticsCard";
 
-import reportsHorizontalData from "pages/dashboard/data/reportsHorizontalData";
-import reportsLineChartData from "pages/dashboard/data/reportsLineChartData";
+import reportsHorizontalData from "pages/Indicators/data/reportsHorizontalData";
+import reportsLineChartData from "pages/Indicators/data/reportsLineChartData";
 
-function Dashboard() {
+function Indicators() {
   const { sales, tasks } = reportsLineChartData;
 
   return (
@@ -139,4 +139,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Indicators;

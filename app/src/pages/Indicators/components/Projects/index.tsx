@@ -11,7 +11,7 @@ import MDTypography from "atoms/MDTypography";
 import DataTable from "organisms/Tables/DataTable";
 
 // Data
-import data from "pages/dashboard/components/Projects/data";
+import data from "pages/Indicators/components/Projects/data";
 
 function Projects() {
   const { columns, rows } = data();
