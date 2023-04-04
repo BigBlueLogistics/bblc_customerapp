@@ -45,6 +45,7 @@ function PieChart({ icon, title, description, height, chart }: IPieChart) {
       {useMemo(
         () => (
           <MDBox height={height}>
+            {" "}
             <Pie data={data} options={options} />
           </MDBox>
         ),

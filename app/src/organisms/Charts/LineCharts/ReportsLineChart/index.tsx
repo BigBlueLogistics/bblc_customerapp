@@ -1,4 +1,14 @@
 import { useMemo } from "react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import { Line } from "react-chartjs-2";
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
@@ -7,6 +17,8 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/LineCharts/ReportsLineChart/configs";
 import { IReportsLineChart } from "./types";
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 function ReportsLineChart({ color, title, description, date, chart }: IReportsLineChart) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {});

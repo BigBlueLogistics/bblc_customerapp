@@ -64,7 +64,7 @@ function DefaultLineChart({ icon, title, description, height, chart }: IDefaultL
       {useMemo(
         () => (
           <MDBox height={height}>
-            <Line data={data} options={options} />
+            <Line data={data} options={options} />{" "}
           </MDBox>
         ),
         [chart, height]

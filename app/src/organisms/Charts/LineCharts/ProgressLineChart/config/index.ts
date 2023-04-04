@@ -1,3 +1,4 @@
+import { InteractionMode, FontSpec } from "chart.js";
 import colors from "assets/theme/base/colors";
 
 const { gradients } = colors;
@@ -31,16 +32,18 @@ function configs(color, labels, label, data) {
       },
       interaction: {
         intersect: false,
-        mode: "index",
+        mode: "index" as InteractionMode,
       },
       scales: {
         y: {
+          border: {
+            display: false,
+            dash: [5, 5],
+          },
           grid: {
-            drawBorder: false,
             display: false,
             drawOnChartArea: true,
             drawTicks: false,
-            borderDash: [5, 5],
           },
           ticks: {
             display: true,
@@ -48,20 +51,22 @@ function configs(color, labels, label, data) {
             color: "#9ca2b7",
             font: {
               size: 14,
-              weight: 300,
+              weight: "300",
               family: "Roboto",
               style: "normal",
               lineHeight: 2,
-            },
+            } as FontSpec,
           },
         },
         x: {
+          border: {
+            display: false,
+            dash: [5, 5],
+          },
           grid: {
-            drawBorder: false,
             display: true,
             drawOnChartArea: true,
             drawTicks: false,
-            borderDash: [5, 5],
             color: "#c1c4ce5c",
           },
           ticks: {
@@ -70,11 +75,11 @@ function configs(color, labels, label, data) {
             color: "#9ca2b7",
             font: {
               size: 14,
-              weight: 300,
+              weight: "300",
               family: "Roboto",
               style: "normal",
               lineHeight: 2,
-            },
+            } as FontSpec,
           },
         },
       },

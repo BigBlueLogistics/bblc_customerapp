@@ -1,3 +1,5 @@
+import { FontSpec, InteractionMode } from "chart.js";
+
 function configs(labels, datasets) {
   return {
     data: {
@@ -14,16 +16,18 @@ function configs(labels, datasets) {
       },
       interaction: {
         intersect: false,
-        mode: "index",
+        mode: "index" as InteractionMode,
       },
       scales: {
         y: {
+          border: {
+            display: false,
+            dash: [5, 5],
+          },
           grid: {
-            drawBorder: false,
             display: true,
             drawOnChartArea: true,
             drawTicks: false,
-            borderDash: [5, 5],
             color: "#c1c4ce5c",
           },
           ticks: {
@@ -32,20 +36,22 @@ function configs(labels, datasets) {
             color: "#9ca2b7",
             font: {
               size: 14,
-              weight: 300,
+              weight: "300",
               family: "Roboto",
               style: "normal",
               lineHeight: 2,
-            },
+            } as FontSpec,
           },
         },
         x: {
+          border: {
+            display: false,
+            dash: [5, 5],
+          },
           grid: {
-            drawBorder: false,
             display: true,
             drawOnChartArea: true,
             drawTicks: true,
-            borderDash: [5, 5],
             color: "#c1c4ce5c",
           },
           ticks: {
@@ -54,11 +60,11 @@ function configs(labels, datasets) {
             padding: 10,
             font: {
               size: 14,
-              weight: 300,
+              weight: "300",
               family: "Roboto",
               style: "normal",
               lineHeight: 2,
-            },
+            } as FontSpec,
           },
         },
       },

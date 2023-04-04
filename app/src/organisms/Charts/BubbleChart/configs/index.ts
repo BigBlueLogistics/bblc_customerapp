@@ -1,3 +1,4 @@
+import { FontSpec } from "chart.js";
 import typography from "assets/theme/base/typography";
 
 function configs(labels, datasets) {
@@ -15,12 +16,14 @@ function configs(labels, datasets) {
       },
       scales: {
         y: {
+          border: {
+            display: false,
+            dash: [5, 5],
+          },
           grid: {
-            drawBorder: false,
             display: true,
             drawOnChartArea: true,
             drawTicks: false,
-            borderDash: [5, 5],
           },
           ticks: {
             display: true,
@@ -31,16 +34,18 @@ function configs(labels, datasets) {
               family: typography.fontFamily,
               style: "normal",
               lineHeight: 2,
-            },
+            } as FontSpec,
           },
         },
         x: {
+          border: {
+            display: false,
+            dash: [5, 5],
+          },
           grid: {
-            drawBorder: false,
             display: true,
             drawOnChartArea: true,
             drawTicks: false,
-            borderDash: [5, 5],
           },
           ticks: {
             display: true,
@@ -51,7 +56,7 @@ function configs(labels, datasets) {
               family: typography.fontFamily,
               style: "normal",
               lineHeight: 2,
-            },
+            } as FontSpec,
           },
         },
       },

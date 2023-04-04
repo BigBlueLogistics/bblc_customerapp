@@ -1,6 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMemo } from "react";
 import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 
@@ -9,6 +17,8 @@ import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/BarCharts/HorizontalBarChart/configs";
 import colors from "assets/theme/base/colors";
 import { IHorizontalBarChart } from "./types";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function HorizontalBarChart({ icon, title, description, height, chart }: IHorizontalBarChart) {
   const chartDatasets = chart.datasets

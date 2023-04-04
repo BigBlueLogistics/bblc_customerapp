@@ -1,3 +1,5 @@
+import { FontSpec } from "chart.js";
+
 function configs(labels, datasets) {
   return {
     data: {
@@ -5,7 +7,7 @@ function configs(labels, datasets) {
       datasets: [...datasets],
     },
     options: {
-      indexAxis: "y",
+      indexAxis: "y" as const,
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
@@ -15,12 +17,14 @@ function configs(labels, datasets) {
       },
       scales: {
         y: {
+          border: {
+            display: false,
+            dash: [5, 5],
+          },
           grid: {
-            drawBorder: false,
             display: true,
             drawOnChartArea: true,
             drawTicks: false,
-            borderDash: [5, 5],
             color: "#c1c4ce5c",
           },
           ticks: {
@@ -29,16 +33,19 @@ function configs(labels, datasets) {
             color: "#9ca2b7",
             font: {
               size: 14,
-              weight: 300,
+              weight: "300",
               family: "Roboto",
               style: "normal",
-              lineHeight: 2,
-            },
+              lineHeight: "2",
+            } as FontSpec,
           },
         },
         x: {
+          border: {
+            display: false,
+            dash: [5, 5],
+          },
           grid: {
-            drawBorder: false,
             display: false,
             drawOnChartArea: true,
             drawTicks: true,
@@ -50,11 +57,11 @@ function configs(labels, datasets) {
             padding: 10,
             font: {
               size: 14,
-              weight: 300,
+              weight: "300",
               family: "Roboto",
               style: "normal",
               lineHeight: 2,
-            },
+            } as FontSpec,
           },
         },
       },

@@ -1,4 +1,5 @@
 /* eslint-disable no-dupe-keys */
+import { InteractionMode } from "chart.js";
 import colors from "assets/theme/base/colors";
 
 const { gradients, dark } = colors;
@@ -43,12 +44,14 @@ function configs(labels, datasets) {
       },
       interaction: {
         intersect: false,
-        mode: "index",
+        mode: "index" as InteractionMode,
       },
       scales: {
         y: {
+          border: {
+            display: false,
+          },
           grid: {
-            drawBorder: false,
             display: false,
             drawOnChartArea: false,
             drawTicks: false,
@@ -58,8 +61,10 @@ function configs(labels, datasets) {
           },
         },
         x: {
+          border: {
+            display: false,
+          },
           grid: {
-            drawBorder: false,
             display: false,
             drawOnChartArea: false,
             drawTicks: false,
