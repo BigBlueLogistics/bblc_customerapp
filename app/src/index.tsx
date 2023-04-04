@@ -1,4 +1,4 @@
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "App";
 
@@ -11,7 +11,9 @@ import { PersistGate } from "redux-persist/integration/react";
 import configStore from "redux/store";
 
 const { store, persistor } = configStore();
-ReactDOM.render(
+const root = createRoot(document.getElementById("root"));
+
+root.render(
   <Provider store={store}>
     <BrowserRouter basename="/portal/">
       <PersistGate loading={null} persistor={persistor}>
@@ -20,6 +22,5 @@ ReactDOM.render(
         </MaterialUIControllerProvider>
       </PersistGate>
     </BrowserRouter>
-  </Provider>,
-  document.getElementById("root")
+  </Provider>
 );
