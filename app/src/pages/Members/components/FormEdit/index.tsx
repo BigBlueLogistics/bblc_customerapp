@@ -129,7 +129,7 @@ function FormEdit({
                 variant="standard"
                 value={values.customer_code}
                 error={touched.customer_code && Boolean(errors.customer_code)}
-                helperText={touched.customer_code ? errors.customer_code : ""}
+                helperText={touched.customer_code ? (errors.customer_code as string) : ""}
                 onChange={handleChange}
               />
             </MDBox>
@@ -144,7 +144,7 @@ function FormEdit({
                 variant="standard"
                 value={values.company_name}
                 error={touched.company_name && Boolean(errors.company_name)}
-                helperText={touched.company_name ? errors.company_name : ""}
+                helperText={touched.company_name ? (errors.company_name as string) : ""}
                 onChange={handleChange}
               />
             </MDBox>
@@ -157,7 +157,7 @@ function FormEdit({
                 variant="standard"
                 value={values.fname}
                 error={touched.fname && Boolean(errors.fname)}
-                helperText={touched.fname ? errors.fname : ""}
+                helperText={touched.fname ? (errors.fname as string) : ""}
                 onChange={handleChange}
               />
               <MDInput
@@ -168,7 +168,7 @@ function FormEdit({
                 variant="standard"
                 value={values.lname}
                 error={touched.lname && Boolean(errors.lname)}
-                helperText={touched.lname ? errors.lname : ""}
+                helperText={touched.lname ? (errors.lname as string) : ""}
                 onChange={handleChange}
               />
             </MDBox>
@@ -182,7 +182,7 @@ function FormEdit({
                 variant="standard"
                 value={values.email}
                 error={touched.email && Boolean(errors.email)}
-                helperText={touched.email ? errors.email : ""}
+                helperText={touched.email ? (errors.email as string) : ""}
                 onChange={handleChange}
               />
             </MDBox>
