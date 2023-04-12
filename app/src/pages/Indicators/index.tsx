@@ -99,6 +99,25 @@ function Indicators() {
         </MDBox>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <MDBox mb={3}>
+                <ReportsLineChart
+                  color="success"
+                  title="Inbound/Outbound by Weight and Pallets"
+                  description={
+                    <>
+                      (<strong>+20%</strong>) weekly.
+                    </>
+                  }
+                  date="updated"
+                  chart={sales}
+                />
+              </MDBox>
+            </Grid>
+          </Grid>
+        </MDBox>
+        <MDBox mt={4.5}>
+          <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
               <MDBox mb={3}>
                 <HorizontalBarChart
