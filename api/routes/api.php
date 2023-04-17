@@ -6,6 +6,7 @@ use App\Http\Controllers\MembersController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\IndicatorsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -69,4 +70,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/status/list', [OrderController::class, 'statusList']);
     });
 
+    Route::prefix('indicators')->group(function(){
+        Route::get('/in-out-bound', [IndicatorsController::class, 'inoutBound']);
+        Route::get('/active-sku', [IndicatorsController::class, 'activeSku']);
+    });
 });

@@ -7,11 +7,13 @@ use App\Interfaces\IMemberRepository;
 use App\Interfaces\IReportsRepository;
 use App\Interfaces\IWarehouseRepository;
 use App\Interfaces\IOrderRepository;
+use App\Interfaces\IIndicatorsRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\MemberRepository;
 use App\Repository\ReportsRepository;
 use App\Repository\WarehouseRepository;
 use App\Repository\OrderRepository;
+use App\Repository\IndicatorsRepository;
 use App\Support\SapRfc;
 use Illuminate\Support\ServiceProvider;
 
@@ -32,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(IReportsRepository::class, ReportsRepository::class);
         $this->app->bind(IMemberRepository::class, MemberRepository::class);
         $this->app->bind(IOrderRepository::class, OrderRepository::class);
+        $this->app->bind(IIndicatorsRepository::class, IndicatorsRepository::class);
     }
 
     /**
