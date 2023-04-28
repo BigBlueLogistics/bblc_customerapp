@@ -53,10 +53,26 @@ class InventoryRepository implements IInventoryRepository
             // ->param('IV_ROWS', '');
         ->getData();
 
+        // Get sales unit
+        $salesUnit = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+        ->param('QUERY_TABLE', 'MVKE')
+        ->param('DELIMITER', ';')
+        ->param('OPTIONS', [
+            ['TEXT' => "MANDT EQ {$mandt}"],
+            ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+            ['TEXT' => " AND VRKME NE ''"],
+        ])
+        ->param('FIELDS', [
+            ['FIELDNAME' => 'MATNR'],
+            ['FIELDNAME' => 'VRKME'],
+        ])
+        ->getDataToArray();
+
         $utf8_data_ordim = $this->convert_latin1_to_utf8_recursive($ordim);
 
         $collectionProducts = collect($utf8_data['T_SCWM_AQUA']);
         $collectionFixedWt = collect($fixedWt);
+        $collectionSalesUnit = collect($salesUnit);
         $collectionPicking = collect($utf8_data_ordim['T_SCWM_ORDIM']);
 
         $groupProductDetails = $collectionProducts->groupBy('MATNR')
@@ -93,14 +109,39 @@ class InventoryRepository implements IInventoryRepository
                     ];
                 });
 
-        $keyedFixedWt = $collectionFixedWt->mapWithKeys(function ($item) {
-            return [
-                $item['MATNR'] => [
-                    'unit' => is_null($item['MEINH']) ? 'KG' : $item['MEINH'],
-                    'fixedWt' => is_null($item['UMREZ']) ? 1 : (float) $item['UMREZ'] / (float) $item['UMREN'],
-                ],
-            ];
+        $keyedSalesUnit = $collectionSalesUnit->reduce(function($carry, $item){
+            $prev = $carry ?? [];
+            if(!array_key_exists($item['MATNR'], $prev))
+            {
+                $prev[$item['MATNR']]['unit'] = $item['VRKME'];
+            }
+
+            return $prev;
         });
+
+        $keyedFixedWt = $collectionFixedWt->reduce(function($carry, $item) use ($keyedSalesUnit){
+            $prev = $carry ?? [];
+
+            if(!array_key_exists($item['MATNR'], $prev)){
+
+                // Material no. exists in sales unit.
+                if(array_key_exists($item['MATNR'], $keyedSalesUnit)){
+                    $salesUnit = $keyedSalesUnit[$item['MATNR']]['unit'];
+
+                    // MEINH match in sales unit compute the fixed weight
+                    if($salesUnit === $item['MEINH']){
+                        $prev[$item['MATNR']]['unit'] = $salesUnit;
+                        $prev[$item['MATNR']]['fixedWt'] = (float) $item['UMREZ'] / (float) $item['UMREN'];
+                    }
+                }
+                else{
+                    $prev[$item['MATNR']]['unit'] = is_null($item['MEINH']) ? 'KG' : $item['MEINH'];
+                    $prev[$item['MATNR']]['fixedWt'] = is_null($item['UMREZ']) ? 1 : (float) $item['UMREZ'] / (float) $item['UMREN'];
+                }
+            }
+
+            return $prev;
+        }, []);
 
         // Add up vsolm
         $totalVsolmWt = $collectionPicking->mapToGroups(function ($item) {
