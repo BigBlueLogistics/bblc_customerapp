@@ -143,10 +143,10 @@ export default function miscData() {
   };
 
   const typeReportsData = [
-    {
-      value: "stock-status",
-      label: "Stock Status",
-    },
+    // {
+    //   value: "stock-status",
+    //   label: "Stock Status",
+    // },
     {
       value: "wh-snapshot",
       label: "WH Snapshot",
