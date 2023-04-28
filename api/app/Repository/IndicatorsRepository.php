@@ -110,9 +110,11 @@ class IndicatorsRepository implements IIndicatorsRepository
 
       $collectionSku = collect($arr);
 
+
       return [
-        'inboundCount' => $collectionSku->where('BWART', '=', 501)->count(),
-        'outboundCount' => $collectionSku->where('BWART', '!=', 501)->count(),
+        'inboundSum' => $collectionSku->where('BWART', '=', 501)->sum('BRGEW'),
+        'outboundSum' => $collectionSku->where('BWART', '!=', 501)->sum('BRGEW'), // round off 3 digits
+        'transactionCount'=> $collectionSku->unique('VBELN')->count(),
         'activeSku' => $collectionSku->unique('MATNR')->count(),
       ];
     }
