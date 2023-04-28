@@ -87,7 +87,7 @@ RUN apt install php8.1-dev php8.1-xml -y
 
 # MSSQL Driver Installation and PHP extension
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-    curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
     apt-get update && \
     ACCEPT_EULA=Y apt-get install -y msodbcsql17 && \
     ACCEPT_EULA=Y apt-get install -y mssql-tools && \
@@ -113,7 +113,7 @@ RUN ln -s /usr/lib/oracle/19.15/client64/lib/libclntsh.so.19.1 libclntsh.so && \
 RUN echo /usr/lib/oracle/19.15/client64/lib > /etc/ld.so.conf.d/oracle.conf && \
     ldconfig
 
-RUN pecl install oci8 && \
+RUN pecl install oci8-3.2.1 && \
     echo "extension=oci8.so" >> /etc/php/8.1/fpm/php.ini && \
     printf "; priority=20\nextension=oci8.so\n" > /etc/php/8.1/mods-available/oci8.ini && \
     phpenmod -v 8.1 oci8
