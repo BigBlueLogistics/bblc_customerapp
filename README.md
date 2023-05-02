@@ -40,3 +40,11 @@ docker-compose -f <docker-compose-config-filename> up -d
 # Service names: app = frontend, api = backend
 docker-compose -f <docker-compose-config-filename> run <service_name>
 ```
+
+**SSL Installation**
+
+NOTE: Generate a CSR in Docker host not in docker container itself. [Reference link](https://ph.godaddy.com/help/apache-generate-csr-certificate-signing-request-5269)
+
+```bash
+openssl req -new -newkey rsa:2048 -nodes -keyout yourdomain.key -out yourdomain.csr
+```
