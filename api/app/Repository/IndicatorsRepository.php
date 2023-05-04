@@ -112,8 +112,8 @@ class IndicatorsRepository implements IIndicatorsRepository
 
 
       return [
-        'inboundSum' => round($collectionSku->where('BWART', '=', 501)->sum('BRGEW'), 3),
-        'outboundSum' => round($collectionSku->where('BWART', '!=', 501)->sum('BRGEW'), 3), // round off 3 digits
+        'inboundSum' => number_format(round($collectionSku->where('BWART', '=', 501)->sum('BRGEW'), 3), 3),
+        'outboundSum' => number_format(round($collectionSku->where('BWART', '!=', 501)->sum('BRGEW'), 3), 3), // round off 3 digits
         'transactionCount'=> $collectionSku->unique('VBELN')->count(),
         'activeSku' => $collectionSku->unique('MATNR')->count(),
       ];
