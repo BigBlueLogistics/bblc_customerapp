@@ -25,7 +25,7 @@ import SignUp from "pages/Authentication/SignUp";
 import ResetPasswordLink from "pages/Authentication/ResetPasswordLink";
 import ResetPassword from "pages/Authentication/ResetPassword";
 import Inventory from "pages/Inventory";
-import Movements from "pages/Movements";
+// import Movements from "pages/Movements";
 import Orders from "pages/Orders";
 import Reports from "pages/Reports";
 import DefaultPage from "pages/DefaultPage";
@@ -159,7 +159,7 @@ const routes: RoutesType = [
     key: "movements",
     icon: <TrendingUpIcon />,
     route: "/movements",
-    component: <Movements />,
+    component: <UnderConstruction />,
     access: "protected",
     allowedRoles: ["sysadmin", "user"],
   },
