@@ -19,7 +19,7 @@ function Transaction({ data }: { data: TWaveChart["data"]["inboundPerWeek"] }) {
             chart={{
               labels,
               datasets: {
-                label: "Transactions",
+                label: "Inbound/Outbound",
                 data: dataSets,
               },
             }}

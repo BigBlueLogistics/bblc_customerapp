@@ -19,7 +19,7 @@ function WtandPallets({ data }: { data: TWaveChart["data"]["outboundPerWeek"] })
             chart={{
               labels,
               datasets: {
-                label: "Transactions",
+                label: "Inbound/Outbound",
                 data: dataSets,
               },
             }}
