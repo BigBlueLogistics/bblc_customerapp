@@ -54,7 +54,7 @@ function MDSelect({
   };
 
   return (
-    <MDFormControlRoot sx={{ m: 1, minWidth: 130 }} {...rest}>
+    <MDFormControlRoot {...rest}>
       <InputLabel id={`select-label-${label}`}>{label}</InputLabel>
       <MDSelectRoot
         name={name}

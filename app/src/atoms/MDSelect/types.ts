@@ -1,4 +1,4 @@
-import { SxProps } from "@mui/system";
+import { SxProps, Theme } from "@mui/system";
 
 export type IMDSelect = {
   variant: "filled" | "standard" | "outlined";
@@ -12,8 +12,8 @@ export type IMDSelect = {
   optKeyLabel?: string;
   options: { value: string | number; label: string }[] | string[];
   value: string | number;
-  sx?: SxProps;
-  itemStyle?: SxProps;
+  sx?: SxProps<Theme>;
+  itemStyle?: SxProps<Theme>;
   withOptionKeys?: boolean;
 };
 
