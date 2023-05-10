@@ -50,6 +50,21 @@ export default function miscData() {
     },
   ];
 
+  const movementType = [
+    {
+      value: "all",
+      label: "All",
+    },
+    {
+      value: "inbound",
+      label: "Inbound",
+    },
+    {
+      value: "outbound",
+      label: "Outbound",
+    },
+  ];
+
   const groupByData = {
     stock: [
       {
@@ -124,6 +139,7 @@ export default function miscData() {
   return {
     tableHeaders,
     typeReportsData,
+    movementType,
     groupByData,
     initialFiltered,
     initialNotification,

@@ -20,6 +20,14 @@ declare module "@mui/material/styles" {
     badgeColors: { [key: string]: any };
     icons: { [key: string]: any };
     inputBorderColor: string;
+    searchFilter: {
+      container: {
+        default: string;
+      };
+      input: {
+        main: string;
+      };
+    };
   }
   interface PaletteOptions {
     white: { main: string; focus: string };
@@ -39,6 +47,14 @@ declare module "@mui/material/styles" {
     badgeColors: { [key: string]: any };
     icons: { [key: string]: any };
     inputBorderColor: string;
+    searchFilter: {
+      container: {
+        default: string;
+      };
+      input: {
+        main: string;
+      };
+    };
   }
   interface PaletteColor {
     darker?: string;

@@ -1,13 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect, ChangeEvent } from "react";
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
+import { Grid, Card, Icon } from "@mui/material";
 
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDSelect from "atoms/MDSelect";
 import MDSnackbar from "atoms/MDSnackbar";
-import MDatePicker from "atoms/MDatePicker";
+import MDateRangePicker from "atoms/MDateRangePicker";
 import MDButton from "atoms/MDButton";
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
@@ -22,14 +21,15 @@ import miscData from "./data";
 import { INotifyOrder, IFormOrderState, ITableOrder, IFiltered } from "./types";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
+import AutoCompleteMaterial from "./components/AutoCompleteMaterial";
 import { IMenuAction } from "./components/MenuAction/types";
 
 function Movements() {
   const dispatch = useAppDispatch();
-  const { tableHeaders, initialFiltered, initialNotification } = miscData();
+  const { tableHeaders, initialFiltered, initialNotification, movementType } = miscData();
   const [showNotify, setShowNotify] = useState<INotifyOrder>(initialNotification);
   const [showForm] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const [warehouseList, setWarehouseList] = useState([]);
   const [statusList, setStatusList] = useState([]);
   const [action, setAction] = useState(null);
@@ -74,12 +74,8 @@ function Movements() {
     setFiltered((prev) => ({ ...prev, status: e.target.value }));
   };
 
-  const onCreatedAt = (date: Date) => {
-    setFiltered((prev) => ({ ...prev, createdAt: date }));
-  };
-
-  const onLastModified = (date: Date) => {
-    setFiltered((prev) => ({ ...prev, lastModified: date }));
+  const onCoveredDate = (date: [Date, Date]) => {
+    console.log("selected Date", date);
   };
 
   const onToggleFilter = () => {
@@ -257,9 +253,9 @@ function Movements() {
 
               <MDBox pt={3}>
                 <MDBox
-                  sx={({ palette: { grey } }) => ({
+                  sx={({ palette: { grey, searchFilter } }) => ({
                     display: toggleFilter ? "block" : "none",
-                    backgroundColor: grey[200],
+                    backgroundColor: searchFilter.container.default,
                     borderTop: `2px solid ${grey[400]}`,
                     width: "100%",
                     overflowX: "auto",
@@ -277,39 +273,35 @@ function Movements() {
                     })}
                   >
                     <MDSelect
-                      label="Status"
+                      label="Movement Type"
                       variant="outlined"
                       onChange={onChangeStatus}
-                      options={statusList}
-                      value={filtered.status}
+                      options={movementType}
+                      value="inbound"
                       showArrowIcon
-                      optKeyValue="id"
-                      optKeyLabel="name"
                       itemStyle={{
                         textTransform: "uppercase",
                       }}
+                      sx={({ palette }) => ({
+                        "& .MuiInputBase-root": {
+                          backgroundColor: `${palette.searchFilter.input.main} !important`,
+                        },
+                      })}
+                    />
+
+                    <AutoCompleteMaterial
+                      options={[]}
+                      value=""
+                      onChange={(value) => console.log("material", value)}
                     />
 
                     <MDBox margin="8px">
-                      <MDatePicker
-                        label="Created at"
-                        onChange={onCreatedAt}
-                        inputVariant="outlined"
-                        dateFormat="MM/dd/yyyy"
-                        minTime={new Date()}
-                        selected={filtered.createdAt}
-                        inputStyle={{ "& .MuiInputBase-root": { backgroundColor: "#fff" } }}
-                      />
-                    </MDBox>
-
-                    <MDBox margin="8px">
-                      <MDatePicker
-                        label="Last modified"
-                        onChange={onLastModified}
-                        inputVariant="outlined"
-                        dateFormat="MM/dd/yyyy"
-                        selected={filtered.lastModified}
-                        inputStyle={{ "& .MuiInputBase-root": { backgroundColor: "#fff" } }}
+                      <MDateRangePicker
+                        label="Covered Date"
+                        onChange={onCoveredDate}
+                        buttonStyle={({ palette }) => ({
+                          backgroundColor: `${palette.searchFilter.input.main} !important`,
+                        })}
                       />
                     </MDBox>
 
@@ -336,7 +328,7 @@ function Movements() {
                 <DataTable
                   table={{
                     columns: tableHeaders(),
-                    rows: tableOrders.data,
+                    rows: [],
                   }}
                   isSorted={false}
                   isLoading={tableOrders.status === "loading"}
