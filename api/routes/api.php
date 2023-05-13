@@ -7,6 +7,7 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\IndicatorsController;
+use App\Http\Controllers\MovementController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -73,5 +74,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('indicators')->group(function(){
         Route::get('/in-out-bound', [IndicatorsController::class, 'inoutBound']);
         Route::get('/active-sku', [IndicatorsController::class, 'activeSku']);
+    });
+
+    Route::prefix('movements')->group(function(){
+        Route::get('/', [MovementController::class, 'index']);
     });
 });
