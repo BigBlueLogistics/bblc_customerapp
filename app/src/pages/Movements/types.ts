@@ -34,6 +34,10 @@ export type IOrderData = {
 };
 
 export type IFiltered = {
+  warehouse: string;
+  type: string;
+  materialCode: string;
+  coverageDate: [Date, Date];
   status: string;
   createdAt: Date | null;
   lastModified: Date | null;

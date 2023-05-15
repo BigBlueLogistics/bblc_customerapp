@@ -1,4 +1,4 @@
-import { INotifyOrder, IOrderData } from "../types";
+import { INotifyOrder, IOrderData, IFiltered } from "../types";
 
 export default function miscData() {
   const commonHeadersAttr = {
@@ -100,7 +100,11 @@ export default function miscData() {
     ],
   };
 
-  const initialFiltered = {
+  const initialFiltered: IFiltered = {
+    warehouse: "",
+    type: "",
+    materialCode: null,
+    coverageDate: [null, null],
     status: "",
     createdAt: null,
     lastModified: null,

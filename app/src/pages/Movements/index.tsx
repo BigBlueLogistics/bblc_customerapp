@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect, ChangeEvent } from "react";
 import { Grid, Card, Icon } from "@mui/material";
+import { addMonths } from "date-fns";
 
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
@@ -18,20 +18,23 @@ import { setIsAuthenticated } from "redux/auth/action";
 import { inventoryServices, ordersServices } from "services";
 import { AxiosError } from "axios";
 import miscData from "./data";
+import selector from "./selector";
 import { INotifyOrder, IFormOrderState, ITableOrder, IFiltered } from "./types";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import AutoCompleteMaterial from "./components/AutoCompleteMaterial";
+import { IAutoCompleteMaterialData } from "./components/AutoCompleteMaterial/types";
 import { IMenuAction } from "./components/MenuAction/types";
 
 function Movements() {
   const dispatch = useAppDispatch();
+  const { customerCode } = selector();
   const { tableHeaders, initialFiltered, initialNotification, movementType } = miscData();
   const [showNotify, setShowNotify] = useState<INotifyOrder>(initialNotification);
   const [showForm] = useState(false);
 
   const [warehouseList, setWarehouseList] = useState([]);
-  const [statusList, setStatusList] = useState([]);
+  const [materialList, setMaterialList] = useState([]);
   const [action, setAction] = useState(null);
   const [error, setError] = useState<AxiosError | null>(null);
   const [toggleFilter, setToggleFilter] = useState(true);
@@ -70,12 +73,21 @@ function Movements() {
     });
   };
 
-  const onChangeStatus = (e: ChangeEvent<HTMLInputElement>) => {
-    setFiltered((prev) => ({ ...prev, status: e.target.value }));
+  const onMovementType = (e: ChangeEvent<HTMLInputElement>) => {
+    setFiltered((prev) => ({ ...prev, type: e.target.value }));
   };
 
-  const onCoveredDate = (date: [Date, Date]) => {
-    console.log("selected Date", date);
+  const onWarehouse = (e: ChangeEvent<HTMLInputElement>) => {
+    setFiltered((prev) => ({ ...prev, warehouse: e.target.value }));
+  };
+
+  const onMaterial = (value: IAutoCompleteMaterialData) => {
+    const materialCode = value?.material || null;
+    setFiltered((prev) => ({ ...prev, materialCode }));
+  };
+
+  const onCoverageDate = (date: [Date, Date]) => {
+    setFiltered((prev) => ({ ...prev, coverageDate: date }));
   };
 
   const onToggleFilter = () => {
@@ -113,11 +125,14 @@ function Movements() {
     }
   };
 
-  const fetchStatusList = async () => {
+  const fetchMaterialDescription = async (code: string, warehouse: string) => {
     try {
-      const { data: rows } = await ordersServices.getStatusList();
-
-      setStatusList(rows.data);
+      const { data: resp } = await ordersServices.getMaterialDescription({
+        params: { customerCode: code, warehouseNo: warehouse },
+      });
+      if (resp) {
+        setMaterialList(resp.data);
+      }
     } catch (err) {
       setError(err);
     }
@@ -149,10 +164,15 @@ function Movements() {
   useEffect(() => {
     fetchOrderList(initialFiltered);
     fetchWarehouseList();
-    fetchStatusList();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const warehouseNo = filtered.warehouse;
+    if (customerCode && warehouseNo) {
+      fetchMaterialDescription(customerCode, warehouseNo);
+    }
+  }, [customerCode, filtered.warehouse]);
 
   useEffect(() => {
     if (error?.response?.statusText === "Unauthorized" && error?.response?.status === 401) {
@@ -273,11 +293,30 @@ function Movements() {
                     })}
                   >
                     <MDSelect
+                      label="Warehouse"
+                      variant="outlined"
+                      onChange={onWarehouse}
+                      options={warehouseList}
+                      value={filtered.warehouse}
+                      showArrowIcon
+                      itemStyle={{
+                        textTransform: "uppercase",
+                      }}
+                      sx={({ palette }) => ({
+                        "& .MuiInputBase-root": {
+                          backgroundColor: `${palette.searchFilter.input.main} !important`,
+                        },
+                      })}
+                      optKeyValue="PLANT"
+                      optKeyLabel="NAME1"
+                    />
+
+                    <MDSelect
                       label="Movement Type"
                       variant="outlined"
-                      onChange={onChangeStatus}
+                      onChange={onMovementType}
                       options={movementType}
-                      value="inbound"
+                      value={filtered.type}
                       showArrowIcon
                       itemStyle={{
                         textTransform: "uppercase",
@@ -290,18 +329,22 @@ function Movements() {
                     />
 
                     <AutoCompleteMaterial
-                      options={[]}
-                      value=""
-                      onChange={(value) => console.log("material", value)}
+                      options={materialList}
+                      value={filtered.materialCode}
+                      onChange={onMaterial}
                     />
 
                     <MDBox margin="8px">
                       <MDateRangePicker
-                        label="Covered Date"
-                        onChange={onCoveredDate}
+                        label="Coverage Date"
+                        onChange={onCoverageDate}
                         buttonStyle={({ palette }) => ({
                           backgroundColor: `${palette.searchFilter.input.main} !important`,
                         })}
+                        maxDate={addMonths(
+                          filtered.coverageDate[0],
+                          3
+                        )} /* up to 3 months can select */
                       />
                     </MDBox>
 
