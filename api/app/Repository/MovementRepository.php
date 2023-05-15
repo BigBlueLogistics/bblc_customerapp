@@ -6,31 +6,25 @@ use Illuminate\Support\Facades\DB;
 use App\Interfaces\IMovementRepository;
 use App\Facades\SapRfcFacade;
 use App\Traits\StringEncode;
-use Carbon\Carbon;
 
 class MovementRepository implements IMovementRepository
 {
     use StringEncode;
 
-    // TODO: In UI Covered Date Max of 3 months display.
     public function outboundMov($materialCode, $fromDate, $toDate, $warehouseNo)
     {
-        $formatFromDate = Carbon::createFromFormat('Y/m/d', $fromDate)->format('Ymd');
-        $formatToDate = Carbon::createFromFormat('Y/m/d', $toDate)->format('Ymd');
-        $formatWarehouse = str_replace('H', '', $warehouseNo);
-
         $mandt = SapRfcFacade::getMandt();
         $lips = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
             ->param('QUERY_TABLE', 'LIPS')
             ->param('DELIMITER', ';')
             ->param('OPTIONS', [
                 ['TEXT' => "MANDT EQ '{$mandt}'"],
-                ['TEXT' => " AND LGNUM EQ '{$formatWarehouse}'"],
+                ['TEXT' => " AND LGNUM EQ '{$warehouseNo}'"],
                 ['TEXT' => " AND MATNR EQ '{$materialCode}'"],
                 ['TEXT' => " AND CHARG NE ''"],
                 ['TEXT' => " AND VBELN NOT LIKE '018%'"],
-                ['TEXT' => " AND (ERDAT >= '{$formatFromDate}'"],
-                ['TEXT' => " AND ERDAT <= '{$formatToDate}')"],
+                ['TEXT' => " AND (ERDAT >= '{$fromDate}'"],
+                ['TEXT' => " AND ERDAT <= '{$toDate}')"],
             ])
             ->param('FIELDS', [
                 ['FIELDNAME' => 'VBELN'],
@@ -45,9 +39,9 @@ class MovementRepository implements IMovementRepository
             ])
             ->getDataToArray();
 
-            $data = [];
+            $outbound = [];
             if(count($lips)){
-               $data = collect($lips)->map(function($item) use ($mandt){
+               $outbound = collect($lips)->map(function($item) use ($mandt){
                     $vgbel = $item['VGBEL'];
                     $textLines = SapRfcFacade::functionModule('RFC_READ_TEXT')
                                 ->param('TEXT_LINES', array(
@@ -76,35 +70,28 @@ class MovementRepository implements IMovementRepository
 
                     return [
                         ...$item,
-                        'HEADER' => $textLines['TEXT_LINES'][0]['TDLINE'] ?? "",
-                        'REFRN' => $vbak[0]['BSTNK'] ?? ""
+                        'header' => $textLines['TEXT_LINES'][0]['TDLINE'] ?? "",
+                        'refrn' => $vbak[0]['BSTNK'] ?? ""
                     ];
                 });
             }
 
-        return $data;
+        return $outbound;
     }
 
     public function inboundMov($materialCode, $fromDate, $toDate, $warehouseNo)
     {
-        // Note: join table LIPS and LIKP
-        // in LIKP get only field HEADR and
-        // in LIPS get all fields
-        // bwmid = vbeln
-        $formatFromDate = Carbon::createFromFormat('Y/m/d', $fromDate)->format('Ymd');
-        $formatToDate = Carbon::createFromFormat('Y/m/d', $toDate)->format('Ymd');
-
-        $res = DB::connection('wms-prd')->table('lips')
+        $inbound = DB::connection('wms-prd')->table('lips')
                 ->leftJoin('likp','lips.vbeln','=','likp.vbeln')
-                ->select('lips.*','likp.headr')
+                ->select('lips.*', 'lips.maktx AS ARKTX', 'lips.meinh as VRKME' ,'likp.headr', 'likp.erdat')
                 ->where('lips.lgnum','=',$warehouseNo)
                 ->where('lips.matnr','=', $materialCode)
                 ->where('lips.charg','!=', 'null')
                 ->where('lips.bwmid','not like','018%')
-                ->whereBetween('likp.erdat', [$formatFromDate, $formatToDate])
+                ->whereBetween('likp.erdat', [$fromDate, $toDate])
                 ->get();
 
-        return $res;
+        return $inbound;
 
     }
 }

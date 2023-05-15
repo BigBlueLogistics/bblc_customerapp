@@ -8,29 +8,34 @@ export default function miscData() {
 
   const tableHeaders = () => [
     {
-      Header: "Transaction No.",
-      accessor: "transid",
+      Header: "Description",
+      accessor: "maktx",
       ...commonHeadersAttr,
     },
     {
-      Header: "Reference No.",
-      accessor: "ref_number",
-      ...commonHeadersAttr,
-    },
-    {
-      Header: "Status",
-      accessor: "status",
+      Header: "Batch",
+      accessor: "",
       ...commonHeadersAttr,
       align: "center",
     },
     {
-      Header: "Created at",
+      Header: "Expiration",
       align: "left",
       Cell: ({ row }) => `${row.original.created_date} ${row.original.created_time}`,
     },
     {
-      Header: "Last modified",
-      accessor: "last_modified",
+      Header: "Quantity",
+      accessor: "",
+      ...commonHeadersAttr,
+    },
+    {
+      Header: "Unit",
+      accessor: "",
+      ...commonHeadersAttr,
+    },
+    {
+      Header: "Weight",
+      accessor: "",
       ...commonHeadersAttr,
     },
   ];
@@ -101,10 +106,10 @@ export default function miscData() {
   };
 
   const initialFiltered: IFiltered = {
-    warehouse: "",
+    warehouseNo: "",
     type: "",
     materialCode: null,
-    coverageDate: [null, null],
+    coverageDate: null,
     status: "",
     createdAt: null,
     lastModified: null,

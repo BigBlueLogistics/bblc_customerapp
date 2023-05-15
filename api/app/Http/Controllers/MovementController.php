@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Traits\HttpResponse;
 use App\Interfaces\IMovementRepository;
 use App\Http\Requests\MovementRequest;
+use Carbon\Carbon;
 
 class MovementController extends Controller
 {
@@ -23,16 +24,20 @@ class MovementController extends Controller
             $request->validated($request->all());
 
             $materialCode = $request->input('material_code');
-            $fromDate = $request->input('from_date');
-            $toDate = $request->input('to_date');
+            [$fromDate, $toDate] = $request->input('coverage_date');
             $warehouseNo = $request->input('warehouse_no');
             $movementType = $request->input('movement_type');
+ 
+            $formatFromDate = Carbon::parse($fromDate)->format('Ymd');
+            $formatToDate = Carbon::parse($toDate)->format('Ymd');
 
             if($movementType === "outbound"){
-                $res = $this->movement->outboundMov($materialCode, $fromDate, $toDate, $warehouseNo);
+                $formatWarehouse = str_replace('BB', 'W', $warehouseNo);
+                $res = $this->movement->outboundMov($materialCode, $formatFromDate, $formatToDate, $formatWarehouse);
             }
             else if($movementType === "inbound"){
-                $res = $this->movement->inboundMov($materialCode, $fromDate, $toDate, $warehouseNo);
+                $formatWarehouse = str_replace('BB', 'WH', $warehouseNo);
+                $res = $this->movement->inboundMov($materialCode, $formatFromDate, $formatToDate, $formatWarehouse);
             }
 
             return $this->sendResponse($res, "Movements details");

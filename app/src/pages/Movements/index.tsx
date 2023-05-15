@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect, ChangeEvent } from "react";
 import { Grid, Card, Icon } from "@mui/material";
-import { addMonths } from "date-fns";
+import { addMonths, format } from "date-fns";
 
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
@@ -15,7 +16,7 @@ import DataTable from "organisms/Tables/DataTable";
 import { useAppDispatch } from "hooks";
 import { setIsAuthenticated } from "redux/auth/action";
 
-import { inventoryServices, ordersServices } from "services";
+import { inventoryServices, ordersServices, movementServices } from "services";
 import { AxiosError } from "axios";
 import miscData from "./data";
 import selector from "./selector";
@@ -78,7 +79,7 @@ function Movements() {
   };
 
   const onWarehouse = (e: ChangeEvent<HTMLInputElement>) => {
-    setFiltered((prev) => ({ ...prev, warehouse: e.target.value }));
+    setFiltered((prev) => ({ ...prev, warehouseNo: e.target.value }));
   };
 
   const onMaterial = (value: IAutoCompleteMaterialData) => {
@@ -87,6 +88,10 @@ function Movements() {
   };
 
   const onCoverageDate = (date: [Date, Date]) => {
+    // const from = date[0] && format(date[0], "yyyy/MM/dd");
+    // const to = date[1] && format(date[1], "yyyy/MM/dd");
+    // const coverageDate = [from, to] as [string, string];
+
     setFiltered((prev) => ({ ...prev, coverageDate: date }));
   };
 
@@ -94,15 +99,16 @@ function Movements() {
     setToggleFilter((prevState) => !prevState);
   };
 
-  const fetchOrderList = async ({ status, createdAt, lastModified }: IFiltered) => {
+  const fetchMovement = async ({ warehouseNo, type, materialCode, coverageDate }: IFiltered) => {
     setTableOrders((prev) => ({ ...prev, status: "loading" }));
 
     try {
-      const { data: rows } = await ordersServices.getOrderList({
+      const { data: rows } = await movementServices.getMovements({
         params: {
-          status: String(status) || null,
-          created_at: createdAt?.toLocaleDateString(),
-          last_modified: lastModified?.toLocaleDateString(),
+          material_code: materialCode,
+          movement_type: type,
+          warehouse_no: warehouseNo,
+          coverage_date: coverageDate,
         },
       });
       setTableOrders({
@@ -125,10 +131,10 @@ function Movements() {
     }
   };
 
-  const fetchMaterialDescription = async (code: string, warehouse: string) => {
+  const fetchMaterialDescription = async (ccode: string, warehouseNo: string) => {
     try {
       const { data: resp } = await ordersServices.getMaterialDescription({
-        params: { customerCode: code, warehouseNo: warehouse },
+        params: { customerCode: ccode, warehouseNo },
       });
       if (resp) {
         setMaterialList(resp.data);
@@ -139,40 +145,33 @@ function Movements() {
   };
 
   const onRefresh = () => {
-    fetchOrderList(filtered);
+    fetchMovement(filtered);
     closeAction();
   };
 
   const onFilter = () => {
-    fetchOrderList(filtered);
+    fetchMovement(filtered);
   };
 
   const onClear = () => {
     setFiltered(initialFiltered);
-    fetchOrderList(initialFiltered);
+    setTableOrders({
+      message: "",
+      data: [],
+      status: "idle",
+    });
   };
 
-  // Refresh order list after create, update and cancel.
   useEffect(() => {
-    const { status, type } = formOrder;
-    if ((type === "create" || type === "update" || type === "cancel") && status === "succeeded") {
-      fetchOrderList(filtered);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formOrder]);
-
-  useEffect(() => {
-    fetchOrderList(initialFiltered);
     fetchWarehouseList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    const warehouseNo = filtered.warehouse;
-    if (customerCode && warehouseNo) {
-      fetchMaterialDescription(customerCode, warehouseNo);
+    const warehouse = filtered.warehouseNo;
+    if (customerCode && warehouse) {
+      fetchMaterialDescription(customerCode, warehouse);
     }
-  }, [customerCode, filtered.warehouse]);
+  }, [customerCode, filtered.warehouseNo]);
 
   useEffect(() => {
     if (error?.response?.statusText === "Unauthorized" && error?.response?.status === 401) {
@@ -297,7 +296,7 @@ function Movements() {
                       variant="outlined"
                       onChange={onWarehouse}
                       options={warehouseList}
-                      value={filtered.warehouse}
+                      value={filtered.warehouseNo}
                       showArrowIcon
                       itemStyle={{
                         textTransform: "uppercase",
@@ -334,6 +333,12 @@ function Movements() {
                       onChange={onMaterial}
                     />
 
+                    {console.log(
+                      "start date",
+                      filtered.coverageDate && filtered.coverageDate[0] != null
+                        ? new Date(filtered.coverageDate[0])
+                        : null
+                    )}
                     <MDBox margin="8px">
                       <MDateRangePicker
                         label="Coverage Date"
@@ -342,9 +347,15 @@ function Movements() {
                           backgroundColor: `${palette.searchFilter.input.main} !important`,
                         })}
                         maxDate={addMonths(
-                          filtered.coverageDate[0],
+                          filtered.coverageDate && new Date(filtered.coverageDate[0]),
                           3
                         )} /* up to 3 months can select */
+                        // value={
+                        //   filtered.coverageDate &&
+                        //   filtered.coverageDate.some((value) => value != null)
+                        //     ? filtered.coverageDate.join(" - ")
+                        //     : ""
+                        // }
                       />
                     </MDBox>
 
@@ -371,7 +382,7 @@ function Movements() {
                 <DataTable
                   table={{
                     columns: tableHeaders(),
-                    rows: [],
+                    rows: tableOrders.data,
                   }}
                   isSorted={false}
                   isLoading={tableOrders.status === "loading"}
