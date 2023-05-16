@@ -340,10 +340,12 @@ function Movements() {
                         buttonStyle={({ palette }) => ({
                           backgroundColor: `${palette.searchFilter.input.main} !important`,
                         })}
-                        maxDate={addMonths(
-                          filtered.coverageDate && new Date(filtered.coverageDate[0]),
-                          3
-                        )} /* up to 3 months can select */
+                        maxDate={
+                          filtered.coverageDate && filtered.coverageDate[0] != null
+                            ? addMonths(new Date(filtered.coverageDate[0]), 3)
+                            : null
+                        } /* up to 3 months can select */
+
                         // value={
                         //   filtered.coverageDate &&
                         //   filtered.coverageDate.some((value) => value != null)
