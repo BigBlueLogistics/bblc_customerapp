@@ -32,6 +32,7 @@ function MDateRangePicker({
   containerStyle,
   buttonStyle,
   disabled,
+  ...rest
 }: IMDateRangePicker) {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -57,6 +58,7 @@ function MDateRangePicker({
         minDate={startDate}
         disabled={disabled}
         customInput={<DatePickButton buttonStyle={buttonStyle} label={label} />}
+        {...rest}
       />
     </MDateRangePickerRoot>
   );

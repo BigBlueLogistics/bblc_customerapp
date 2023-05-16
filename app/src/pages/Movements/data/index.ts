@@ -1,4 +1,4 @@
-import { INotifyOrder, IOrderData } from "../types";
+import { INotifyOrder, IOrderData, IFiltered } from "../types";
 
 export default function miscData() {
   const commonHeadersAttr = {
@@ -8,29 +8,34 @@ export default function miscData() {
 
   const tableHeaders = () => [
     {
-      Header: "Transaction No.",
-      accessor: "transid",
+      Header: "Description",
+      accessor: "description",
       ...commonHeadersAttr,
     },
     {
-      Header: "Reference No.",
-      accessor: "ref_number",
-      ...commonHeadersAttr,
-    },
-    {
-      Header: "Status",
-      accessor: "status",
+      Header: "Batch",
+      accessor: "batch",
       ...commonHeadersAttr,
       align: "center",
     },
     {
-      Header: "Created at",
+      Header: "Expiration",
+      accessor: "expiration",
       align: "left",
-      Cell: ({ row }) => `${row.original.created_date} ${row.original.created_time}`,
     },
     {
-      Header: "Last modified",
-      accessor: "last_modified",
+      Header: "Quantity",
+      accessor: "quantity",
+      ...commonHeadersAttr,
+    },
+    {
+      Header: "Unit",
+      accessor: "unit",
+      ...commonHeadersAttr,
+    },
+    {
+      Header: "Weight",
+      accessor: "weight",
       ...commonHeadersAttr,
     },
   ];
@@ -47,6 +52,21 @@ export default function miscData() {
     {
       value: "aging-report",
       label: "Aging Report",
+    },
+  ];
+
+  const movementType = [
+    {
+      value: "all",
+      label: "All",
+    },
+    {
+      value: "inbound",
+      label: "Inbound",
+    },
+    {
+      value: "outbound",
+      label: "Outbound",
     },
   ];
 
@@ -85,7 +105,11 @@ export default function miscData() {
     ],
   };
 
-  const initialFiltered = {
+  const initialFiltered: IFiltered = {
+    warehouseNo: "",
+    type: "",
+    materialCode: null,
+    coverageDate: null,
     status: "",
     createdAt: null,
     lastModified: null,
@@ -124,6 +148,7 @@ export default function miscData() {
   return {
     tableHeaders,
     typeReportsData,
+    movementType,
     groupByData,
     initialFiltered,
     initialNotification,

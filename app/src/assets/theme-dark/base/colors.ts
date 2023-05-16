@@ -266,6 +266,15 @@ const colors = {
   tabs: {
     indicator: { boxShadow: "#ddd" },
   },
+
+  searchFilter: {
+    container: {
+      default: "#223e68",
+    },
+    input: {
+      main: "transparent",
+    },
+  },
 };
 
 export default colors;
