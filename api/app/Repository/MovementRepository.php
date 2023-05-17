@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use App\Interfaces\IMovementRepository;
 use App\Facades\SapRfcFacade;
 use App\Traits\StringEncode;
+use Carbon\Carbon;
 
 class MovementRepository implements IMovementRepository
 {
@@ -46,6 +47,9 @@ class MovementRepository implements IMovementRepository
             if($outbound->count()){
                $outbound = $outbound->map(function($item) use ($mandt){
                     $vgbel = $item['VGBEL'];
+                    $date = Carbon::parse($item['ERDAT'])->format('m/d/Y');
+                    $expiration = Carbon::parse($item['VFDAT'])->format('m/d/Y');
+
                     $textLines = SapRfcFacade::functionModule('RFC_READ_TEXT')
                                 ->param('TEXT_LINES', array(
                                     "TEXT_LINES" => array(
@@ -71,21 +75,18 @@ class MovementRepository implements IMovementRepository
                             ])
                             ->getDataToArray();
 
-                    // if digits start 008 or 1 = outbound, else inbound
-                    $hasMatchStr = preg_match('/^(008|1)\d+$/', $item['VBELN']);
-                    $movementType = $hasMatchStr ? "outbound" : "inbound";
-
                     return [
+                        'date' => $date,
                         'documentNo' => $item['VBELN'],
-                        'movementType' => $movementType,
+                        'movementType' => "OUTBOUND",
                         'description' => $item['ARKTX'],
                         'batch' => $item['CHARG'],
-                        'expiration' => $item['VFDAT'],
+                        'expiration' => $expiration,
                         'quantity' => $item['LFIMG'],
                         'unit' => $item['VRKME'],
                         'weight' => $item['BRGEW'],
                         'header' => $textLines['TEXT_LINES'][0]['TDLINE'] ?? "",
-                        'refrn' => $vbak[0]['BSTNK'] ?? ""
+                        'refrn' => $vbak[0]['BSTNK'] ?? "",
                     ];
                 });
             }
@@ -103,24 +104,22 @@ class MovementRepository implements IMovementRepository
                 ->where('lips.lgnum','=',$formatWarehouse)
                 ->where('lips.matnr','=', $materialCode)
                 ->where('lips.charg','!=', 'null')
-                ->where('lips.bwmid','not like','018%')
                 ->whereBetween('likp.erdat', [$fromDate, $toDate])
                 ->get();
 
                 
             $inbound = $res->map(function($item){
                 $qty = explode('/', $item->meinh)[1] ?? "";
-
-                // if digits start 008 or 1 = outbound, else inbound
-                $hasMatchStr = preg_match('/^(008|1)\d+$/', $item->vbeln);
-                $movementType = $hasMatchStr ? "outbound" : "inbound";
+                $date = Carbon::parse($item->erdat)->format('m/d/Y');
+                $expiration = Carbon::parse($item->vfdat)->format('m/d/Y');
 
                 return [
+                    'date' => $date,
                     'documentNo' => $item->vbeln,
-                    'movementType' => $movementType,
+                    'movementType' => "INBOUND",
                     'description' => $item->maktx,
                     'batch' => $item->charg,
-                    'expiration' => $item->vfdat,
+                    'expiration' => $expiration,
                     'quantity' => $item->lfimg,
                     'unit' => $qty,
                     'weight' => $item->brgew,

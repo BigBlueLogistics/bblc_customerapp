@@ -97,6 +97,9 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
     public static function afterSheet(AfterSheet $event)
     {
         $activeSheet = $event->sheet->getDelegate();
+
+        $highestDataRow = $activeSheet->getHighestRow();
+
         // Headings label
         $activeSheet->getStyle('A5:A8')->getFont()->setBold(true);
         $activeSheet->getStyle('G5:G8')->getFont()->setBold(true);
@@ -107,7 +110,13 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
 
         // Tables
 
+        if($highestDataRow > 10){
+            // Document no
+            $activeSheet->getStyle("A10:A{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        }
+
+
         // Format numberic if empty default value is dash (-).
-        // $activeSheet->getStyle('H')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
+        $activeSheet->getStyle('H')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
     }
 }

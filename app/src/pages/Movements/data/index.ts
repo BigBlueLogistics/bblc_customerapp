@@ -8,6 +8,11 @@ export default function miscData() {
 
   const tableHeaders = () => [
     {
+      Header: "Date",
+      accessor: "date",
+      ...commonHeadersAttr,
+    },
+    {
       Header: "Document No.",
       accessor: "documentNo",
       ...commonHeadersAttr,
