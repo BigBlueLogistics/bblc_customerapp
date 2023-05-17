@@ -29,15 +29,8 @@ import { IMenuAction } from "./components/MenuAction/types";
 function Inventory() {
   const dispatch = useAppDispatch();
   const { customerCode } = selector();
-  const { tableHeaders } = miscData();
-  const initialStateNotification: INotifyDownload = {
-    key: 0,
-    autoHideDuration: null,
-    open: false,
-    message: "",
-    title: "",
-    color: "primary",
-  };
+  const { tableHeaders, initialStateNotification } = miscData();
+
   const [showNotifyDownload, setShowNotifyDownload] =
     useState<INotifyDownload>(initialStateNotification);
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
