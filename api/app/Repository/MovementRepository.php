@@ -71,7 +71,13 @@ class MovementRepository implements IMovementRepository
                             ])
                             ->getDataToArray();
 
+                    // if digits start 008 or 1 = outbound, else inbound
+                    $hasMatchStr = preg_match('/^(008|1)\d+$/', $item['VBELN']);
+                    $movementType = $hasMatchStr ? "outbound" : "inbound";
+
                     return [
+                        'documentNo' => $item['VBELN'],
+                        'movementType' => $movementType,
                         'description' => $item['ARKTX'],
                         'batch' => $item['CHARG'],
                         'expiration' => $item['VFDAT'],
@@ -105,7 +111,13 @@ class MovementRepository implements IMovementRepository
             $inbound = $res->map(function($item){
                 $qty = explode('/', $item->meinh)[1] ?? "";
 
+                // if digits start 008 or 1 = outbound, else inbound
+                $hasMatchStr = preg_match('/^(008|1)\d+$/', $item->vbeln);
+                $movementType = $hasMatchStr ? "outbound" : "inbound";
+
                 return [
+                    'documentNo' => $item->vbeln,
+                    'movementType' => $movementType,
                     'description' => $item->maktx,
                     'batch' => $item->charg,
                     'expiration' => $item->vfdat,
