@@ -1,4 +1,4 @@
-import { INotifyOrder, IOrderData, IFiltered } from "../types";
+import { INotifyDownload, IFiltered } from "../types";
 
 export default function miscData() {
   const commonHeadersAttr = {
@@ -50,21 +50,6 @@ export default function miscData() {
     },
   ];
 
-  const typeReportsData = [
-    {
-      value: "stock-status",
-      label: "Stock Status",
-    },
-    {
-      value: "wh-snapshot",
-      label: "WH Snapshot",
-    },
-    {
-      value: "aging-report",
-      label: "Aging Report",
-    },
-  ];
-
   const movementType = [
     {
       value: "all",
@@ -80,41 +65,6 @@ export default function miscData() {
     },
   ];
 
-  const groupByData = {
-    stock: [
-      {
-        value: "material",
-        label: "Material",
-      },
-      {
-        value: "batch",
-        label: "Batch",
-      },
-      {
-        value: "expiry",
-        label: "Expiry Dates",
-      },
-    ],
-    aging: [
-      {
-        value: "",
-        label: "--None--",
-      },
-      {
-        value: "expiration",
-        label: "Expiration",
-      },
-      {
-        value: "receiving",
-        label: "Receiving Date",
-      },
-      {
-        value: "production",
-        label: "Production Date",
-      },
-    ],
-  };
-
   const initialFiltered: IFiltered = {
     warehouseNo: "",
     type: "",
@@ -125,43 +75,19 @@ export default function miscData() {
     lastModified: null,
   };
 
-  const initialNotification: INotifyOrder = {
+  const initialNotification: INotifyDownload = {
+    key: 0,
     open: false,
     message: "",
     title: "",
     color: "primary",
-  };
-
-  const initialOrder: IOrderData = {
-    id: "",
-    pickup_date: null,
-    ref_number: "",
-    instruction: "",
-    allow_notify: false,
-    source_wh: "",
-    status: "",
-    requests: [
-      {
-        uuid: "",
-        material: "",
-        description: "",
-        qty: "",
-        units: "",
-        batch: "",
-        expiry: "",
-        available: "",
-      },
-    ],
-    requestsDelete: [],
+    autoHideDuration: null,
   };
 
   return {
     tableHeaders,
-    typeReportsData,
     movementType,
-    groupByData,
     initialFiltered,
     initialNotification,
-    initialOrder,
   };
 }

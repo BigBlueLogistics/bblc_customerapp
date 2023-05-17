@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect, ChangeEvent } from "react";
 import { Grid, Card, Icon } from "@mui/material";
-import { addMonths, format } from "date-fns";
+import { addMonths } from "date-fns";
 
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
@@ -13,14 +12,16 @@ import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
 import DataTable from "organisms/Tables/DataTable";
-import { useAppDispatch } from "hooks";
+import { useAppDispatch, useDownloadFile } from "hooks";
 import { setIsAuthenticated } from "redux/auth/action";
 
 import { inventoryServices, ordersServices, movementServices } from "services";
 import { AxiosError } from "axios";
+import MDImageIcon from "atoms/MDImageIcon";
+import excel from "assets/images/icons/excel.png";
 import miscData from "./data";
 import selector from "./selector";
-import { INotifyOrder, IFormOrderState, ITableOrder, IFiltered } from "./types";
+import { INotifyDownload, ITableOrder, IFiltered } from "./types";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import AutoCompleteMaterial from "./components/AutoCompleteMaterial";
@@ -31,8 +32,8 @@ function Movements() {
   const dispatch = useAppDispatch();
   const { customerCode } = selector();
   const { tableHeaders, initialFiltered, initialNotification, movementType } = miscData();
-  const [showNotify, setShowNotify] = useState<INotifyOrder>(initialNotification);
-  const [showForm] = useState(false);
+  const [showNotifyDownload, setShowNotifyDownload] =
+    useState<INotifyDownload>(initialNotification);
 
   const [warehouseList, setWarehouseList] = useState([]);
   const [materialList, setMaterialList] = useState([]);
@@ -41,37 +42,35 @@ function Movements() {
   const [toggleFilter, setToggleFilter] = useState(true);
   const [filtered, setFiltered] = useState<IFiltered>(initialFiltered);
 
+  const {
+    downloadFile,
+    status: downloadStatus,
+    error: downloadError,
+    filename,
+  } = useDownloadFile();
+
   const [tableOrders, setTableOrders] = useState<ITableOrder>({
     message: "",
     data: [],
     status: "idle",
   });
 
-  const [formOrder, setFormOrder] = useState<IFormOrderState>({
-    message: "",
-    data: null,
-    status: "idle",
-    type: "create",
-    id: "",
-    openConfirmation: false,
-  });
-
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
 
-  const openNotify = ({ open, message, title, color }: INotifyOrder) => {
-    setShowNotify({ open, message, title, color });
+  const openNotifyDownload = ({
+    key,
+    open,
+    message,
+    title,
+    color,
+    autoHideDuration,
+  }: INotifyDownload) => {
+    setShowNotifyDownload({ key, open, message, title, color, autoHideDuration });
   };
-  const closeNotify = () => {
-    setShowNotify((prevState) => ({ ...prevState, open: false }));
-    setFormOrder({
-      message: "",
-      data: null,
-      status: "idle",
-      type: "create",
-      id: "",
-      openConfirmation: false,
-    });
+
+  const closeNotifyDownload = () => {
+    setShowNotifyDownload((prevState) => ({ ...prevState, open: false }));
   };
 
   const onMovementType = (e: ChangeEvent<HTMLInputElement>) => {
@@ -162,6 +161,26 @@ function Movements() {
     });
   };
 
+  const exportFile = (format: "xlsx" | "csv") => {
+    const { warehouseNo, type, materialCode, coverageDate } = filtered;
+    const data = {
+      customer_code: customerCode,
+      movement_type: type,
+      warehouse_no: warehouseNo,
+      material_code: materialCode,
+      coverage_date: coverageDate,
+      format,
+    };
+
+    const fileName = `${customerCode}-${warehouseNo}.${format}`;
+    downloadFile({
+      url: "/movements/export-excel",
+      filename: fileName,
+      data,
+    });
+    closeAction();
+  };
+
   useEffect(() => {
     fetchWarehouseList();
   }, []);
@@ -180,31 +199,43 @@ function Movements() {
   }, [error, dispatch]);
 
   useEffect(() => {
-    const {
-      status: orderStatus,
-      id: orderTransid,
-      message: orderMessage,
-      type: orderType,
-    } = formOrder;
+    const { message } = downloadError || {};
+    let notificationMsg = initialNotification;
 
-    if (!showForm && orderType === "cancel" && orderStatus === "succeeded") {
-      openNotify({
+    if (!message && downloadStatus === "loading") {
+      notificationMsg = {
+        key: 1,
         open: true,
-        message: `Transaction No. ${orderTransid}`,
-        title: "Cancelled request",
-        color: "warning",
-      });
+        message: `Please wait exporting file [${filename}]`,
+        title: "Exporting File",
+        color: "info",
+        autoHideDuration: null,
+      };
     }
-
-    if (!showForm && orderType === "create" && orderStatus === "succeeded") {
-      openNotify({
+    if (!message && downloadStatus === "success") {
+      notificationMsg = {
+        key: 2,
         open: true,
-        message: `Transaction No. ${orderTransid}`,
-        title: orderMessage,
+        message: `You can now open [${filename}]`,
+        title: "Export file complete!",
         color: "success",
-      });
+        autoHideDuration: 5000,
+      };
     }
-  }, [showForm, formOrder]);
+    if (message && downloadStatus === "failed") {
+      notificationMsg = {
+        key: 3,
+        open: true,
+        message,
+        title: "Failed to export file",
+        color: "error",
+        autoHideDuration: 5000,
+      };
+    }
+    openNotifyDownload(notificationMsg);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [downloadError, downloadStatus]);
 
   const menuItemsAction: IMenuAction["items"] = [
     {
@@ -215,6 +246,20 @@ function Movements() {
       ),
       label: "Refresh",
       onClick: onRefresh,
+    },
+    {
+      icon: <MDImageIcon src={excel} alt="export-excel-icon" width={18} height={18} />,
+      label: "Export as XLS file",
+      onClick: () => exportFile("xlsx"),
+    },
+    {
+      icon: (
+        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">
+          description
+        </Icon>
+      ),
+      label: "Export as CSV file",
+      onClick: () => exportFile("csv"),
     },
   ];
 
@@ -227,13 +272,15 @@ function Movements() {
       )}
 
       <MDSnackbar
-        color={showNotify.color}
+        key={showNotifyDownload.key}
+        color={showNotifyDownload.color}
         icon="info"
-        title={showNotify.title}
-        content={showNotify.message}
+        title={showNotifyDownload.title}
+        content={showNotifyDownload.message}
         dateTime="now"
-        open={showNotify.open}
-        close={closeNotify}
+        open={showNotifyDownload.open}
+        autoHideDuration={showNotifyDownload.autoHideDuration}
+        close={closeNotifyDownload}
       />
 
       <MDBox pt={6} pb={3}>

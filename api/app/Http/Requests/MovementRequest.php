@@ -28,7 +28,8 @@ class MovementRequest extends FormRequest
             'movement_type' => 'required','string',
             'material_code' => 'required','string',
             'coverage_date' => 'required','array',
-            'coverage_date.*' => 'date'
+            'coverage_date.*' => 'date',
+            'customer_code' => 'nullable', 'string'
         ];
     }
 }
