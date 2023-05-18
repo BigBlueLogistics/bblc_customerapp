@@ -96,7 +96,7 @@ function Inventory() {
   const exportFile = (format: "xlsx" | "csv") => {
     const data = { customer_code: customerCode, warehouse: selectedWarehouse, format };
 
-    const fileName = `${customerCode}-${selectedWarehouse}.${format}`;
+    const fileName = `INVENTORY-${customerCode}-${selectedWarehouse}.${format}`;
     downloadFile({
       url: "/inventory/export-excel",
       filename: fileName,
