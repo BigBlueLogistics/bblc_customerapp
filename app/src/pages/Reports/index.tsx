@@ -141,7 +141,7 @@ function Reports() {
     };
 
     const fileName =
-      `${customerCode}-${selectedReport} ${selectedGroupBy}-${selectedWarehouse}`.toUpperCase();
+      `${selectedReport}-${customerCode}-${selectedGroupBy}-${selectedWarehouse}`.toUpperCase();
     downloadFile({
       url: "/reports/export-excel",
       filename: `${fileName}.${format}`,

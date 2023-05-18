@@ -33,7 +33,7 @@
     </thead>
     <thead>
         <tr>
-            <th align="center">Matrial</th>
+            <th align="center">Material</th>
             <th align="center">Material</th>
             <th align="center">Fixed Weight</th>
             @if ($groupBy === 'batch')
