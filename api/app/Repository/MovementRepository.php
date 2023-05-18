@@ -20,7 +20,7 @@ class MovementRepository implements IMovementRepository
         $lips = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
             ->param('QUERY_TABLE', 'LIPS')
             ->param('SORT_FIELDS', 'ERDAT')
-            ->param('ORDER_BY_COLUMN', '1')
+            ->param('ORDER_BY_COLUMN', '2')
             ->param('DELIMITER', ';')
             ->param('OPTIONS', [
                 ['TEXT' => "MANDT EQ '{$mandt}'"],
@@ -87,8 +87,8 @@ class MovementRepository implements IMovementRepository
                         'quantity' => $item['LFIMG'],
                         'unit' => $item['VRKME'],
                         'weight' => $item['BRGEW'],
-                        'header' => $textLines['TEXT_LINES'][0]['TDLINE'] ?? "",
-                        'refrn' => $vbak[0]['BSTNK'] ?? "",
+                        'headerText' => $textLines['TEXT_LINES'][0]['TDLINE'] ?? "",
+                        'reference' => $vbak[0]['BSTNK'] ?? "",
                     ];
                 });
             }
@@ -105,14 +105,14 @@ class MovementRepository implements IMovementRepository
                 ->selectRaw('likp.bwmid, likp.erdat, likp.headr,
                     SUM(lips.lfimg) AS lfimg, SUM(lips.brgew) AS brgew,
                     lips.matnr, lips.maktx, lips.charg, lips.meinh,
-                    lips.vfdat'
+                    lips.vfdat, likp.vnmbr'
                 )
                 ->where('lips.lgnum','=',$formatWarehouse)
                 ->where('lips.matnr','=', $materialCode)
                 ->where('lips.charg','!=', 'null')
                 ->whereBetween('likp.erdat', [$fromDate, $toDate])
-                ->groupBy('lips.matnr','lips.charg','lips.meinh','lips.maktx', 'lips.vfdat', 'likp.headr', 'likp.erdat','likp.bwmid')
-                ->orderBy('likp.erdat','desc')
+                ->groupBy('lips.matnr','lips.charg','lips.meinh','lips.maktx', 'lips.vfdat', 'likp.headr', 'likp.erdat','likp.bwmid','likp.vnmbr')
+                ->orderBy('likp.erdat','asc')
                 ->get();
 
                 
@@ -131,7 +131,8 @@ class MovementRepository implements IMovementRepository
                     'quantity' => $item->lfimg,
                     'unit' => $qty,
                     'weight' => $item->brgew,
-                    'header' => $item->headr,
+                    'headerText' => $item->headr,
+                    'reference' => $item->vnmbr
                 ];
         });
 
@@ -145,7 +146,7 @@ class MovementRepository implements IMovementRepository
         $outbound = $this->outboundMov($materialCode, $fromDate, $toDate, $warehouseNo);
 
         $mergeInOut = array_merge($inbound, $outbound);
-        $collectionMergeInOut = collect($mergeInOut)->sortByDesc('date')
+        $collectionMergeInOut = collect($mergeInOut)->sortBy('date')
                                 ->values()
                                 ->all();
 

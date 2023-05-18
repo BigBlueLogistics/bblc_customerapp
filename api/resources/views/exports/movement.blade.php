@@ -35,6 +35,8 @@
         <tr>
             <th align="center">Date</th>
             <th align="center">Document No.</th>
+            <th align="center">Reference</th>
+            <th align="center">Header text</th>
             <th align="center">Type</th>
             <th align="center">Description</th>
             <th align="center">Batch</th>
@@ -50,6 +52,8 @@
             <tr>
                 <td>{{ $movement['date'] }}</td>
                 <td>{{ $movement['documentNo'] }}</td>
+                <td>{{ $movement['reference']}}</td>
+                <td>{{ $movement['headerText']}}</td>
                 <td>{{ $movement['movementType'] }}</td>
                 <td>{{ $movement['description'] }}</td>
                 <td>{{ $movement['batch'] }}</td>

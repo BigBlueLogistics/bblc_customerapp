@@ -11,11 +11,12 @@ use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
-class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawings
+class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawings, WithColumnWidths
 {
     use RegistersEventListeners;
 
@@ -113,13 +114,22 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
         if($highestDataRow > 10){
             // Document no
             $activeSheet->getStyle("B10:B{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            // Reference
+            $activeSheet->getStyle("C10:C{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         }
-
+        
 
         // Format numberic if empty default value is dash (-).
         // Quantity
         $activeSheet->getStyle('G')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
         // Weight
         $activeSheet->getStyle('I')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
+    }
+
+    public function columnWidths(): array
+    {
+        return [
+            'E' => 12,  // Type        
+        ];
     }
 }

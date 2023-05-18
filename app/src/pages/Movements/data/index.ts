@@ -18,6 +18,16 @@ export default function miscData() {
       ...commonHeadersAttr,
     },
     {
+      Header: "Reference",
+      accessor: "reference",
+      ...commonHeadersAttr,
+    },
+    {
+      Header: "Header text",
+      accessor: "headerText",
+      ...commonHeadersAttr,
+    },
+    {
       Header: "Type",
       accessor: "movementType",
       ...commonHeadersAttr,
