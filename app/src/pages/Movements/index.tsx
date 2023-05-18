@@ -153,7 +153,9 @@ function Movements() {
   };
 
   const onClear = () => {
-    setFiltered(initialFiltered);
+    setFiltered((prev) => ({ ...initialFiltered, coverageDate: prev.coverageDate }));
+
+    setMaterialList([]);
     setTableOrders({
       message: "",
       data: [],
@@ -172,7 +174,7 @@ function Movements() {
       format,
     };
 
-    const fileName = `${customerCode}-${warehouseNo}.${format}`;
+    const fileName = `MOVEMENTS-${customerCode}-${warehouseNo}.${format}`;
     downloadFile({
       url: "/movements/export-excel",
       filename: fileName,
@@ -378,6 +380,7 @@ function Movements() {
                       options={materialList}
                       value={filtered.materialCode}
                       onChange={onMaterial}
+                      sx={{ minWidth: "300px" }}
                     />
 
                     <MDBox margin="8px">

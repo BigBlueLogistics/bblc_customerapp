@@ -19,6 +19,8 @@ class MovementRepository implements IMovementRepository
         $mandt = SapRfcFacade::getMandt();
         $lips = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
             ->param('QUERY_TABLE', 'LIPS')
+            ->param('SORT_FIELDS', 'ERDAT')
+            ->param('ORDER_BY_COLUMN', '1')
             ->param('DELIMITER', ';')
             ->param('OPTIONS', [
                 ['TEXT' => "MANDT EQ '{$mandt}'"],
@@ -99,12 +101,18 @@ class MovementRepository implements IMovementRepository
         $formatWarehouse = str_replace('BB', 'WH', $warehouseNo);
 
         $res = DB::connection('wms-prd')->table('lips')
-                ->leftJoin('likp','lips.vbeln','=','likp.vbeln')
-                ->select('lips.*', 'lips.maktx', 'lips.meinh' ,'likp.headr', 'likp.erdat')
+                ->leftJoin('likp','lips.bwmid','=','likp.bwmid')
+                ->selectRaw('likp.bwmid, likp.erdat, likp.headr,
+                    SUM(lips.lfimg) AS lfimg, SUM(lips.brgew) AS brgew,
+                    lips.matnr, lips.maktx, lips.charg, lips.meinh,
+                    lips.vfdat'
+                )
                 ->where('lips.lgnum','=',$formatWarehouse)
                 ->where('lips.matnr','=', $materialCode)
                 ->where('lips.charg','!=', 'null')
                 ->whereBetween('likp.erdat', [$fromDate, $toDate])
+                ->groupBy('lips.matnr','lips.charg','lips.meinh','lips.maktx', 'lips.vfdat', 'likp.headr', 'likp.erdat','likp.bwmid')
+                ->orderBy('likp.erdat','desc')
                 ->get();
 
                 
@@ -115,7 +123,7 @@ class MovementRepository implements IMovementRepository
 
                 return [
                     'date' => $date,
-                    'documentNo' => $item->vbeln,
+                    'documentNo' => $item->bwmid,
                     'movementType' => "INBOUND",
                     'description' => $item->maktx,
                     'batch' => $item->charg,
@@ -136,6 +144,11 @@ class MovementRepository implements IMovementRepository
         $inbound = $this->inboundMov($materialCode, $fromDate, $toDate, $warehouseNo);
         $outbound = $this->outboundMov($materialCode, $fromDate, $toDate, $warehouseNo);
 
-        return array_merge($inbound, $outbound);
+        $mergeInOut = array_merge($inbound, $outbound);
+        $collectionMergeInOut = collect($mergeInOut)->sortByDesc('date')
+                                ->values()
+                                ->all();
+
+        return $collectionMergeInOut;
     }
 }

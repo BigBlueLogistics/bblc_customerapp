@@ -1,4 +1,5 @@
 import { AutocompleteChangeReason } from "@mui/material/Autocomplete";
+import { SxProps, Theme } from "@mui/material";
 
 export type IAutoCompleteMaterialData = {
   id: string;
@@ -12,4 +13,5 @@ export type IAutoCompleteMaterial = {
   options: IAutoCompleteMaterialData[];
   onChange: (value: IAutoCompleteMaterialData, reason: AutocompleteChangeReason) => void;
   value: string;
+  sx?: SxProps<Theme>;
 };

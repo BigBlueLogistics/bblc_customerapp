@@ -112,11 +112,14 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
 
         if($highestDataRow > 10){
             // Document no
-            $activeSheet->getStyle("A10:A{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $activeSheet->getStyle("B10:B{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
         }
 
 
         // Format numberic if empty default value is dash (-).
-        $activeSheet->getStyle('H')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
+        // Quantity
+        $activeSheet->getStyle('G')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
+        // Weight
+        $activeSheet->getStyle('I')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
     }
 }

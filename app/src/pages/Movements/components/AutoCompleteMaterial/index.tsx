@@ -1,4 +1,5 @@
-import { TextField, Autocomplete, createFilterOptions } from "@mui/material";
+import { TextField, createFilterOptions } from "@mui/material";
+import AutoCompleteMaterialRoot from "./AutoCompleteMaterialRoot";
 import { IAutoCompleteMaterialData, IAutoCompleteMaterial } from "./types";
 
 function AutoCompleteMaterial({
@@ -7,6 +8,7 @@ function AutoCompleteMaterial({
   error,
   helperText,
   onChange,
+  sx,
 }: IAutoCompleteMaterial) {
   const filterOptions = createFilterOptions({
     matchFrom: "any",
@@ -14,20 +16,20 @@ function AutoCompleteMaterial({
   });
 
   return (
-    <Autocomplete
+    <AutoCompleteMaterialRoot
       id="movements-filter-material"
       value={value as any}
       onChange={(e, selectedValue, reason) => onChange(selectedValue as any, reason)}
       options={options}
       noOptionsText="No material"
       filterOptions={filterOptions}
-      getOptionLabel={(option) => {
+      getOptionLabel={(option: IAutoCompleteMaterialData) => {
         if (typeof option === "string") {
           return option;
         }
         return option.material;
       }}
-      sx={{ margin: "8px" }}
+      sx={sx}
       renderInput={(params) => (
         <TextField
           error={error}
@@ -46,7 +48,7 @@ function AutoCompleteMaterial({
           label="Select material"
         />
       )}
-      renderOption={(props, option) => {
+      renderOption={(props, option: IAutoCompleteMaterialData) => {
         return (
           <li key={option.id} {...props} style={{ display: "block" }}>
             <div>{option.material}</div>

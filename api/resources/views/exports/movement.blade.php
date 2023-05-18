@@ -33,6 +33,7 @@
     </thead>
     <thead>
         <tr>
+            <th align="center">Date</th>
             <th align="center">Document No.</th>
             <th align="center">Type</th>
             <th align="center">Description</th>
@@ -47,6 +48,7 @@
         @if(count($movementsData) > 0)
             @foreach($movementsData as $movement)
             <tr>
+                <td>{{ $movement['date'] }}</td>
                 <td>{{ $movement['documentNo'] }}</td>
                 <td>{{ $movement['movementType'] }}</td>
                 <td>{{ $movement['description'] }}</td>
