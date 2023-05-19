@@ -79,5 +79,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('movements')->group(function(){
         Route::get('/', [MovementController::class, 'index']);
         Route::get('/export-excel', [MovementController::class, 'export']);
+        Route::get('/material-description', [MovementController::class, 'materialDescription']);
     });
 });

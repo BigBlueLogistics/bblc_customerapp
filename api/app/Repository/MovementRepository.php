@@ -152,4 +152,34 @@ class MovementRepository implements IMovementRepository
 
         return $collectionMergeInOut;
     }
+
+    public function materialAndDescription($customerCode)
+    {
+        $mandt = SapRfcFacade::getMandt();
+        $makt = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                ->param('QUERY_TABLE', 'MAKT')
+                ->param('DELIMITER', ';')
+                ->param('OPTIONS', [
+                    ['TEXT' => "MANDT EQ '{$mandt}'"],
+                    ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"]
+ ,
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'MATNR'],
+                    ['FIELDNAME' => 'MAKTX'],
+                ])
+                ->getDataToArray();
+
+                $collection = collect($makt)->map(function($item, $index){                
+                                    return [
+                                        "id" => $index += 1,
+                                        "material" => $item['MATNR'],
+                                        "description" => $item['MAKTX'],
+                                    ];
+                                })
+                            ->values()->all();
+
+
+        return $collection;
+    }
 }

@@ -116,6 +116,8 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
             $activeSheet->getStyle("B10:B{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             // Reference
             $activeSheet->getStyle("C10:C{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            // Batch
+            $activeSheet->getStyle("E10:E{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         }
         
 
@@ -129,7 +131,7 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
     public function columnWidths(): array
     {
         return [
-            'E' => 12,  // Type        
+            'C' => 12,  // Type        
         ];
     }
 }

@@ -15,7 +15,7 @@ import DataTable from "organisms/Tables/DataTable";
 import { useAppDispatch, useDownloadFile } from "hooks";
 import { setIsAuthenticated } from "redux/auth/action";
 
-import { inventoryServices, ordersServices, movementServices } from "services";
+import { inventoryServices, movementServices } from "services";
 import { AxiosError } from "axios";
 import MDImageIcon from "atoms/MDImageIcon";
 import excel from "assets/images/icons/excel.png";
@@ -130,10 +130,10 @@ function Movements() {
     }
   };
 
-  const fetchMaterialDescription = async (ccode: string, warehouseNo: string) => {
+  const fetchMaterialDescription = async (ccode: string) => {
     try {
-      const { data: resp } = await ordersServices.getMaterialDescription({
-        params: { customerCode: ccode, warehouseNo },
+      const { data: resp } = await movementServices.getMaterialDescription({
+        params: { customer_code: ccode },
       });
       if (resp) {
         setMaterialList(resp.data);
@@ -188,11 +188,10 @@ function Movements() {
   }, []);
 
   useEffect(() => {
-    const warehouse = filtered.warehouseNo;
-    if (customerCode && warehouse) {
-      fetchMaterialDescription(customerCode, warehouse);
+    if (customerCode) {
+      fetchMaterialDescription(customerCode);
     }
-  }, [customerCode, filtered.warehouseNo]);
+  }, [customerCode]);
 
   useEffect(() => {
     if (error?.response?.statusText === "Unauthorized" && error?.response?.status === 401) {

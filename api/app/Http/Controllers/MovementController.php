@@ -8,7 +8,9 @@ use App\Interfaces\IMemberRepository;
 use App\Http\Requests\MovementRequest;
 use App\Exports\MovementExport;
 use Carbon\Carbon;
+use Exception;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
 
 class MovementController extends Controller
 {
@@ -80,5 +82,17 @@ class MovementController extends Controller
         } catch (Exception $e) {
             return $this->sendError($e);
         }
-    }   
+    }
+
+    public function materialDescription(Request $request)
+    {
+        try {
+            $customerCode = $request->input('customer_code');
+
+            $res = $this->movement->materialAndDescription($customerCode);
+            return $this->sendResponse($res);
+        } catch (Exception $e) {
+            return $this->sendError($e);
+        }
+    }
 }
