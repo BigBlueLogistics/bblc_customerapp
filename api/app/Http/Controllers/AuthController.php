@@ -10,6 +10,7 @@ use App\Models\CompanyRepresent;
 use App\Models\Role;
 use App\Models\User;
 use App\Traits\HttpResponse;
+use App\Jobs\JobNotificationToAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -62,11 +63,12 @@ class AuthController extends Controller
                 return $this->sendError(__('auth.register-exists'), Response::HTTP_CONFLICT);
             }
 
+            $email = Str::lower($request->email);
             $user = User::create([
                 'fname' => Str::lower($request->fname),
                 'lname' => Str::lower($request->lname),
                 'password' => Hash::make($request->password),
-                'email' => Str::lower($request->email),
+                'email' => $email,
                 'phone_no' => Str::lower($request->phone_no),
             ]);
 
@@ -75,6 +77,20 @@ class AuthController extends Controller
                     'user_id' => $user->id,
                     'company' => $request->company,
                 ]);
+
+                // Send an email notification to Admin about new registered user
+                $adminEmails = User::where('role_id','=', 1)->select('email')->get();
+                if(count($adminEmails)){
+                    $adminEmails = collect($adminEmails)->pluck('email');
+        
+                    $adminEmails->all();
+                }
+                $newRegisteredEmail = $email;
+    
+                $uiUrl = env('APP_URL');
+                $url = "{$uiUrl}/members";
+    
+                JobNotificationToAdmin::dispatch($adminEmails, $newRegisteredEmail, $url);
 
                 return $this->sendResponse('', __('auth.register'));
             }
