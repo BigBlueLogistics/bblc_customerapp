@@ -7,9 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-// TODO: To speed up the response, implements ShouldQueue when sending an email
-// LINK: https://laravel.com/docs/9.x/queues
-class ResetPasswordNotification extends Notification
+class NotificationResetPassword extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -45,6 +43,7 @@ class ResetPasswordNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
+            ->subject('Reset Password Notification')
             ->line('You are receiving this email because we received a password reset request for your account.')
             ->action('Reset Password', $this->url)
             ->line('This password reset link will expire in '.config('auth.passwords.users.expire').' minutes.')

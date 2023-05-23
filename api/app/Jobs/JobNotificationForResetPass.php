@@ -3,14 +3,14 @@
 namespace App\Jobs;
 
 use App\Models\User;
-use App\Notifications\ResetPasswordNotification;
+use App\Notifications\NotificationResetPassword;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class QueuedResetPasswordJob implements ShouldQueue
+class JobNotificationForResetPass implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -36,6 +36,6 @@ class QueuedResetPasswordJob implements ShouldQueue
      */
     public function handle()
     {
-        $this->user->notify(new ResetPasswordNotification($this->url));
+        $this->user->notify(new NotificationResetPassword($this->url));
     }
 }
