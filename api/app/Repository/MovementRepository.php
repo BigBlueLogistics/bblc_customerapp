@@ -100,8 +100,9 @@ class MovementRepository implements IMovementRepository
     {
         $formatWarehouse = str_replace('BB', 'WH', $warehouseNo);
 
+        $likpSubQuery = DB::raw("(SELECT BWMID, ERDAT, HEADR, VNMBR FROM LIKP WHERE ERDAT BETWEEN '{$fromDate}' AND '{$toDate}' GROUP BY BWMID, ERDAT, HEADR, VNMBR ) AS likp");
         $res = DB::connection('wms-prd')->table('lips')
-                ->leftJoin('likp','lips.bwmid','=','likp.bwmid')
+                ->leftJoin($likpSubQuery,'lips.bwmid','=','likp.bwmid')
                 ->selectRaw('likp.bwmid, likp.erdat, likp.headr,
                     SUM(lips.lfimg) AS lfimg, SUM(lips.brgew) AS brgew,
                     lips.matnr, lips.maktx, lips.charg, lips.meinh,
