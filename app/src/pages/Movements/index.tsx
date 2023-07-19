@@ -155,7 +155,6 @@ function Movements() {
   const onClear = () => {
     setFiltered((prev) => ({ ...initialFiltered, coverageDate: prev.coverageDate }));
 
-    setMaterialList([]);
     setTableOrders({
       message: "",
       data: [],
