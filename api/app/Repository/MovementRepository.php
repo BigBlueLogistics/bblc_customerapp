@@ -103,19 +103,18 @@ class MovementRepository implements IMovementRepository
         $res = DB::connection('wms-prd')->table('lips')
                 ->leftJoin('likp','lips.bwmid','=','likp.bwmid')
                 ->selectRaw('likp.bwmid, likp.erdat, likp.headr,
-                    lips.lfimg, lips.brgew,
+                    SUM(lips.lfimg) AS lfimg, SUM(lips.brgew) AS brgew,
                     lips.matnr, lips.maktx, lips.charg, lips.meinh,
-                    lips.vfdat, likp.vnmbr, MAX(likp.[Index]) as idx'
+                    lips.vfdat, likp.vnmbr'
                 )
                 ->where('lips.lgnum','=',$formatWarehouse)
                 ->where('lips.matnr','=', $materialCode)
                 ->where('lips.charg','!=', 'null')
                 ->whereBetween('likp.erdat', [$fromDate, $toDate])
-                ->groupBy('lips.matnr','lips.charg','lips.meinh','lips.maktx', 
-                        'lips.vfdat', 'likp.headr', 'likp.erdat','likp.bwmid',
-                        'likp.vnmbr', 'lips.lfimg', 'lips.brgew')
+                ->groupBy('lips.matnr','lips.charg','lips.meinh','lips.maktx', 'lips.vfdat', 'likp.headr', 'likp.erdat','likp.bwmid','likp.vnmbr')
                 ->orderBy('likp.erdat','asc')
                 ->get();
+
                 
             $inbound = $res->map(function($item){
                 $qty = explode('/', $item->meinh)[1] ?? "";
@@ -137,20 +136,7 @@ class MovementRepository implements IMovementRepository
                 ];
         });
 
-        return $inbound->groupBy('documentNo')
-                    ->map(function($item){     
-                        $items = collect($item);  
-                        $quantity = $items->sum('quantity'); 
-                        $weight = $items->sum('weight'); 
-
-                        return [
-                            ...$item[0],
-                            'quantity' => $quantity,
-                            'weight' => $weight,
-                        ];
-                })
-                ->values()
-                ->all();
+        return $inbound->toArray();
 
     }
 
