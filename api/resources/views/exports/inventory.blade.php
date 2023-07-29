@@ -33,7 +33,8 @@
     </thead>
     <thead>
         <tr>
-            <th align="center">Matrial</th>
+            <th align="center">Warehouse</th>
+            <th align="center">Material</th>
             <th align="center">Material</th>
             <th align="center">Fixed Weight</th>
             <th align="center" colspan="2">Allocated</th>
@@ -42,6 +43,7 @@
             <th align="center" colspan="2">Total</th>
         </tr>
         <tr>
+            <th align="center"></th>
             <th align="center">Code</th>
             <th align="center">Description</th>
             <th align="center">(KG/UNIT)</th>
@@ -72,6 +74,7 @@
         @foreach($stocks as $inventory)
         <tr>
 
+            <td>{{ $inventory['warehouse'] }}</td>
             <td>{{ $inventory['materialCode'] }}</td>
             <td>{{ $inventory['description'] }}</td>
             <td>{{ $inventory['fixedWt'] }}</td>
@@ -97,7 +100,7 @@
         </tr>
         @endforeach
         <tr>
-            <td></td>
+            <td colspan="2"></td>
             <td colspan="2">TOTAL >>>>></td>
             <td>{{ $subAllocatedQty }}</td>
             <td>{{ $subAllocatedWt }}</td>

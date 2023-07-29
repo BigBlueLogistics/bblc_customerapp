@@ -12,6 +12,7 @@ export default function miscData() {
   };
 
   const tableHeaders = [
+    { Header: "Warehouse", accessor: "warehouse", align: "left" },
     { Header: "Material Code", accessor: "materialCode", width: "20%", align: "left" },
     { Header: "Description", accessor: "description", align: "left" },
     { Header: "Fixed Weight", accessor: "fixedWt", align: "left" },

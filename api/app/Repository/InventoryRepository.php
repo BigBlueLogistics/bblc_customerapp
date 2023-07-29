@@ -13,7 +13,13 @@ class InventoryRepository implements IInventoryRepository
     public function getStocksInventory($customerCode, $warehouseNo)
     {
         $mandt = SapRfcFacade::getMandt();
-        $warehouseNo = str_replace('BB', 'WH', $warehouseNo);
+
+        if(strtolower($warehouseNo) == 'all'){
+            $warehouseNo = '';
+        }
+        else{
+            $warehouseNo = str_replace('BB', 'WH', $warehouseNo);
+        }
 
         // Get Material no. and description, available,
         // allocated and restricted stocks
@@ -106,6 +112,7 @@ class InventoryRepository implements IInventoryRepository
                         'initialAllocatedWt' => round($initialAllocatedWt, 3),
                         'restrictedWt' => round($restrictedWt, 3),
                         'availableWt' => round($availableWt, 3),
+                        'warehouse' => $group[0]['LGNUM'],
                     ];
                 });
 
@@ -180,6 +187,8 @@ class InventoryRepository implements IInventoryRepository
                             $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) ? $data['initialAllocatedWt'] : 0;
                             $totalVsolmWt = array_key_exists('totalVsolmWt', $data) ? $data['totalVsolmWt'] : 0;
                             $unit = array_key_exists('unit', $data) ? $data['unit'] : 'KG';
+                            $warehouse = array_key_exists('warehouse', $data) ? $data['warehouse'] : '';
+                            $allocatedWt = $initialAllocatedWt + $totalVsolmWt;
                             $allocatedWt = $initialAllocatedWt + $totalVsolmWt;
 
                             // Calculate the quantity.
@@ -198,6 +207,7 @@ class InventoryRepository implements IInventoryRepository
                             $res['allocatedWt'] = $allocatedWt;
                             $res['restrictedWt'] = $restrictedWt;
                             $res['fixedWt'] = $fixedWt." / ".$unit;
+                            $res['warehouse'] = $warehouse;
 
                             return array_merge($data, $res);
                         })

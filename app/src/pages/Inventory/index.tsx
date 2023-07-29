@@ -87,7 +87,7 @@ function Inventory() {
     try {
       const { data: rows } = await inventoryServices.getWarehouseList();
 
-      setWarehouseList(rows.data);
+      setWarehouseList([{ PLANT: "ALL", NAME1: "ALL" }, ...rows.data]);
     } catch (err) {
       setError(err);
     }

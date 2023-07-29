@@ -30,6 +30,10 @@ class InventoryController extends Controller
             $warehouse = $request->input('warehouse');
             $format = $request->input('format');
 
+            if(strtolower($warehouse) != 'all'){
+                $warehouse = str_replace('BB', 'WH', $warehouse);
+            }
+
             $export = new InventoryExport($this->inventory, $this->members);
             $export->setFilterBy($customerCode, $warehouse);
 
