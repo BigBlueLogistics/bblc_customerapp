@@ -86,14 +86,16 @@ class InventoryExport implements FromView, ShouldAutoSize, WithEvents, WithDrawi
         // Tables
 
         // Format numberic if empty default value is dash (-).
-        $activeSheet->getStyle('D:K')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
+        // Allocated - Total
+        $activeSheet->getStyle('E:L')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
 
         // Set bold font of sub totals.
         $highestDataRow = $activeSheet->getHighestRow();
         $IndexSubTotals = (int) $highestDataRow;
 
         if ($IndexSubTotals > 10) {
-            $activeSheet->getStyle("B{$IndexSubTotals}:K{$IndexSubTotals}")->getFont()->setBold(true);
+            // Allocated - Total
+            $activeSheet->getStyle("B{$IndexSubTotals}:L{$IndexSubTotals}")->getFont()->setBold(true);
         }
     }
 }

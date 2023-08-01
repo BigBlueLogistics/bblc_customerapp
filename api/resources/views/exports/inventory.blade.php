@@ -28,7 +28,7 @@
             <th colspan="2">{{ $timeNow }}</th>
         </tr>
         <tr class="fontBold">
-            <th align="center" colspan="11">WAREHOUSE STOCKS - SUMMARY</th>
+            <th align="center" colspan="12">WAREHOUSE STOCKS - SUMMARY</th>
         </tr>
     </thead>
     <thead>
