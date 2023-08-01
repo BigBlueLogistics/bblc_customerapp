@@ -14,7 +14,13 @@ class MovementRepository implements IMovementRepository
 
     public function outboundMov($materialCode, $fromDate, $toDate, $warehouseNo)
     {
-        $formatWarehouse = str_replace('BB', 'W', $warehouseNo);
+        if(strtolower($warehouseNo) != 'all'){
+            $formatWarehouse = str_replace('BB', 'W', $warehouseNo);
+            $optLGNUM =  ['TEXT' => " AND LGNUM EQ '{$formatWarehouse}'"];         
+        }
+        else{
+            $optLGNUM = [];
+        }
 
         $mandt = SapRfcFacade::getMandt();
         $lips = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
@@ -24,7 +30,7 @@ class MovementRepository implements IMovementRepository
             ->param('DELIMITER', ';')
             ->param('OPTIONS', [
                 ['TEXT' => "MANDT EQ '{$mandt}'"],
-                ['TEXT' => " AND LGNUM EQ '{$formatWarehouse}'"],
+                $optLGNUM,
                 ['TEXT' => " AND MATNR EQ '{$materialCode}'"],
                 ['TEXT' => " AND CHARG NE ''"],
                 ['TEXT' => " AND VBELN NOT LIKE '018%'"],
@@ -41,6 +47,7 @@ class MovementRepository implements IMovementRepository
                 ['FIELDNAME' => 'LFIMG'],
                 ['FIELDNAME' => 'VRKME'],
                 ['FIELDNAME' => 'VGBEL'],
+                ['FIELDNAME' => 'LGNUM'],
             ])
             ->getDataToArray();
 
@@ -89,6 +96,7 @@ class MovementRepository implements IMovementRepository
                         'weight' => $item['BRGEW'],
                         'headerText' => $textLines['TEXT_LINES'][0]['TDLINE'] ?? "",
                         'reference' => $vbak[0]['BSTNK'] ?? "",
+                        'warehouse' =>  str_replace('W', 'WH', $item['LGNUM']),
                     ];
                 });
             }
@@ -98,7 +106,8 @@ class MovementRepository implements IMovementRepository
 
     public function inboundMov($materialCode, $fromDate, $toDate, $warehouseNo)
     {
-        $formatWarehouse = str_replace('BB', 'WH', $warehouseNo);
+
+        $isAllWarehouse = boolval(strtolower($warehouseNo) != 'all');
 
         $likpSubQuery = DB::raw("(SELECT BWMID, ERDAT, HEADR, VNMBR FROM LIKP WHERE ERDAT BETWEEN '{$fromDate}' AND '{$toDate}' GROUP BY BWMID, ERDAT, HEADR, VNMBR ) AS likp");
         $res = DB::connection('wms-prd')->table('lips')
@@ -106,13 +115,17 @@ class MovementRepository implements IMovementRepository
                 ->selectRaw('likp.bwmid, likp.erdat, likp.headr,
                     SUM(lips.lfimg) AS lfimg, SUM(lips.brgew) AS brgew,
                     lips.matnr, lips.maktx, lips.charg, lips.meinh,
-                    lips.vfdat, likp.vnmbr'
+                    lips.vfdat, lips.lgnum, likp.vnmbr'
                 )
-                ->where('lips.lgnum','=',$formatWarehouse)
+                ->when($isAllWarehouse,  function($query) use ($warehouseNo){
+                    $formatWarehouse = str_replace('BB', 'WH', $warehouseNo);
+
+                    return $query->where('lips.lgnum', '=' , $formatWarehouse);
+                })
                 ->where('lips.matnr','=', $materialCode)
                 ->where('lips.charg','!=', 'null')
                 ->whereBetween('likp.erdat', [$fromDate, $toDate])
-                ->groupBy('lips.matnr','lips.charg','lips.meinh','lips.maktx', 'lips.vfdat', 'likp.headr', 'likp.erdat','likp.bwmid','likp.vnmbr')
+                ->groupBy('lips.matnr','lips.charg','lips.meinh','lips.maktx', 'lips.vfdat', 'lips.lgnum' ,'likp.headr', 'likp.erdat','likp.bwmid','likp.vnmbr')
                 ->orderBy('likp.erdat','asc')
                 ->get();
 
@@ -133,7 +146,8 @@ class MovementRepository implements IMovementRepository
                     'unit' => $qty,
                     'weight' => $item->brgew,
                     'headerText' => $item->headr,
-                    'reference' => $item->vnmbr
+                    'reference' => $item->vnmbr,
+                    'warehouse' => $item->lgnum
                 ];
         });
 

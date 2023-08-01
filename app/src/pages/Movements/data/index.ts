@@ -8,6 +8,11 @@ export default function miscData() {
 
   const tableHeaders = () => [
     {
+      Header: "Warehouse",
+      accessor: "warehouse",
+      ...commonHeadersAttr,
+    },
+    {
       Header: "Date",
       accessor: "date",
       ...commonHeadersAttr,
@@ -68,7 +73,7 @@ export default function miscData() {
   const movementType = [
     {
       value: "all",
-      label: "All",
+      label: "ALL",
     },
     {
       value: "inbound",

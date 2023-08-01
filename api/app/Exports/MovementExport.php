@@ -106,32 +106,32 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
         $activeSheet->getStyle('G5:G8')->getFont()->setBold(true);
 
         // Label: Warehouse stocks.
-        $activeSheet->mergeCells('A8:K8')->getStyle('A8:K8')->getFont()->setBold(true)->setSize(26);
-        $activeSheet->getStyle('A8:K8')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $activeSheet->mergeCells('A8:L8')->getStyle('A8:L8')->getFont()->setBold(true)->setSize(26);
+        $activeSheet->getStyle('A8:L8')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         // Tables
 
         if($highestDataRow > 10){
             // Document no
-            $activeSheet->getStyle("B10:B{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $activeSheet->getStyle("C10:B{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             // Reference
-            $activeSheet->getStyle("C10:C{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $activeSheet->getStyle("K10:C{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
             // Batch
-            $activeSheet->getStyle("E10:E{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $activeSheet->getStyle("F10:E{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         }
         
 
         // Format numberic if empty default value is dash (-).
         // Quantity
-        $activeSheet->getStyle('G')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
+        $activeSheet->getStyle('H')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
         // Weight
-        $activeSheet->getStyle('I')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
+        $activeSheet->getStyle('J')->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');
     }
 
     public function columnWidths(): array
     {
         return [
-            'C' => 12,  // Type        
+            'D' => 12,  // Type        
         ];
     }
 }

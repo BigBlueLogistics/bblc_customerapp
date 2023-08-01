@@ -67,6 +67,10 @@ class MovementController extends Controller
             $customerCode = $request->input('customer_code');
             $format = $request->input('format');
 
+            if(strtolower($warehouseNo) != 'all'){
+                $warehouseNo = str_replace('BB', 'WH', $warehouseNo);
+            }
+
             $export = new MovementExport($this->movement, $this->member);
             $export->setFilterBy($customerCode, $warehouseNo, $materialCode, $movementType, $coverageDate);
 
