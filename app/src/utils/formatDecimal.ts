@@ -5,7 +5,7 @@ const formatDecimal = (value: number, decimal: number = 2) => {
   if (typeof decimal !== "number") {
     throw new TypeError("Invalid decimal it should be number");
   }
-  return Number(parseFloat(value.toString()).toFixed(2)).toLocaleString("en", {
+  return Number(parseFloat(value.toString()).toFixed(decimal)).toLocaleString("en", {
     minimumFractionDigits: decimal,
   });
 };
