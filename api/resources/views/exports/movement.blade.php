@@ -28,13 +28,14 @@
             <th colspan="2">{{ $timeNow }}</th>
         </tr>
         <tr class="fontBold">
-            <th align="center" colspan="12">MOVEMENTS - SUMMARY</th>
+            <th align="center" colspan="13">MOVEMENTS - SUMMARY</th>
         </tr>
     </thead>
     <thead>
         <tr>
             <th align="center">Warehouse</th>
             <th align="center">Date</th>
+            <th align="center">Material code</th>
             <th align="center">Document No.</th>
             <th align="center">Type</th>
             <th align="center">Description</th>
@@ -53,6 +54,7 @@
             <tr>
                 <td>{{ $movement['warehouse'] }}</td>
                 <td>{{ $movement['date'] }}</td>
+                <td>{{ $movement['materialCode'] }}</td>
                 <td>{{ $movement['documentNo'] }}</td>
                 <td>{{ $movement['movementType'] }}</td>
                 <td>{{ $movement['description'] }}</td>

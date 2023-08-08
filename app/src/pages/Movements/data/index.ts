@@ -18,6 +18,11 @@ export default function miscData() {
       ...commonHeadersAttr,
     },
     {
+      Header: "Material Code",
+      accessor: "materialCode",
+      ...commonHeadersAttr,
+    },
+    {
       Header: "Document No.",
       accessor: "documentNo",
       ...commonHeadersAttr,

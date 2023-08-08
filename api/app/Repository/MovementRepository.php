@@ -12,7 +12,7 @@ class MovementRepository implements IMovementRepository
 {
     use StringEncode;
 
-    public function outboundMov($materialCode, $fromDate, $toDate, $warehouseNo)
+    public function outboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode)
     {
         if(strtolower($warehouseNo) != 'all'){
             $formatWarehouse = str_replace('BB', 'W', $warehouseNo);
@@ -20,6 +20,13 @@ class MovementRepository implements IMovementRepository
         }
         else{
             $optLGNUM = [];
+        }
+
+        if(strtolower($materialCode) != 'all'){
+            $optMATNR = ['TEXT' => " AND MATNR EQ '{$materialCode}'"];
+        }
+        else{
+            $optMATNR = ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"];
         }
 
         $mandt = SapRfcFacade::getMandt();
@@ -31,7 +38,7 @@ class MovementRepository implements IMovementRepository
             ->param('OPTIONS', [
                 ['TEXT' => "MANDT EQ '{$mandt}'"],
                 $optLGNUM,
-                ['TEXT' => " AND MATNR EQ '{$materialCode}'"],
+                $optMATNR,
                 ['TEXT' => " AND CHARG NE ''"],
                 ['TEXT' => " AND VBELN NOT LIKE '018%'"],
                 ['TEXT' => " AND (ERDAT >= '{$fromDate}'"],
@@ -48,6 +55,7 @@ class MovementRepository implements IMovementRepository
                 ['FIELDNAME' => 'VRKME'],
                 ['FIELDNAME' => 'VGBEL'],
                 ['FIELDNAME' => 'LGNUM'],
+                ['FIELDNAME' => 'MATNR'],
             ])
             ->getDataToArray();
 
@@ -86,6 +94,7 @@ class MovementRepository implements IMovementRepository
 
                     return [
                         'date' => $date,
+                        'materialCode' => $item['MATNR'],
                         'documentNo' => $item['VBELN'],
                         'movementType' => "OUTBOUND",
                         'description' => $item['ARKTX'],
@@ -104,10 +113,11 @@ class MovementRepository implements IMovementRepository
         return $outbound->toArray();
     }
 
-    public function inboundMov($materialCode, $fromDate, $toDate, $warehouseNo)
+    public function inboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode)
     {
 
-        $isAllWarehouse = boolval(strtolower($warehouseNo) != 'all');
+        $isNotAllWarehouse = boolval(strtolower($warehouseNo) != 'all');
+        $isAllMaterial = boolval(strtolower($materialCode) == 'all');
 
         $likpSubQuery = DB::raw("(SELECT BWMID, ERDAT, HEADR, VNMBR FROM LIKP WHERE ERDAT BETWEEN '{$fromDate}' AND '{$toDate}' GROUP BY BWMID, ERDAT, HEADR, VNMBR ) AS likp");
         $res = DB::connection('wms-prd')->table('lips')
@@ -117,12 +127,17 @@ class MovementRepository implements IMovementRepository
                     lips.matnr, lips.maktx, lips.charg, lips.meinh,
                     lips.vfdat, lips.lgnum, likp.vnmbr'
                 )
-                ->when($isAllWarehouse,  function($query) use ($warehouseNo){
+                ->when($isNotAllWarehouse,  function($query) use ($warehouseNo){
                     $formatWarehouse = str_replace('BB', 'WH', $warehouseNo);
 
                     return $query->where('lips.lgnum', '=' , $formatWarehouse);
                 })
-                ->where('lips.matnr','=', $materialCode)
+                ->when($isAllMaterial, function($query) use ($customerCode){
+                    return $query->where('lips.matnr','like', $customerCode."%");
+
+                    }, function($query) use ($materialCode){
+                    return $query->where('lips.matnr','=', $materialCode);
+                })
                 ->where('lips.charg','!=', 'null')
                 ->whereBetween('likp.erdat', [$fromDate, $toDate])
                 ->groupBy('lips.matnr','lips.charg','lips.meinh','lips.maktx', 'lips.vfdat', 'lips.lgnum' ,'likp.headr', 'likp.erdat','likp.bwmid','likp.vnmbr')
@@ -137,6 +152,7 @@ class MovementRepository implements IMovementRepository
 
                 return [
                     'date' => $date,
+                    'materialCode' => $item->matnr,
                     'documentNo' => $item->bwmid,
                     'movementType' => "INBOUND",
                     'description' => $item->maktx,
@@ -155,10 +171,10 @@ class MovementRepository implements IMovementRepository
 
     }
 
-    public function mergeInOutbound($materialCode, $fromDate, $toDate, $warehouseNo)
+    public function mergeInOutbound($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode)
     {
-        $inbound = $this->inboundMov($materialCode, $fromDate, $toDate, $warehouseNo);
-        $outbound = $this->outboundMov($materialCode, $fromDate, $toDate, $warehouseNo);
+        $inbound = $this->inboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode);
+        $outbound = $this->outboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode);
 
         $mergeInOut = array_merge($inbound, $outbound);
         $collectionMergeInOut = collect($mergeInOut)->sortBy('date')

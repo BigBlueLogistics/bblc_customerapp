@@ -34,23 +34,24 @@ class MovementController extends Controller
             $warehouseNo = $request->input('warehouse_no');
             $movementType = $request->input('movement_type');
             $materialCode = $request->input('material_code');
+            $customerCode = $request->user()->company()->value('customer_code');
             [$fromDate, $toDate] = $request->input('coverage_date');
  
             $formatFromDate = Carbon::parse($fromDate)->format('Ymd');
             $formatToDate = Carbon::parse($toDate)->format('Ymd');
 
             if($movementType === "outbound"){
-                $res = $this->movement->outboundMov($materialCode, $formatFromDate, $formatToDate, $warehouseNo);
+                $res = $this->movement->outboundMov($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode);
             }
             else if($movementType === "inbound"){
-                $res = $this->movement->inboundMov($materialCode, $formatFromDate, $formatToDate, $warehouseNo);
+                $res = $this->movement->inboundMov($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode);
             }
             else{
-                $res = $this->movement->mergeInOutbound($materialCode, $formatFromDate, $formatToDate, $warehouseNo);
+                $res = $this->movement->mergeInOutbound($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode);
             }   
 
             return $this->sendResponse($res, "Movements details");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->sendError($e);
         }
     }
@@ -64,7 +65,7 @@ class MovementController extends Controller
             $materialCode = $request->input('material_code');
             $movementType = $request->input('movement_type');
             $coverageDate = $request->input('coverage_date');
-            $customerCode = $request->input('customer_code');
+            $customerCode = $request->user()->company()->value('customer_code');
             $format = $request->input('format');
 
             if(strtolower($warehouseNo) != 'all'){

@@ -136,7 +136,8 @@ function Movements() {
         params: { customer_code: ccode },
       });
       if (resp) {
-        setMaterialList(resp.data);
+        const id = resp.data.length + 1 || 1;
+        setMaterialList([{ id, material: "ALL", description: "" }, ...resp.data]);
       }
     } catch (err) {
       setError(err);
