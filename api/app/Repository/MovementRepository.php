@@ -32,7 +32,7 @@ class MovementRepository implements IMovementRepository
         $mandt = SapRfcFacade::getMandt();
         $lips = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
             ->param('QUERY_TABLE', 'LIPS')
-            ->param('SORT_FIELDS', 'ERDAT')
+            ->param('SORT_FIELDS', 'VBELN')
             ->param('ORDER_BY_COLUMN', '2')
             ->param('DELIMITER', ';')
             ->param('OPTIONS', [
@@ -141,7 +141,7 @@ class MovementRepository implements IMovementRepository
                 ->where('lips.charg','!=', 'null')
                 ->whereBetween('likp.erdat', [$fromDate, $toDate])
                 ->groupBy('lips.matnr','lips.charg','lips.meinh','lips.maktx', 'lips.vfdat', 'lips.lgnum' ,'likp.headr', 'likp.erdat','likp.bwmid','likp.vnmbr')
-                ->orderBy('likp.erdat','asc')
+                ->orderBy('likp.bwmid','asc')
                 ->get();
 
                 
@@ -177,7 +177,7 @@ class MovementRepository implements IMovementRepository
         $outbound = $this->outboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode);
 
         $mergeInOut = array_merge($inbound, $outbound);
-        $collectionMergeInOut = collect($mergeInOut)->sortBy('date')
+        $collectionMergeInOut = collect($mergeInOut)->sortBy('documentNo')
                                 ->values()
                                 ->all();
 
