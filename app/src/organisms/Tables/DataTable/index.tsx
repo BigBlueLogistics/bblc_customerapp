@@ -1,5 +1,12 @@
-import { useMemo, useEffect, useState } from "react";
-import { useTable, usePagination, useGlobalFilter, useAsyncDebounce, useSortBy } from "react-table";
+import { useMemo, useEffect, useState, Fragment } from "react";
+import {
+  useTable,
+  usePagination,
+  useGlobalFilter,
+  useAsyncDebounce,
+  useSortBy,
+  useExpanded,
+} from "react-table";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
@@ -25,7 +32,9 @@ function DataTable({
   isSorted,
   noEndBorder,
   isLoading,
+  renderRowSubComponent,
 }: IDataTable) {
+  console.log("table rowssss", table.rows);
   const defaultValue =
     typeof entriesPerPage === "object" && entriesPerPage.defaultValue
       ? entriesPerPage.defaultValue
@@ -52,6 +61,7 @@ function DataTable({
     { columns, data, initialState: { pageIndex: 0 } },
     useGlobalFilter,
     useSortBy,
+    useExpanded,
     usePagination
   );
 
@@ -140,7 +150,7 @@ function DataTable({
 
   return (
     <TableContainer sx={{ boxShadow: "none" }}>
-      {entriesPerPage || canSearch ? (
+      {entriesPerPage ? (
         <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
           {entriesPerPage && (
             <MDBox display="flex" alignItems="center">
@@ -199,19 +209,28 @@ function DataTable({
             page.map((row, key) => {
               prepareRow(row);
               return (
-                <TableRow key={row.id} {...row.getRowProps()}>
-                  {row.cells.map((cell) => (
-                    <DataTableBodyCell
-                      key={cell.id}
-                      isLoading={isLoading}
-                      noBorder={noEndBorder && rows.length - 1 === key}
-                      align={cell.column.align ? cell.column.align : "left"}
-                      {...cell.getCellProps()}
-                    >
-                      {cell.render("Cell")}
-                    </DataTableBodyCell>
-                  ))}
-                </TableRow>
+                <Fragment key={row.id}>
+                  <TableRow key={row.id} {...row.getRowProps()}>
+                    {row.cells.map((cell) => (
+                      <DataTableBodyCell
+                        key={cell.id}
+                        isLoading={isLoading}
+                        noBorder={noEndBorder && rows.length - 1 === key}
+                        align={cell.column.align ? cell.column.align : "left"}
+                        {...cell.getCellProps()}
+                      >
+                        {cell.render("Cell")}
+                      </DataTableBodyCell>
+                    ))}
+                  </TableRow>
+                  {row.isExpanded ? (
+                    <TableRow className="subTable" sx={{ backgroundColor: "#dcdcdc" }}>
+                      <DataTableBodyCell colSpan={row.cells.length || 0}>
+                        {renderRowSubComponent({ row })}
+                      </DataTableBodyCell>
+                    </TableRow>
+                  ) : null}
+                </Fragment>
               );
             })
           ) : (

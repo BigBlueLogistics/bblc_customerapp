@@ -21,6 +21,10 @@ export type IFiltered = {
 
 export type ITableOrder = {
   status: IStatus;
-  data: any;
+  data: Record<string, any>[];
   message: string;
+};
+
+export type ITableHeader = {
+  onUpdateSubRow?: (row: Record<string, any>) => Promise<void>;
 };

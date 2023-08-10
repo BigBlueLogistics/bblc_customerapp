@@ -56,7 +56,7 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
         $formatToDate = Carbon::parse($toDate)->format('Ymd');
 
         if($this->movementType === "outbound"){
-            $result = $this->movementExport->outboundMov($this->materialCode, $formatFromDate, $formatToDate, $this->warehouseNo, $this->customerCode);
+            $result = $this->movementExport->outboundMovExcel($this->materialCode, $formatFromDate, $formatToDate, $this->warehouseNo, $this->customerCode);
         }
         else if($this->movementType === "inbound"){
             $result = $this->movementExport->inboundMov($this->materialCode, $formatFromDate, $formatToDate, $this->warehouseNo, $this->customerCode);

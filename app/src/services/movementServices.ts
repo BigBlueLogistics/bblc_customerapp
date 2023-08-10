@@ -9,6 +9,10 @@ class MovementServices extends HttpAdapter {
   getMaterialDescription(config: AxiosRequestConfig) {
     return this.get("/movements/material-description", config);
   }
+
+  getOutboundSubDetails(config: AxiosRequestConfig) {
+    return this.get("/movements/outbound-subdetails", config);
+  }
 }
 
 export default MovementServices;

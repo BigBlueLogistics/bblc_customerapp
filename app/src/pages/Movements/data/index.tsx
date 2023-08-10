@@ -1,4 +1,7 @@
-import { INotifyDownload, IFiltered } from "../types";
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react/prop-types */
+import { INotifyDownload, IFiltered, ITableHeader } from "../types";
 
 export default function miscData() {
   const commonHeadersAttr = {
@@ -6,7 +9,44 @@ export default function miscData() {
     Cell: ({ value }) => value || "",
   };
 
-  const tableHeaders = () => [
+  const tableHeaders = ({ onUpdateSubRow }: ITableHeader) => [
+    {
+      id: "expander", // Make sure it has an ID
+      Header: () => null,
+      Cell: ({ row, isLoading, isExpanded }) => {
+        const toggleRowExpandedProps = row.getToggleRowExpandedProps();
+
+        const onClick = async (event) => {
+          if (!isLoading) {
+            if (!isExpanded) {
+              await onUpdateSubRow(row);
+            }
+
+            toggleRowExpandedProps.onClick(event);
+          }
+        };
+
+        if (isLoading) {
+          return <span>🔄</span>;
+        }
+
+        return (
+          <button
+            type="button"
+            {...row.getToggleRowExpandedProps({
+              style: {
+                background: "transparent",
+                border: "none",
+                // paddingLeft: `${row.depth}rem`,
+              },
+            })}
+            onClick={onClick}
+          >
+            {row.isExpanded ? "🔽" : "▶️"}
+          </button>
+        );
+      },
+    },
     {
       Header: "Warehouse",
       accessor: "warehouse",
@@ -63,6 +103,9 @@ export default function miscData() {
       accessor: "weight",
       ...commonHeadersAttr,
     },
+  ];
+
+  const subTableHeaders = [
     {
       Header: "Reference",
       accessor: "reference",
@@ -78,7 +121,7 @@ export default function miscData() {
   const movementType = [
     {
       value: "all",
-      label: "ALL",
+      label: "ALL MOVEMENT",
     },
     {
       value: "inbound",
@@ -111,6 +154,7 @@ export default function miscData() {
 
   return {
     tableHeaders,
+    subTableHeaders,
     movementType,
     initialFiltered,
     initialNotification,

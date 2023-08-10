@@ -14,6 +14,7 @@ export type IDataTable = {
     variant: "contained" | "gradient";
     color: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "dark" | "light";
   };
+  renderRowSubComponent?: ({ row }: { row: any }) => React.ReactNode;
   isSorted?: boolean;
   isLoading?: boolean;
   noEndBorder?: boolean;

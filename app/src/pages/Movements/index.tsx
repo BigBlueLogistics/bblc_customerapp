@@ -31,7 +31,8 @@ import { IMenuAction } from "./components/MenuAction/types";
 function Movements() {
   const dispatch = useAppDispatch();
   const { customerCode } = selector();
-  const { tableHeaders, initialFiltered, initialNotification, movementType } = miscData();
+  const { tableHeaders, subTableHeaders, initialFiltered, initialNotification, movementType } =
+    miscData();
   const [showNotifyDownload, setShowNotifyDownload] =
     useState<INotifyDownload>(initialNotification);
 
@@ -124,7 +125,7 @@ function Movements() {
     try {
       const { data: rows } = await inventoryServices.getWarehouseList();
 
-      setWarehouseList([{ PLANT: "ALL", NAME1: "ALL" }, ...rows.data]);
+      setWarehouseList([{ PLANT: "ALL", NAME1: "ALL WAREHOUSE" }, ...rows.data]);
     } catch (err) {
       setError(err);
     }
@@ -137,7 +138,7 @@ function Movements() {
       });
       if (resp) {
         const id = resp.data.length + 1 || 1;
-        setMaterialList([{ id, material: "ALL", description: "" }, ...resp.data]);
+        setMaterialList([{ id, material: "ALL", description: "MATERIALS" }, ...resp.data]);
       }
     } catch (err) {
       setError(err);
@@ -181,6 +182,46 @@ function Movements() {
       data,
     });
     closeAction();
+  };
+
+  const subTable = ({ row }) => {
+    const rows = row.original.subRows ?? [];
+    return (
+      <DataTable
+        table={{ columns: subTableHeaders, rows }}
+        entriesPerPage={false}
+        showTotalEntries={false}
+        isSorted={false}
+        noEndBorder
+      />
+    );
+  };
+
+  const onUpdateSubRow = async ({ id, original }) => {
+    const idx = id;
+    let subRows = [];
+
+    if (original.movementType.toLowerCase() === "outbound") {
+      const { documentNo, documentNoRef } = original;
+      const { data: subData } = await movementServices.getOutboundSubDetails({
+        params: {
+          documentNo,
+          documentNoRef,
+        },
+      });
+
+      subRows = [subData.data];
+    } else {
+      const { headerText, reference } = original;
+      subRows = [{ headerText, reference }];
+    }
+
+    setTableOrders((prev) => {
+      const clonePrev = prev;
+      clonePrev.data[idx].subRows = subRows;
+
+      return clonePrev;
+    });
   };
 
   useEffect(() => {
@@ -426,12 +467,13 @@ function Movements() {
                 </MDBox>
                 <DataTable
                   table={{
-                    columns: tableHeaders(),
+                    columns: tableHeaders({ onUpdateSubRow }),
                     rows: tableOrders.data,
                   }}
                   isSorted={false}
                   isLoading={tableOrders.status === "loading"}
                   entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}
+                  renderRowSubComponent={subTable}
                   showTotalEntries
                   noEndBorder
                   canSearch

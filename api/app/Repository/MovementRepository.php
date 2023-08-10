@@ -67,30 +67,30 @@ class MovementRepository implements IMovementRepository
                     $date = Carbon::parse($item['ERDAT'])->format('m/d/Y');
                     $expiration = Carbon::parse($item['VFDAT'])->format('m/d/Y');
 
-                    $textLines = SapRfcFacade::functionModule('RFC_READ_TEXT')
-                                ->param('TEXT_LINES', array(
-                                    "TEXT_LINES" => array(
-                                        "TDOBJECT" => "VBBK",
-                                        "TDID" => "0001",
-                                        "TDSPRAS" => "E",
-                                        "TDNAME" => $item['VBELN']
-                                    )
-                                ))
-                                ->getData();
+                    // $textLines = SapRfcFacade::functionModule('RFC_READ_TEXT')
+                    //             ->param('TEXT_LINES', array(
+                    //                 "TEXT_LINES" => array(
+                    //                     "TDOBJECT" => "VBBK",
+                    //                     "TDID" => "0001",
+                    //                     "TDSPRAS" => "E",
+                    //                     "TDNAME" => $item['VBELN']
+                    //                 )
+                    //             ))
+                    //             ->getData();
 
 
-                    $vbak = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-                            ->param('QUERY_TABLE', 'VBAK')
-                            ->param('DELIMITER', ';')
-                            ->param('ROWCOUNT', 1)
-                            ->param('OPTIONS', [
-                                ['TEXT' => "MANDT EQ '{$mandt}'"],
-                                ['TEXT' => " AND VBELN EQ '{$vgbel}'"],
-                            ])
-                            ->param('FIELDS', [
-                                ['FIELDNAME' => 'BSTNK'],
-                            ])
-                            ->getDataToArray();
+                    // $vbak = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                    //         ->param('QUERY_TABLE', 'VBAK')
+                    //         ->param('DELIMITER', ';')
+                    //         ->param('ROWCOUNT', 1)
+                    //         ->param('OPTIONS', [
+                    //             ['TEXT' => "MANDT EQ '{$mandt}'"],
+                    //             ['TEXT' => " AND VBELN EQ '{$vgbel}'"],
+                    //         ])
+                    //         ->param('FIELDS', [
+                    //             ['FIELDNAME' => 'BSTNK'],
+                    //         ])
+                    //         ->getDataToArray();
 
                     return [
                         'date' => $date,
@@ -103,14 +103,47 @@ class MovementRepository implements IMovementRepository
                         'quantity' => $item['LFIMG'],
                         'unit' => $item['VRKME'],
                         'weight' => $item['BRGEW'],
-                        'headerText' => $textLines['TEXT_LINES'][0]['TDLINE'] ?? "",
-                        'reference' => $vbak[0]['BSTNK'] ?? "",
+                        // 'headerText' => $textLines['TEXT_LINES'][0]['TDLINE'] ?? "",
+                        // 'reference' => $vbak[0]['BSTNK'] ?? "",
                         'warehouse' =>  str_replace('W', 'WH', $item['LGNUM']),
+                        'documentNoRef' => $item['VGBEL']
                     ];
                 });
             }
 
         return $outbound->toArray();
+    }
+
+    public function outboundMovExcel($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode)
+    {
+        $groupOutbound = collect($this->outboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode));
+
+        $keysGroupOutbound = $groupOutbound
+                                ->groupBy(function($item, $key){
+                                    return $item['documentNo']."/".$item['documentNoRef'];
+                                })
+                                ->keys()
+                                ->mapWithKeys(function($item){
+                                    [$documentNo, $documentNoRef] = explode("/", $item);
+
+                                    $subDetails = $this->outboundSubDetails($documentNo, $documentNoRef);
+
+                                    return [$item => $subDetails];
+                                });
+
+
+        $merged = $groupOutbound->map(function($item) use ($keysGroupOutbound){
+                $groupBy = $item['documentNo']."/".$item['documentNoRef'];
+                $subText = $keysGroupOutbound[$groupBy];
+
+                 $item['headerText'] = $subText['headerText'];
+                 $item['reference'] = $subText['reference'];
+
+                return $item;
+            });
+
+        return $merged->all();
+
     }
 
     public function inboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode)
@@ -184,6 +217,40 @@ class MovementRepository implements IMovementRepository
         return $collectionMergeInOut;
     }
 
+    public function outboundSubDetails($documentNo, $documentNoRef)
+    {
+        $mandt = SapRfcFacade::getMandt();
+        $headerText = SapRfcFacade::functionModule('RFC_READ_TEXT')
+                        ->param('TEXT_LINES', array(
+                            "TEXT_LINES" => array(
+                                "TDOBJECT" => "VBBK",
+                                "TDID" => "0001",
+                                "TDSPRAS" => "E",
+                                "TDNAME" => "0080240591"
+                            )
+                        ))
+                    ->getData();
+
+        $reference = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                ->param('QUERY_TABLE', 'VBAK')
+                ->param('DELIMITER', ';')
+                ->param('ROWCOUNT', 1)
+                ->param('OPTIONS', [
+                    ['TEXT' => "MANDT EQ '{$mandt}'"],
+                    ['TEXT' => " AND VBELN EQ '{$documentNoRef}'"],
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'BSTNK'],
+                    ['FIELDNAME' => 'VGBEL'],
+                ])
+                ->getDataToArray();
+
+        return [
+            'headerText' => $headerText['TEXT_LINES'][0]['TDLINE'] ?? "",
+            'reference' => $reference[0]['BSTNK'] ?? "",
+        ];
+    }
+
     public function materialAndDescription($customerCode)
     {
         $mandt = SapRfcFacade::getMandt();
@@ -192,8 +259,7 @@ class MovementRepository implements IMovementRepository
                 ->param('DELIMITER', ';')
                 ->param('OPTIONS', [
                     ['TEXT' => "MANDT EQ '{$mandt}'"],
-                    ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"]
- ,
+                    ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
                 ])
                 ->param('FIELDS', [
                     ['FIELDNAME' => 'MATNR'],
@@ -208,7 +274,8 @@ class MovementRepository implements IMovementRepository
                                         "description" => $item['MAKTX'],
                                     ];
                                 })
-                            ->values()->all();
+                            ->values()
+                            ->all();
 
 
         return $collection;
