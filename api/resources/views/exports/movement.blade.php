@@ -63,8 +63,8 @@
                 <td>{{ $movement['quantity'] }}</td>
                 <td>{{ $movement['unit'] }}</td>
                 <td>{{ $movement['weight'] }}</td>
-                <td>{{ $movement['reference']}}</td>
-                <td>{{ $movement['headerText']}}</td>
+                <td>{{ $movement['reference'] ?? ""}}</td>
+                <td>{{ $movement['headerText'] ?? ""}}</td>
             </tr>
             @endforeach
         @endif

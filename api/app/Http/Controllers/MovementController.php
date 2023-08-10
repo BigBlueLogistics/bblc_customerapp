@@ -41,13 +41,13 @@ class MovementController extends Controller
             $formatToDate = Carbon::parse($toDate)->format('Ymd');
 
             if($movementType === "outbound"){
-                $res = $this->movement->outboundMov($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode);
+                $res = $this->movement->outboundMov($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode, "table");
             }
             else if($movementType === "inbound"){
                 $res = $this->movement->inboundMov($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode);
             }
             else{
-                $res = $this->movement->mergeInOutbound($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode);
+                $res = $this->movement->mergeInOutbound($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode, "table");
             }   
 
             return $this->sendResponse($res, "Movements details");
@@ -55,24 +55,6 @@ class MovementController extends Controller
             return $this->sendError($e);
         }
     }
-
-     public function outboundMovExcel(MovementRequest $request)
-     {
-        $request->validated($request->all());
-
-        $warehouseNo = $request->input('warehouse_no');
-        $movementType = $request->input('movement_type');
-        $materialCode = $request->input('material_code');
-        $customerCode = $request->user()->company()->value('customer_code');
-        [$fromDate, $toDate] = $request->input('coverage_date');
-
-        $formatFromDate = Carbon::parse($fromDate)->format('Ymd');
-        $formatToDate = Carbon::parse($toDate)->format('Ymd');
-
-        $res = $this->movement->outboundMovExcel($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode);
-
-        return $this->sendResponse($res);
-     }
 
     public function export(MovementRequest $request)
     {

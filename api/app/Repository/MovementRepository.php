@@ -12,7 +12,7 @@ class MovementRepository implements IMovementRepository
 {
     use StringEncode;
 
-    public function outboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode)
+    public function outboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode, $generateType)
     {
         if(strtolower($warehouseNo) != 'all'){
             $formatWarehouse = str_replace('BB', 'W', $warehouseNo);
@@ -62,35 +62,9 @@ class MovementRepository implements IMovementRepository
             $outbound = collect($lips);
 
             if($outbound->count()){
-               $outbound = $outbound->map(function($item) use ($mandt){
-                    $vgbel = $item['VGBEL'];
+               $outbound = $outbound->map(function($item){
                     $date = Carbon::parse($item['ERDAT'])->format('m/d/Y');
                     $expiration = Carbon::parse($item['VFDAT'])->format('m/d/Y');
-
-                    // $textLines = SapRfcFacade::functionModule('RFC_READ_TEXT')
-                    //             ->param('TEXT_LINES', array(
-                    //                 "TEXT_LINES" => array(
-                    //                     "TDOBJECT" => "VBBK",
-                    //                     "TDID" => "0001",
-                    //                     "TDSPRAS" => "E",
-                    //                     "TDNAME" => $item['VBELN']
-                    //                 )
-                    //             ))
-                    //             ->getData();
-
-
-                    // $vbak = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-                    //         ->param('QUERY_TABLE', 'VBAK')
-                    //         ->param('DELIMITER', ';')
-                    //         ->param('ROWCOUNT', 1)
-                    //         ->param('OPTIONS', [
-                    //             ['TEXT' => "MANDT EQ '{$mandt}'"],
-                    //             ['TEXT' => " AND VBELN EQ '{$vgbel}'"],
-                    //         ])
-                    //         ->param('FIELDS', [
-                    //             ['FIELDNAME' => 'BSTNK'],
-                    //         ])
-                    //         ->getDataToArray();
 
                     return [
                         'date' => $date,
@@ -103,44 +77,50 @@ class MovementRepository implements IMovementRepository
                         'quantity' => $item['LFIMG'],
                         'unit' => $item['VRKME'],
                         'weight' => $item['BRGEW'],
-                        // 'headerText' => $textLines['TEXT_LINES'][0]['TDLINE'] ?? "",
-                        // 'reference' => $vbak[0]['BSTNK'] ?? "",
                         'warehouse' =>  str_replace('W', 'WH', $item['LGNUM']),
                         'documentNoRef' => $item['VGBEL']
                     ];
                 });
             }
 
-        return $outbound->toArray();
+        // lazy load the column headerText and reference
+        if($generateType === "table")
+        {
+            return $outbound->toArray();
+        }
+        else
+        {
+            return $this->outboundMovExcel($outbound->toArray());
+        }
+
     }
 
-    public function outboundMovExcel($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode)
+    public function outboundMovExcel($data)
     {
-        $groupOutbound = collect($this->outboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode));
+        $collectionData = collect($data);
+        $keysGroupOutbound = $collectionData
+            ->groupBy(function($item){
+                return $item['documentNo']."/".$item['documentNoRef'];
+            })
+            ->keys()
+            ->mapWithKeys(function($item){
+                [$documentNo, $documentNoRef] = explode("/", $item);
 
-        $keysGroupOutbound = $groupOutbound
-                                ->groupBy(function($item, $key){
-                                    return $item['documentNo']."/".$item['documentNoRef'];
-                                })
-                                ->keys()
-                                ->mapWithKeys(function($item){
-                                    [$documentNo, $documentNoRef] = explode("/", $item);
+                $subDetails = $this->outboundSubDetails($documentNo, $documentNoRef);
 
-                                    $subDetails = $this->outboundSubDetails($documentNo, $documentNoRef);
-
-                                    return [$item => $subDetails];
-                                });
-
-
-        $merged = $groupOutbound->map(function($item) use ($keysGroupOutbound){
-                $groupBy = $item['documentNo']."/".$item['documentNoRef'];
-                $subText = $keysGroupOutbound[$groupBy];
-
-                 $item['headerText'] = $subText['headerText'];
-                 $item['reference'] = $subText['reference'];
-
-                return $item;
+                return [$item => $subDetails];
             });
+
+
+        $merged = $collectionData->map(function($item) use ($keysGroupOutbound){
+            $groupBy = $item['documentNo']."/".$item['documentNoRef'];
+            $subDetails = $keysGroupOutbound[$groupBy];
+
+                $item['headerText'] = $subDetails['headerText'];
+                $item['reference'] = $subDetails['reference'];
+
+            return $item;
+        });
 
         return $merged->all();
 
@@ -204,10 +184,10 @@ class MovementRepository implements IMovementRepository
 
     }
 
-    public function mergeInOutbound($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode)
+    public function mergeInOutbound($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode, $generateType)
     {
         $inbound = $this->inboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode);
-        $outbound = $this->outboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode);
+        $outbound = $this->outboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode, $generateType);
 
         $mergeInOut = array_merge($inbound, $outbound);
         $collectionMergeInOut = collect($mergeInOut)->sortBy('documentNo')
