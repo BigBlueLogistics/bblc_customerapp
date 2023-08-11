@@ -206,7 +206,7 @@ class MovementRepository implements IMovementRepository
                                 "TDOBJECT" => "VBBK",
                                 "TDID" => "0001",
                                 "TDSPRAS" => "E",
-                                "TDNAME" => "0080240591"
+                                "TDNAME" => $documentNo
                             )
                         ))
                     ->getData();
