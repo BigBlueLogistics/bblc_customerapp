@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/prop-types */
 import { INotifyDownload, IFiltered, ITableHeader } from "../types";
 
