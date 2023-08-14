@@ -225,8 +225,14 @@ class MovementRepository implements IMovementRepository
                 ])
                 ->getDataToArray();
 
+        $textLines = collect($headerText['TEXT_LINES'])->reduce(function($total, $item) {
+            $total[] = trim($item['TDLINE']);
+
+            return $total;
+        }) ?? [];
+
         return [
-            'headerText' => $headerText['TEXT_LINES'][0]['TDLINE'] ?? "",
+            'headerText' => implode(" ",$textLines),
             'reference' => $reference[0]['BSTNK'] ?? "",
         ];
     }
