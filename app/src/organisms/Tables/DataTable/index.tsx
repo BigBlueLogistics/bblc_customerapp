@@ -34,6 +34,7 @@ function DataTable({
   isLoading,
   renderRowSubComponent,
 }: IDataTable) {
+  console.log("table rowssss", table.rows);
   const defaultValue =
     typeof entriesPerPage === "object" && entriesPerPage.defaultValue
       ? entriesPerPage.defaultValue
