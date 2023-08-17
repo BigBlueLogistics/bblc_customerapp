@@ -45,7 +45,7 @@ return [
     | not expire. This won't tweak the lifetime of first-party sessions.
     |
     */
-    // 7 days period 10080
+
     'expiration' => 10080,
 
     /*

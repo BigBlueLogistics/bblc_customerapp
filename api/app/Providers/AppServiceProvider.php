@@ -17,20 +17,20 @@ use App\Repository\OrderRepository;
 use App\Repository\IndicatorsRepository;
 use App\Repository\MovementRepository;
 use App\Support\SapRfc;
+use App\Support\SqlServerOptConnector;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->bind('sap-rfc', function () {
             return new SapRfc('prd', 'Local');
         });
+        $this->app->bind('db.connector.sqlsrv', SqlServerOptConnector::class);
         $this->app->bind(IInventoryRepository::class, InventoryRepository::class);
         $this->app->bind(IWarehouseRepository::class, WarehouseRepository::class);
         $this->app->bind(IReportsRepository::class, ReportsRepository::class);
@@ -42,10 +42,8 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         //
     }

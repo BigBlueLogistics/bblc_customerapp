@@ -92,6 +92,7 @@ return [
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
+
         'ctp' => [
             'driver' => 'sqlsrv',
             'url' => env('DATABASE_URL'),
@@ -152,6 +153,7 @@ return [
                 PDO::ATTR_CASE => PDO::CASE_LOWER,
             ],
         ],
+
 
     ],
 
