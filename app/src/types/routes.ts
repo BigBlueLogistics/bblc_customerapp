@@ -10,8 +10,8 @@ export type RouteParams = {
   key: string;
   index?: boolean;
   allowedRoles?: Array<string>;
-  route: string;
-  component: React.ReactNode;
+  component?: React.ReactNode;
+  route?: string;
   access: "public" | "protected";
 };
 

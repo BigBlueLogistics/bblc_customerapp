@@ -30,7 +30,6 @@ import Orders from "pages/Orders";
 import Reports from "pages/Reports";
 import DefaultPage from "pages/DefaultPage";
 import NotFound from "pages/NotFound";
-import UnderConstruction from "pages/UnderConstruction";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -208,8 +207,7 @@ const routes: RoutesType = [
     name: "Website",
     key: "website",
     icon: <WebIcon />,
-    route: "/website",
-    component: <UnderConstruction />,
+    href: "https://www.bigbluelogisticscorp.com",
     access: "protected",
     allowedRoles: ["sysadmin", "user"],
   },
