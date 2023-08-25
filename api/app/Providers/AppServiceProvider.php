@@ -9,6 +9,7 @@ use App\Interfaces\IWarehouseRepository;
 use App\Interfaces\IOrderRepository;
 use App\Interfaces\IIndicatorsRepository;
 use App\Interfaces\IMovementRepository;
+use App\Interfaces\ITrucksVansRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\MemberRepository;
 use App\Repository\ReportsRepository;
@@ -16,6 +17,7 @@ use App\Repository\WarehouseRepository;
 use App\Repository\OrderRepository;
 use App\Repository\IndicatorsRepository;
 use App\Repository\MovementRepository;
+use App\Repository\TrucksVansRepository;
 use App\Support\SapRfc;
 use App\Support\SqlServerOptConnector;
 use Illuminate\Support\ServiceProvider;
@@ -38,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(IOrderRepository::class, OrderRepository::class);
         $this->app->bind(IIndicatorsRepository::class, IndicatorsRepository::class);
         $this->app->bind(IMovementRepository::class, MovementRepository::class);
+        $this->app->bind(ITrucksVansRepository::class, TrucksVansRepository::class);
     }
 
     /**

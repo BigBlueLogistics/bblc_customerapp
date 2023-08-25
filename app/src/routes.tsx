@@ -28,6 +28,7 @@ import Inventory from "pages/Inventory";
 import Movements from "pages/Movements";
 import Orders from "pages/Orders";
 import Reports from "pages/Reports";
+import TrucksVans from "pages/TrucksVans";
 import DefaultPage from "pages/DefaultPage";
 import NotFound from "pages/NotFound";
 
@@ -201,6 +202,16 @@ const routes: RoutesType = [
     component: <Members />,
     access: "protected",
     allowedRoles: ["sysadmin"],
+  },
+  {
+    type: "collapse",
+    name: "Trucks & Vans",
+    key: "trucks-vans",
+    icon: <AccountBoxIcon />,
+    route: "/trucks-vans",
+    component: <TrucksVans />,
+    access: "protected",
+    allowedRoles: ["sysadmin", "user"],
   },
   {
     type: "collapse",

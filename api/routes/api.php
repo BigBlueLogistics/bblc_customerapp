@@ -8,6 +8,7 @@ use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\IndicatorsController;
 use App\Http\Controllers\MovementController;
+use App\Http\Controllers\TrucksVansController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -81,5 +82,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/export-excel', [MovementController::class, 'export']);
         Route::get('/material-description', [MovementController::class, 'materialDescription']);
         Route::get('/outbound-subdetails', [MovementController::class, 'outboundSubDetails']);
+    });
+
+    Route::prefix('trucks-vans')->group(function(){
+        Route::get('/status', [TrucksVansController::class, 'status']);
+        Route::get('/status-details', [TrucksVansController::class, 'statusDetails']);
     });
 });
