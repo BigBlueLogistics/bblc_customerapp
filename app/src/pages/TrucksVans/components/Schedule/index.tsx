@@ -1,9 +1,9 @@
 import Card from "@mui/material/Card";
 // import Divider from "@mui/material/Divider";
-import Icon from "@mui/material/Icon";
+// import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
-import Transaction from "pages/billing/components/Transaction";
+// import Transaction from "pages/billing/components/Transaction";
 
 function Schedule() {
   return (
@@ -12,7 +12,8 @@ function Schedule() {
         <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
           Schedule Today
         </MDTypography>
-        <MDBox display="flex" alignItems="flex-start">
+
+        {/* <MDBox display="flex" alignItems="flex-start">
           <MDBox color="text" mr={0.5} lineHeight={0}>
             <Icon color="inherit" fontSize="small">
               date_range
@@ -21,9 +22,17 @@ function Schedule() {
           <MDTypography variant="button" color="text" fontWeight="regular">
             23 - 30 March 2020
           </MDTypography>
-        </MDBox>
+        </MDBox> */}
       </MDBox>
-      <MDBox pt={3} pb={2} px={2}>
+      <MDBox mt={2}>
+        <MDTypography variant="body1" fontWeight="light" textAlign="center">
+          This page is under construction.
+        </MDTypography>
+        <MDTypography variant="body2" fontWeight="light" textAlign="center">
+          We&apos;re working on it!
+        </MDTypography>
+      </MDBox>
+      {/* <MDBox pt={3} pb={2} px={2}>
         <MDBox mb={2}>
           <MDTypography variant="caption" color="text" fontWeight="bold" textTransform="uppercase">
             newest
@@ -94,7 +103,7 @@ function Schedule() {
             value="Pending"
           />
         </MDBox>
-      </MDBox>
+      </MDBox> */}
     </Card>
   );
 }

@@ -27,6 +27,10 @@ export type TrucksVansStatusDetailsEntity = Omit<
   outsealno: string;
   outdeliveryno: string;
   outstatus: string;
+  whschedule: string;
+  whprocessstartdate: string;
+  whprocessstarttime: string;
+  whprocessend: string;
   plugin: {
     id: number;
     startdate: string;

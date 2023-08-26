@@ -27,6 +27,10 @@ function StatusDetails({ open, onClose, data, loadingStatus }: IStatusDetails) {
     outdeliveryno,
     outstatus,
     plugin,
+    whprocessend,
+    whprocessstartdate,
+    whprocessstarttime,
+    whschedule,
   } = data || {};
 
   const arrivalDateTime = `${arrivaldate} ${arrivaltime}`;
@@ -123,6 +127,56 @@ function StatusDetails({ open, onClose, data, loadingStatus }: IStatusDetails) {
                     textTransform={getValue(arrivalstatus) ? "uppercase" : "lowercase"}
                   >
                     {getValue(arrivalstatus, "n/a")}
+                  </MDTypography>
+                </MDBox>
+              </MDBox>
+              <MDBox aria-label="warehouse info">
+                <MDBox mb={0.6}>
+                  <MDTypography
+                    component="div"
+                    variant="button"
+                    fontWeight="medium"
+                    textTransform="uppercase"
+                    sx={({ palette: { grey } }) => ({ backgroundColor: grey["200"], padding: 0.5 })}
+                  >
+                    Warehouse info
+                  </MDTypography>
+                </MDBox>
+                <MDBox mb={0.6} display="flex">
+                  <MDTypography component="div" variant="button" fontWeight="light" width="30%">
+                    Scheduled:
+                  </MDTypography>
+                  <MDTypography component="div" variant="button" fontWeight="regular">
+                    {getValue(
+                      formatDate(whschedule, {
+                        format: "MM/dd/yyyy",
+                        defaultValue: "n/a",
+                      })?.toString()
+                    )}
+                  </MDTypography>
+                </MDBox>
+                <MDBox mb={0.6} display="flex">
+                  <MDTypography component="div" variant="button" fontWeight="light" width="30%">
+                    Process Start:
+                  </MDTypography>
+                  <MDTypography component="div" variant="button" fontWeight="regular">
+                    {getValue(
+                      formatDate(`${whprocessstartdate} ${whprocessstarttime}`, {
+                        defaultValue: "n/a",
+                      })?.toString()
+                    )}
+                  </MDTypography>
+                </MDBox>
+                <MDBox mb={0.6} display="flex">
+                  <MDTypography component="div" variant="button" fontWeight="light" width="30%">
+                    Process End:
+                  </MDTypography>
+                  <MDTypography component="div" variant="button" fontWeight="regular">
+                    {getValue(
+                      formatDate(`${whprocessend}`, {
+                        defaultValue: "n/a",
+                      })?.toString()
+                    )}
                   </MDTypography>
                 </MDBox>
               </MDBox>

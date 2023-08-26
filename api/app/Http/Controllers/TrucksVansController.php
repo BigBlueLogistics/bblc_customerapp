@@ -40,8 +40,9 @@ class TrucksVansController extends Controller
             $request->validated($request->all());
 
             $vanMonitorNo = $request->input('vanMonitorNo');
+            $customerCode = $request->user()->company()->value('customer_code');
 
-            $details = $this->trucks->getTrucksVansStatusDetails($vanMonitorNo);
+            $details = $this->trucks->getTrucksVansStatusDetails($vanMonitorNo, $customerCode);
 
             return $this->sendResponse($details, 'Trucks and vans status details');
             
