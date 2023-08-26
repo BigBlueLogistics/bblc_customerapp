@@ -92,6 +92,7 @@ return [
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
+
         'ctp' => [
             'driver' => 'sqlsrv',
             'url' => env('DATABASE_URL'),
@@ -107,14 +108,15 @@ return [
                 PDO::ATTR_CASE => PDO::CASE_LOWER,
             ],
         ],
-        'wms-prd' => [
+
+        'wms' => [
             'driver' => 'sqlsrv',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_WMS_HOST_PRD', '192.168.5.139'),
-            'port' => env('DB_WMS_PORT_PRD', '8576'),
-            'database' => env('DB_WMS_DATABASE_PRD'),
-            'username' => env('DB_WMS_USERNAME_PRD'),
-            'password' => env('DB_WMS_PASSWORD_PRD'),
+            'host' => env('DB_WMS_HOST', '192.168.5.139'),
+            'port' => env('DB_WMS_PORT', '8576'),
+            'database' => env('DB_WMS_DATABASE'),
+            'username' => env('DB_WMS_USERNAME'),
+            'password' => env('DB_WMS_PASSWORD'),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
@@ -122,36 +124,7 @@ return [
                 PDO::ATTR_CASE => PDO::CASE_LOWER,
             ],
         ],
-        'wms-qas' => [
-            'driver' => 'sqlsrv',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_WMS_HOST_QAS', '192.168.5.139'),
-            'port' => env('DB_WMS_PORT_QAS', '8576'),
-            'database' => env('DB_WMS_DATABASE_QAS'),
-            'username' => env('DB_WMS_USERNAME_QAS'),
-            'password' => env('DB_WMS_PASSWORD_QAS'),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'options' => [
-                PDO::ATTR_CASE => PDO::CASE_LOWER,
-            ],
-        ],
-        'wms-dev' => [
-            'driver' => 'sqlsrv',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_WMS_HOST_DEV', '192.168.5.139'),
-            'port' => env('DB_WMS_PORT_DEV', '8576'),
-            'database' => env('DB_WMS_DATABASE_DEV'),
-            'username' => env('DB_WMS_USERNAME_DEV'),
-            'password' => env('DB_WMS_PASSWORD_DEV'),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'options' => [
-                PDO::ATTR_CASE => PDO::CASE_LOWER,
-            ],
-        ],
+
 
     ],
 

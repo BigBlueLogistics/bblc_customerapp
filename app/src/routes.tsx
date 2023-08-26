@@ -28,9 +28,9 @@ import Inventory from "pages/Inventory";
 import Movements from "pages/Movements";
 import Orders from "pages/Orders";
 import Reports from "pages/Reports";
+import TrucksVans from "pages/TrucksVans";
 import DefaultPage from "pages/DefaultPage";
 import NotFound from "pages/NotFound";
-import UnderConstruction from "pages/UnderConstruction";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -205,11 +205,20 @@ const routes: RoutesType = [
   },
   {
     type: "collapse",
+    name: "Trucks & Vans",
+    key: "trucks-vans",
+    icon: <AccountBoxIcon />,
+    route: "/trucks-vans",
+    component: <TrucksVans />,
+    access: "protected",
+    allowedRoles: ["sysadmin", "user"],
+  },
+  {
+    type: "collapse",
     name: "Website",
     key: "website",
     icon: <WebIcon />,
-    route: "/website",
-    component: <UnderConstruction />,
+    href: "https://www.bigbluelogisticscorp.com",
     access: "protected",
     allowedRoles: ["sysadmin", "user"],
   },
