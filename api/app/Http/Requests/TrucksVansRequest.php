@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TrucksVansRequest extends FormRequest
 {
@@ -22,7 +23,8 @@ class TrucksVansRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'vanMonitorNo' => ['required', 'numeric'],
+            'vanMonitorNo' => ['required', 'string'],
+            'action' => ['required', Rule::in(['search', 'view']) ],
         ];
     }
 }

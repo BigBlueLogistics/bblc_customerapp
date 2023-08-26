@@ -39,10 +39,11 @@ class TrucksVansController extends Controller
         try {
             $request->validated($request->all());
 
-            $vanMonitorNo = $request->input('vanMonitorNo');
+            $searchVal = $request->input('vanMonitorNo');
+            $action = $request->input('action');
             $customerCode = $request->user()->company()->value('customer_code');
 
-            $details = $this->trucks->getTrucksVansStatusDetails($vanMonitorNo, $customerCode);
+            $details = $this->trucks->getTrucksVansStatusDetails($searchVal, $customerCode, $action);
 
             return $this->sendResponse($details, 'Trucks and vans status details');
             

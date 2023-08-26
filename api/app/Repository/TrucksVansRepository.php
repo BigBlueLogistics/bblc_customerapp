@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\ITrucksVansRepository;
+use Illuminate\Database\Query\Builder;
 
 
 class TrucksVansRepository implements ITrucksVansRepository
@@ -24,8 +25,10 @@ class TrucksVansRepository implements ITrucksVansRepository
         return $res;
     }
 
-    public function getTrucksVansStatusDetails($vanMonitorNo, $customerCode)
+    public function getTrucksVansStatusDetails($searchVal, $customerCode, $action)
     {
+        $actionIsView = boolval($action === "view");
+
         $res = DB::connection('wms')->table('VANS')
             ->selectRaw('vnmbr AS vanNo, vmrno, 
                 vtype AS type, vsize AS size, UPPER(pstat) AS pluggedStatus,
@@ -34,8 +37,14 @@ class TrucksVansRepository implements ITrucksVansRepository
                 frdwr AS forwarder, odatu AS outDate, ozeit AS outTime, oseal AS outSealNo, 
                 odnum AS outDeliveryNo, ostat AS outStatus, wschd AS whSchedule,
                 whdat AS whProcessStartDate, whtim AS whProcessStartTime, ctime AS whProcessEnd')
-            ->where('vmrno','=', $vanMonitorNo)
-            ->where('kunnr','=', $customerCode)
+            ->when($actionIsView, function(Builder $query) use ($searchVal, $customerCode){
+                return $query->where('vmrno','=', $searchVal)
+                            ->where('kunnr','=', $customerCode);
+            }, function (Builder $query) use ($searchVal, $customerCode){
+                return $query->where('kunnr','=', $customerCode)
+                             ->where('vnmbr','like','%'.$searchVal.'%')
+                             ->Orwhere('vmrno','like','%'.$searchVal.'%');
+            })
             ->orderBy('adatu', 'desc')
             ->limit(1)
             ->first();
@@ -43,8 +52,14 @@ class TrucksVansRepository implements ITrucksVansRepository
         $plugin = DB::connection('wms')->table('PLUG')
             ->selectRaw('psdat AS startDate, pstim AS startTime, pedat AS endDate, petim AS endTime,
                 pitot AS totalPlugHrs, [Index] AS id')
-            ->where('vmrno', '=', $vanMonitorNo)
-            ->where('kunnr','=', $customerCode)
+            ->when($actionIsView, function(Builder $query) use ($searchVal, $customerCode){
+                return $query->where('vmrno','=', $searchVal)
+                            ->where('kunnr','=', $customerCode);
+            }, function (Builder $query) use ($searchVal, $customerCode){
+                return $query->where('kunnr','=', $customerCode)
+                                ->where('vnmbr','like','%'.$searchVal.'%')
+                                ->Orwhere('vmrno','like','%'.$searchVal.'%');
+            })
             ->orderBy('pedat','desc')
             ->get();
 
