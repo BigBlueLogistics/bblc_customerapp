@@ -1,0 +1,62 @@
+version: "3.9"
+
+volumes:
+  app_build_staging:
+    external: true
+
+networks:
+  bblc_customer_staging:
+    name: bblc_customer_net_staging
+
+services:
+  api_staging:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+      target: api_prod
+    container_name: backend
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./api:/var/www/html
+      - /var/www/html/vendor
+      - app_build_staging:/var/www/html/portal
+    networks:
+      - bblc_customer
+
+  app_staging:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      target: app_prod
+      args:
+        build_dir: portal
+    container_name: frontend
+    restart: on-failure:3
+    stdin_open: true
+    tty: true
+    depends_on:
+      - api
+    volumes:
+      - ./app:/var/www/html
+      - /var/www/html/node_modules
+      - app_build_staging:/var/www/html/portal
+    networks:
+      - bblc_customer_staging
+
+  # mssql:
+  #   image: mcr.microsoft.com/mssql/server:2019-latest
+  #   tty: true
+  #   ports:
+  #     - 1433:1433
+  #   volumes:
+  #     - ./:/var/lib/mssqlql/data
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #     - SA_PASSWORD=p@ssw0rd
+  #   networks:
+  #     - bblc
