@@ -17,7 +17,7 @@ function Status({ data, searchData, onOpen, onChangeSearch, onOpenSearch }: ISta
 
         <MDBox>
           <MDInput
-            placeholder="Input VMR"
+            placeholder="Input search"
             size="small"
             onChange={onChangeSearch}
             value={searchData}
@@ -36,7 +36,7 @@ function Status({ data, searchData, onOpen, onChangeSearch, onOpenSearch }: ISta
               <ItemStatus
                 key={item.vmrno}
                 data={item}
-                onOpenStatusDetails={() => onOpen(item.vmrno)}
+                onOpenStatusDetails={() => onOpen(item.vmrno, "view")}
               />
             ))
           ) : (

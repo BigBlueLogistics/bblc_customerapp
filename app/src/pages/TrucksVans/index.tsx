@@ -42,12 +42,12 @@ function TrucksVans() {
     }
   };
 
-  const fetchStatusDetails = async (vanMonitorNo: string) => {
+  const fetchStatusDetails = async (vanMonitorNo: string, action: "search" | "view") => {
     setListStatusDetails((prev) => ({ ...prev, status: "loading" }));
 
     try {
       const { data: truckVansStatus } = await trucksVansServies.getStatusDetails({
-        params: { vanMonitorNo },
+        params: { vanMonitorNo, action },
       });
 
       setListStatusDetails({
@@ -60,9 +60,9 @@ function TrucksVans() {
     }
   };
 
-  const onShowStatusDetails = (vanMonitorNo: string) => {
+  const onShowStatusDetails = (vanMonitorNo: string, action: "search" | "view") => {
     setShowDetails(true);
-    fetchStatusDetails(vanMonitorNo);
+    fetchStatusDetails(vanMonitorNo, action);
   };
 
   const onCloseStatusDetails = () => {
@@ -77,7 +77,7 @@ function TrucksVans() {
     const vmr = getValue(searchVMR);
     if (vmr) {
       setShowDetails(true);
-      fetchStatusDetails(vmr);
+      fetchStatusDetails(vmr, "search");
     }
   };
 
