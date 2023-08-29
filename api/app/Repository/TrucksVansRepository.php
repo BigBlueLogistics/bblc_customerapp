@@ -51,37 +51,29 @@ class TrucksVansRepository implements ITrucksVansRepository
             ->limit(1)
             ->first();
 
-        if($res){
-            if($actionIsView)
-            {
-                // View
-                $plugin = DB::connection('wms')->table('PLUG')
-                ->selectRaw('psdat AS startDate, pstim AS startTime, pedat AS endDate, petim AS endTime,
-                    pitot AS totalPlugHrs, [Index] AS id')
-                ->where('kunnr','=', $customerCode)
-                ->where('vmrno','=', $searchVal)
-                ->orderBy('psdat','desc')
-                ->limit(1)
-                ->get();
+        if($res)
+        {
+            // View or Search
+            $plugin = DB::connection('wms')->table('PLUG')
+            ->selectRaw('psdat AS startDate, pstim AS startTime, pedat AS endDate, petim AS endTime,
+                pitot AS totalPlugHrs, [Index] AS id')
+            ->when($actionIsView, function(Builder $query) use ($searchVal, $customerCode){
+                    return $query->where('vmrno','=', $searchVal)
+                                ->where('kunnr','=', $customerCode);
+                }, function (Builder $query) use ( $searchVal, $customerCode){
+                    return $query->where('kunnr','=', $customerCode)
+                        ->where(function(Builder $query) use ($searchVal){
+                            return $query->where('vnmbr','like','%'.$searchVal.'%')
+                                ->Orwhere('vmrno','like','%'.$searchVal.'%');
+                        });                           
+            })
+            ->orderBy('psdat','desc')
+            ->limit(1)
+            ->get();
 
-            }
-            else
-            {
-                // Search
-                $plugin = DB::connection('wms')->table('PLUG')
-                ->selectRaw('psdat AS startDate, pstim AS startTime, pedat AS endDate, petim AS endTime,
-                    pitot AS totalPlugHrs, [Index] AS id')
-                ->where('kunnr','=', $customerCode)
-                ->where(function(Builder $query) use ($searchVal){
-                    return $query->where('vnmbr','like','%'.$searchVal.'%')
-                        ->Orwhere('vmrno','like','%'.$searchVal.'%');
-                })       
-                ->orderBy('psdat','desc')
-                ->limit(1)
-                ->get();
-            }
-                $res->plugin = $plugin;
-            }
+            $res->plugin = $plugin;
+
+        }
 
         return $res;
     }
