@@ -40,32 +40,47 @@ class TrucksVansRepository implements ITrucksVansRepository
             ->when($actionIsView, function(Builder $query) use ($searchVal, $customerCode){
                 return $query->where('vmrno','=', $searchVal)
                             ->where('kunnr','=', $customerCode);
-            }, function (Builder $query) use ($searchVal, $customerCode){
+            }, function (Builder $query) use ( $searchVal, $customerCode){
                 return $query->where('kunnr','=', $customerCode)
-                             ->where('vnmbr','like','%'.$searchVal.'%')
-                             ->Orwhere('vmrno','like','%'.$searchVal.'%');
+                    ->where(function(Builder $query) use ($searchVal){
+                        return $query->where('vnmbr','like','%'.$searchVal.'%')
+                            ->Orwhere('vmrno','like','%'.$searchVal.'%');
+                    });                           
             })
             ->orderBy('adatu', 'desc')
             ->limit(1)
             ->first();
 
-        $plugin = DB::connection('wms')->table('PLUG')
-            ->selectRaw('psdat AS startDate, pstim AS startTime, pedat AS endDate, petim AS endTime,
-                pitot AS totalPlugHrs, [Index] AS id')
-            ->when($actionIsView, function(Builder $query) use ($searchVal, $customerCode){
-                return $query->where('vmrno','=', $searchVal)
-                            ->where('kunnr','=', $customerCode);
-            }, function (Builder $query) use ($searchVal, $customerCode){
-                return $query->where('kunnr','=', $customerCode)
-                                ->where('vnmbr','like','%'.$searchVal.'%')
-                                ->Orwhere('vmrno','like','%'.$searchVal.'%');
-            })
-            ->orderBy('pedat','desc')
-            ->get();
-
         if($res){
-            $res->plugin = $plugin;
-        }
+            if($actionIsView)
+            {
+                // View
+                $plugin = DB::connection('wms')->table('PLUG')
+                ->selectRaw('psdat AS startDate, pstim AS startTime, pedat AS endDate, petim AS endTime,
+                    pitot AS totalPlugHrs, [Index] AS id')
+                ->where('kunnr','=', $customerCode)
+                ->where('vmrno','=', $searchVal)
+                ->orderBy('psdat','desc')
+                ->limit(1)
+                ->get();
+
+            }
+            else
+            {
+                // Search
+                $plugin = DB::connection('wms')->table('PLUG')
+                ->selectRaw('psdat AS startDate, pstim AS startTime, pedat AS endDate, petim AS endTime,
+                    pitot AS totalPlugHrs, [Index] AS id')
+                ->where('kunnr','=', $customerCode)
+                ->where(function(Builder $query) use ($searchVal){
+                    return $query->where('vnmbr','like','%'.$searchVal.'%')
+                        ->Orwhere('vmrno','like','%'.$searchVal.'%');
+                })       
+                ->orderBy('psdat','desc')
+                ->get();
+            }
+                $res->plugin = $plugin;
+            }
 
         return $res;
     }
