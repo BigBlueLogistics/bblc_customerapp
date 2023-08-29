@@ -77,6 +77,7 @@ class TrucksVansRepository implements ITrucksVansRepository
                         ->Orwhere('vmrno','like','%'.$searchVal.'%');
                 })       
                 ->orderBy('psdat','desc')
+                ->limit(1)
                 ->get();
             }
                 $res->plugin = $plugin;
