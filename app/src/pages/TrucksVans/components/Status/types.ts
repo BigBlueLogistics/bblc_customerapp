@@ -1,7 +1,8 @@
 import { TrucksVansStatusEntity } from "entities/trucksVans";
-import { ChangeEvent } from "react";
+import { ChangeEvent, MutableRefObject } from "react";
 
 export type IStatus = {
+  inputSearchRef: MutableRefObject<any>;
   data: TrucksVansStatusEntity[];
   searchData: string;
   onOpen: (vanMonitorNo: string, action: "search" | "view") => void;

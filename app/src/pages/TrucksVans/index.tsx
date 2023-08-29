@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect, ChangeEvent, useRef } from "react";
 import Grid from "@mui/material/Grid";
 
 import MDBox from "atoms/MDBox";
@@ -25,6 +25,7 @@ function TrucksVans() {
   });
   const [showDetails, setShowDetails] = useState(false);
   const [searchVMR, setSearchVMR] = useState("");
+  const inputSearchRef = useRef<HTMLInputElement>(null);
 
   const fetchStatus = async () => {
     setListStatus((prev) => ({ ...prev, status: "loading" }));
@@ -78,6 +79,8 @@ function TrucksVans() {
     if (vmr) {
       setShowDetails(true);
       fetchStatusDetails(vmr, "search");
+    } else {
+      inputSearchRef.current.focus();
     }
   };
 
@@ -102,6 +105,7 @@ function TrucksVans() {
             </Grid>
             <Grid item xs={12} md={6}>
               <Status
+                inputSearchRef={inputSearchRef}
                 data={listStatus.data}
                 searchData={searchVMR}
                 onOpen={onShowStatusDetails}

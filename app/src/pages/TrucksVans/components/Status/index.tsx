@@ -7,7 +7,14 @@ import MDButton from "atoms/MDButton";
 import ItemStatus from "../ItemStatus";
 import { IStatus } from "./types";
 
-function Status({ data, searchData, onOpen, onChangeSearch, onOpenSearch }: IStatus) {
+function Status({
+  inputSearchRef,
+  data,
+  searchData,
+  onOpen,
+  onChangeSearch,
+  onOpenSearch,
+}: IStatus) {
   return (
     <Card>
       <MDBox pt={3} px={2} display="inline-flex" justifyContent="space-between">
@@ -17,6 +24,7 @@ function Status({ data, searchData, onOpen, onChangeSearch, onOpenSearch }: ISta
 
         <MDBox>
           <MDInput
+            inputRef={inputSearchRef}
             placeholder="Input search"
             size="small"
             onChange={onChangeSearch}
