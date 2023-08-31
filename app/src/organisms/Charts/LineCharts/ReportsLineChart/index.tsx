@@ -20,7 +20,7 @@ import { IReportsLineChart } from "./types";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-function ReportsLineChart({ color, title, description, date, chart }: IReportsLineChart) {
+function ReportsLineChart({ color, title, description, date, chart, status }: IReportsLineChart) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
 
   return (
@@ -38,10 +38,25 @@ function ReportsLineChart({ color, title, description, date, chart }: IReportsLi
               mt={-5}
               height="12.5rem"
             >
-              <Line data={data} options={options} />
+              {status === "failed" ? (
+                <MDTypography
+                  variant="body2"
+                  sx={{
+                    display: "flex",
+                    width: "100%",
+                    height: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  Failed to display chart.
+                </MDTypography>
+              ) : (
+                <Line data={data} options={options} />
+              )}
             </MDBox>
           ),
-          [chart, color]
+          [chart, color, status]
         )}
         <MDBox pt={3} pb={1} px={1}>
           <MDTypography variant="h6" textTransform="capitalize">

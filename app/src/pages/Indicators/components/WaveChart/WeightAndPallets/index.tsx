@@ -1,9 +1,16 @@
 import { Grid } from "@mui/material";
 import MDBox from "atoms/MDBox";
 import ReportsLineChart from "organisms/Charts/LineCharts/ReportsLineChart";
+import { IStatus } from "types/status";
 import { TWaveChart } from "../types";
 
-function WtandPallets({ data }: { data: TWaveChart["data"]["outboundPerWeek"] }) {
+function WtandPallets({
+  data,
+  status,
+}: {
+  data: TWaveChart["data"]["outboundPerWeek"];
+  status: IStatus;
+}) {
   const labels = data ? Object.keys(data) : [];
   const dataSets = data ? Object.values(data).flatMap((item) => item.weight) : [];
 
@@ -23,6 +30,7 @@ function WtandPallets({ data }: { data: TWaveChart["data"]["outboundPerWeek"] })
                 data: dataSets,
               },
             }}
+            status={status}
           />
         </MDBox>
       </Grid>

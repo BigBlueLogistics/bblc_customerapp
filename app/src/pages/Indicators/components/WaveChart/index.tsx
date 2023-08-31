@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import MDBox from "atoms/MDBox";
-import MDTypography from "atoms/MDTypography";
 import { indicatorServices } from "services";
 import Transaction from "./Transactions";
 import WtandPallets from "./WeightAndPallets";
@@ -40,21 +39,13 @@ function WaveChart() {
 
   const { inboundPerWeek, outboundPerWeek } = chart.data || {};
 
-  if (chart.status === "failed") {
-    return (
-      <MDBox width="100%">
-        <MDTypography variant="subtitle1">Cannot load charts.</MDTypography>
-      </MDBox>
-    );
-  }
-
   return (
     <>
       <MDBox mt={4.5}>
-        <Transaction data={inboundPerWeek} />
+        <Transaction data={inboundPerWeek} status={chart.status} />
       </MDBox>
       <MDBox mt={4.5}>
-        <WtandPallets data={outboundPerWeek} />
+        <WtandPallets data={outboundPerWeek} status={chart.status} />
       </MDBox>
     </>
   );
