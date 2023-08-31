@@ -255,7 +255,7 @@ function Inventory() {
                   <MDBox
                     sx={{
                       display: "flex",
-                      alignItems: "end",
+                      alignItems: "center",
                       justifyContent: "start",
                       padding: "10px",
                     }}

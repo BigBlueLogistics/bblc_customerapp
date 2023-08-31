@@ -372,7 +372,7 @@ function Movements() {
                   <MDBox
                     sx={({ breakpoints }) => ({
                       display: "flex",
-                      alignItems: "end",
+                      alignItems: "center",
                       justifyContent: "start",
                       padding: "10px",
                       [breakpoints.down("md")]: {
