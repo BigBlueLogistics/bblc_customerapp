@@ -58,7 +58,7 @@ function ItemStatus({ data, noGutter, onOpenStatusDetails }: IItemStatus) {
   const whLoc = () => {
     if (location) {
       return ["TRUCK", "YARD"].indexOf(location.toUpperCase()) > 0
-        ? "CONTAINER YARD"
+        ? "CONTAINER / TRUCK YARD"
         : `WAREHOUSE ${location}`;
     }
     return "";
