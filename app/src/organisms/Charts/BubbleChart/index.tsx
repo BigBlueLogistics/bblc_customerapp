@@ -9,7 +9,7 @@ import configs from "organisms/Charts/BubbleChart/configs";
 import colors from "assets/theme/base/colors";
 import { IBubbleChart } from "./types";
 
-function BubbleChart({ icon, title, description, height, chart }: IBubbleChart) {
+function BubbleChart({ icon, title, description, height, chart, status }: IBubbleChart) {
   const chartDatasets = chart.datasets
     ? chart.datasets.map((dataset) => ({
         ...dataset,
@@ -27,6 +27,27 @@ function BubbleChart({ icon, title, description, height, chart }: IBubbleChart) 
     : [];
 
   const { data, options } = configs(chart.labels || [], chartDatasets);
+
+  const renderBubbleChart = () => {
+    if (status === "failed") {
+      return (
+        <MDTypography
+          variant="body2"
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Failed to display chart.
+        </MDTypography>
+      );
+    }
+
+    return <Bubble data={data} options={options} />;
+  };
 
   const renderChart = (
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
@@ -62,9 +83,7 @@ function BubbleChart({ icon, title, description, height, chart }: IBubbleChart) 
       ) : null}
       {useMemo(
         () => (
-          <MDBox height={height}>
-            <Bubble data={data} options={options} />
-          </MDBox>
+          <MDBox height={height}>{renderBubbleChart()}</MDBox>
         ),
         [chart, height]
       )}

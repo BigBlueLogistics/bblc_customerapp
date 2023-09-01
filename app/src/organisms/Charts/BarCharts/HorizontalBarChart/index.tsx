@@ -20,7 +20,14 @@ import { IHorizontalBarChart } from "./types";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-function HorizontalBarChart({ icon, title, description, height, chart }: IHorizontalBarChart) {
+function HorizontalBarChart({
+  icon,
+  title,
+  description,
+  height,
+  chart,
+  status,
+}: IHorizontalBarChart) {
   const chartDatasets = chart.datasets
     ? chart.datasets.map((dataset) => ({
         ...dataset,
@@ -36,6 +43,27 @@ function HorizontalBarChart({ icon, title, description, height, chart }: IHorizo
     : [];
 
   const { data, options } = configs(chart.labels || [], chartDatasets);
+
+  const renderBarChart = () => {
+    if (status === "failed") {
+      return (
+        <MDTypography
+          variant="body2"
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Failed to display chart.
+        </MDTypography>
+      );
+    }
+
+    return <Bar data={data} options={options} />;
+  };
 
   const renderChart = (
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
@@ -71,9 +99,7 @@ function HorizontalBarChart({ icon, title, description, height, chart }: IHorizo
       ) : null}
       {useMemo(
         () => (
-          <MDBox height={height}>
-            <Bar data={data} options={options} />
-          </MDBox>
+          <MDBox height={height}>{renderBarChart()}</MDBox>
         ),
         [chart, height]
       )}

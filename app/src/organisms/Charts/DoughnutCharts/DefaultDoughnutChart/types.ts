@@ -1,4 +1,5 @@
 import React from "react";
+import { IStatus } from "types/status";
 
 export type IDefaultDoughnutChart = {
   icon?: {
@@ -9,4 +10,5 @@ export type IDefaultDoughnutChart = {
   description?: string | React.ReactNode;
   height?: string | number;
   chart: { [key: string]: any[] | { [key: string]: any } };
+  status?: IStatus;
 };

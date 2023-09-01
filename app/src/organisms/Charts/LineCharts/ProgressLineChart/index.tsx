@@ -16,8 +16,30 @@ function ProgressLineChart({
   progress,
   height,
   chart,
+  status,
 }: IProgressLineChart) {
   const { data, options } = configs(color, chart.labels || [], title, chart.data || []);
+
+  const renderLineChart = () => {
+    if (status === "failed") {
+      return (
+        <MDTypography
+          variant="body2"
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Failed to display chart.
+        </MDTypography>
+      );
+    }
+
+    return <Line data={data} options={options} style={{ height }} />;
+  };
 
   return (
     <Card>
@@ -62,9 +84,7 @@ function ProgressLineChart({
       </MDBox>
       {useMemo(
         () => (
-          <MDBox mt={2}>
-            <Line data={data} options={options} style={{ height }} />
-          </MDBox>
+          <MDBox mt={2}>{renderLineChart()}</MDBox>
         ),
         [chart, height]
       )}

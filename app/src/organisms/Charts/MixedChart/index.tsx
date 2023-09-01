@@ -9,7 +9,7 @@ import configs from "organisms/Charts/MixedChart/configs";
 import colors from "assets/theme/base/colors";
 import { IMixedChart } from "./types";
 
-function MixedChart({ icon, title, description, height, chart }: IMixedChart) {
+function MixedChart({ icon, title, description, height, chart, status }: IMixedChart) {
   const chartRef = useRef(null);
   const [chartData, setChartData] = useState({ data: null, options: null });
   const { data, options } = chartData;
@@ -94,6 +94,27 @@ function MixedChart({ icon, title, description, height, chart }: IMixedChart) {
     setChartData(configs(chart.labels || [], chartDatasets));
   }, [chart]);
 
+  const renderLineChart = () => {
+    if (status === "failed") {
+      return (
+        <MDTypography
+          variant="body2"
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Failed to display chart.
+        </MDTypography>
+      );
+    }
+
+    return <Line data={data} options={options} />;
+  };
+
   const renderChart = (
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
       {title || description ? (
@@ -129,7 +150,7 @@ function MixedChart({ icon, title, description, height, chart }: IMixedChart) {
       {useMemo(
         () => (
           <MDBox ref={chartRef} sx={{ height }}>
-            <Line data={data} options={options} />
+            {renderLineChart()}
           </MDBox>
         ),
         [chartData, height]

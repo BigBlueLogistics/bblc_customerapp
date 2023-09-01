@@ -1,4 +1,5 @@
 import React from "react";
+import { IStatus } from "types/status";
 
 export type IProgressLineChart = {
   color?: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "light" | "dark";
@@ -8,4 +9,5 @@ export type IProgressLineChart = {
   progress: number;
   height?: string | number;
   chart: { [key: string]: any[] };
+  status?: IStatus;
 };

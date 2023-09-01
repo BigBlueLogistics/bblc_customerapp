@@ -1,4 +1,5 @@
 import React from "react";
+import { IStatus } from "types/status";
 
 export type IVerticalBarChart = {
   icon?: {
@@ -9,4 +10,5 @@ export type IVerticalBarChart = {
   description?: string | React.ReactNode;
   height?: string | number;
   chart: { [key: string]: any[] };
+  status?: IStatus;
 };

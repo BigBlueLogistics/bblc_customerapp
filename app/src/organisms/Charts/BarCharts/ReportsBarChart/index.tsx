@@ -9,8 +9,29 @@ import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/BarCharts/ReportsBarChart/configs";
 import { IReportsBarChart } from "./types";
 
-function ReportsBarChart({ color, title, description, date, chart }: IReportsBarChart) {
+function ReportsBarChart({ color, title, description, date, chart, status }: IReportsBarChart) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
+
+  const renderBarChart = () => {
+    if (status === "failed") {
+      return (
+        <MDTypography
+          variant="body2"
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Failed to display chart.
+        </MDTypography>
+      );
+    }
+
+    return <Bar data={data} options={options} />;
+  };
 
   return (
     <Card sx={{ height: "100%" }}>
@@ -27,7 +48,7 @@ function ReportsBarChart({ color, title, description, date, chart }: IReportsBar
               mt={-5}
               height="12.5rem"
             >
-              <Bar data={data} options={options} />
+              {renderBarChart()}
             </MDBox>
           ),
           [chart, color]

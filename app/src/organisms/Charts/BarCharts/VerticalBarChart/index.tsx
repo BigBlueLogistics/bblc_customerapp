@@ -9,7 +9,7 @@ import configs from "organisms/Charts/BarCharts/VerticalBarChart/configs";
 import colors from "assets/theme/base/colors";
 import { IVerticalBarChart } from "./types";
 
-function VerticalBarChart({ icon, title, description, height, chart }: IVerticalBarChart) {
+function VerticalBarChart({ icon, title, description, height, chart, status }: IVerticalBarChart) {
   const chartDatasets = chart.datasets
     ? chart.datasets.map((dataset) => ({
         ...dataset,
@@ -25,6 +25,27 @@ function VerticalBarChart({ icon, title, description, height, chart }: IVertical
     : [];
 
   const { data, options } = configs(chart.labels || [], chartDatasets);
+
+  const renderBarChart = () => {
+    if (status === "failed") {
+      return (
+        <MDTypography
+          variant="body2"
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Failed to display chart.
+        </MDTypography>
+      );
+    }
+
+    return <Bar data={data} options={options} />;
+  };
 
   const renderChart = (
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
@@ -60,9 +81,7 @@ function VerticalBarChart({ icon, title, description, height, chart }: IVertical
       ) : null}
       {useMemo(
         () => (
-          <MDBox height={height}>
-            <Bar data={data} options={options} />
-          </MDBox>
+          <MDBox height={height}>{renderBarChart()}</MDBox>
         ),
         [chart, height]
       )}

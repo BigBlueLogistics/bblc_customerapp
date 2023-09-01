@@ -7,8 +7,29 @@ import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/PolarChart/configs";
 import { IPolarChart } from "./types";
 
-function PolarChart({ icon, title, description, chart }: IPolarChart) {
+function PolarChart({ icon, title, description, chart, status }: IPolarChart) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
+
+  const renderPolarAreaChart = () => {
+    if (status === "failed") {
+      return (
+        <MDTypography
+          variant="body2"
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Failed to display chart.
+        </MDTypography>
+      );
+    }
+
+    return <PolarArea data={data} options={options} />;
+  };
 
   const renderChart = (
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
@@ -44,9 +65,7 @@ function PolarChart({ icon, title, description, chart }: IPolarChart) {
       ) : null}
       {useMemo(
         () => (
-          <MDBox p={4}>
-            <PolarArea data={data} options={options} />
-          </MDBox>
+          <MDBox p={4}>{renderPolarAreaChart()}</MDBox>
         ),
         [chart]
       )}

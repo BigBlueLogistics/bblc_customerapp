@@ -7,8 +7,29 @@ import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/PieChart/configs";
 import { IPieChart } from "./types";
 
-function PieChart({ icon, title, description, height, chart }: IPieChart) {
+function PieChart({ icon, title, description, height, chart, status }: IPieChart) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
+
+  const renderPieChart = () => {
+    if (status === "failed") {
+      return (
+        <MDTypography
+          variant="body2"
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Failed to display chart.
+        </MDTypography>
+      );
+    }
+
+    return <Pie data={data} options={options} />;
+  };
 
   const renderChart = (
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
@@ -44,10 +65,7 @@ function PieChart({ icon, title, description, height, chart }: IPieChart) {
       ) : null}
       {useMemo(
         () => (
-          <MDBox height={height}>
-            {" "}
-            <Pie data={data} options={options} />
-          </MDBox>
+          <MDBox height={height}> {renderPieChart()}</MDBox>
         ),
         [chart, height]
       )}

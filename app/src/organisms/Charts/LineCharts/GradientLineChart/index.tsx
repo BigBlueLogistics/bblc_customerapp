@@ -9,7 +9,14 @@ import configs from "organisms/Charts/LineCharts/GradientLineChart/configs";
 import colors from "assets/theme/base/colors";
 import { IGradientLineChart } from "./types";
 
-function GradientLineChart({ icon, title, description, height, chart }: IGradientLineChart) {
+function GradientLineChart({
+  icon,
+  title,
+  description,
+  height,
+  chart,
+  status,
+}: IGradientLineChart) {
   const chartRef = useRef(null);
   const [chartData, setChartData] = useState({ data: null, options: null });
   const { data, options } = chartData;
@@ -35,6 +42,27 @@ function GradientLineChart({ icon, title, description, height, chart }: IGradien
 
     setChartData(configs(chart.labels || [], chartDatasets));
   }, [chart]);
+
+  const renderLineChart = () => {
+    if (status === "failed") {
+      return (
+        <MDTypography
+          variant="body2"
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Failed to display chart.
+        </MDTypography>
+      );
+    }
+
+    return <Line data={data} options={options} />;
+  };
 
   const renderChart = (
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
@@ -71,7 +99,7 @@ function GradientLineChart({ icon, title, description, height, chart }: IGradien
       {useMemo(
         () => (
           <MDBox ref={chartRef} sx={{ height }}>
-            <Line data={data} options={options} />
+            {renderLineChart()}
           </MDBox>
         ),
         [chartData, height]

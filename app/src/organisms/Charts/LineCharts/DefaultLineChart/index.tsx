@@ -8,7 +8,7 @@ import configs from "organisms/Charts/LineCharts/DefaultLineChart/configs";
 import colors from "assets/theme/base/colors";
 import { IDefaultLineChart } from "./types";
 
-function DefaultLineChart({ icon, title, description, height, chart }: IDefaultLineChart) {
+function DefaultLineChart({ icon, title, description, height, chart, status }: IDefaultLineChart) {
   const chartDatasets = chart.datasets
     ? chart.datasets.map((dataset) => ({
         ...dataset,
@@ -28,6 +28,27 @@ function DefaultLineChart({ icon, title, description, height, chart }: IDefaultL
     : [];
 
   const { data, options } = configs(chart.labels || [], chartDatasets);
+
+  const renderLineChart = () => {
+    if (status === "failed") {
+      return (
+        <MDTypography
+          variant="body2"
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Failed to display chart.
+        </MDTypography>
+      );
+    }
+
+    return <Line data={data} options={options} />;
+  };
 
   const renderChart = (
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
@@ -63,9 +84,7 @@ function DefaultLineChart({ icon, title, description, height, chart }: IDefaultL
       ) : null}
       {useMemo(
         () => (
-          <MDBox height={height}>
-            <Line data={data} options={options} />{" "}
-          </MDBox>
+          <MDBox height={height}>{renderLineChart()} </MDBox>
         ),
         [chart, height]
       )}

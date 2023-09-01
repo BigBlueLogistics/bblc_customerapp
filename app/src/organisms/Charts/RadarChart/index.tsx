@@ -9,7 +9,7 @@ import colors from "assets/theme/base/colors";
 import rgba from "assets/theme/functions/rgba";
 import { IRadarChart } from "./types";
 
-function RadarChart({ icon, title, description, chart }: IRadarChart) {
+function RadarChart({ icon, title, description, chart, status }: IRadarChart) {
   const chartDatasets = chart.datasets
     ? chart.datasets.map((dataset) => ({
         ...dataset,
@@ -20,6 +20,27 @@ function RadarChart({ icon, title, description, chart }: IRadarChart) {
     : [];
 
   const { data, options } = configs(chart.labels || [], chartDatasets);
+
+  const renderRadarChart = () => {
+    if (status === "failed") {
+      return (
+        <MDTypography
+          variant="body2"
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Failed to display chart.
+        </MDTypography>
+      );
+    }
+
+    return <Radar data={data} options={options} />;
+  };
 
   const renderChart = (
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
@@ -55,9 +76,7 @@ function RadarChart({ icon, title, description, chart }: IRadarChart) {
       ) : null}
       {useMemo(
         () => (
-          <MDBox p={6}>
-            <Radar data={data} options={options} />
-          </MDBox>
+          <MDBox p={6}>{renderRadarChart()}</MDBox>
         ),
         [chart]
       )}

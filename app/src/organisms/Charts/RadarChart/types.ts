@@ -1,4 +1,5 @@
 import React from "react";
+import { IStatus } from "types/status";
 
 export type IRadarChart = {
   icon?: {
@@ -8,4 +9,5 @@ export type IRadarChart = {
   title?: string;
   description?: string | React.ReactNode;
   chart: { [key: string]: any[] };
+  status?: IStatus;
 };

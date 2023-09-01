@@ -7,12 +7,40 @@ import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/DoughnutCharts/DefaultDoughnutChart/configs";
 import { IDefaultDoughnutChart } from "./types";
 
-function DefaultDoughnutChart({ icon, title, description, height, chart }: IDefaultDoughnutChart) {
+function DefaultDoughnutChart({
+  icon,
+  title,
+  description,
+  height,
+  chart,
+  status,
+}: IDefaultDoughnutChart) {
   const { data, options } = configs(
     chart.labels || [],
     chart.datasets || {},
     chart.cutout as unknown as number
   );
+
+  const renderDoughnutChart = () => {
+    if (status === "failed") {
+      return (
+        <MDTypography
+          variant="body2"
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Failed to display chart.
+        </MDTypography>
+      );
+    }
+
+    return <Doughnut data={data} options={options} />;
+  };
 
   const renderChart = (
     <MDBox py={2} pr={2} pl={icon.component ? 1 : 2}>
@@ -48,9 +76,7 @@ function DefaultDoughnutChart({ icon, title, description, height, chart }: IDefa
       ) : null}
       {useMemo(
         () => (
-          <MDBox height={height}>
-            <Doughnut data={data} options={options} />
-          </MDBox>
+          <MDBox height={height}>{renderDoughnutChart()}</MDBox>
         ),
         [chart, height]
       )}

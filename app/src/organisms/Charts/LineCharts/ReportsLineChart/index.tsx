@@ -23,6 +23,26 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 function ReportsLineChart({ color, title, description, date, chart, status }: IReportsLineChart) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
 
+  const renderLineChart = () => {
+    if (status === "failed") {
+      return (
+        <MDTypography
+          variant="body2"
+          sx={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Failed to display chart.
+        </MDTypography>
+      );
+    }
+
+    return <Line data={data} options={options} />;
+  };
   return (
     <Card sx={{ height: "100%" }}>
       <MDBox padding="1rem">
@@ -38,25 +58,10 @@ function ReportsLineChart({ color, title, description, date, chart, status }: IR
               mt={-5}
               height="12.5rem"
             >
-              {status === "failed" ? (
-                <MDTypography
-                  variant="body2"
-                  sx={{
-                    display: "flex",
-                    width: "100%",
-                    height: "100%",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  Failed to display chart.
-                </MDTypography>
-              ) : (
-                <Line data={data} options={options} />
-              )}
+              {renderLineChart()}
             </MDBox>
           ),
-          [chart, color, status]
+          [chart, color]
         )}
         <MDBox pt={3} pb={1} px={1}>
           <MDTypography variant="h6" textTransform="capitalize">
