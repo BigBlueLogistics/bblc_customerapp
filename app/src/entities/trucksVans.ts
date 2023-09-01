@@ -41,5 +41,14 @@ export type TrucksVansStatusDetailsEntity = Omit<
   }[];
 };
 
+export type TruckVansScheduleTodayEntity = {
+  id: number;
+  vehiclenum: string;
+  arrivaldate: string;
+  arrivaltime: string;
+  vehicletype: string;
+};
+
 export type ResponseTrucksVansStatusEntity = TResponse<TrucksVansStatusEntity[]>;
 export type ResponseTrucksVansStatusDetailsEntity = TResponse<TrucksVansStatusDetailsEntity>;
+export type ResponseTrucksVansScheduleTodayEntity = TResponse<TruckVansScheduleTodayEntity[]>;

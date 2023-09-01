@@ -3,7 +3,8 @@ import MDTypography from "atoms/MDTypography";
 import MDButton from "atoms/MDButton";
 import MDIcon from "atoms/MDIcon";
 import { useMaterialUIController } from "context";
-import { differenceInDays, format } from "date-fns";
+import { differenceInDays } from "date-fns";
+import { getValue, formatDate } from "utils";
 import { IItemStatus } from "./types";
 
 function ItemStatus({ data, noGutter, onOpenStatusDetails }: IItemStatus) {
@@ -131,7 +132,12 @@ function ItemStatus({ data, noGutter, onOpenStatusDetails }: IItemStatus) {
           <MDTypography variant="caption" color="text">
             Arrival:&nbsp;&nbsp;&nbsp;
             <MDTypography variant="caption" fontWeight="medium">
-              {format(convertedArrivalDate, "MM-dd-yyyy")}
+              {getValue(
+                formatDate(arrivaldate, {
+                  format: "MM/dd/yyyy",
+                  defaultValue: "n/a",
+                })?.toString()
+              )}
             </MDTypography>
             &nbsp;
             <MDTypography variant="caption" fontWeight="regular">

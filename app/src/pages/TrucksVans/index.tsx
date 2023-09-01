@@ -9,7 +9,7 @@ import Status from "pages/TrucksVans/components/Status";
 import Schedule from "pages/TrucksVans/components/Schedule";
 import StatusDetails from "pages/TrucksVans/components/StatusDetails";
 import { trucksVansServies } from "services";
-import { IListStatus, IListStatusDetails } from "pages/TrucksVans/types";
+import { IListStatus, IListStatusDetails, IListScheduleToday } from "pages/TrucksVans/types";
 import { getValue } from "utils";
 
 function TrucksVans() {
@@ -19,6 +19,11 @@ function TrucksVans() {
     status: "idle",
   });
   const [listStatusDetails, setListStatusDetails] = useState<IListStatusDetails>({
+    message: null,
+    data: null,
+    status: "idle",
+  });
+  const [listScheduleToday, setListScheduleToday] = useState<IListScheduleToday>({
     message: null,
     data: null,
     status: "idle",
@@ -61,6 +66,22 @@ function TrucksVans() {
     }
   };
 
+  const fetchScheduleToday = async () => {
+    setListScheduleToday((prev) => ({ ...prev, status: "loading" }));
+
+    try {
+      const { data: truckVansSchedule } = await trucksVansServies.getScheduleToday();
+
+      setListScheduleToday({
+        status: "succeeded",
+        data: truckVansSchedule.data,
+        message: truckVansSchedule.message,
+      });
+    } catch (err) {
+      setListScheduleToday({ status: "failed", message: err, data: null });
+    }
+  };
+
   const onShowStatusDetails = (vanMonitorNo: string, action: "search" | "view") => {
     setShowDetails(true);
     fetchStatusDetails(vanMonitorNo, action);
@@ -86,6 +107,7 @@ function TrucksVans() {
 
   useEffect(() => {
     fetchStatus();
+    fetchScheduleToday();
   }, []);
 
   return (
@@ -101,7 +123,7 @@ function TrucksVans() {
         <MDBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
-              <Schedule />
+              <Schedule data={listScheduleToday.data} />
             </Grid>
             <Grid item xs={12} md={6}>
               <Status

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TrucksVans\ScheduleTodayRequest;
 use Illuminate\Http\Request;
-use App\Http\Requests\TrucksVansRequest;
+use App\Http\Requests\TrucksVans\StatusRequest;
 use App\Traits\HttpResponse;
 use App\Interfaces\ITrucksVansRepository;
 
@@ -34,7 +35,7 @@ class TrucksVansController extends Controller
 
     }
 
-    public function statusDetails(TrucksVansRequest $request)
+    public function statusDetails(StatusRequest $request)
     {
         try {
             $request->validated($request->all());
@@ -47,6 +48,19 @@ class TrucksVansController extends Controller
 
             return $this->sendResponse($details, 'Trucks and vans status details');
             
+        } catch (Exception $e) {
+            return $this->sendError($e);
+        }
+    }
+
+    public function scheduleToday(ScheduleTodayRequest $request)
+    {
+        try {
+            $customerCode = $request->user()->company()->value('customer_code');
+
+            $schedule = $this->trucks->getScheduleToday($customerCode);
+
+            return $this->sendResponse($schedule, 'Trucks and vans schedule today');
         } catch (Exception $e) {
             return $this->sendError($e);
         }
