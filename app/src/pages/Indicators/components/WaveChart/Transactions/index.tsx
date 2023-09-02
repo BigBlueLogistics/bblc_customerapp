@@ -7,9 +7,11 @@ import { TWaveChart } from "../types";
 function Transaction({
   data,
   status,
+  coverageDate,
 }: {
   data: TWaveChart["data"]["inboundPerWeek"];
   status: IStatus;
+  coverageDate: string;
 }) {
   const labels = data ? Object.keys(data) : [];
   const dataSets = data ? Object.values(data).flatMap((item) => item.weight) : [];
@@ -21,7 +23,7 @@ function Transaction({
           <ReportsLineChart
             color="success"
             title="Inbound/Outbound by Transactions"
-            description={<div>weekly</div>}
+            description={<div>weekly of ({coverageDate})</div>}
             date="updated today"
             chart={{
               labels,

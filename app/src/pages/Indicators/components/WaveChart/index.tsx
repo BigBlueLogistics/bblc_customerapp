@@ -12,6 +12,7 @@ function WaveChart() {
     data: {
       inboundPerWeek: null,
       outboundPerWeek: null,
+      coverageDate: null,
     },
     status: "idle",
     message: "",
@@ -37,15 +38,15 @@ function WaveChart() {
     fetchInOutbound(customerCode);
   }, [customerCode]);
 
-  const { inboundPerWeek, outboundPerWeek } = chart.data || {};
+  const { inboundPerWeek, outboundPerWeek, coverageDate } = chart.data || {};
 
   return (
     <>
       <MDBox mt={4.5}>
-        <Transaction data={inboundPerWeek} status={chart.status} />
+        <Transaction data={inboundPerWeek} status={chart.status} coverageDate={coverageDate} />
       </MDBox>
       <MDBox mt={4.5}>
-        <WtandPallets data={outboundPerWeek} status={chart.status} />
+        <WtandPallets data={outboundPerWeek} status={chart.status} coverageDate={coverageDate} />
       </MDBox>
     </>
   );

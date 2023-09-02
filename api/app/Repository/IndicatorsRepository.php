@@ -6,8 +6,6 @@ use App\Interfaces\IIndicatorsRepository;
 use App\Facades\SapRfcFacade;
 use Carbon\Carbon;
 
-// TODO: get only record of past 7 days.
-// HOW? current day - 7 days.
 class IndicatorsRepository implements IIndicatorsRepository
 {
 
@@ -15,7 +13,8 @@ class IndicatorsRepository implements IIndicatorsRepository
     {
         $mandt = SapRfcFacade::getMandt();
 
-        $monthOfJan = Carbon::now()->format('Y'). '0101';
+        $fromDate = Carbon::today()->subMonth();
+        $toDate = Carbon::today();
 
         $lips = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
             ->param('QUERY_TABLE', 'LIPS')
@@ -23,7 +22,8 @@ class IndicatorsRepository implements IIndicatorsRepository
             ->param('OPTIONS', [
                 ['TEXT' => "MANDT EQ {$mandt}"],
                 ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
-                ['TEXT' => " AND ERDAT GE '{$monthOfJan}'"],
+                ['TEXT' => " AND (ERDAT GE '{$fromDate->format('Ymd')}'"],
+                ['TEXT' => " AND ERDAT LE '{$toDate->format('Ymd')}')"],
                 ['TEXT' => " AND CHARG NE ''"],
             ])
             ->param('FIELDS', [
@@ -82,6 +82,7 @@ class IndicatorsRepository implements IIndicatorsRepository
         return [
           'inboundPerWeek' => $totalInbound ?? null,
           'outboundPerWeek' => $totalOutbound ?? null,
+          'coverageDate' => $fromDate->format('M. d')." - ". $toDate->format('M. d'),
         ];
     }
 
@@ -90,7 +91,7 @@ class IndicatorsRepository implements IIndicatorsRepository
     {
       $mandt = SapRfcFacade::getMandt();
 
-      $dateToday = Carbon::today()->format('Ymd');
+      $fromDate = Carbon::today()->format('Ymd');
 
       $arr = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
           ->param('QUERY_TABLE', 'LIPS')
@@ -98,7 +99,7 @@ class IndicatorsRepository implements IIndicatorsRepository
           ->param('OPTIONS', [
               ['TEXT' => "MANDT EQ {$mandt}"],
               ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
-              ['TEXT' => " AND ERDAT GE '{$dateToday}'"],
+              ['TEXT' => " AND ERDAT GE '{$fromDate}'"],
               ['TEXT' => " AND CHARG NE ''"],
           ])
           ->param('FIELDS', [
