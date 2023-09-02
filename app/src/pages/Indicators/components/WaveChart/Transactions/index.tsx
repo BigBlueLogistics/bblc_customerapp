@@ -1,5 +1,6 @@
 import { Grid } from "@mui/material";
 import MDBox from "atoms/MDBox";
+import MDTypography from "atoms/MDTypography";
 import ReportsLineChart from "organisms/Charts/LineCharts/ReportsLineChart";
 import { IStatus } from "types/status";
 import { TWaveChart } from "../types";
@@ -15,6 +16,12 @@ function Transaction({
 }) {
   const labels = data ? Object.keys(data) : [];
   const dataSets = data ? Object.values(data).flatMap((item) => item.weight) : [];
+  const description =
+    status === "succeeded" ? (
+      <MDTypography variant="button" fontWeight="light" color="text">
+        weekly of ({coverageDate})
+      </MDTypography>
+    ) : null;
 
   return (
     <Grid container spacing={3}>
@@ -23,7 +30,7 @@ function Transaction({
           <ReportsLineChart
             color="success"
             title="Inbound/Outbound by Transactions"
-            description={<div>weekly of ({coverageDate})</div>}
+            description={description}
             date="updated today"
             chart={{
               labels,
