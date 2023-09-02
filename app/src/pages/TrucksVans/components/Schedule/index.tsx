@@ -7,8 +7,8 @@ import { ISchedule } from "./types";
 function Schedule({ data }: ISchedule) {
   return (
     <Card sx={{ height: "100%" }}>
-      <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={2}>
-        <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
+      <MDBox pt={3} px={2} display="inline-flex" justifyContent="space-between">
+        <MDTypography variant="h6" fontWeight="medium">
           Schedule Today
         </MDTypography>
       </MDBox>
@@ -17,9 +17,11 @@ function Schedule({ data }: ISchedule) {
           {data && data.length ? (
             data.map((item) => <ItemSchedule key={item.id} data={item} />)
           ) : (
-            <MDTypography variant="body2" fontWeight="light" textAlign="center">
-              No data available.
-            </MDTypography>
+            <MDBox component="li" display="flex" justifyContent="center" alignItems="center">
+              <MDTypography variant="body2" fontWeight="light" textAlign="center">
+                No data available.
+              </MDTypography>
+            </MDBox>
           )}
         </MDBox>
       </MDBox>

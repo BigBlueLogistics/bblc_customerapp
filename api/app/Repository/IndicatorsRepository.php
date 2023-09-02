@@ -6,6 +6,8 @@ use App\Interfaces\IIndicatorsRepository;
 use App\Facades\SapRfcFacade;
 use Carbon\Carbon;
 
+// TODO: get only record of past 7 days.
+// HOW? current day - 7 days.
 class IndicatorsRepository implements IIndicatorsRepository
 {
 
