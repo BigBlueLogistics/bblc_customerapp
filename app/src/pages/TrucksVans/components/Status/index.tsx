@@ -15,13 +15,9 @@ function Status({
   onChangeSearch,
   onOpenSearch,
 }: IStatus) {
-  return (
-    <Card>
-      <MDBox pt={3} px={2} display="inline-flex" justifyContent="space-between">
-        <MDTypography variant="h6" fontWeight="medium">
-          Trucks and Vans Status
-        </MDTypography>
-
+  const renderSearch = () => {
+    if (data?.length) {
+      return (
         <MDBox>
           <MDInput
             inputRef={inputSearchRef}
@@ -36,6 +32,19 @@ function Status({
             </MDIcon>
           </MDButton>
         </MDBox>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <Card sx={{ height: "100%" }}>
+      <MDBox pt={3} px={2} display="inline-flex" justifyContent="space-between">
+        <MDTypography variant="h6" fontWeight="medium">
+          Trucks and Vans Status
+        </MDTypography>
+
+        {renderSearch()}
       </MDBox>
       <MDBox pt={1} pb={2} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
@@ -48,9 +57,11 @@ function Status({
               />
             ))
           ) : (
-            <MDTypography variant="body2" fontWeight="light" textAlign="center">
-              No data available.
-            </MDTypography>
+            <MDBox component="li" display="flex" justifyContent="center" alignItems="center">
+              <MDTypography variant="body2" fontWeight="light" textAlign="center">
+                No data available.
+              </MDTypography>
+            </MDBox>
           )}
         </MDBox>
       </MDBox>

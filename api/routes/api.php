@@ -87,5 +87,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('trucks-vans')->group(function(){
         Route::get('/status', [TrucksVansController::class, 'status']);
         Route::get('/status-details', [TrucksVansController::class, 'statusDetails']);
+        Route::get('/schedule-today',[TrucksVansController::class, 'scheduleToday']);
     });
 });

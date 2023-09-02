@@ -53,7 +53,8 @@ class TrucksVansRepository implements ITrucksVansRepository
 
         if($res)
         {
-            // View or Search
+            // When action is VIEW the 2nd argument callback will invoke
+            // else the last callback
             $plugin = DB::connection('wms')->table('PLUG')
             ->selectRaw('psdat AS startDate, pstim AS startTime, pedat AS endDate, petim AS endTime,
                 pitot AS totalPlugHrs, [Index] AS id')
@@ -72,8 +73,22 @@ class TrucksVansRepository implements ITrucksVansRepository
             ->get();
 
             $res->plugin = $plugin;
-
         }
+
+        return $res;
+    }
+
+    public function getScheduleToday($customerCode)
+    {
+        $res = DB::connection('wms')->table('iclt')
+                ->join('hclt', 'iclt.kunnr','=','hclt.kunnr')
+                ->selectRaw('iclt.vhnum AS vehicleNum, iclt.ardat AS arrivalDate, 
+                    CONVERT(VARCHAR, iclt.artim, 8) AS arrivalTime,
+                    hclt.vhtyp as vehicleType')
+                ->where('iclt.kunnr','=', $customerCode)
+                ->whereNull('iclt.pudat')
+                ->orderBy('iclt.ardat','desc')
+                ->get();
 
         return $res;
     }
