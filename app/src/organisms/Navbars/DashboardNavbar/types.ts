@@ -1,4 +1,4 @@
-export type IDashboardNavbar = {
+export type TDashboardNavbar = {
   absolute?: boolean;
   light?: boolean;
   isMini?: boolean;

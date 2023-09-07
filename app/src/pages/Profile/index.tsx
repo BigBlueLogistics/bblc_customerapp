@@ -13,14 +13,14 @@ import ChangePassword from "organisms/Profile/ChangePassword";
 import Header from "pages/Profile/components/Header";
 import { authServices } from "services";
 import { ChangePassType } from "types/authForm";
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 import { capitalizeWord } from "utils";
 
 // Data
 import selector from "./selector";
 
 function Profile() {
-  const [status, setStatus] = useState<IStatus>("idle");
+  const [status, setStatus] = useState<TStatus>("idle");
   const [statusMsg, setStatusMsg] = useState(null);
   const { name, email, roleName } = selector();
   const capitalizeName = capitalizeWord(name);

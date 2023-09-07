@@ -1,8 +1,8 @@
 import Icon from "@mui/material/Icon";
 import { styled } from "@mui/material/styles";
-import { IOwnerState } from "./types";
+import { TOwnerState } from "./types";
 
-export default styled(Icon)<IOwnerState>(({ theme, ownerState = {} }) => {
+export default styled(Icon)<TOwnerState>(({ theme, ownerState = {} }) => {
   const {
     typography: { pxToRem },
   } = theme;

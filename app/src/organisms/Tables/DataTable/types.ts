@@ -1,6 +1,6 @@
 import React from "react";
 
-export type IDataTable = {
+export type TDataTable = {
   entriesPerPage?:
     | {
         defaultValue: number;
@@ -20,7 +20,7 @@ export type IDataTable = {
   noEndBorder?: boolean;
 };
 
-export type IDataTableBodyCell = {
+export type TDataTableBodyCell = {
   children: React.ReactNode;
   noBorder?: boolean;
   align?: "left" | "right" | "center";
@@ -29,7 +29,7 @@ export type IDataTableBodyCell = {
   isLoading?: boolean;
 };
 
-export type IDataTableHeadCell = {
+export type TDataTableHeadCell = {
   width?: string | number;
   children: React.ReactNode;
   sorted?: false | "none" | "asce" | "desc";

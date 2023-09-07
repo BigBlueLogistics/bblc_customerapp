@@ -1,6 +1,6 @@
 import { BoxProps } from "@mui/material";
 
-export type IBox = {
+export type TBox = {
   variant?: "contained" | "gradient";
   bgColor?: string;
   color?: string;
@@ -19,8 +19,8 @@ export type IBox = {
     | "none";
 };
 
-export type IMDBox = (IBox & BoxProps) | { [key: string]: any };
+export type TMDBox = (TBox & BoxProps) | { [key: string]: any };
 
-export type IOwnerState = {
-  ownerState?: IBox;
+export type TOwnerState = {
+  ownerState?: TBox;
 };

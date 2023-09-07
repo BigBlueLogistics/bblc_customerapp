@@ -1,8 +1,8 @@
 import Typography from "@mui/material/Typography";
 import { styled, TypographyStyle } from "@mui/material/styles";
-import { IOwnerState, ITypography } from "./types";
+import { TOwnerState, ITypography } from "./types";
 
-export default styled(Typography)<IOwnerState>(({ theme, ownerState }) => {
+export default styled(Typography)<TOwnerState>(({ theme, ownerState }) => {
   const { palette, typography, functions } = theme;
   const { color, textTransform, verticalAlign, fontWeight, opacity, textGradient, darkMode } =
     ownerState;

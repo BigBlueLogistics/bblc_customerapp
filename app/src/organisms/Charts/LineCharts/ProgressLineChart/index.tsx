@@ -6,7 +6,7 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDProgress from "atoms/MDProgress";
 import configs from "organisms/Charts/LineCharts/ProgressLineChart/config";
-import { IProgressLineChart } from "./types";
+import { TProgressLineChart } from "./types";
 
 function ProgressLineChart({
   color,
@@ -17,7 +17,7 @@ function ProgressLineChart({
   height,
   chart,
   status,
-}: IProgressLineChart) {
+}: TProgressLineChart) {
   const { data, options } = configs(color, chart.labels || [], title, chart.data || []);
 
   const renderLineChart = () => {

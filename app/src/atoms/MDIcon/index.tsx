@@ -1,8 +1,8 @@
 import { forwardRef } from "react";
 import MDIconRoot from "atoms/MDIcon/MDIconRoot";
-import { IMDIcon } from "./types";
+import { TMDIcon } from "./types";
 
-const MDIcon = forwardRef<HTMLSpanElement, IMDIcon>(({ fontSize, children, ...rest }, ref) => (
+const MDIcon = forwardRef<HTMLSpanElement, TMDIcon>(({ fontSize, children, ...rest }, ref) => (
   <MDIconRoot {...rest} ref={ref} ownerState={{ fontSize }}>
     {children}
   </MDIconRoot>

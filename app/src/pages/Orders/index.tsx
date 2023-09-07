@@ -20,32 +20,32 @@ import { setIsAuthenticated } from "redux/auth/action";
 import { inventoryServices, ordersServices } from "services";
 import { AxiosError } from "axios";
 import miscData from "./data";
-import { INotifyOrder, IOrderData, IFormOrderState, ITableOrder, IFiltered } from "./types";
+import { TNotifyOrder, TOrderData, TFormOrderState, TTableOrder, TFiltered } from "./types";
 import Form from "./components/Form";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
-import { IMenuAction } from "./components/MenuAction/types";
+import { TMenuAction } from "./components/MenuAction/types";
 import CancelConfirmation from "./components/CancelConfirmation";
 
 function Orders() {
   const dispatch = useAppDispatch();
   const { tableHeaders, initialFiltered, initialNotification } = miscData();
-  const [showNotify, setShowNotify] = useState<INotifyOrder>(initialNotification);
+  const [showNotify, setShowNotify] = useState<TNotifyOrder>(initialNotification);
   const [showForm, setShowForm] = useState(false);
   const [warehouseList, setWarehouseList] = useState([]);
   const [statusList, setStatusList] = useState([]);
   const [action, setAction] = useState(null);
   const [error, setError] = useState<AxiosError | null>(null);
   const [toggleFilter, setToggleFilter] = useState(true);
-  const [filtered, setFiltered] = useState<IFiltered>(initialFiltered);
+  const [filtered, setFiltered] = useState<TFiltered>(initialFiltered);
 
-  const [tableOrders, setTableOrders] = useState<ITableOrder>({
+  const [tableOrders, setTableOrders] = useState<TTableOrder>({
     message: "",
     data: [],
     status: "idle",
   });
 
-  const [formOrder, setFormOrder] = useState<IFormOrderState>({
+  const [formOrder, setFormOrder] = useState<TFormOrderState>({
     message: "",
     data: null,
     status: "idle",
@@ -57,7 +57,7 @@ function Orders() {
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
 
-  const openNotify = ({ open, message, title, color }: INotifyOrder) => {
+  const openNotify = ({ open, message, title, color }: TNotifyOrder) => {
     setShowNotify({ open, message, title, color });
   };
   const closeNotify = () => {
@@ -88,7 +88,7 @@ function Orders() {
     setToggleFilter((prevState) => !prevState);
   };
 
-  const fetchOrderList = async ({ status, createdAt, lastModified }: IFiltered) => {
+  const fetchOrderList = async ({ status, createdAt, lastModified }: TFiltered) => {
     setTableOrders((prev) => ({ ...prev, status: "loading" }));
 
     try {
@@ -189,7 +189,7 @@ function Orders() {
     }
   };
 
-  const onSave = async (orderData: IOrderData, actions: FormikHelpers<IOrderData>) => {
+  const onSave = async (orderData: TOrderData, actions: FormikHelpers<TOrderData>) => {
     try {
       if (formOrder.type === "create") {
         setFormOrder((prev) => ({ ...prev, message: "", data: null, status: "loading" }));
@@ -211,7 +211,7 @@ function Orders() {
     }
   };
 
-  const onShowEdit = async (transId: string, type: IFormOrderState["type"]) => {
+  const onShowEdit = async (transId: string, type: TFormOrderState["type"]) => {
     onShowForm();
     setFormOrder((prev) => ({ ...prev, type, message: "", data: null, status: "loading" }));
     try {
@@ -272,7 +272,7 @@ function Orders() {
     }
   }, [showForm, formOrder]);
 
-  const menuItemsAction: IMenuAction["items"] = [
+  const menuItemsAction: TMenuAction["items"] = [
     {
       icon: (
         <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">

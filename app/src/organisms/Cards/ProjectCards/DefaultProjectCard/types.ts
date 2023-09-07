@@ -1,4 +1,4 @@
-export type IDefaultProjectCard = {
+export type TDefaultProjectCard = {
   image: string;
   label: string;
   title: string;

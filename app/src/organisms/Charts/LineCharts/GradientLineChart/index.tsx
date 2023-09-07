@@ -7,7 +7,7 @@ import MDTypography from "atoms/MDTypography";
 import gradientChartLine from "assets/theme/functions/gradientChartLine";
 import configs from "organisms/Charts/LineCharts/GradientLineChart/configs";
 import colors from "assets/theme/base/colors";
-import { IGradientLineChart } from "./types";
+import { TGradientLineChart } from "./types";
 
 function GradientLineChart({
   icon,
@@ -16,7 +16,7 @@ function GradientLineChart({
   height,
   chart,
   status,
-}: IGradientLineChart) {
+}: TGradientLineChart) {
   const chartRef = useRef(null);
   const [chartData, setChartData] = useState({ data: null, options: null });
   const { data, options } = chartData;

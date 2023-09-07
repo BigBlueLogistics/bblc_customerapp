@@ -16,7 +16,7 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/BarCharts/HorizontalBarChart/configs";
 import colors from "assets/theme/base/colors";
-import { IHorizontalBarChart } from "./types";
+import { THorizontalBarChart } from "./types";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -27,7 +27,7 @@ function HorizontalBarChart({
   height,
   chart,
   status,
-}: IHorizontalBarChart) {
+}: THorizontalBarChart) {
   const chartDatasets = chart.datasets
     ? chart.datasets.map((dataset) => ({
         ...dataset,

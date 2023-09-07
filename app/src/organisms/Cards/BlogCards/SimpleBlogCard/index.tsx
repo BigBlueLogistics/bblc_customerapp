@@ -5,9 +5,9 @@ import MuiLink from "@mui/material/Link";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDButton from "atoms/MDButton";
-import { ISimpleBlogCard } from "./types";
+import { TSimpleBlogCard } from "./types";
 
-function SimpleBlogCard({ image, title, description, action }: ISimpleBlogCard) {
+function SimpleBlogCard({ image, title, description, action }: TSimpleBlogCard) {
   return (
     <Card>
       <MDBox position="relative" borderRadius="lg" mt={-3} mx={2}>

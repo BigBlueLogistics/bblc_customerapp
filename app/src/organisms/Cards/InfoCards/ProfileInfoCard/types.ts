@@ -1,4 +1,4 @@
-export type IProfileInfoCard = {
+export type TProfileInfoCard = {
   title: string;
   description: string;
   info: { [key: string]: string };

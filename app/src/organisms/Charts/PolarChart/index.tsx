@@ -5,9 +5,9 @@ import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/PolarChart/configs";
-import { IPolarChart } from "./types";
+import { TPolarChart } from "./types";
 
-function PolarChart({ icon, title, description, chart, status }: IPolarChart) {
+function PolarChart({ icon, title, description, chart, status }: TPolarChart) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
 
   const renderPolarAreaChart = () => {

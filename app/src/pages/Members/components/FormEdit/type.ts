@@ -1,4 +1,4 @@
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 
 export type IFormEdit = {
   open: boolean;
@@ -9,6 +9,6 @@ export type IFormEdit = {
   };
   isLoadingEdit: boolean;
   isLoadingUpdate: boolean;
-  status: IStatus;
+  status: TStatus;
   message: string;
 };

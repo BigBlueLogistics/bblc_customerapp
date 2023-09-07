@@ -3,9 +3,9 @@ import Fade from "@mui/material/Fade";
 import MDAlertRoot2 from "atoms/MDAlert2/MDAlertRoot";
 import MDBox from "atoms/MDBox";
 import MDAlertCloseIcon from "atoms/MDAlert2/MDAlertCloseIcon";
-import IMDAlert from "./types";
+import TMDAlert from "./types";
 
-function MDAlert2({ severity, dismissible, autoHideDuration, sx, children }: IMDAlert) {
+function MDAlert2({ severity, dismissible, autoHideDuration, sx, children }: TMDAlert) {
   const [alertStatus, setAlertStatus] = useState("mount");
 
   const handleAlertStatus = () => setAlertStatus("fadeOut");

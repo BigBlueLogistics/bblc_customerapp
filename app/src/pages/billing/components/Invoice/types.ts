@@ -1,4 +1,4 @@
-export type IInvoice = {
+export type TInvoice = {
   date: string;
   id: string;
   price: string;

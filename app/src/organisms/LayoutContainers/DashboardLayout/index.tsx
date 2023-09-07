@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import MDBox from "atoms/MDBox";
 import { useMaterialUIController, setLayout } from "context";
-import { IDashboardLayout } from "./types";
+import { TDashboardLayout } from "./types";
 
-function DashboardLayout({ children }: IDashboardLayout) {
+function DashboardLayout({ children }: TDashboardLayout) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav } = controller;
   const { pathname } = useLocation();

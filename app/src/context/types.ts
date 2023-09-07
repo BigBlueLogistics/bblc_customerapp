@@ -1,5 +1,5 @@
 import React from "react";
 
-export type IMaterialUIControllerProvider = {
+export type TMaterialUIControllerProvider = {
   children: React.ReactNode;
 };

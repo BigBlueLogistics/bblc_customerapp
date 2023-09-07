@@ -2,9 +2,9 @@
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import MDCheckboxRoot from "atoms/MDCheckbox/MDCheckboxRoot";
-import { IMDCheckbox } from "./types";
+import { TMDCheckbox } from "./types";
 
-function MDCheckbox({ label, onChange, name, checked, ...rest }: IMDCheckbox) {
+function MDCheckbox({ label, onChange, name, checked, ...rest }: TMDCheckbox) {
   if (label) {
     return (
       <FormGroup {...rest}>

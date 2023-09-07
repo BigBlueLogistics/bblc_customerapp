@@ -1,9 +1,9 @@
 import { forwardRef } from "react";
 import MDTypography from "atoms/MDTypography";
 import MDProgressRoot from "atoms/MDProgress/MDProgressRoot";
-import { IMDProgress } from "./types";
+import { TMDProgress } from "./types";
 
-const MDProgress = forwardRef<any, IMDProgress>(
+const MDProgress = forwardRef<any, TMDProgress>(
   ({ variant, color, value, label, ...rest }, ref) => (
     <>
       {label && (

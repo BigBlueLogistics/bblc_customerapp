@@ -7,9 +7,9 @@ import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/BarCharts/ReportsBarChart/configs";
-import { IReportsBarChart } from "./types";
+import { TReportsBarChart } from "./types";
 
-function ReportsBarChart({ color, title, description, date, chart, status }: IReportsBarChart) {
+function ReportsBarChart({ color, title, description, date, chart, status }: TReportsBarChart) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
 
   const renderBarChart = () => {

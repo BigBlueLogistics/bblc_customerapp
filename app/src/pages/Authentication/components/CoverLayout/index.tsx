@@ -3,9 +3,9 @@ import MDBox from "atoms/MDBox";
 import DefaultNavbar from "organisms/Navbars/DefaultNavbar";
 import PageLayout from "organisms/LayoutContainers/PageLayout";
 import Footer from "pages/Authentication/components/Footer";
-import { ICoverLayout } from "./types";
+import { TCoverLayout } from "./types";
 
-function CoverLayout({ coverHeight, image, children }: ICoverLayout) {
+function CoverLayout({ coverHeight, image, children }: TCoverLayout) {
   return (
     <PageLayout>
       <DefaultNavbar transparent light />

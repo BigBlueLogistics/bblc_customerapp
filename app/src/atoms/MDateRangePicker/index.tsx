@@ -3,10 +3,10 @@ import Icon from "@mui/material/Icon";
 import DatePicker from "react-datepicker";
 import DatePickButtonRoot from "./DatePickButtonRoot";
 import MDateRangePickerRoot from "./MDateRangePickerRoot";
-import { IMDateRangePicker, IDatePickInput } from "./types";
+import { TMDateRangePicker, TMDatePicker } from "./types";
 import "react-datepicker/dist/react-datepicker.css";
 
-const DatePickButton = forwardRef<HTMLButtonElement, IDatePickInput>(
+const DatePickButton = forwardRef<HTMLButtonElement, TMDatePicker>(
   ({ value, onClick, label, buttonStyle, ...rest }, ref) => {
     return (
       <DatePickButtonRoot
@@ -33,7 +33,7 @@ function MDateRangePicker({
   buttonStyle,
   disabled,
   ...rest
-}: IMDateRangePicker) {
+}: TMDateRangePicker) {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 

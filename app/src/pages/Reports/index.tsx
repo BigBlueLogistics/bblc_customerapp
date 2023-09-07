@@ -21,12 +21,12 @@ import excel from "assets/images/icons/excel.png";
 import miscData, { ITableHeadersKey, IGroupByKey } from "pages/Reports/data";
 import { reportServices, inventoryServices } from "services";
 import { AxiosError } from "axios";
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 import selector from "./selector";
-import { INotifyDownload, IGroupBy } from "./types";
+import { INotifyDownload, TGroupBy } from "./types";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
-import { IMenuAction } from "./components/MenuAction/types";
+import { TMenuAction } from "./components/MenuAction/types";
 
 function Reports() {
   const dispatch = useAppDispatch();
@@ -43,7 +43,7 @@ function Reports() {
   const [showNotifyDownload, setShowNotifyDownload] =
     useState<INotifyDownload>(initialStateNotification);
   const [selectedReport, setSelectedReport] = useState<ITableHeadersKey>("wh-snapshot");
-  const [selectedGroupBy, setSelectedGroupBy] = useState<IGroupBy>("");
+  const [selectedGroupBy, setSelectedGroupBy] = useState<TGroupBy>("");
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [, setDateRange] = useState(null);
   const [warehouseList, setWarehouseList] = useState([]);
@@ -52,7 +52,7 @@ function Reports() {
   const [action, setAction] = useState(null);
   const [toggleFilter, setToggleFilter] = useState(true);
 
-  const [tableStatus, setTableStatus] = useState<IStatus>("idle");
+  const [tableStatus, setTableStatus] = useState<TStatus>("idle");
   const [error, setError] = useState<AxiosError | null>(null);
 
   const {
@@ -86,7 +86,7 @@ function Reports() {
   };
 
   const onChangeGroupBy = (e: ChangeEvent<HTMLInputElement>) => {
-    setSelectedGroupBy(e.target.value as IGroupBy);
+    setSelectedGroupBy(e.target.value as TGroupBy);
   };
 
   const onChangeWarehouse = (e: ChangeEvent<HTMLInputElement>) => {
@@ -215,7 +215,7 @@ function Reports() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [downloadError, downloadStatus]);
 
-  const menuItemsAction: IMenuAction["items"] = [
+  const menuItemsAction: TMenuAction["items"] = [
     {
       icon: (
         <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">

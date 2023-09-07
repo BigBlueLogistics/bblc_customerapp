@@ -1,3 +1,3 @@
-export type IData = {
+export type TData = {
   onShowEdit: (userId: number) => void;
 };

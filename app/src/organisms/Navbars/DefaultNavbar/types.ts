@@ -1,16 +1,16 @@
-export type IDefaultNavbarLink = {
+export type TDefaultNavbarLink = {
   icon: string;
   name: string;
   route: string;
   light?: boolean;
 };
 
-export type IDefaultNavbarMobile = {
+export type TDefaultNavbarMobile = {
   open: { [key: string]: any } | boolean;
   close: () => void | boolean | { [key: string]: any };
 };
 
-export type IDefaultNavbar = {
+export type TDefaultNavbar = {
   transparent?: boolean;
   light?: boolean;
   action?: {

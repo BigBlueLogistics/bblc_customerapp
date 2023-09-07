@@ -3,9 +3,9 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import { useMaterialUIController } from "context";
 import { TimelineProvider } from "organisms/Timeline/context";
-import { ITimelineList } from "./types";
+import { TTimelineList } from "./types";
 
-function TimelineList({ title, dark, children }: ITimelineList) {
+function TimelineList({ title, dark, children }: TTimelineList) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 

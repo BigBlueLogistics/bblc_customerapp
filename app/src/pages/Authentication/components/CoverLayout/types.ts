@@ -1,6 +1,6 @@
 import React from "react";
 
-export type ICoverLayout = {
+export type TCoverLayout = {
   coverHeight?: string;
   image: string;
   children: React.ReactNode;

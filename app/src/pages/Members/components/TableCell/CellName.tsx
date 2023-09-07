@@ -1,6 +1,6 @@
-import { ITableCellProps } from "types/reactTable";
+import { TTableCellProps } from "types/reactTable";
 
-function CellName({ row }: ITableCellProps) {
+function CellName({ row }: TTableCellProps) {
   return (
     <span style={{ textTransform: "capitalize" }}>
       {row.original.fname} {row.original.lname}

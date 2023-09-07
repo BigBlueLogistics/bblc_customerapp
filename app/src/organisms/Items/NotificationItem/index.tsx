@@ -5,9 +5,9 @@ import Link from "@mui/material/Link";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import menuItem from "organisms/Items/NotificationItem/styles";
-import { INotificationItem } from "./types";
+import { TNotificationItem } from "./types";
 
-const NotificationItem = forwardRef<HTMLAnchorElement, INotificationItem>(
+const NotificationItem = forwardRef<HTMLAnchorElement, TNotificationItem>(
   ({ icon, title, ...rest }, ref) => (
     <MenuItem ref={ref} sx={(theme) => menuItem(theme)} {...rest}>
       <MDBox component={Link} py={0.5} display="flex" alignItems="center" lineHeight={1}>

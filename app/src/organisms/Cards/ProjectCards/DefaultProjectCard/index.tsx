@@ -7,7 +7,7 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDButton from "atoms/MDButton";
 import MDAvatar from "atoms/MDAvatar";
-import { IDefaultProjectCard } from "./types";
+import { TDefaultProjectCard } from "./types";
 
 function DefaultProjectCard({
   image,
@@ -16,7 +16,7 @@ function DefaultProjectCard({
   description,
   action,
   authors,
-}: IDefaultProjectCard) {
+}: TDefaultProjectCard) {
   const renderAuthors = authors.map(({ image: media, name }) => (
     <Tooltip key={name} title={name} placement="bottom">
       <MDAvatar

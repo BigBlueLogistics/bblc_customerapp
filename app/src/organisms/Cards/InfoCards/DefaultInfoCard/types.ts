@@ -1,6 +1,6 @@
 import React from "react";
 
-export type IDefaultInfoCard = {
+export type TDefaultInfoCard = {
   color?: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "dark";
   icon: React.ReactNode;
   title: string;

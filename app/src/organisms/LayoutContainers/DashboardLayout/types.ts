@@ -1,3 +1,3 @@
-export type IDashboardLayout = {
+export type TDashboardLayout = {
   children: React.ReactNode;
 };

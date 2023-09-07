@@ -1,6 +1,6 @@
 import { CellAction, CellStatus } from "../components/TableCell";
-import { INotifyOrder, IOrderData } from "../types";
-import { IData } from "./types";
+import { TNotifyOrder, TOrderData } from "../types";
+import { TData } from "./types";
 
 export default function miscData() {
   const commonHeadersAttr = {
@@ -8,7 +8,7 @@ export default function miscData() {
     Cell: ({ value }) => value || "",
   };
 
-  const tableHeaders = ({ onShowEdit, onShowCancelConfirmation }: IData) => [
+  const tableHeaders = ({ onShowEdit, onShowCancelConfirmation }: TData) => [
     {
       Header: "Transaction No.",
       accessor: "transid",
@@ -99,14 +99,14 @@ export default function miscData() {
     lastModified: null,
   };
 
-  const initialNotification: INotifyOrder = {
+  const initialNotification: TNotifyOrder = {
     open: false,
     message: "",
     title: "",
     color: "primary",
   };
 
-  const initialOrder: IOrderData = {
+  const initialOrder: TOrderData = {
     id: "",
     pickup_date: null,
     ref_number: "",

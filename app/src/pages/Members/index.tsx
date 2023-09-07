@@ -15,13 +15,13 @@ import { setIsAuthenticated } from "redux/auth/action";
 
 import { membersServices } from "services";
 import { AxiosError } from "axios";
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 import miscData from "./data";
 import { INotifyDownload } from "./types";
 import FormEdit from "./components/FormEdit";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
-import { IMenuAction } from "./components/MenuAction/types";
+import { TMenuAction } from "./components/MenuAction/types";
 
 function Members() {
   const dispatch = useAppDispatch();
@@ -38,9 +38,9 @@ function Members() {
   const [action, setAction] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
 
-  const [tableStatus, setTableStatus] = useState<IStatus>("idle");
-  const [editStatus, setEditStatus] = useState<IStatus>("idle");
-  const [updateStatus, setUpdateStatus] = useState<IStatus>("idle");
+  const [tableStatus, setTableStatus] = useState<TStatus>("idle");
+  const [editStatus, setEditStatus] = useState<TStatus>("idle");
+  const [updateStatus, setUpdateStatus] = useState<TStatus>("idle");
   const [error, setError] = useState<AxiosError | null>(null);
   const [formMessage, setFormMessage] = useState("");
 
@@ -126,7 +126,7 @@ function Members() {
     }
   }, [error, dispatch]);
 
-  const menuItemsAction: IMenuAction["items"] = [
+  const menuItemsAction: TMenuAction["items"] = [
     {
       icon: (
         <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">

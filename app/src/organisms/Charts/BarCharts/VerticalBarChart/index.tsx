@@ -7,9 +7,9 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/BarCharts/VerticalBarChart/configs";
 import colors from "assets/theme/base/colors";
-import { IVerticalBarChart } from "./types";
+import { TVerticalBarChart } from "./types";
 
-function VerticalBarChart({ icon, title, description, height, chart, status }: IVerticalBarChart) {
+function VerticalBarChart({ icon, title, description, height, chart, status }: TVerticalBarChart) {
   const chartDatasets = chart.datasets
     ? chart.datasets.map((dataset) => ({
         ...dataset,

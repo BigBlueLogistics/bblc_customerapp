@@ -2,9 +2,9 @@ import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDButton from "atoms/MDButton";
-import { ITransaction } from "./types";
+import { TTransaction } from "./types";
 
-function Transaction({ color, icon, name, description, value }: ITransaction) {
+function Transaction({ color, icon, name, description, value }: TTransaction) {
   return (
     <MDBox key={name} component="li" py={1} pr={2} mb={1}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center">

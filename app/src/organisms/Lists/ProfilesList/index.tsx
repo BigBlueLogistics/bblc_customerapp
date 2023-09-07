@@ -4,9 +4,9 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDAvatar from "atoms/MDAvatar";
 import MDButton from "atoms/MDButton";
-import { IProfilesList } from "./types";
+import { TProfilesList } from "./types";
 
-function ProfilesList({ title, profiles, shadow }: IProfilesList) {
+function ProfilesList({ title, profiles, shadow }: TProfilesList) {
   const renderProfiles = profiles.map(({ image, name, description, action }) => (
     <MDBox key={name} component="li" display="flex" alignItems="center" py={1} mb={1}>
       <MDBox mr={2}>

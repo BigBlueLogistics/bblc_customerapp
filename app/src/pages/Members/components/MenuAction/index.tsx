@@ -1,9 +1,9 @@
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MDTypography from "atoms/MDTypography";
-import { IMenuAction } from "./types";
+import { TMenuAction } from "./types";
 
-function MenuAction({ anchorEl, onClose, items }: IMenuAction) {
+function MenuAction({ anchorEl, onClose, items }: TMenuAction) {
   return (
     <Menu
       id="action"

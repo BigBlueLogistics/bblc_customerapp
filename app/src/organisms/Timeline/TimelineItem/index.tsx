@@ -3,9 +3,9 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import { useTimeline } from "organisms/Timeline/context";
 import timelineItem from "organisms/Timeline/TimelineItem/styles";
-import { ITimelineItem } from "./types";
+import { TTimelineItem } from "./types";
 
-function TimelineItem({ color, icon, title, dateTime, description, lastItem }: ITimelineItem) {
+function TimelineItem({ color, icon, title, dateTime, description, lastItem }: TTimelineItem) {
   const isDark = useTimeline();
 
   return (

@@ -1,7 +1,7 @@
 import { ButtonProps } from "@mui/material";
 import React from "react";
 
-type IButton = Partial<{
+type TButton = Partial<{
   size?: "small" | "medium" | "large";
   variant?: "text" | "contained" | "outlined" | "gradient";
   color:
@@ -19,13 +19,13 @@ type IButton = Partial<{
   loading: boolean;
 }>;
 
-export type IMDButton =
+export type TMDButton =
   | ({
       children: React.ReactNode;
-    } & IButton &
+    } & TButton &
       Omit<ButtonProps, "variant" | "color">)
   | { [key: string]: any };
 
-export type IOwnerState = {
-  ownerState?: IButton & { darkMode: boolean };
+export type TOwnerState = {
+  ownerState?: TButton & { darkMode: boolean };
 };

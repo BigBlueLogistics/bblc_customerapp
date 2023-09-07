@@ -1,6 +1,6 @@
 import { AutocompleteChangeReason } from "@mui/material/Autocomplete";
 import { ArrayHelpers, FormikHelpers, FormikProps } from "formik";
-import { IOrderData } from "pages/Orders/types";
+import { TOrderData } from "pages/Orders/types";
 import { IAutoCompleteExpiryData } from "../AutoCompleteExpiry/types";
 import { IAutoCompleteMaterialData } from "../AutoCompleteMaterial/types";
 import { IAutoCompleteUnitsData } from "../AutoCompleteUnits/types";
@@ -10,13 +10,13 @@ export type IFormTable = {
   expiryBatch: { [key: string]: IAutoCompleteExpiryData[] };
   units: { [key: string]: string[] };
   selectedRowValues: { [key: string]: string[] };
-  onMount: (setValues: FormikProps<IOrderData>["setValues"]) => void;
+  onMount: (setValues: FormikProps<TOrderData>["setValues"]) => void;
   handleMaterialCode: (
     value: IAutoCompleteMaterialData,
     reason: AutocompleteChangeReason,
     uuid: string,
     index: number,
-    setValues: FormikHelpers<IOrderData>["setValues"]
+    setValues: FormikHelpers<TOrderData>["setValues"]
   ) => void;
   handleUnits: (
     value: IAutoCompleteUnitsData,
@@ -24,18 +24,18 @@ export type IFormTable = {
     valueMaterial: string,
     reason: AutocompleteChangeReason,
     index: number,
-    setValues: FormikHelpers<IOrderData>["setValues"]
+    setValues: FormikHelpers<TOrderData>["setValues"]
   ) => void;
   handleExpiryBatch: (
     value: IAutoCompleteExpiryData,
     reason: AutocompleteChangeReason,
     uuid: string,
     index: number,
-    setValues: FormikHelpers<IOrderData>["setValues"]
+    setValues: FormikHelpers<TOrderData>["setValues"]
   ) => void;
   handleRemoveRow: (
     remove: ArrayHelpers["remove"],
-    setValues: FormikHelpers<IOrderData>["setValues"],
+    setValues: FormikHelpers<TOrderData>["setValues"],
     idx: number,
     uuid: string,
     material: string,

@@ -1,16 +1,16 @@
 import { forwardRef, createContext, useContext, useMemo } from "react";
 import MDBox from "atoms/MDBox";
 import MDPaginationItemRoot from "atoms/MDPagination/MDPaginationItemRoot";
-import { IMDPagination } from "./types";
+import { TMDPagination } from "./types";
 
 // The Pagination main context
-const Context = createContext<Pick<IMDPagination, "variant" | "size" | "color">>({
+const Context = createContext<Pick<TMDPagination, "variant" | "size" | "color">>({
   variant: "gradient",
   size: "medium",
   color: "info",
 });
 
-const MDPagination = forwardRef<HTMLButtonElement, IMDPagination>(
+const MDPagination = forwardRef<HTMLButtonElement, TMDPagination>(
   ({ item, variant, color, size, active, children, ...rest }, ref) => {
     const context = useContext(Context);
     const paginationSize = context ? context.size : null;

@@ -1,6 +1,6 @@
 import React from "react";
 
-export type IMenuAction = {
+export type TMenuAction = {
   anchorEl: Element;
   onClose: () => void;
   items: {

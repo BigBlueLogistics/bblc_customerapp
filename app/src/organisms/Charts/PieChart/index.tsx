@@ -5,9 +5,9 @@ import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/PieChart/configs";
-import { IPieChart } from "./types";
+import { TPieChart } from "./types";
 
-function PieChart({ icon, title, description, height, chart, status }: IPieChart) {
+function PieChart({ icon, title, description, height, chart, status }: TPieChart) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
 
   const renderPieChart = () => {

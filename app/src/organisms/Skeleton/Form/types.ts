@@ -1,3 +1,3 @@
-export type IForm = {
+export type TForm = {
   contentWidth: string | number;
 };

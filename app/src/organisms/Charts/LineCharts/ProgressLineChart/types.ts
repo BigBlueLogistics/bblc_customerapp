@@ -1,7 +1,7 @@
 import React from "react";
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 
-export type IProgressLineChart = {
+export type TProgressLineChart = {
   color?: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "light" | "dark";
   icon: React.ReactNode;
   title: string;
@@ -9,5 +9,5 @@ export type IProgressLineChart = {
   progress: number;
   height?: string | number;
   chart: { [key: string]: any[] };
-  status?: IStatus;
+  status?: TStatus;
 };

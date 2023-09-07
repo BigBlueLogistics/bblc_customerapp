@@ -1,8 +1,8 @@
 import Avatar from "@mui/material/Avatar";
 import { styled } from "@mui/material/styles";
-import { IOwnerState } from "./types";
+import { TOwnerState } from "./types";
 
-export default styled(Avatar)<IOwnerState>(({ theme, ownerState = {} }) => {
+export default styled(Avatar)<TOwnerState>(({ theme, ownerState = {} }) => {
   const { palette, functions, typography, boxShadows } = theme;
   const { shadow, bgColor, size } = ownerState;
 

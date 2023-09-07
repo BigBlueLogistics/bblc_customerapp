@@ -6,9 +6,9 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/LineCharts/DefaultLineChart/configs";
 import colors from "assets/theme/base/colors";
-import { IDefaultLineChart } from "./types";
+import { TDefaultLineChart } from "./types";
 
-function DefaultLineChart({ icon, title, description, height, chart, status }: IDefaultLineChart) {
+function DefaultLineChart({ icon, title, description, height, chart, status }: TDefaultLineChart) {
   const chartDatasets = chart.datasets
     ? chart.datasets.map((dataset) => ({
         ...dataset,

@@ -3,9 +3,9 @@ import { Breadcrumbs as MuiBreadcrumbs } from "@mui/material";
 import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
-import { IBreadcrumbs } from "./types";
+import { TBreadcrumbs } from "./types";
 
-function Breadcrumbs({ icon, title, route, light }: IBreadcrumbs) {
+function Breadcrumbs({ icon, title, route, light }: TBreadcrumbs) {
   const routes = route.slice(0, -1);
 
   return (

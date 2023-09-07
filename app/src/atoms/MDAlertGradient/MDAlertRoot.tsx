@@ -1,8 +1,8 @@
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import { IOwnerState } from "./types";
+import { TOwnerState } from "./types";
 
-export default styled(Box)<IOwnerState>(({ theme, ownerState = {} }) => {
+export default styled(Box)<TOwnerState>(({ theme, ownerState = {} }) => {
   const { palette, typography, borders, functions } = theme;
   const { color } = ownerState;
 

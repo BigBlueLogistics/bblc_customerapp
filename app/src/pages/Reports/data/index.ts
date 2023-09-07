@@ -1,5 +1,5 @@
 import { formatDecimal } from "utils";
-import { IGroupBy } from "../types";
+import { TGroupBy } from "../types";
 
 export default function miscData() {
   const commonHeaders = [
@@ -13,7 +13,7 @@ export default function miscData() {
     Cell: ({ value }) => (value > 0 ? formatDecimal(value, 3) : 0),
   };
 
-  const whSnapshot = (groupBy: IGroupBy) => {
+  const whSnapshot = (groupBy: TGroupBy) => {
     const headers = [
       {
         Header: "Available Stocks",
@@ -56,7 +56,7 @@ export default function miscData() {
     return [...commonHeaders, ...headers];
   };
 
-  const aging = (groupBy: IGroupBy) => {
+  const aging = (groupBy: TGroupBy) => {
     if (groupBy === "expiration") {
       return [
         ...commonHeaders,

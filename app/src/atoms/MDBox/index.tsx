@@ -1,8 +1,8 @@
 import { forwardRef } from "react";
 import MDBoxRoot from "atoms/MDBox/MDBoxRoot";
-import { IMDBox } from "./types";
+import { TMDBox } from "./types";
 
-const MDBox = forwardRef<HTMLDivElement, IMDBox>(
+const MDBox = forwardRef<HTMLDivElement, TMDBox>(
   ({ variant, bgColor, color, opacity, borderRadius, shadow, coloredShadow, ...rest }, ref) => (
     <MDBoxRoot
       {...rest}

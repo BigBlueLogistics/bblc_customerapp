@@ -1,6 +1,6 @@
 import { DrawerProps } from "@mui/material";
 
-export type ISidenav = {
+export type TSidenav = {
   color?: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "dark";
   brand?: string;
   brandName: string;
@@ -11,7 +11,7 @@ export type ISidenav = {
   onMouseLeave: () => void;
 };
 
-export type ISidenavCollapse = {
+export type TSidenavCollapse = {
   icon: React.ReactNode;
   name: string;
   active?: boolean;

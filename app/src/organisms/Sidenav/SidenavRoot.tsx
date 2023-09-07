@@ -1,8 +1,8 @@
 import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
-import { IMaterialElem } from "types/materialElem";
+import { TMaterialElem } from "types/materialElem";
 
-export default styled(Drawer)<IMaterialElem>(({ theme, ownerState }) => {
+export default styled(Drawer)<TMaterialElem>(({ theme, ownerState }) => {
   const { palette, boxShadows, transitions, breakpoints, functions } = theme;
   const { transparentSidenav, whiteSidenav, miniSidenav, darkMode } = ownerState;
 

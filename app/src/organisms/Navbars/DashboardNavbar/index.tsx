@@ -23,9 +23,9 @@ import { useMaterialUIController, setTransparentNavbar, setMiniSidenav } from "c
 import { Theme } from "@mui/material/styles/createTheme";
 import MDAvatar from "atoms/MDAvatar";
 import selector from "./selector";
-import { IDashboardNavbar, CSSPosition } from "./types";
+import { TDashboardNavbar, CSSPosition } from "./types";
 
-function DashboardNavbar({ absolute, light, isMini }: IDashboardNavbar) {
+function DashboardNavbar({ absolute, light, isMini }: TDashboardNavbar) {
   const reduxDispatch = useAppDispatch();
   const { name, customerCode } = selector();
   const [navbarType, setNavbarType] = useState("sticky");

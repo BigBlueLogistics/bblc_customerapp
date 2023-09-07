@@ -5,10 +5,10 @@ import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
 
 import { useFormik } from "formik";
-import { IChangePassword } from "./types";
+import { TChangePassword } from "./types";
 import validationSchema from "./validationSchema";
 
-function ChangePassword({ title, onChangePass, shadow, isLoading }: IChangePassword) {
+function ChangePassword({ title, onChangePass, shadow, isLoading }: TChangePassword) {
   const { values, handleSubmit, handleChange, errors, touched } = useFormik({
     validationSchema,
     initialValues: {

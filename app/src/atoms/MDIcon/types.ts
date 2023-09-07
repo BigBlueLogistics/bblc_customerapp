@@ -1,12 +1,12 @@
 import { IconProps } from "@mui/material";
 import { LooseType } from "types/utility";
 
-export type IIcon = {
+export type TIcon = {
   fontSize?: LooseType<IconProps["fontSize"]> | number;
 };
 
-export type IMDIcon = IIcon & Omit<IconProps, "fontSize">;
+export type TMDIcon = TIcon & Omit<IconProps, "fontSize">;
 
-export type IOwnerState = {
-  ownerState?: IIcon;
+export type TOwnerState = {
+  ownerState?: TIcon;
 };

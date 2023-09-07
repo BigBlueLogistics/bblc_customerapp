@@ -7,9 +7,9 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/BubbleChart/configs";
 import colors from "assets/theme/base/colors";
-import { IBubbleChart } from "./types";
+import { TBubbleChart } from "./types";
 
-function BubbleChart({ icon, title, description, height, chart, status }: IBubbleChart) {
+function BubbleChart({ icon, title, description, height, chart, status }: TBubbleChart) {
   const chartDatasets = chart.datasets
     ? chart.datasets.map((dataset) => ({
         ...dataset,

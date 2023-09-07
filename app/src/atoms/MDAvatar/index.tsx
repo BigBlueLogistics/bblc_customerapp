@@ -1,8 +1,8 @@
 import { forwardRef } from "react";
 import MDAvatarRoot from "atoms/MDAvatar/MDAvatarRoot";
-import { IMDAvatar } from "./types";
+import { TMDAvatar } from "./types";
 
-const MDAvatar = forwardRef<HTMLDivElement, IMDAvatar>(
+const MDAvatar = forwardRef<HTMLDivElement, TMDAvatar>(
   ({ bgColor, size, shadow, children, ...rest }, ref) => (
     <MDAvatarRoot ref={ref} ownerState={{ shadow, bgColor, size }} {...rest}>
       {children}

@@ -7,9 +7,9 @@ import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/RadarChart/configs";
 import colors from "assets/theme/base/colors";
 import rgba from "assets/theme/functions/rgba";
-import { IRadarChart } from "./types";
+import { TRadarChart } from "./types";
 
-function RadarChart({ icon, title, description, chart, status }: IRadarChart) {
+function RadarChart({ icon, title, description, chart, status }: TRadarChart) {
   const chartDatasets = chart.datasets
     ? chart.datasets.map((dataset) => ({
         ...dataset,

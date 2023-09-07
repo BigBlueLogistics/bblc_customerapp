@@ -1,6 +1,6 @@
 import React from "react";
 
-export type ITimelineItem = {
+export type TTimelineItem = {
   color?: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "dark" | "light";
   icon: React.ReactNode;
   title: string;

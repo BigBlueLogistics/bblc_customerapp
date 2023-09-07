@@ -5,9 +5,9 @@ import MDTypography from "atoms/MDTypography";
 import MDButton from "atoms/MDButton";
 
 import { useMaterialUIController } from "context";
-import { IBill } from "./types";
+import { TBill } from "./types";
 
-function Bill({ name, company, email, vat, noGutter }: IBill) {
+function Bill({ name, company, email, vat, noGutter }: TBill) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 

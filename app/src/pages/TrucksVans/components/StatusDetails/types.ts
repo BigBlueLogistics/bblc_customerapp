@@ -1,9 +1,9 @@
 import { TrucksVansStatusDetailsEntity } from "entities/trucksVans";
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 
-export type IStatusDetails = {
+export type TStatusDetails = {
   data: TrucksVansStatusDetailsEntity;
   open: boolean;
   onClose: () => void;
-  loadingStatus: IStatus;
+  loadingStatus: TStatus;
 };

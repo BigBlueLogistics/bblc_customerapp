@@ -10,9 +10,9 @@ import DefaultNavbarLink from "organisms/Navbars/DefaultNavbar/DefaultNavbarLink
 import DefaultNavbarMobile from "organisms/Navbars/DefaultNavbar/DefaultNavbarMobile";
 import breakpoints from "assets/theme/base/breakpoints";
 import { useMaterialUIController } from "context";
-import { IDefaultNavbar } from "./types";
+import { TDefaultNavbar } from "./types";
 
-function DefaultNavbar({ transparent, light, action }: IDefaultNavbar) {
+function DefaultNavbar({ transparent, light, action }: TDefaultNavbar) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 

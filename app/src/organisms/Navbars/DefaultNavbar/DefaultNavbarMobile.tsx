@@ -1,9 +1,9 @@
 import Menu from "@mui/material/Menu";
 import MDBox from "atoms/MDBox";
 import DefaultNavbarLink from "organisms/Navbars/DefaultNavbar/DefaultNavbarLink";
-import { IDefaultNavbarMobile } from "./types";
+import { TDefaultNavbarMobile } from "./types";
 
-function DefaultNavbarMobile({ open, close }: IDefaultNavbarMobile) {
+function DefaultNavbarMobile({ open, close }: TDefaultNavbarMobile) {
   let widthElem = 0;
   if (typeof open === "object") {
     const { width } = open && open.getBoundingClientRect();

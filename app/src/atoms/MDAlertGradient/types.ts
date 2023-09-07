@@ -1,15 +1,15 @@
 import React from "react";
 
-type IMDAlert = {
+type TMDAlert = {
   color?: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "light" | "dark";
   dismissible?: boolean;
   children: React.ReactNode;
 };
 
-export type IOwnerState = {
+export type TOwnerState = {
   ownerState?: {
-    color: IMDAlert["color"];
+    color: TMDAlert["color"];
   };
 };
 
-export default IMDAlert;
+export default TMDAlert;

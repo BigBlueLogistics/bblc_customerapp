@@ -1,4 +1,4 @@
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 
 export type INotifyDownload = {
   key: string | number;
@@ -9,7 +9,7 @@ export type INotifyDownload = {
   color: "info" | "error" | "light" | "primary" | "secondary" | "success" | "warning" | "dark";
 };
 
-export type IFiltered = {
+export type TFiltered = {
   warehouseNo: string;
   type: string;
   materialCode: string;
@@ -19,8 +19,8 @@ export type IFiltered = {
   lastModified: Date | null;
 };
 
-export type ITableOrder = {
-  status: IStatus;
+export type TTableOrder = {
+  status: TStatus;
   data: Record<string, any>[];
   message: string;
 };

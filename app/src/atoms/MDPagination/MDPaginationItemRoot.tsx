@@ -1,8 +1,8 @@
 import { styled } from "@mui/material/styles";
 import MDButton from "atoms/MDButton";
-import { IOwnerState } from "./types";
+import { TOwnerState } from "./types";
 
-export default styled(MDButton)<IOwnerState>(({ theme, ownerState = {} }) => {
+export default styled(MDButton)<TOwnerState>(({ theme, ownerState = {} }) => {
   const { borders, functions, typography, palette } = theme;
   const { variant, paginationSize, active } = ownerState;
 

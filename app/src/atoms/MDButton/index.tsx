@@ -2,9 +2,9 @@ import { forwardRef } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import MDButtonRoot from "atoms/MDButton/MDButtonRoot";
 import { useMaterialUIController } from "context";
-import { IMDButton } from "./types";
+import { TMDButton } from "./types";
 
-const MDButton = forwardRef<HTMLButtonElement, IMDButton>(
+const MDButton = forwardRef<HTMLButtonElement, TMDButton>(
   ({ color, variant, size, circular, iconOnly, children, loading, ...rest }, ref) => {
     const [controller] = useMaterialUIController();
     const { darkMode } = controller;

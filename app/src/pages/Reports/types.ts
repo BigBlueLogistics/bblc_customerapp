@@ -9,6 +9,6 @@ export type INotifyDownload = {
   color: "info" | "error" | "light" | "primary" | "secondary" | "success" | "warning" | "dark";
 };
 
-export type IGroupByWhSnapshot = "batch" | "expiry" | "material";
-export type IGroupByAging = "expiration" | "receiving" | "production";
-export type IGroupBy = LooseType<IGroupByWhSnapshot | IGroupByAging>;
+export type TGroupByWhSnapshot = "batch" | "expiry" | "material";
+export type TGroupByAging = "expiration" | "receiving" | "production";
+export type TGroupBy = LooseType<TGroupByWhSnapshot | TGroupByAging>;

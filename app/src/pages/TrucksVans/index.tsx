@@ -9,21 +9,21 @@ import Status from "pages/TrucksVans/components/Status";
 import Schedule from "pages/TrucksVans/components/Schedule";
 import StatusDetails from "pages/TrucksVans/components/StatusDetails";
 import { trucksVansServies } from "services";
-import { IListStatus, IListStatusDetails, IListScheduleToday } from "pages/TrucksVans/types";
+import { TListStatus, TListStatusDetails, TListScheduleToday } from "pages/TrucksVans/types";
 import { getValue } from "utils";
 
 function TrucksVans() {
-  const [listStatus, setListStatus] = useState<IListStatus>({
+  const [listStatus, setListStatus] = useState<TListStatus>({
     message: null,
     data: null,
     status: "idle",
   });
-  const [listStatusDetails, setListStatusDetails] = useState<IListStatusDetails>({
+  const [listStatusDetails, setListStatusDetails] = useState<TListStatusDetails>({
     message: null,
     data: null,
     status: "idle",
   });
-  const [listScheduleToday, setListScheduleToday] = useState<IListScheduleToday>({
+  const [listScheduleToday, setListScheduleToday] = useState<TListScheduleToday>({
     message: null,
     data: null,
     status: "idle",

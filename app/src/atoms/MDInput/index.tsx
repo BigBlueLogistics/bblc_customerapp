@@ -1,8 +1,8 @@
 import { forwardRef } from "react";
 import MDInputRoot from "atoms/MDInput/MDInputRoot";
-import { IMDInput } from "./types";
+import { TMDInput } from "./types";
 
-const MDInput = forwardRef<HTMLDivElement, IMDInput>(
+const MDInput = forwardRef<HTMLDivElement, TMDInput>(
   ({ error, success, disabled, endAdornment, ...rest }, ref) => (
     <MDInputRoot
       error={error}

@@ -1,9 +1,9 @@
 import MDBox from "atoms/MDBox";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
-import { IForm } from "./types";
+import { TForm } from "./types";
 
-function Form({ contentWidth }: IForm) {
+function Form({ contentWidth }: TForm) {
   return (
     <MDBox padding={2}>
       <Stack spacing={1}>

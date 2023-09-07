@@ -1,14 +1,14 @@
 import { FormikHelpers } from "formik";
-import { IFormOrderState, IOrderData } from "pages/Orders/types";
+import { TFormOrderState, TOrderData } from "pages/Orders/types";
 import { IAutoCompleteExpiryData } from "../AutoCompleteExpiry/types";
 import { IAutoCompleteMaterialData } from "../AutoCompleteMaterial/types";
 
 export type IForm = {
   open: boolean;
   onClose: () => void;
-  onSave: (data: IOrderData, actions: FormikHelpers<IOrderData>) => void;
+  onSave: (data: TOrderData, actions: FormikHelpers<TOrderData>) => void;
   onShowCancelConfirmation: (transid: string) => void;
-  data: IFormOrderState;
+  data: TFormOrderState;
   warehouseList: { value: string | number; label: string }[];
 };
 

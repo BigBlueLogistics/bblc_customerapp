@@ -7,9 +7,9 @@ import MDTypography from "atoms/MDTypography";
 import gradientChartLine from "assets/theme/functions/gradientChartLine";
 import configs from "organisms/Charts/MixedChart/configs";
 import colors from "assets/theme/base/colors";
-import { IMixedChart } from "./types";
+import { TMixedChart } from "./types";
 
-function MixedChart({ icon, title, description, height, chart, status }: IMixedChart) {
+function MixedChart({ icon, title, description, height, chart, status }: TMixedChart) {
   const chartRef = useRef(null);
   const [chartData, setChartData] = useState({ data: null, options: null });
   const { data, options } = chartData;

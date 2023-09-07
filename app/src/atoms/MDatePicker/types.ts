@@ -1,7 +1,7 @@
 import { SxProps, Theme, TextFieldProps } from "@mui/material";
 import { ReactDatePickerProps } from "react-datepicker";
 
-export type IDatePick = {
+export type TDatePick = {
   value?: string | number;
   onClick?: () => void;
   label?: string;
@@ -9,7 +9,7 @@ export type IDatePick = {
   variant?: TextFieldProps["variant"];
 };
 
-export type IMDatePicker = {
+export type TMDatePicker = {
   onChange: (date: Date) => void;
   name?: string;
   defaultValue?: Date | null;

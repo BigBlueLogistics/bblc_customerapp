@@ -1,3 +1,3 @@
-export type IFooter = {
+export type TFooter = {
   light: boolean;
 };

@@ -3,9 +3,9 @@ import Divider from "@mui/material/Divider";
 import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
-import { IDefaultInfoCard } from "./types";
+import { TDefaultInfoCard } from "./types";
 
-function DefaultInfoCard({ color, icon, title, description, value }: IDefaultInfoCard) {
+function DefaultInfoCard({ color, icon, title, description, value }: TDefaultInfoCard) {
   return (
     <Card>
       <MDBox p={2} mx={3} display="flex" justifyContent="center">

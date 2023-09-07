@@ -1,6 +1,6 @@
 import React from "react";
 
-export type IBasicLayout = {
+export type TBasicLayout = {
   image: string;
   children: React.ReactNode;
 };

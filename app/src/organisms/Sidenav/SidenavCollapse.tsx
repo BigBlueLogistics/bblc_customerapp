@@ -11,9 +11,9 @@ import {
 } from "organisms/Sidenav/styles/sidenavCollapse";
 
 import { useMaterialUIController } from "context";
-import { ISidenavCollapse } from "./types";
+import { TSidenavCollapse } from "./types";
 
-function SidenavCollapse({ icon, name, active, ...rest }: ISidenavCollapse) {
+function SidenavCollapse({ icon, name, active, ...rest }: TSidenavCollapse) {
   const [controller] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
 

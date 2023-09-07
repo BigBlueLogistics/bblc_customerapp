@@ -3,9 +3,9 @@ import Icon from "@mui/material/Icon";
 
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
-import { IDefaultNavbarLink } from "./types";
+import { TDefaultNavbarLink } from "./types";
 
-function DefaultNavbarLink({ icon, name, route, light }: IDefaultNavbarLink) {
+function DefaultNavbarLink({ icon, name, route, light }: TDefaultNavbarLink) {
   return (
     <MDBox
       component={Link}

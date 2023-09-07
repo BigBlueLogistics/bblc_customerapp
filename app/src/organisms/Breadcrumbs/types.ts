@@ -1,6 +1,6 @@
 import React from "react";
 
-export type IBreadcrumbs = {
+export type TBreadcrumbs = {
   icon: React.ReactNode;
   title: string;
   route: any[];

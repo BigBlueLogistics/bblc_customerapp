@@ -1,6 +1,6 @@
 import React from "react";
 
-export type IComplexStatisticsCard = {
+export type TComplexStatisticsCard = {
   color?: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "light" | "dark";
   title: string;
   count: string | number;

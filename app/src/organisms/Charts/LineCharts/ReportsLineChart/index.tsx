@@ -16,11 +16,11 @@ import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/LineCharts/ReportsLineChart/configs";
-import { IReportsLineChart } from "./types";
+import { TReportsLineChart } from "./types";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-function ReportsLineChart({ color, title, description, date, chart, status }: IReportsLineChart) {
+function ReportsLineChart({ color, title, description, date, chart, status }: TReportsLineChart) {
   const { data, options } = configs(chart.labels || [], chart.datasets || {});
 
   const renderLineChart = () => {

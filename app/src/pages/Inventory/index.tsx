@@ -19,12 +19,12 @@ import excel from "assets/images/icons/excel.png";
 import miscData from "pages/Inventory/data";
 import { inventoryServices } from "services";
 import { AxiosError } from "axios";
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 import selector from "./selector";
 import { INotifyDownload } from "./types";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
-import { IMenuAction } from "./components/MenuAction/types";
+import { TMenuAction } from "./components/MenuAction/types";
 
 function Inventory() {
   const dispatch = useAppDispatch();
@@ -39,7 +39,7 @@ function Inventory() {
   const [action, setAction] = useState(null);
   const [toggleFilter, setToggleFilter] = useState(true);
 
-  const [tableStatus, setTableStatus] = useState<IStatus>("idle");
+  const [tableStatus, setTableStatus] = useState<TStatus>("idle");
   const [error, setError] = useState<AxiosError | null>(null);
 
   const {
@@ -168,7 +168,7 @@ function Inventory() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [downloadError, downloadStatus]);
 
-  const menuItemsAction: IMenuAction["items"] = [
+  const menuItemsAction: TMenuAction["items"] = [
     {
       icon: (
         <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">

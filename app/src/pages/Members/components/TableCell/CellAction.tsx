@@ -2,9 +2,9 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import MDBox from "atoms/MDBox";
 import { Edit as EditIcon } from "@mui/icons-material";
-import { ITableCellProps } from "types/reactTable";
+import { TTableCellProps } from "types/reactTable";
 
-function CellAction(props: ITableCellProps) {
+function CellAction(props: TTableCellProps) {
   const {
     cell: {
       column: {

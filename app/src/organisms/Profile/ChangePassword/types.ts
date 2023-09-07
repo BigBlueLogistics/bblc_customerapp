@@ -1,6 +1,6 @@
 import { ChangePassType } from "types/authForm";
 
-export type IChangePassword = {
+export type TChangePassword = {
   title: string;
   isLoading: boolean;
   onChangePass: (values: ChangePassType) => void;

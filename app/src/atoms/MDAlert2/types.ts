@@ -1,7 +1,7 @@
 import React from "react";
 import { AlertProps, SxProps, Theme } from "@mui/material";
 
-type IMDAlert = {
+type TMDAlert = {
   severity?: AlertProps["color"];
   variant?: AlertProps["variant"];
   dismissible?: boolean;
@@ -10,4 +10,4 @@ type IMDAlert = {
   sx?: SxProps<Theme>;
 };
 
-export default IMDAlert;
+export default TMDAlert;

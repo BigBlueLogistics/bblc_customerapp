@@ -12,9 +12,9 @@ import breakpoints from "assets/theme/base/breakpoints";
 // import burceMars from "assets/images/bruce-mars.jpg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
 import selector from "pages/Profile/selector";
-import { IHeader } from "./types";
+import { THeader } from "./types";
 
-function Header({ children }: IHeader) {
+function Header({ children }: THeader) {
   const [tabsOrientation, setTabsOrientation] = useState<"horizontal" | "vertical">("horizontal");
   const { name, customerCode } = selector();
 

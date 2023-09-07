@@ -1,7 +1,7 @@
 import React from "react";
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 
-export type IVerticalBarChart = {
+export type TVerticalBarChart = {
   icon?: {
     color: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "light" | "dark";
     component: React.ReactNode;
@@ -10,5 +10,5 @@ export type IVerticalBarChart = {
   description?: string | React.ReactNode;
   height?: string | number;
   chart: { [key: string]: any[] };
-  status?: IStatus;
+  status?: TStatus;
 };

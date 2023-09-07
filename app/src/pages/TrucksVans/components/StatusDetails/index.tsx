@@ -7,9 +7,9 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import SkeletonForm from "organisms/Skeleton/Form";
 import { getValue, formatDate } from "utils";
-import { IStatusDetails } from "./types";
+import { TStatusDetails } from "./types";
 
-function StatusDetails({ open, onClose, data, loadingStatus }: IStatusDetails) {
+function StatusDetails({ open, onClose, data, loadingStatus }: TStatusDetails) {
   const {
     vanno,
     vmrno,

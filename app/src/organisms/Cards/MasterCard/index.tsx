@@ -6,9 +6,9 @@ import MDTypography from "atoms/MDTypography";
 // Images
 import pattern from "assets/images/illustrations/pattern-tree.svg";
 import masterCardLogo from "assets/images/logos/mastercard.png";
-import { IMasterCard } from "./types";
+import { TMasterCard } from "./types";
 
-function MasterCard({ color, number, holder, expires }: IMasterCard) {
+function MasterCard({ color, number, holder, expires }: TMasterCard) {
   const numbers = [...`${number}`];
 
   if (numbers.length < 16 || numbers.length > 16) {

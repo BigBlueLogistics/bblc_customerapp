@@ -2,9 +2,9 @@ import Grid from "@mui/material/Grid";
 import MDBox from "atoms/MDBox";
 import PageLayout from "organisms/LayoutContainers/PageLayout";
 import Footer from "pages/Authentication/components/Footer";
-import { IBasicLayout } from "./types";
+import { TBasicLayout } from "./types";
 
-function BasicLayout({ image, children }: IBasicLayout) {
+function BasicLayout({ image, children }: TBasicLayout) {
   return (
     <PageLayout>
       <MDBox

@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles";
-import { IMaterialElem } from "types/materialElem";
+import { TMaterialElem } from "types/materialElem";
 
-export default styled("span")<IMaterialElem>(({ theme }) => {
+export default styled("span")<TMaterialElem>(({ theme }) => {
   const { palette, typography, functions } = theme;
 
   const { white } = palette;

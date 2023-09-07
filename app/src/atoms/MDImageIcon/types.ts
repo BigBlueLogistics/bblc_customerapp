@@ -1,4 +1,4 @@
-export type IMDImageIcon = {
+export type TMDImageIcon = {
   src: string;
   alt?: string;
   width?: string | number;

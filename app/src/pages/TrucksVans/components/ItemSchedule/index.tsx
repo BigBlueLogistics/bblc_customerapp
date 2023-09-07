@@ -2,9 +2,9 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import { useMaterialUIController } from "context";
 import { formatDate, getValue } from "utils";
-import { IItemSchedule } from "./types";
+import { TItemSchedule } from "./types";
 
-function ItemSchedule({ data, noGutter }: IItemSchedule) {
+function ItemSchedule({ data, noGutter }: TItemSchedule) {
   const { vehiclenum, vehicletype, arrivaldate, arrivaltime } = data;
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;

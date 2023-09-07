@@ -1,7 +1,7 @@
 import MDBadge from "atoms/MDBadge";
-import { ITableCellProps } from "types/reactTable";
+import { TTableCellProps } from "types/reactTable";
 
-function CellStatus({ value }: ITableCellProps) {
+function CellStatus({ value }: TTableCellProps) {
   const status = value === "true" ? "Active" : "Inactive";
   const color = status === "Active" ? "info" : "error";
   return (

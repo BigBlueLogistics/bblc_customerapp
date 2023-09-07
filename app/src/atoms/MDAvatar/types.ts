@@ -1,6 +1,6 @@
 import { AvatarProps } from "@mui/material";
 
-type IAvatar = Partial<{
+type TAvatar = Partial<{
   bgColor:
     | "transparent"
     | "primary"
@@ -16,8 +16,8 @@ type IAvatar = Partial<{
   shadow: "none" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl" | "inset";
 }>;
 
-export type IMDAvatar = IAvatar & AvatarProps;
+export type TMDAvatar = TAvatar & AvatarProps;
 
-export type IOwnerState = {
-  ownerState?: IAvatar;
+export type TOwnerState = {
+  ownerState?: TAvatar;
 };

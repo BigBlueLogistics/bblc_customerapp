@@ -1,7 +1,7 @@
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 
 export type TResponse<TData, TMessage extends unknown = string> = {
-  status: IStatus;
+  status: TStatus;
   data: TData;
   message: TMessage;
 };

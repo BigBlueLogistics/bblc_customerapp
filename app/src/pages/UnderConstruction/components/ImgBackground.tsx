@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles";
-import { IMaterialElem } from "types/materialElem";
+import { TMaterialElem } from "types/materialElem";
 
-export default styled("img")<IMaterialElem>(({ theme }) => {
+export default styled("img")<TMaterialElem>(({ theme }) => {
   const { typography, breakpoints } = theme;
   const { pxToRem } = typography;
 

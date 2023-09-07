@@ -5,7 +5,7 @@ import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import configs from "organisms/Charts/DoughnutCharts/DefaultDoughnutChart/configs";
-import { IDefaultDoughnutChart } from "./types";
+import { TDefaultDoughnutChart } from "./types";
 
 function DefaultDoughnutChart({
   icon,
@@ -14,7 +14,7 @@ function DefaultDoughnutChart({
   height,
   chart,
   status,
-}: IDefaultDoughnutChart) {
+}: TDefaultDoughnutChart) {
   const { data, options } = configs(
     chart.labels || [],
     chart.datasets || {},

@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import MDBox from "atoms/MDBox";
 import { useMaterialUIController, setLayout } from "context";
-import { IPageLayout } from "./types";
+import { TPageLayout } from "./types";
 
-function PageLayout({ background, children }: IPageLayout) {
+function PageLayout({ background, children }: TPageLayout) {
   const [, dispatch] = useMaterialUIController();
   const { pathname } = useLocation();
 

@@ -1,4 +1,4 @@
-export type ITheme = {
+export type TTheme = {
   direction: string;
   breakpoints: { [key: string]: any };
   palette: { [key: string]: any };

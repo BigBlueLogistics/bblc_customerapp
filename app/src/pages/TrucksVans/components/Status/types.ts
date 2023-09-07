@@ -1,7 +1,7 @@
 import { TrucksVansStatusEntity } from "entities/trucksVans";
 import { ChangeEvent, MutableRefObject } from "react";
 
-export type IStatus = {
+export type TStatus = {
   inputSearchRef: MutableRefObject<any>;
   data: TrucksVansStatusEntity[];
   searchData: string;

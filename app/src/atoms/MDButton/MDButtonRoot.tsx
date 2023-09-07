@@ -1,8 +1,8 @@
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
-import { IOwnerState } from "./types";
+import { TOwnerState } from "./types";
 
-export default styled(Button)<IOwnerState>(({ theme, ownerState = {} }) => {
+export default styled(Button)<TOwnerState>(({ theme, ownerState = {} }) => {
   const { palette, functions, borders, boxShadows } = theme;
   const { color, variant, size, circular, iconOnly, darkMode } = ownerState;
 

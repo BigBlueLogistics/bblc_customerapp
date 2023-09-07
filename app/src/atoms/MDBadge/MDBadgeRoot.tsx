@@ -1,8 +1,8 @@
 import Badge from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
-import { IOwnerState, IBadge } from "./types";
+import { TOwnerState, TBadge } from "./types";
 
-export default styled(Badge)<IOwnerState>(({ theme, ownerState = {} }) => {
+export default styled(Badge)<TOwnerState>(({ theme, ownerState = {} }) => {
   const { palette, typography, borders, functions } = theme;
   const { color, circular, border, size, indicator, variant, container, children } = ownerState;
 
@@ -29,7 +29,7 @@ export default styled(Badge)<IOwnerState>(({ theme, ownerState = {} }) => {
   const borderRadiusValue = circular ? borderRadius.section : borderRadius.md;
 
   // styles for the badge with indicator={true}
-  const indicatorStyles = (sizeProp: IBadge["size"]) => {
+  const indicatorStyles = (sizeProp: TBadge["size"]) => {
     let widthValue = pxToRem(20);
     let heightValue = pxToRem(20);
 
@@ -54,7 +54,7 @@ export default styled(Badge)<IOwnerState>(({ theme, ownerState = {} }) => {
   };
 
   // styles for the badge with variant="gradient"
-  const gradientStyles = (colorProp: IBadge["color"]) => {
+  const gradientStyles = (colorProp: TBadge["color"]) => {
     const backgroundValue =
       colorProp && gradients[colorProp]
         ? linearGradient(gradients[colorProp].main, gradients[colorProp].state)
@@ -68,7 +68,7 @@ export default styled(Badge)<IOwnerState>(({ theme, ownerState = {} }) => {
   };
 
   // styles for the badge with variant="contained"
-  const containedStyles = (colorProp: IBadge["color"]) => {
+  const containedStyles = (colorProp: TBadge["color"]) => {
     const backgroundValue =
       colorProp && badgeColors[colorProp]
         ? badgeColors[colorProp].background
@@ -102,7 +102,7 @@ export default styled(Badge)<IOwnerState>(({ theme, ownerState = {} }) => {
   return {
     "& .MuiBadge-badge": {
       height: "auto",
-      padding: paddings[size as NonNullable<IBadge["size"]>] || paddings.xs,
+      padding: paddings[size as NonNullable<TBadge["size"]>] || paddings.xs,
       fontSize: fontSizeValue,
       fontWeight: fontWeightBold,
       textTransform: "uppercase",

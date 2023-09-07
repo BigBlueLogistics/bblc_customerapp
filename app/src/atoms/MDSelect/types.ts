@@ -1,6 +1,6 @@
 import { SxProps, Theme } from "@mui/system";
 
-export type IMDSelect = {
+export type TMDSelect = {
   variant: "filled" | "standard" | "outlined";
   name?: string;
   label?: string;
@@ -17,9 +17,9 @@ export type IMDSelect = {
   withOptionKeys?: boolean;
 };
 
-export type IOwnerState = {
+export type TOwnerState = {
   ownerState: {
-    showArrowIcon: IMDSelect["showArrowIcon"];
+    showArrowIcon: TMDSelect["showArrowIcon"];
     variant: "filled" | "standard" | "outlined";
   };
 };

@@ -1,5 +1,5 @@
 import React from "react";
 
-export type IHeader = {
+export type THeader = {
   children?: React.ReactNode;
 };

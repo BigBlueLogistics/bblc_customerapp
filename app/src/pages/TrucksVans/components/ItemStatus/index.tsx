@@ -5,9 +5,9 @@ import MDIcon from "atoms/MDIcon";
 import { useMaterialUIController } from "context";
 import { differenceInDays } from "date-fns";
 import { getValue, formatDate } from "utils";
-import { IItemStatus } from "./types";
+import { TItemStatus } from "./types";
 
-function ItemStatus({ data, noGutter, onOpenStatusDetails }: IItemStatus) {
+function ItemStatus({ data, noGutter, onOpenStatusDetails }: TItemStatus) {
   const {
     vanno,
     vmrno,

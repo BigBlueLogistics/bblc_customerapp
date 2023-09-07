@@ -1,7 +1,7 @@
 import React from "react";
-import { IMDButton } from "atoms/MDButton/types";
+import { TMDButton } from "atoms/MDButton/types";
 
-export type IPagination = {
+export type TPagination = {
   item?: boolean;
   variant?: "gradient" | "contained";
   color?:
@@ -18,10 +18,10 @@ export type IPagination = {
   active?: boolean;
   children: React.ReactNode;
 };
-export type IMDPagination = IPagination & IMDButton;
+export type TMDPagination = TPagination & TMDButton;
 
-export type IOwnerState = {
-  ownerState?: Pick<IPagination, "variant" | "active"> & {
-    paginationSize: IPagination["size"];
+export type TOwnerState = {
+  ownerState?: Pick<TPagination, "variant" | "active"> & {
+    paginationSize: TPagination["size"];
   };
 };

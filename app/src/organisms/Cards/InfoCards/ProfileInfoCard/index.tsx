@@ -5,9 +5,9 @@ import Tooltip from "@mui/material/Tooltip";
 import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
-import { IProfileInfoCard } from "./types";
+import { TProfileInfoCard } from "./types";
 
-function ProfileInfoCard({ title, description, info, action, shadow }: IProfileInfoCard) {
+function ProfileInfoCard({ title, description, info, action, shadow }: TProfileInfoCard) {
   const labels = [];
   const values = [];
 

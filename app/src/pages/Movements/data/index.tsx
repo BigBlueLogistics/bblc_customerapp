@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/prop-types */
-import { INotifyDownload, IFiltered, ITableHeader } from "../types";
+import { INotifyDownload, TFiltered, ITableHeader } from "../types";
 
 export default function miscData() {
   const commonHeadersAttr = {
@@ -133,7 +133,7 @@ export default function miscData() {
     },
   ];
 
-  const initialFiltered: IFiltered = {
+  const initialFiltered: TFiltered = {
     warehouseNo: "",
     type: "",
     materialCode: null,

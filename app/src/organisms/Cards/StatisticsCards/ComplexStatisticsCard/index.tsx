@@ -3,9 +3,9 @@ import Divider from "@mui/material/Divider";
 import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
-import { IComplexStatisticsCard } from "./types";
+import { TComplexStatisticsCard } from "./types";
 
-function ComplexStatisticsCard({ color, title, count, percentage, icon }: IComplexStatisticsCard) {
+function ComplexStatisticsCard({ color, title, count, percentage, icon }: TComplexStatisticsCard) {
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" pt={1} px={2}>

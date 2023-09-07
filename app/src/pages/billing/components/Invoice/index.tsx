@@ -1,9 +1,9 @@
 import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
-import { IInvoice } from "./types";
+import { TInvoice } from "./types";
 
-function Invoice({ date, id, price, noGutter }: IInvoice) {
+function Invoice({ date, id, price, noGutter }: TInvoice) {
   return (
     <MDBox
       component="li"

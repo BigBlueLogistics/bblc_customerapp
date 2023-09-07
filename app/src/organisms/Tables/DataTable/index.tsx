@@ -21,7 +21,7 @@ import MDPagination from "atoms/MDPagination";
 
 import DataTableHeadCell from "organisms/Tables/DataTable/DataTableHeadCell";
 import DataTableBodyCell from "organisms/Tables/DataTable/DataTableBodyCell";
-import { IDataTable } from "./types";
+import { TDataTable } from "./types";
 
 function DataTable({
   entriesPerPage,
@@ -33,7 +33,7 @@ function DataTable({
   noEndBorder,
   isLoading,
   renderRowSubComponent,
-}: IDataTable) {
+}: TDataTable) {
   const defaultValue =
     typeof entriesPerPage === "object" && entriesPerPage.defaultValue
       ? entriesPerPage.defaultValue

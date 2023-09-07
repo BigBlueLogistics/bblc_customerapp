@@ -2,9 +2,9 @@ import Card from "@mui/material/Card";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import ItemSchedule from "../ItemSchedule";
-import { ISchedule } from "./types";
+import { TSchedule } from "./types";
 
-function Schedule({ data }: ISchedule) {
+function Schedule({ data }: TSchedule) {
   return (
     <Card sx={{ height: "100%" }}>
       <MDBox pt={3} px={2} display="inline-flex" justifyContent="space-between">

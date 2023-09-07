@@ -5,9 +5,9 @@ const initialOpts = {
   defaultValue: null,
 };
 
-type IOpts = Partial<typeof initialOpts>;
+type TOpts = Partial<typeof initialOpts>;
 
-function formatDate(date: string | Date | number, options: IOpts = initialOpts) {
+function formatDate(date: string | Date | number, options: TOpts = initialOpts) {
   let dateValue = date;
   const opt = { ...initialOpts, ...options };
   if (dateValue && typeof dateValue === "string") {

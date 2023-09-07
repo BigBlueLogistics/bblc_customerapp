@@ -1,7 +1,7 @@
 import React from "react";
 import { BadgeProps } from "@mui/material";
 
-export type IBadge = Partial<{
+export type TBadge = Partial<{
   color: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "light" | "dark";
   variant: "gradient" | "contained";
   size: "xs" | "sm" | "md" | "lg";
@@ -12,8 +12,8 @@ export type IBadge = Partial<{
   container: boolean;
 }>;
 
-export type IMDBadge = IBadge & Omit<BadgeProps, "variant" | "color">;
+export type TMDBadge = TBadge & Omit<BadgeProps, "variant" | "color">;
 
-export type IOwnerState = {
-  ownerState?: IBadge;
+export type TOwnerState = {
+  ownerState?: TBadge;
 };

@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useMemo } from "react";
-import { IMaterialUIControllerProvider } from "./types";
+import { TMaterialUIControllerProvider } from "./types";
 
 // Material Dashboard 2 React main context
 const MaterialUI = createContext([]);
@@ -47,7 +47,7 @@ function reducer(state, action) {
 }
 
 // Material Dashboard 2 React context provider
-function MaterialUIControllerProvider({ children }: IMaterialUIControllerProvider) {
+function MaterialUIControllerProvider({ children }: TMaterialUIControllerProvider) {
   const initialState = {
     miniSidenav: false,
     transparentSidenav: false,

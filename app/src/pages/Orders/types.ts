@@ -1,18 +1,18 @@
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 import { LooseType } from "types/utility";
 
-export type INotifyOrder = {
+export type TNotifyOrder = {
   open: boolean;
   message?: string;
   title?: string;
   color?: "info" | "error" | "light" | "primary" | "secondary" | "success" | "warning" | "dark";
 };
 
-export type IGroupByWhSnapshot = "batch" | "expiry" | "material" | "";
-export type IGroupByAging = "expiration" | "receiving" | "production" | "";
-export type IGroupBy = IGroupByWhSnapshot | IGroupByAging;
+export type TGroupByWhSnapshot = "batch" | "expiry" | "material" | "";
+export type TGroupByAging = "expiration" | "receiving" | "production" | "";
+export type TGroupBy = TGroupByWhSnapshot | TGroupByAging;
 
-export type IOrderData = {
+export type TOrderData = {
   id: string;
   pickup_date: string | null;
   ref_number: string;
@@ -37,22 +37,22 @@ export type IOrderData = {
   requestsDelete?: string[];
 };
 
-export type IFiltered = {
+export type TFiltered = {
   status: string;
   createdAt: Date | null;
   lastModified: Date | null;
 };
-export type ITableOrder = {
-  status: IStatus;
+export type TTableOrder = {
+  status: TStatus;
   data: any;
   message: string;
 };
 
-export type IFormOrderState = {
+export type TFormOrderState = {
   id: string;
   type: LooseType<"create" | "edit" | "update" | "view" | "confirmation" | "cancel">;
-  status: IStatus;
-  data: IOrderData;
+  status: TStatus;
+  data: TOrderData;
   message: string;
   openConfirmation: boolean;
 };

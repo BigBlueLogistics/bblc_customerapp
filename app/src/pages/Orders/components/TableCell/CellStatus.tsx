@@ -1,7 +1,7 @@
 import MDBadge from "atoms/MDBadge";
-import { ITableCellProps } from "types/reactTable";
+import { TTableCellProps } from "types/reactTable";
 
-function CellStatus(props: ITableCellProps) {
+function CellStatus(props: TTableCellProps) {
   const { row } = props;
 
   const { status, status_id: statusId } = row.original;

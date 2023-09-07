@@ -18,7 +18,7 @@ import MDCheckbox from "atoms/MDCheckbox";
 import MDSelect from "atoms/MDSelect";
 import { ordersServices } from "services";
 import selector from "selector";
-import { IOrderData } from "pages/Orders/types";
+import { TOrderData } from "pages/Orders/types";
 import FormTable from "../FormTable";
 import miscData from "../../data";
 import { IForm } from "./types";
@@ -180,7 +180,7 @@ function FormRequests({
     reason: AutocompleteChangeReason,
     uuid: string,
     index: number,
-    setValues: FormikHelpers<IOrderData>["setValues"]
+    setValues: FormikHelpers<TOrderData>["setValues"]
   ) => {
     // Set selected material.
     // And fetch units, expiry and batch.
@@ -234,7 +234,7 @@ function FormRequests({
     valueMaterial: string,
     reason: AutocompleteChangeReason,
     index: number,
-    setValues: FormikHelpers<IOrderData>["setValues"]
+    setValues: FormikHelpers<TOrderData>["setValues"]
   ) => {
     if (reason === "selectOption" && value) {
       setSelectedRowValues((prev) => {
@@ -280,7 +280,7 @@ function FormRequests({
     reason: AutocompleteChangeReason,
     uuid: string,
     index: number,
-    setValues: FormikHelpers<IOrderData>["setValues"]
+    setValues: FormikHelpers<TOrderData>["setValues"]
   ) => {
     if (reason === "selectOption" && value) {
       const { expiry, batch } = value;
@@ -307,7 +307,7 @@ function FormRequests({
     }
   };
 
-  const handlePickupDate = (date: Date, setValues: FormikHelpers<IOrderData>["setValues"]) => {
+  const handlePickupDate = (date: Date, setValues: FormikHelpers<TOrderData>["setValues"]) => {
     setValues((prev) => ({ ...prev, pickup_date: date?.toLocaleString() }));
   };
 
@@ -318,7 +318,7 @@ function FormRequests({
 
   const handleRemoveRow = (
     remove: ArrayHelpers["remove"],
-    setValues: FormikHelpers<IOrderData>["setValues"],
+    setValues: FormikHelpers<TOrderData>["setValues"],
     idx: number,
     uuid: string,
     material: string,
@@ -367,7 +367,7 @@ function FormRequests({
     return null;
   };
 
-  const getAllUnits = async (orderData: IOrderData["requests"]) => {
+  const getAllUnits = async (orderData: TOrderData["requests"]) => {
     const allUnits = await Promise.all(
       orderData.map(async ({ uuid, material }) => {
         const unit = await fetchUnits(material);
@@ -387,7 +387,7 @@ function FormRequests({
     setUnitList(objAllUnits);
   };
 
-  const getAllExpiryBatch = async (orderData: IOrderData["requests"], sourceWh: string) => {
+  const getAllExpiryBatch = async (orderData: TOrderData["requests"], sourceWh: string) => {
     const allExpiry = await Promise.all(
       orderData.map(async ({ uuid, material }) => {
         const expiries = await fetchExpiryBatch(material, sourceWh);
@@ -407,7 +407,7 @@ function FormRequests({
     setExpiryBatchList(objAllExpiry);
   };
 
-  const getAllSelectedRowValues = (orderData: IOrderData["requests"]) => {
+  const getAllSelectedRowValues = (orderData: TOrderData["requests"]) => {
     let selectedValues = {};
     if (orderData.length) {
       selectedValues = orderData.reduce((prev, { material, units }) => {
@@ -421,7 +421,7 @@ function FormRequests({
   };
 
   const onMountForm = useCallback(
-    (setValues: FormikProps<IOrderData>["setValues"]) => {
+    (setValues: FormikProps<TOrderData>["setValues"]) => {
       const { type, data: tableData, status } = data;
       if ((type === "edit" || type === "view") && status === "succeeded" && tableData?.id) {
         setValues((prev) => {
@@ -489,7 +489,7 @@ function FormRequests({
           enableReinitialize={data.type === "edit" || data.type === "view"}
           validationSchema={validationSchema}
           initialValues={data.type === "create" ? initialOrder : data.data}
-          onSubmit={(validatedData: IOrderData, actions) => {
+          onSubmit={(validatedData: TOrderData, actions) => {
             const formattedPickupDate = format(
               convertPickupToDate(validatedData.pickup_date),
               "MM/dd/yyyy HH:mm:ss"

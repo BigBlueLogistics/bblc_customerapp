@@ -1,7 +1,7 @@
 import Icon from "@mui/material/Icon";
 import MDBox from "atoms/MDBox";
 import { useMaterialUIController } from "context";
-import { IDataTableHeadCell } from "./types";
+import { TDataTableHeadCell } from "./types";
 
 function DataTableHeadCell({
   width,
@@ -11,7 +11,7 @@ function DataTableHeadCell({
   colSpan,
   rowSpan,
   ...rest
-}: IDataTableHeadCell) {
+}: TDataTableHeadCell) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 

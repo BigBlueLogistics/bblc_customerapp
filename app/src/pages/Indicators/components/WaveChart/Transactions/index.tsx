@@ -2,7 +2,7 @@ import { Grid } from "@mui/material";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import ReportsLineChart from "organisms/Charts/LineCharts/ReportsLineChart";
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 import { TWaveChart } from "../types";
 
 function Transaction({
@@ -11,7 +11,7 @@ function Transaction({
   coverageDate,
 }: {
   data: TWaveChart["data"]["inboundPerWeek"];
-  status: IStatus;
+  status: TStatus;
   coverageDate: string;
 }) {
   const labels = data ? Object.keys(data) : [];

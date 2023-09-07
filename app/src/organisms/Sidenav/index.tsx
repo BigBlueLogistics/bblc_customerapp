@@ -18,7 +18,7 @@ import {
   setWhiteSidenav,
 } from "context";
 import { RouteParams } from "types/routes";
-import { ISidenav } from "./types";
+import { TSidenav } from "./types";
 
 function Sidenav({
   color,
@@ -29,7 +29,7 @@ function Sidenav({
   handleSignOut,
   onMouseEnter,
   onMouseLeave,
-}: ISidenav) {
+}: TSidenav) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();

@@ -1,4 +1,4 @@
-export type ISimpleBlogCard = {
+export type TSimpleBlogCard = {
   image: string;
   title: string;
   description: string;

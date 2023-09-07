@@ -4,7 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MDFormControlRoot from "atoms/MDSelect/MDFormControlRoot";
 
 import MDSelectRoot from "atoms/MDSelect/MDSelectRoot";
-import { IMDSelect } from "./types";
+import { TMDSelect } from "./types";
 
 function MDSelect({
   name,
@@ -21,7 +21,7 @@ function MDSelect({
   withOptionKeys,
   itemStyle,
   ...rest
-}: IMDSelect) {
+}: TMDSelect) {
   const renderOptionsWithoutCustomKeys = () => {
     return (
       options?.length &&

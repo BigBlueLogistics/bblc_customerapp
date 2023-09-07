@@ -1,8 +1,8 @@
 import MDTypography from "atoms/MDTypography";
 import { styled } from "@mui/material/styles";
-import { IMaterialElem } from "types/materialElem";
+import { TMaterialElem } from "types/materialElem";
 
-export const MessageTitle = styled(MDTypography)<IMaterialElem>(({ theme }) => {
+export const MessageTitle = styled(MDTypography)<TMaterialElem>(({ theme }) => {
   const { typography, breakpoints } = theme;
   const { pxToRem } = typography;
 
@@ -19,7 +19,7 @@ export const MessageTitle = styled(MDTypography)<IMaterialElem>(({ theme }) => {
   };
 });
 
-export const MessageDescription = styled(MDTypography)<IMaterialElem>(({ theme }) => {
+export const MessageDescription = styled(MDTypography)<TMaterialElem>(({ theme }) => {
   const { typography, breakpoints } = theme;
   const { pxToRem } = typography;
 

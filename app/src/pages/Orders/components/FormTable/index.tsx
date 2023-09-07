@@ -5,14 +5,14 @@ import Icon from "@mui/material/Icon";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
 import MDTypography from "atoms/MDTypography";
-import { IOrderData } from "pages/Orders/types";
+import { TOrderData } from "pages/Orders/types";
 import TableBodyCell from "./TableBodyCell";
 import AutoCompleteMaterial from "../AutoCompleteMaterial";
 import AutoCompleteUnits from "../AutoCompleteUnits";
 import AutoCompleteExpiry from "../AutoCompleteExpiry";
 import { IFormTable } from "./types";
 
-function FormTable(props: FormikProps<IOrderData> & IFormTable) {
+function FormTable(props: FormikProps<TOrderData> & IFormTable) {
   const {
     values,
     touched,
@@ -47,7 +47,7 @@ function FormTable(props: FormikProps<IOrderData> & IFormTable) {
       errors.requests.length &&
       typeof errors.requests[idx] === "object"
     ) {
-      const fieldErrors = errors.requests[idx] as IOrderData["requests"];
+      const fieldErrors = errors.requests[idx] as TOrderData["requests"];
       const fieldTouched = touched.requests[idx];
       if (fieldTouched?.[fieldName] && fieldErrors[fieldName]) {
         return fieldErrors[fieldName];

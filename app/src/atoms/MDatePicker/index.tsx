@@ -4,11 +4,11 @@ import InputAdornment from "@mui/material/InputAdornment";
 import DatePicker from "react-datepicker";
 import DatePickInputRoot from "./DatePickInputRoot";
 import MDatePickerRoot from "./MDatePickerRoot";
-import { IMDatePicker, IDatePick } from "./types";
+import { TMDatePicker, TDatePick } from "./types";
 import "react-datepicker/dist/react-datepicker.css";
 import "./styles.css";
 
-const DatePickInput = forwardRef<HTMLInputElement, IDatePick>(
+const DatePickInput = forwardRef<HTMLInputElement, TDatePick>(
   ({ value, onClick, label, inputStyle, variant }, ref) => {
     return (
       <DatePickInputRoot
@@ -44,7 +44,7 @@ function MDatePicker({
   value,
   inputVariant = "standard",
   ...rest
-}: IMDatePicker) {
+}: TMDatePicker) {
   return (
     <MDatePickerRoot sx={containerStyle}>
       <DatePicker

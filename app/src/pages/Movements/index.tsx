@@ -21,12 +21,12 @@ import MDImageIcon from "atoms/MDImageIcon";
 import excel from "assets/images/icons/excel.png";
 import miscData from "./data";
 import selector from "./selector";
-import { INotifyDownload, ITableOrder, IFiltered } from "./types";
+import { INotifyDownload, TTableOrder, TFiltered } from "./types";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import AutoCompleteMaterial from "./components/AutoCompleteMaterial";
 import { IAutoCompleteMaterialData } from "./components/AutoCompleteMaterial/types";
-import { IMenuAction } from "./components/MenuAction/types";
+import { TMenuAction } from "./components/MenuAction/types";
 
 function Movements() {
   const dispatch = useAppDispatch();
@@ -41,7 +41,7 @@ function Movements() {
   const [action, setAction] = useState(null);
   const [error, setError] = useState<AxiosError | null>(null);
   const [toggleFilter, setToggleFilter] = useState(true);
-  const [filtered, setFiltered] = useState<IFiltered>(initialFiltered);
+  const [filtered, setFiltered] = useState<TFiltered>(initialFiltered);
 
   const {
     downloadFile,
@@ -50,7 +50,7 @@ function Movements() {
     filename,
   } = useDownloadFile();
 
-  const [tableOrders, setTableOrders] = useState<ITableOrder>({
+  const [tableOrders, setTableOrders] = useState<TTableOrder>({
     message: "",
     data: [],
     status: "idle",
@@ -99,7 +99,7 @@ function Movements() {
     setToggleFilter((prevState) => !prevState);
   };
 
-  const fetchMovement = async ({ warehouseNo, type, materialCode, coverageDate }: IFiltered) => {
+  const fetchMovement = async ({ warehouseNo, type, materialCode, coverageDate }: TFiltered) => {
     setTableOrders((prev) => ({ ...prev, status: "loading" }));
 
     try {
@@ -279,7 +279,7 @@ function Movements() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [downloadError, downloadStatus]);
 
-  const menuItemsAction: IMenuAction["items"] = [
+  const menuItemsAction: TMenuAction["items"] = [
     {
       icon: (
         <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small">

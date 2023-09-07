@@ -4,14 +4,14 @@ import { useAppDispatch } from "hooks";
 import { setIsAuthenticated } from "redux/auth/action";
 import selector from "./selector";
 
-type IProtectedRoute = {
+type TProtectedRoute = {
   authenticated: boolean;
   apiToken: string;
   accountRole: string;
   allowedRoles: Array<string>;
 };
 
-function ProtectedRoute({ authenticated, apiToken, accountRole, allowedRoles }: IProtectedRoute) {
+function ProtectedRoute({ authenticated, apiToken, accountRole, allowedRoles }: TProtectedRoute) {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = selector();
 

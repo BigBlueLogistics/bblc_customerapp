@@ -1,8 +1,8 @@
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
-import { IOwnerState } from "./types";
+import { TOwnerState } from "./types";
 
-export default styled(TextField)<IOwnerState>(({ theme, ownerState = {} }) => {
+export default styled(TextField)<TOwnerState>(({ theme, ownerState = {} }) => {
   const { palette, functions } = theme;
   const { error, success, disabled, endAdornment } = ownerState;
 

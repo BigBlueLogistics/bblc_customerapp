@@ -1,7 +1,7 @@
 import React from "react";
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 
-export type IRadarChart = {
+export type TRadarChart = {
   icon?: {
     color: "primary" | "secondary" | "info" | "success" | "warning" | "error" | "light" | "dark";
     component: React.ReactNode;
@@ -9,5 +9,5 @@ export type IRadarChart = {
   title?: string;
   description?: string | React.ReactNode;
   chart: { [key: string]: any[] };
-  status?: IStatus;
+  status?: TStatus;
 };

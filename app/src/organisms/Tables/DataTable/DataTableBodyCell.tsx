@@ -1,5 +1,5 @@
 import MDBox from "atoms/MDBox";
-import { IDataTableBodyCell } from "./types";
+import { TDataTableBodyCell } from "./types";
 
 function DataTableBodyCell({
   noBorder,
@@ -8,7 +8,7 @@ function DataTableBodyCell({
   rowSpan,
   children,
   isLoading,
-}: IDataTableBodyCell) {
+}: TDataTableBodyCell) {
   const width = isLoading ? "100%" : "max-content";
 
   return (

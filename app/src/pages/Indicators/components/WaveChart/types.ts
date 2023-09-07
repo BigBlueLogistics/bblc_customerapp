@@ -1,4 +1,4 @@
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 
 export type TWaveChart = {
   data: {
@@ -6,6 +6,6 @@ export type TWaveChart = {
     outboundPerWeek: { [key: string]: { weight: number } } | null;
     coverageDate: string;
   };
-  status: IStatus;
+  status: TStatus;
   message: string;
 };

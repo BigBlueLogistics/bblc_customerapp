@@ -6,9 +6,9 @@ import {
   Cancel as CancelIcon,
   RemoveRedEye as EyeIcon,
 } from "@mui/icons-material";
-import { ITableCellProps } from "types/reactTable";
+import { TTableCellProps } from "types/reactTable";
 
-function CellAction(props: ITableCellProps) {
+function CellAction(props: TTableCellProps) {
   const {
     cell: {
       column: {

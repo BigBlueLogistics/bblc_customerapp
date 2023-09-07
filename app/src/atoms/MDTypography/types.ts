@@ -36,7 +36,7 @@ export type IMDTypography =
   | (ITypography & Omit<TypographyProps, "fontWeight">)
   | { [key: string]: any };
 
-export type IOwnerState = {
+export type TOwnerState = {
   ownerState?: Pick<
     ITypography,
     "color" | "fontWeight" | "textTransform" | "verticalAlign" | "textGradient" | "opacity"

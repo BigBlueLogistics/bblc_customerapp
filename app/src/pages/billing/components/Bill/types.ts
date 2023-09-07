@@ -1,4 +1,4 @@
-export type IBill = {
+export type TBill = {
   name: string;
   company: string;
   email: string;

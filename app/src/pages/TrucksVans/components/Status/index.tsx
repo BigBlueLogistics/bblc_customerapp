@@ -5,7 +5,7 @@ import MDTypography from "atoms/MDTypography";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
 import ItemStatus from "../ItemStatus";
-import { IStatus } from "./types";
+import { TStatus } from "./types";
 
 function Status({
   inputSearchRef,
@@ -14,7 +14,7 @@ function Status({
   onOpen,
   onChangeSearch,
   onOpenSearch,
-}: IStatus) {
+}: TStatus) {
   const renderSearch = () => {
     if (data?.length) {
       return (

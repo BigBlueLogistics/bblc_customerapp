@@ -1,4 +1,4 @@
-import { IStatus } from "types/status";
+import { TStatus } from "types/status";
 
 export type TStatistics = {
   data: {
@@ -7,6 +7,6 @@ export type TStatistics = {
     transactionCount: number;
     activeSku: number;
   };
-  status: IStatus;
+  status: TStatus;
   message: string;
 };

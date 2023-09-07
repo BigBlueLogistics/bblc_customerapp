@@ -1,6 +1,6 @@
 import { TruckVansScheduleTodayEntity } from "entities/trucksVans";
 
-export type IItemSchedule = {
+export type TItemSchedule = {
   data: TruckVansScheduleTodayEntity;
   noGutter?: boolean;
 };

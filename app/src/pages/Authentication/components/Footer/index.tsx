@@ -3,9 +3,9 @@ import Link from "@mui/material/Link";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import typography from "assets/theme/base/typography";
-import { IFooter } from "./types";
+import { TFooter } from "./types";
 
-function Footer({ light }: IFooter) {
+function Footer({ light }: TFooter) {
   const { size } = typography;
 
   return (
