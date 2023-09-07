@@ -21,9 +21,8 @@ import excel from "assets/images/icons/excel.png";
 import miscData, { ITableHeadersKey, IGroupByKey } from "pages/Reports/data";
 import { reportServices, inventoryServices } from "services";
 import { AxiosError } from "axios";
-import { TStatus } from "types/status";
 import selector from "./selector";
-import { INotifyDownload, TGroupBy } from "./types";
+import { INotifyDownload, TGroupBy, TTableReports } from "./types";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import { TMenuAction } from "./components/MenuAction/types";
@@ -31,15 +30,13 @@ import { TMenuAction } from "./components/MenuAction/types";
 function Reports() {
   const dispatch = useAppDispatch();
   const { customerCode } = selector();
-  const { tableHeaders, typeReportsData, groupByData } = miscData();
-  const initialStateNotification: INotifyDownload = {
-    key: 0,
-    autoHideDuration: null,
-    open: false,
-    message: "",
-    title: "",
-    color: "primary",
-  };
+  const {
+    tableHeaders,
+    typeReportsData,
+    groupByData,
+    initialStateNotification,
+    initialTableReports,
+  } = miscData();
   const [showNotifyDownload, setShowNotifyDownload] =
     useState<INotifyDownload>(initialStateNotification);
   const [selectedReport, setSelectedReport] = useState<ITableHeadersKey>("wh-snapshot");
@@ -47,12 +44,11 @@ function Reports() {
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [, setDateRange] = useState(null);
   const [warehouseList, setWarehouseList] = useState([]);
-  const [rowsReport, setRowsReport] = useState([]);
   const [groupByKey, setGroupByKey] = useState<IGroupByKey>("stock");
   const [action, setAction] = useState(null);
   const [toggleFilter, setToggleFilter] = useState(true);
 
-  const [tableStatus, setTableStatus] = useState<TStatus>("idle");
+  const [tableReports, setTableReports] = useState<TTableReports>(initialTableReports);
   const [error, setError] = useState<AxiosError | null>(null);
 
   const {
@@ -102,7 +98,7 @@ function Reports() {
   };
 
   const fetchReports = async () => {
-    setTableStatus("loading");
+    setTableReports((prev) => ({ ...prev, status: "loading" }));
 
     try {
       const tableBody = {
@@ -113,11 +109,13 @@ function Reports() {
       };
 
       const { data: rows } = await reportServices.getReports({ params: tableBody });
-      setRowsReport(rows.data);
-      setTableStatus("succeeded");
+      setTableReports({
+        status: "succeeded",
+        data: rows.data,
+        message: rows.data.message,
+      });
     } catch (err) {
-      setError(err);
-      setTableStatus("failed");
+      setTableReports({ status: "failed", message: err.message, data: [] });
     }
   };
 
@@ -163,7 +161,7 @@ function Reports() {
     setSelectedReport("wh-snapshot");
     setSelectedWarehouse("");
     setSelectedGroupBy("");
-    setRowsReport([]);
+    setTableReports(initialTableReports);
   };
 
   useEffect(() => {
@@ -245,7 +243,9 @@ function Reports() {
     <DashboardLayout>
       <DashboardNavbar />
 
-      {tableStatus === "failed" && <MDTypography variant="body2">{error.message}</MDTypography>}
+      {tableReports.status === "failed" && (
+        <MDTypography variant="body2">{tableReports.message}</MDTypography>
+      )}
 
       <MDSnackbar
         key={showNotifyDownload.key}
@@ -355,6 +355,7 @@ function Reports() {
                     </MDBox>
 
                     <MDButton
+                      disabled={tableReports.status === "loading"}
                       sx={{ margin: "8px" }}
                       size="small"
                       variant="gradient"
@@ -364,6 +365,7 @@ function Reports() {
                       Filter
                     </MDButton>
                     <MDButton
+                      disabled={tableReports.status === "loading"}
                       sx={{ margin: "8px" }}
                       size="small"
                       variant="gradient"
@@ -377,10 +379,10 @@ function Reports() {
                 <DataTable
                   table={{
                     columns: tableHeaders[selectedReport](selectedGroupBy),
-                    rows: rowsReport,
+                    rows: tableReports.data,
                   }}
                   isSorted={false}
-                  isLoading={tableStatus === "loading"}
+                  isLoading={tableReports.status === "loading"}
                   entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}
                   showTotalEntries
                   noEndBorder

@@ -1,4 +1,11 @@
 import { LooseType } from "types/utility";
+import { TStatus } from "types/status";
+
+export type TTableReports = {
+  status: TStatus;
+  data: Record<string, any>[];
+  message: string;
+};
 
 export type INotifyDownload = {
   key: string | number;

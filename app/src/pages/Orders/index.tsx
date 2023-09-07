@@ -415,6 +415,7 @@ function Orders() {
                     </MDBox>
 
                     <MDButton
+                      disabled={tableOrders.status === "loading"}
                       sx={{ margin: "8px" }}
                       size="small"
                       variant="gradient"
@@ -424,6 +425,7 @@ function Orders() {
                       Filter
                     </MDButton>
                     <MDButton
+                      disabled={tableOrders.status === "loading"}
                       sx={{ margin: "8px" }}
                       size="small"
                       variant="gradient"

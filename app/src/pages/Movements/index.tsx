@@ -446,6 +446,7 @@ function Movements() {
                     </MDBox>
 
                     <MDButton
+                      disabled={tableOrders.status === "loading"}
                       sx={{ margin: "8px" }}
                       size="small"
                       variant="gradient"
@@ -455,6 +456,7 @@ function Movements() {
                       Filter
                     </MDButton>
                     <MDButton
+                      disabled={tableOrders.status === "loading"}
                       sx={{ margin: "8px" }}
                       size="small"
                       variant="gradient"

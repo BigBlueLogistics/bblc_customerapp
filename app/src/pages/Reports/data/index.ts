@@ -1,5 +1,5 @@
 import { formatDecimal } from "utils";
-import { TGroupBy } from "../types";
+import { INotifyDownload, TGroupBy, TTableReports } from "../types";
 
 export default function miscData() {
   const commonHeaders = [
@@ -192,6 +192,21 @@ export default function miscData() {
     ],
   };
 
+  const initialStateNotification: INotifyDownload = {
+    key: 0,
+    autoHideDuration: null,
+    open: false,
+    message: "",
+    title: "",
+    color: "primary",
+  };
+
+  const initialTableReports: TTableReports = {
+    message: "",
+    data: [],
+    status: "idle",
+  };
+
   return {
     tableHeaders: {
       "wh-snapshot": whSnapshot,
@@ -200,6 +215,8 @@ export default function miscData() {
     },
     typeReportsData,
     groupByData,
+    initialStateNotification,
+    initialTableReports,
   };
 }
 
