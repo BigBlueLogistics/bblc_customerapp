@@ -12,7 +12,6 @@ function WaveChart() {
     data: {
       transactions: null,
       transactionsDates: null,
-      coverageDate: null,
     },
     status: "idle",
     message: "",

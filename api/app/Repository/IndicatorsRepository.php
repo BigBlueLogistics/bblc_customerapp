@@ -109,7 +109,6 @@ class IndicatorsRepository implements IIndicatorsRepository
 
         return [
           'transactions' => [$inboundDiffFromOutbound, $outboundDiffFromInbound],
-          'coverageDate' => $fromDate->format('M. d')." - ". $toDate->format('M. d'),
           'transactionsDates' => $trnDates
         ];
     }

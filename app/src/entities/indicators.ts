@@ -10,7 +10,6 @@ export type IndicatorsStatisticsEntity = {
 export type IndicatorsWtPalletsEntity = {
   transactions: [number[], number[]];
   transactionsDates: string[];
-  coverageDate: string;
 };
 
 export type ResponseIndicatorsStatisticsEntity = TResponse<IndicatorsStatisticsEntity>;
