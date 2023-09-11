@@ -1,12 +1,3 @@
-import { TStatus } from "types/status";
+import { ResponseIndicatorsStatisticsEntity } from "entities/indicators";
 
-export type TStatistics = {
-  data: {
-    inboundSum: number;
-    outboundSum: number;
-    transactionCount: number;
-    activeSku: number;
-  };
-  status: TStatus;
-  message: string;
-};
+export type TStatistics = ResponseIndicatorsStatisticsEntity;

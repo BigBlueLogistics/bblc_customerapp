@@ -1,26 +1,26 @@
 import { useEffect, useState } from "react";
 import MDBox from "atoms/MDBox";
 import { indicatorServices } from "services";
-import Transaction from "./Transactions";
+import { ResponseIndicatorsWtPalletsEntity } from "entities/indicators";
+// import Transaction from "./Transactions";
 import WtandPallets from "./WeightAndPallets";
 import selector from "../../selector";
-import { TWaveChart } from "./types";
 
 function WaveChart() {
   const { customerCode } = selector();
-  const initialChart: TWaveChart = {
+  const initialInOutbound: ResponseIndicatorsWtPalletsEntity = {
     data: {
-      inboundPerWeek: null,
-      outboundPerWeek: null,
+      transactions: null,
+      transactionsDates: null,
       coverageDate: null,
     },
     status: "idle",
     message: "",
   };
-  const [chart, setChart] = useState<TWaveChart>(initialChart);
+  const [inOutBoundChart, setInOutBoundChart] = useState(initialInOutbound);
 
   const fetchInOutbound = async (customerCd: string) => {
-    setChart((prev) => ({ ...prev, status: "loading" }));
+    setInOutBoundChart((prev) => ({ ...prev, status: "loading" }));
     try {
       const { data: resp } = await indicatorServices.getInOutbound({
         params: {
@@ -28,9 +28,14 @@ function WaveChart() {
         },
       });
 
-      setChart((prev) => ({ ...prev, status: "succeeded", data: resp.data }));
+      setInOutBoundChart((prev) => ({ ...prev, status: "succeeded", data: resp.data }));
     } catch (err) {
-      setChart((prev) => ({ ...prev, status: "failed", data: null, message: err.message }));
+      setInOutBoundChart((prev) => ({
+        ...prev,
+        status: "failed",
+        data: null,
+        message: err.message,
+      }));
     }
   };
 
@@ -38,15 +43,13 @@ function WaveChart() {
     fetchInOutbound(customerCode);
   }, [customerCode]);
 
-  const { inboundPerWeek, outboundPerWeek, coverageDate } = chart.data || {};
-
   return (
     <>
+      {/* <MDBox mt={4.5}>
+        <Transaction data={outboundPerWeek} status={inOutBoundChart.status} coverageDate={coverageDate} />
+      </MDBox> */}
       <MDBox mt={4.5}>
-        <Transaction data={inboundPerWeek} status={chart.status} coverageDate={coverageDate} />
-      </MDBox>
-      <MDBox mt={4.5}>
-        <WtandPallets data={outboundPerWeek} status={chart.status} coverageDate={coverageDate} />
+        <WtandPallets data={inOutBoundChart} />
       </MDBox>
     </>
   );

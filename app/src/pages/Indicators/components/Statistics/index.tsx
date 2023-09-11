@@ -55,7 +55,6 @@ function Statistics() {
       <Grid item xs={12} md={6} lg={3}>
         <MDBox mb={1.5}>
           <ComplexStatisticsCard
-            color="dark"
             icon="weekend"
             title="Inbound Weight"
             count={inboundSum}
@@ -70,6 +69,7 @@ function Statistics() {
       <Grid item xs={12} md={6} lg={3}>
         <MDBox mb={1.5}>
           <ComplexStatisticsCard
+            color="warning"
             icon="leaderboard"
             title="Outbound Weight"
             count={outboundSum}

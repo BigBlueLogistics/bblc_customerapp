@@ -1,25 +1,41 @@
 import { Grid } from "@mui/material";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
-import ReportsLineChart from "organisms/Charts/LineCharts/ReportsLineChart";
-import { TStatus } from "types/status";
-import { TWaveChart } from "../types";
+import StackedBarChart from "organisms/Charts/BarCharts/StackedBarChart";
+import { TWtandPallets } from "./types";
 
-function WtandPallets({
-  data,
-  status,
-  coverageDate,
-}: {
-  data: TWaveChart["data"]["outboundPerWeek"];
-  status: TStatus;
-  coverageDate: string;
-}) {
-  const labels = data ? Object.keys(data) : [];
-  const dataSets = data ? Object.values(data).flatMap((item) => item.weight) : [];
+function WtandPallets({ data }: TWtandPallets) {
+  const { data: transData, status } = data;
+  const { transactions, transactionsDates, coverageDate } = transData;
+
+  const labels = transactionsDates || null;
+  const coverage = coverageDate || null;
+
+  const dataSets = () => {
+    if (transactions) {
+      return transactions.map((item, idx) => {
+        if (idx === 0) {
+          return {
+            label: "Inbound",
+            data: item,
+            backgroundColor: "rgb(53, 162, 235)",
+          };
+        }
+
+        return {
+          label: "Outbound",
+          data: item,
+          backgroundColor: "rgb(255, 167, 38)",
+        };
+      });
+    }
+    return null;
+  };
+
   const description =
     status === "succeeded" ? (
       <MDTypography variant="button" fontWeight="light" color="text">
-        weekly of ({coverageDate})
+        {coverage}
       </MDTypography>
     ) : null;
 
@@ -27,17 +43,12 @@ function WtandPallets({
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <MDBox mb={3}>
-          <ReportsLineChart
-            color="success"
+          <StackedBarChart
             title="Inbound/Outbound by Weight and Pallets"
             description={description}
-            date="updated today"
             chart={{
               labels,
-              datasets: {
-                label: "Inbound/Outbound",
-                data: dataSets,
-              },
+              datasets: dataSets(),
             }}
             status={status}
           />

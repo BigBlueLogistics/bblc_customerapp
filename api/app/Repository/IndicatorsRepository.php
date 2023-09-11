@@ -33,13 +33,12 @@ class IndicatorsRepository implements IIndicatorsRepository
             ])
             ->getDataToArray();
 
-        $collectionTransPerWeek = collect($lips)
+        $collectionTrn = collect($lips)
           ->values()
           ->map(function($item){
 
-            // get the week number
-            $date = strtotime(trim($item['ERDAT']));
-            $week = idate('W', $date);
+            // get date
+            $date = $item['ERDAT'];
 
             //get type
             if(trim($item['BWART']) == '501'){
@@ -50,39 +49,68 @@ class IndicatorsRepository implements IIndicatorsRepository
             }
 
             return [
-              'week' => $week,
+              'date' => $date,
               'type' => $type,
               'weight' => $item['BRGEW']
             ];
-          })
-          ->groupBy('type');
+          });
+          
+          $trnGroupByDate = $collectionTrn->groupBy('type');
+          $trnDates = $collectionTrn->unique('date')->pluck('date')
+            ->sort()
+            ->map(function($item){
+                $formatDate = Carbon::parse($item)->format('M. d');
+              return $formatDate;
+            })
+            ->values();
 
-          // Add up Inbound by week 
-          if($collectionTransPerWeek->has('INBOUND')) {
-            $inboundArr = $collectionTransPerWeek->only(['INBOUND']);
+          // Add up Inbound by daily 
+          if($trnGroupByDate->has('INBOUND')) {
+            $inboundArr = $trnGroupByDate->only(['INBOUND']);
 
-            $totalInbound = $inboundArr['INBOUND']->groupBy('week')->map(function($item) {
-                return [
-                    'weight' => number_format($item->sum('weight'), 3, ".","")
-                ];               
-            });
+            $totalInbound = $inboundArr['INBOUND']
+                  ->groupBy('date')
+                  ->map(function($item) {
+                        return [
+                            'weight' => number_format($item->sum('weight'), 3, ".","")
+                        ];               
+                    });
           }
 
-            // Add up Outbound by week 
-            if($collectionTransPerWeek->has('OUTBOUND')) {
-              $outboundArr = $collectionTransPerWeek->only(['OUTBOUND']);
+            // Add up Outbound by daily 
+            if($trnGroupByDate->has('OUTBOUND')) {
+              $outboundArr = $trnGroupByDate->only(['OUTBOUND']);
               
-              $totalOutbound = $outboundArr['OUTBOUND']->groupBy('week')->map(function($item) {
-                  return [
-                      'weight' => number_format($item->sum('weight'), 3, ".","")
-                  ];                 
-              });
+              $totalOutbound = $outboundArr['OUTBOUND']
+                  ->groupBy('date')
+                  ->map(function($item) {
+                        return [
+                            'weight' => number_format($item->sum('weight'), 3, ".","")
+                        ];                 
+                    });
             }
 
+            // Check the difference by key DATE
+            // Inbound
+            $inboundDiffFromOutbound = $totalOutbound->diffKeys($totalInbound)->map(function($item){
+              return [
+                ...$item,
+                'weight' => 0
+              ];
+            })->union($totalInbound)->sortKeys()->pluck('weight');
+
+            // Outbound
+            $outboundDiffFromInbound = $totalInbound->diffKeys($totalOutbound)->map(function($item){
+              return [
+                ...$item,
+                'weight' => 0
+              ];
+            })->union($totalOutbound)->sortKeys()->pluck('weight');
+
         return [
-          'inboundPerWeek' => $totalInbound ?? null,
-          'outboundPerWeek' => $totalOutbound ?? null,
+          'transactions' => [$inboundDiffFromOutbound, $outboundDiffFromInbound],
           'coverageDate' => $fromDate->format('M. d')." - ". $toDate->format('M. d'),
+          'transactionsDates' => $trnDates
         ];
     }
 
