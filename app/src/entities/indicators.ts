@@ -8,8 +8,9 @@ export type IndicatorsStatisticsEntity = {
 };
 
 export type IndicatorsWtPalletsEntity = {
-  transactions: [number[], number[]];
   transactionsDates: string[];
+  byWeight: [number[], number[]];
+  byPalletCount: [number[], number[]];
 };
 
 export type ResponseIndicatorsStatisticsEntity = TResponse<IndicatorsStatisticsEntity>;

@@ -30,29 +30,31 @@ class IndicatorsRepository implements IIndicatorsRepository
                 ['FIELDNAME' => 'ERDAT'],
                 ['FIELDNAME' => 'BWART'],
                 ['FIELDNAME' => 'BRGEW'],
+                ['FIELDNAME' => 'VBELN'],
             ])
             ->getDataToArray();
 
-        $collectionTrn = collect($lips)
-          ->values()
-          ->map(function($item){
+          $collectionTrn = collect($lips)
+            ->values()
+            ->map(function($item){
 
-            // get date
-            $date = $item['ERDAT'];
+              // get date
+              $date = $item['ERDAT'];
 
-            //get type
-            if(trim($item['BWART']) == '501'){
-              $type="INBOUND";
-            }
-            else{
-              $type="OUTBOUND";
-            }
+              //get type
+              if(trim($item['BWART']) == '501'){
+                $type="INBOUND";
+              }
+              else{
+                $type="OUTBOUND";
+              }
 
-            return [
-              'date' => $date,
-              'type' => $type,
-              'weight' => $item['BRGEW']
-            ];
+              return [
+                'date' => $date,
+                'type' => $type,
+                'weight' => $item['BRGEW'],
+                'docNo' => $item['VBELN'],
+              ];
           });
           
           $trnGroupByDate = $collectionTrn->groupBy('type');
@@ -64,52 +66,65 @@ class IndicatorsRepository implements IIndicatorsRepository
             })
             ->values();
 
-          // Add up Inbound by daily 
+
           if($trnGroupByDate->has('INBOUND')) {
             $inboundArr = $trnGroupByDate->only(['INBOUND']);
 
-            $totalInbound = $inboundArr['INBOUND']
+            // Add up Inbound weight by daily 
+            $totalWtInbound = $inboundArr['INBOUND']
                   ->groupBy('date')
                   ->map(function($item) {
                         return [
-                            'weight' => number_format($item->sum('weight'), 3, ".","")
+                            'weight' => number_format($item->sum('weight'), 3, ".",""),
+                            'palletCount' => $item->count()
                         ];               
-                    });
+                  });
           }
 
-            // Add up Outbound by daily 
-            if($trnGroupByDate->has('OUTBOUND')) {
-              $outboundArr = $trnGroupByDate->only(['OUTBOUND']);
-              
-              $totalOutbound = $outboundArr['OUTBOUND']
-                  ->groupBy('date')
-                  ->map(function($item) {
-                        return [
-                            'weight' => number_format($item->sum('weight'), 3, ".","")
-                        ];                 
-                    });
-            }
+          if($trnGroupByDate->has('OUTBOUND')) {
+            $outboundArr = $trnGroupByDate->only(['OUTBOUND']);
+            
+            // Add up Outbound weight by daily
+            $totalWtOutbound = $outboundArr['OUTBOUND']
+                ->groupBy('date')
+                ->map(function($item) {
+                      return [
+                          'weight' => number_format($item->sum('weight'), 3, ".",""),
+                          'palletCount' => $item->count()
+                      ];                 
+                });
 
-            // Check the difference by key DATE
-            // Inbound
-            $inboundDiffFromOutbound = $totalOutbound->diffKeys($totalInbound)->map(function($item){
-              return [
-                ...$item,
-                'weight' => 0
-              ];
-            })->union($totalInbound)->sortKeys()->pluck('weight');
+          }
 
-            // Outbound
-            $outboundDiffFromInbound = $totalInbound->diffKeys($totalOutbound)->map(function($item){
-              return [
-                ...$item,
-                'weight' => 0
-              ];
-            })->union($totalOutbound)->sortKeys()->pluck('weight');
+          // Check the difference by key DATE
+          // Inbound
+          $inboundDiffFromOutbound = $totalWtOutbound->diffKeys($totalWtInbound)->map(function($item){
+            return [
+              ...$item,
+              'weight' => 0,
+              'palletCount' => 0,
+            ];
+          })->union($totalWtInbound)->sortKeys();
+
+          $inboundWt = $inboundDiffFromOutbound->pluck('weight');
+          $inboundPalletCount = $inboundDiffFromOutbound->pluck('palletCount');
+
+          // Outbound
+          $outboundDiffFromInbound = $totalWtInbound->diffKeys($totalWtOutbound)->map(function($item){
+            return [
+              ...$item,
+              'weight' => 0,
+              'palletCount' => 0,
+            ];
+          })->union($totalWtOutbound)->sortKeys();
+
+          $outboundWt = $outboundDiffFromInbound->pluck('weight');
+          $outboundPalletCount = $outboundDiffFromInbound->pluck('palletCount');
 
         return [
-          'transactions' => [$inboundDiffFromOutbound, $outboundDiffFromInbound],
-          'transactionsDates' => $trnDates
+          'transactionsDates' => $trnDates,
+          'byWeight' => [$inboundWt, $outboundWt],
+          'byPalletCount' => [$inboundPalletCount, $outboundPalletCount]
         ];
     }
 

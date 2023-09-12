@@ -2,17 +2,17 @@ import { Grid } from "@mui/material";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import StackedBarChart from "organisms/Charts/BarCharts/StackedBarChart";
-import { TWtandPallets } from "./types";
+import { TByWeight } from "./types";
 
-function WtandPallets({ data }: TWtandPallets) {
+function ByWeight({ data }: TByWeight) {
   const { data: transData, status } = data;
-  const { transactions, transactionsDates } = transData;
+  const { byWeight, transactionsDates } = transData;
 
   const labels = transactionsDates || null;
 
   const dataSets = () => {
-    if (transactions) {
-      return transactions.map((item, idx) => {
+    if (byWeight) {
+      return byWeight.map((item, idx) => {
         if (idx === 0) {
           return {
             label: "Inbound",
@@ -54,4 +54,4 @@ function WtandPallets({ data }: TWtandPallets) {
   );
 }
 
-export default WtandPallets;
+export default ByWeight;
