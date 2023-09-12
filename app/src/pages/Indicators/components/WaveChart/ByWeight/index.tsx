@@ -39,7 +39,7 @@ function ByWeight({ data }: TByWeight) {
             title="By Weight"
             description={
               <MDTypography variant="button" fontWeight="light" color="text">
-                Inbound/Outbound by Transactions and Pallets
+                Inbound/Outbound by Accumulated Weight per Day
               </MDTypography>
             }
             chart={{
