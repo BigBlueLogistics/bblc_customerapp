@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TrucksVans\ScheduleTodayRequest;
-use Illuminate\Http\Request;
 use App\Http\Requests\TrucksVans\StatusRequest;
-use App\Traits\HttpResponse;
 use App\Interfaces\ITrucksVansRepository;
+use App\Traits\HttpResponse;
+use Illuminate\Http\Request;
 
 class TrucksVansController extends Controller
 {
@@ -24,14 +24,12 @@ class TrucksVansController extends Controller
         try {
             $customerCode = $request->user()->company()->value('customer_code');
 
-
             $status = $this->trucks->getTrucksVansStatus($customerCode);
 
             return $this->sendResponse($status, 'Trucks and vans status');
         } catch (Exception $e) {
             return $this->sendError($e);
         }
-
 
     }
 
@@ -47,7 +45,7 @@ class TrucksVansController extends Controller
             $details = $this->trucks->getTrucksVansStatusDetails($searchVal, $customerCode, $action);
 
             return $this->sendResponse($details, 'Trucks and vans status details');
-            
+
         } catch (Exception $e) {
             return $this->sendError($e);
         }

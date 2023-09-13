@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Interfaces\IIndicatorsRepository;
 use App\Traits\HttpResponse;
 use Exception;
+use Illuminate\Http\Request;
 
 class IndicatorsController extends Controller
 {
@@ -23,7 +23,7 @@ class IndicatorsController extends Controller
         try {
             $customerCode = $request->input('customer_code');
             $res = $this->indicator->getInboundOutbound($customerCode);
-    
+
             return $this->sendResponse($res);
         } catch (Exception $e) {
             return $this->sendError($e);

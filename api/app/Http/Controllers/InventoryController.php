@@ -30,7 +30,7 @@ class InventoryController extends Controller
             $warehouse = $request->input('warehouse');
             $format = $request->input('format');
 
-            if(strtolower($warehouse) != 'all'){
+            if (strtolower($warehouse) != 'all') {
                 $warehouse = str_replace('BB', 'WH', $warehouse);
             }
 

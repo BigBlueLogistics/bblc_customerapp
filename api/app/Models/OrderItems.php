@@ -14,13 +14,11 @@ class OrderItems extends Model
     protected $fillable = [
         'transid', 'matnr', 'quan',
         'meinh', 'charg', 'vfdat',
-        'lgnum'
+        'lgnum',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
-
-
 }

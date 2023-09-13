@@ -53,10 +53,9 @@ class AgingExport implements FromView, ShouldAutoSize, WithEvents, WithDrawings
 
         $caption = "Stock aging - by {$this->groupBy}";
 
-        if($this->groupBy === "expiration"){
+        if ($this->groupBy === 'expiration') {
             $template = 'exports.reports.aging_expiration';
-        }
-        else{
+        } else {
             $template = 'exports.reports.aging_receiving';
         }
 

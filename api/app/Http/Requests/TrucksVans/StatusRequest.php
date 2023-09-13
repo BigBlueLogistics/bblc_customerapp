@@ -24,7 +24,7 @@ class StatusRequest extends FormRequest
     {
         return [
             'vanMonitorNo' => ['required', 'string'],
-            'action' => ['required', Rule::in(['search', 'view']) ],
+            'action' => ['required', Rule::in(['search', 'view'])],
         ];
     }
 }

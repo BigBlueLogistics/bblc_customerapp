@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\OrderItems;
 
 class OrderHeader extends Model
 {
@@ -19,12 +18,12 @@ class OrderHeader extends Model
     protected $primaryKey = 'transid';
 
     protected $keyType = 'string';
-    
+
     protected $fillable = [
         'ponum', 'header', 'lgnum',
         'miles', 'erdat', 'ertim',
         'apstat', 'transid', 'ernam',
-        'pudat', 'kunnr', 'access'
+        'pudat', 'kunnr', 'access',
     ];
 
     protected $casts = [
@@ -35,11 +34,11 @@ class OrderHeader extends Model
     {
         parent::boot();
 
-        // Auto fill the transaction ID with 
+        // Auto fill the transaction ID with
         // format of: <timestamp>-<user ID>
         if (auth()->check()) {
             self::creating(function ($model) {
-                $model->transid = auth()->id(). '-' .Carbon::now()->timestamp;
+                $model->transid = auth()->id().'-'.Carbon::now()->timestamp;
             });
         }
     }
@@ -47,15 +46,21 @@ class OrderHeader extends Model
     protected function lgnum(): Attribute
     {
         return Attribute::make(
-            set: function($value) { return str_replace('BB', 'WH', $value); } ,
+            set: function ($value) {
+                return str_replace('BB', 'WH', $value);
+            },
         );
     }
 
     protected function miles(): Attribute
     {
         return Attribute::make(
-            set: function($value) { return $value == "true" ? 1 : 0; } ,
-            get: function($value) { return $value == 1 ? true: false; } 
+            set: function ($value) {
+                return $value == 'true' ? 1 : 0;
+            },
+            get: function ($value) {
+                return $value == 1 ? true : false;
+            }
         );
     }
 
@@ -66,10 +71,10 @@ class OrderHeader extends Model
         return $collection->map(function ($field) {
             return [
                 'uuid' => $field['uuid'],
-                'transid' => $this->transid, 
-                'lgnum' => $this->lgnum, 
+                'transid' => $this->transid,
+                'lgnum' => $this->lgnum,
                 'matnr' => $field['material'],
-                'quan'  => $field['qty'],
+                'quan' => $field['qty'],
                 'meinh' => $field['units'],
                 'charg' => $field['batch'],
                 'vfdat' => $field['expiry'],
@@ -78,21 +83,20 @@ class OrderHeader extends Model
         })->all();
     }
 
-
     public function toFormattedOrderDetails()
     {
         $warehouseNo = str_replace('WH', 'BB', $this->lgnum);
 
         return [
-            'id' => $this->id, 
-            'transid' => $this->transid, 
-            'ref_number' => $this->ponum, 
-            'source_wh' => $warehouseNo, 
+            'id' => $this->id,
+            'transid' => $this->transid,
+            'ref_number' => $this->ponum,
+            'source_wh' => $warehouseNo,
             'allow_notify' => $this->miles,
-            'pickup_date' => $this->pudat, 
+            'pickup_date' => $this->pudat,
             'instruction' => $this->header,
-            'status' =>  $this->status->only(['id','name']),
-            'requests' => $this->mapFieldOrderItems()
+            'status' => $this->status->only(['id', 'name']),
+            'requests' => $this->mapFieldOrderItems(),
         ];
     }
 
@@ -103,7 +107,7 @@ class OrderHeader extends Model
 
     public function mapFieldOrderItems()
     {
-        return $this->hasManyOrderItems->map(function($item){
+        return $this->hasManyOrderItems->map(function ($item) {
             $expiry = Carbon::parse($item['vfdat'])->format('m-d-Y');
 
             return [
@@ -113,7 +117,7 @@ class OrderHeader extends Model
                 'units' => $item['meinh'],
                 'batch' => $item['charg'],
                 'expiry' => $expiry,
-                'created_at' => $item['created_at']
+                'created_at' => $item['created_at'],
             ];
         });
     }

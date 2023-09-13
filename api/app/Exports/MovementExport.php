@@ -2,16 +2,16 @@
 
 namespace App\Exports;
 
-use App\Interfaces\IMovementRepository;
 use App\Interfaces\IMemberRepository;
+use App\Interfaces\IMovementRepository;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
@@ -55,15 +55,13 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
         $formatFromDate = Carbon::parse($fromDate)->format('Ymd');
         $formatToDate = Carbon::parse($toDate)->format('Ymd');
 
-        if($this->movementType === "outbound"){
-            $result = $this->movementExport->outboundMov($this->materialCode, $formatFromDate, $formatToDate, $this->warehouseNo, $this->customerCode, "excel");
-        }
-        else if($this->movementType === "inbound"){
+        if ($this->movementType === 'outbound') {
+            $result = $this->movementExport->outboundMov($this->materialCode, $formatFromDate, $formatToDate, $this->warehouseNo, $this->customerCode, 'excel');
+        } elseif ($this->movementType === 'inbound') {
             $result = $this->movementExport->inboundMov($this->materialCode, $formatFromDate, $formatToDate, $this->warehouseNo, $this->customerCode);
+        } else {
+            $result = $this->movementExport->mergeInOutbound($this->materialCode, $formatFromDate, $formatToDate, $this->warehouseNo, $this->customerCode, 'excel');
         }
-        else{
-            $result = $this->movementExport->mergeInOutbound($this->materialCode, $formatFromDate, $formatToDate, $this->warehouseNo, $this->customerCode, "excel");
-        }  
 
         $customerInfo = $this->member->getMemberInfo($this->customerCode);
 
@@ -111,7 +109,7 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
 
         // Tables
 
-        if($highestDataRow > 10){
+        if ($highestDataRow > 10) {
             // Document no
             $activeSheet->getStyle("D10:D{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             // Reference
@@ -119,7 +117,6 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
             // Batch
             $activeSheet->getStyle("G10:G{$highestDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
         }
-        
 
         // Format numberic if empty default value is dash (-).
         // Quantity
@@ -131,7 +128,7 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
     public function columnWidths(): array
     {
         return [
-            'E' => 12,  // Type        
+            'E' => 12,  // Type
         ];
     }
 }

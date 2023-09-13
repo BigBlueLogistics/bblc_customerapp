@@ -2,22 +2,22 @@
 
 namespace App\Providers;
 
+use App\Interfaces\IIndicatorsRepository;
 use App\Interfaces\IInventoryRepository;
 use App\Interfaces\IMemberRepository;
-use App\Interfaces\IReportsRepository;
-use App\Interfaces\IWarehouseRepository;
-use App\Interfaces\IOrderRepository;
-use App\Interfaces\IIndicatorsRepository;
 use App\Interfaces\IMovementRepository;
+use App\Interfaces\IOrderRepository;
+use App\Interfaces\IReportsRepository;
 use App\Interfaces\ITrucksVansRepository;
+use App\Interfaces\IWarehouseRepository;
+use App\Repository\IndicatorsRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\MemberRepository;
-use App\Repository\ReportsRepository;
-use App\Repository\WarehouseRepository;
-use App\Repository\OrderRepository;
-use App\Repository\IndicatorsRepository;
 use App\Repository\MovementRepository;
+use App\Repository\OrderRepository;
+use App\Repository\ReportsRepository;
 use App\Repository\TrucksVansRepository;
+use App\Repository\WarehouseRepository;
 use App\Support\SapRfc;
 use App\Support\SqlServerOptConnector;
 use Illuminate\Support\ServiceProvider;

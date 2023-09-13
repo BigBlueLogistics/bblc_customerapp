@@ -24,9 +24,9 @@ class ListRequest extends FormRequest
     public function rules()
     {
         return [
-            'status' => ['nullable','integer'],
-            'created_at' => ['nullable','date'],
-            'last_modified' => ['nullable','date'],
+            'status' => ['nullable', 'integer'],
+            'created_at' => ['nullable', 'date'],
+            'last_modified' => ['nullable', 'date'],
         ];
     }
 }

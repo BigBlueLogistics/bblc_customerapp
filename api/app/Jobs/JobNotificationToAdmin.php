@@ -2,14 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Notifications\NotificationToAdmin;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\NotificationToAdmin;
 
 class JobNotificationToAdmin implements ShouldQueue
 {
@@ -40,7 +39,7 @@ class JobNotificationToAdmin implements ShouldQueue
      */
     public function handle()
     {
-         Notification::route('mail', $this->recipients)
+        Notification::route('mail', $this->recipients)
             ->notify(new NotificationToAdmin($this->recipients, $this->newRegisteredEmail, $this->url));
     }
 }

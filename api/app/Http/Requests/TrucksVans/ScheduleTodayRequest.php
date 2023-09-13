@@ -3,7 +3,6 @@
 namespace App\Http\Requests\TrucksVans;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class ScheduleTodayRequest extends FormRequest
 {
@@ -23,7 +22,7 @@ class ScheduleTodayRequest extends FormRequest
     public function rules(): array
     {
         return [
-           
+
         ];
     }
 }

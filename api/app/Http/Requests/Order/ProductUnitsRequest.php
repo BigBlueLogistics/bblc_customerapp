@@ -24,7 +24,7 @@ class ProductUnitsRequest extends FormRequest
     public function rules()
     {
         return [
-            'materialCode' => ['required', 'string']
+            'materialCode' => ['required', 'string'],
         ];
     }
 }
