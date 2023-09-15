@@ -6,11 +6,11 @@ use App\Http\Requests\ChangePassRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\ResetPassRequest;
+use App\Jobs\JobNotificationToAdmin;
 use App\Models\CompanyRepresent;
 use App\Models\Role;
 use App\Models\User;
 use App\Traits\HttpResponse;
-use App\Jobs\JobNotificationToAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -79,17 +79,17 @@ class AuthController extends Controller
                 ]);
 
                 // Send an email notification to Admin about new registered user
-                $adminEmails = User::where('role_id','=', 1)->select('email')->get();
-                if(count($adminEmails)){
+                $adminEmails = User::where('role_id', '=', 1)->select('email')->get();
+                if (count($adminEmails)) {
                     $adminEmails = collect($adminEmails)->pluck('email');
-        
+
                     $adminEmails->all();
                 }
                 $newRegisteredEmail = $email;
-    
+
                 $uiUrl = env('APP_URL');
                 $url = "{$uiUrl}/members";
-    
+
                 JobNotificationToAdmin::dispatch($adminEmails, $newRegisteredEmail, $url);
 
                 return $this->sendResponse('', __('auth.register'));

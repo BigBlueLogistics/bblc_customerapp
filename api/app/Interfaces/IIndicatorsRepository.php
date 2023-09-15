@@ -2,9 +2,9 @@
 
 namespace App\Interfaces;
 
-interface IIndicatorsRepository 
+interface IIndicatorsRepository
 {
-
     public function getInboundOutbound($customerCode);
+
     public function getActiveSku($customerCode);
 }

@@ -13,7 +13,6 @@
 // 11. The `access` key is used to determine if route is set to public or protected.
 // 12. The `allowedRoles` key is used for permission to access the route.
 
-import Indicators from "pages/Indicators";
 // import Tables from "pages/tables";
 // import Billing from "pages/billing";
 // import RTL from "pages/rtl";
@@ -28,7 +27,9 @@ import Inventory from "pages/Inventory";
 import Movements from "pages/Movements";
 import Orders from "pages/Orders";
 import Reports from "pages/Reports";
+import Indicators from "pages/Indicators";
 import TrucksVans from "pages/TrucksVans";
+import Finance from "pages/Finance";
 import DefaultPage from "pages/DefaultPage";
 import NotFound from "pages/NotFound";
 
@@ -40,6 +41,8 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MoveDownIcon from "@mui/icons-material/MoveDown";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import WebIcon from "@mui/icons-material/Web";
+import LocalShipping from "@mui/icons-material/LocalShipping";
+import AccountBalance from "@mui/icons-material/AccountBalance";
 
 import RoutesType from "types/routes";
 
@@ -92,7 +95,7 @@ const routes: RoutesType = [
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
     component: <Profile />,
-    allowedRoles: ["sysadmin", "user"],
+    allowedRoles: ["sysadmin", "user", "finance"],
   },
   {
     route: "*",
@@ -105,7 +108,7 @@ const routes: RoutesType = [
     component: <DefaultPage />,
     access: "public",
     key: "default-page",
-    allowedRoles: ["sysadmin", "user"],
+    allowedRoles: ["sysadmin", "user", "finance"],
   },
   {
     type: "",
@@ -151,7 +154,7 @@ const routes: RoutesType = [
     component: <Inventory />,
     title: "Check",
     access: "protected",
-    allowedRoles: ["sysadmin", "user"],
+    allowedRoles: ["sysadmin", "user", "finance"],
   },
   {
     type: "collapse",
@@ -161,7 +164,7 @@ const routes: RoutesType = [
     route: "/movements",
     component: <Movements />,
     access: "protected",
-    allowedRoles: ["sysadmin", "user"],
+    allowedRoles: ["sysadmin", "user", "finance"],
   },
   {
     type: "collapse",
@@ -171,7 +174,7 @@ const routes: RoutesType = [
     route: "/reports",
     component: <Reports />,
     access: "protected",
-    allowedRoles: ["sysadmin", "user"],
+    allowedRoles: ["sysadmin", "user", "finance"],
   },
   {
     type: "collapse",
@@ -181,7 +184,7 @@ const routes: RoutesType = [
     route: "/orders",
     component: <Orders />,
     access: "protected",
-    allowedRoles: ["sysadmin", "user"],
+    allowedRoles: ["sysadmin", "user", "finance"],
   },
   {
     type: "collapse",
@@ -191,7 +194,7 @@ const routes: RoutesType = [
     route: "/indicators",
     component: <Indicators />,
     access: "protected",
-    allowedRoles: ["sysadmin", "user"],
+    allowedRoles: ["sysadmin", "user", "finance"],
   },
   {
     type: "collapse",
@@ -207,11 +210,21 @@ const routes: RoutesType = [
     type: "collapse",
     name: "Trucks & Vans",
     key: "trucks-vans",
-    icon: <AccountBoxIcon />,
+    icon: <LocalShipping />,
     route: "/trucks-vans",
     component: <TrucksVans />,
     access: "protected",
-    allowedRoles: ["sysadmin", "user"],
+    allowedRoles: ["sysadmin", "user", "finance"],
+  },
+  {
+    type: "collapse",
+    name: "Finance",
+    key: "finance",
+    icon: <AccountBalance />,
+    route: "/finance",
+    component: <Finance />,
+    access: "protected",
+    allowedRoles: ["finance"],
   },
   {
     type: "collapse",
@@ -220,7 +233,7 @@ const routes: RoutesType = [
     icon: <WebIcon />,
     href: "https://www.bigbluelogisticscorp.com",
     access: "protected",
-    allowedRoles: ["sysadmin", "user"],
+    allowedRoles: ["sysadmin", "user", "finance"],
   },
 ];
 

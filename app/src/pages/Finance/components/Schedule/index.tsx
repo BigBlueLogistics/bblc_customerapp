@@ -9,7 +9,7 @@ function Schedule({ data }: TSchedule) {
     <Card sx={{ height: "100%" }}>
       <MDBox pt={3} px={2} display="inline-flex" justifyContent="space-between">
         <MDTypography variant="h6" fontWeight="medium">
-          Schedule Today
+          Lorem ipsum
         </MDTypography>
       </MDBox>
       <MDBox pt={1} pb={2} px={2}>

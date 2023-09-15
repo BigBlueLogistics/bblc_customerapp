@@ -32,6 +32,14 @@ class MemberUpdateRequest extends FormRequest
             'company_name' => 'required', 'string',
             'is_verify' => Rule::in('true', 'false'),
             'is_active' => Rule::in('true', 'false'),
+            'role_id' => 'numeric'
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'role_id' => 'type',
         ];
     }
 }

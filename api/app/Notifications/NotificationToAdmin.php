@@ -11,9 +11,9 @@ class NotificationToAdmin extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $recipient; 
+    private $recipient;
 
-    private $newRegisteredEmail; 
+    private $newRegisteredEmail;
 
     private $url;
 
@@ -49,10 +49,10 @@ class NotificationToAdmin extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('New Registered Customer Notification')
-                    ->greeting("Hi, a new registered customer on portal site")
-                    ->action($this->newRegisteredEmail, $this->url)
-                    ->line("Please check this account for verification.");
+            ->subject('New Registered Customer Notification')
+            ->greeting('Hi, a new registered customer on portal site')
+            ->action($this->newRegisteredEmail, $this->url)
+            ->line('Please check this account for verification.');
 
     }
 

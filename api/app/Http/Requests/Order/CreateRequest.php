@@ -24,15 +24,15 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'source_wh' => ['required','string'],
-            'ref_number' => ['required','regex:/^[^\'%"]+$/i', 'max:12'],
-            'pickup_date' => ['nullable','date'],
-            'instruction' => ['nullable','regex:/^[^\'%"]+$/i'],
+            'source_wh' => ['required', 'string'],
+            'ref_number' => ['required', 'regex:/^[^\'%"]+$/i', 'max:12'],
+            'pickup_date' => ['nullable', 'date'],
+            'instruction' => ['nullable', 'regex:/^[^\'%"]+$/i'],
             'requests' => ['required', 'array'],
             'requests.*.uuid' => ['required', 'uuid'],
             'requests.*.material' => ['required', 'string'],
             'requests.*.qty' => ['required', 'numeric'],
-            'requestsDelete' => ['nullable','array']
+            'requestsDelete' => ['nullable', 'array'],
         ];
     }
 }

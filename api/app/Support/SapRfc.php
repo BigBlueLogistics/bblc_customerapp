@@ -147,7 +147,7 @@ class SapRfc
         // Combine array Fields as keys
         // and array Data as values
         $combinedArray = [];
-        foreach ($data as  $value) {
+        foreach ($data as $value) {
             if (count($fields) !== count($value)) {
                 $combinedArray[] = [];
             }

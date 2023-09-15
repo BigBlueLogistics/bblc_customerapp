@@ -4,7 +4,6 @@ import Card from "@mui/material/Card";
 
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
-import MDSnackbar from "atoms/MDSnackbar";
 import Icon from "@mui/material/Icon";
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
@@ -17,7 +16,6 @@ import { membersServices } from "services";
 import { AxiosError } from "axios";
 import { TStatus } from "types/status";
 import miscData from "./data";
-import { INotifyDownload } from "./types";
 import FormEdit from "./components/FormEdit";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
@@ -26,13 +24,6 @@ import { TMenuAction } from "./components/MenuAction/types";
 function Members() {
   const dispatch = useAppDispatch();
   const { tableHeaders } = miscData();
-  const [showNotifyDownload, setShowNotifyDownload] = useState<INotifyDownload>({
-    open: false,
-    message: "",
-    title: "",
-    color: "primary",
-  });
-
   const [rowsMembers, setRowsMembers] = useState([]);
   const [memberDetails, setMemberDetails] = useState([]);
   const [action, setAction] = useState(null);
@@ -46,14 +37,6 @@ function Members() {
 
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const openNotifyDownload = ({ message, title, color }: Omit<INotifyDownload, "open">) => {
-    setShowNotifyDownload({ open: true, message, title, color });
-  };
-  const closeNotifyDownload = () => {
-    setShowNotifyDownload({ open: false });
-  };
 
   const fetchMembers = async () => {
     setTableStatus("loading");
@@ -144,15 +127,6 @@ function Members() {
 
       {tableStatus === "failed" && <MDTypography variant="body2">{error.message}</MDTypography>}
 
-      <MDSnackbar
-        color={showNotifyDownload.color}
-        icon="info"
-        title={showNotifyDownload.title}
-        content={showNotifyDownload.message}
-        dateTime="now"
-        open={showNotifyDownload.open}
-        close={closeNotifyDownload}
-      />
       <FormEdit
         open={showEdit}
         onClose={onCloseEdit}

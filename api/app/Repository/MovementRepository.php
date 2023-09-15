@@ -2,11 +2,11 @@
 
 namespace App\Repository;
 
-use Illuminate\Support\Facades\DB;
-use App\Interfaces\IMovementRepository;
 use App\Facades\SapRfcFacade;
+use App\Interfaces\IMovementRepository;
 use App\Traits\StringEncode;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class MovementRepository implements IMovementRepository
 {
@@ -14,18 +14,16 @@ class MovementRepository implements IMovementRepository
 
     public function outboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode, $generateType)
     {
-        if(strtolower($warehouseNo) != 'all'){
+        if (strtolower($warehouseNo) != 'all') {
             $formatWarehouse = str_replace('BB', 'W', $warehouseNo);
-            $optLGNUM =  ['TEXT' => " AND LGNUM EQ '{$formatWarehouse}'"];         
-        }
-        else{
+            $optLGNUM = ['TEXT' => " AND LGNUM EQ '{$formatWarehouse}'"];
+        } else {
             $optLGNUM = [];
         }
 
-        if(strtolower($materialCode) != 'all'){
+        if (strtolower($materialCode) != 'all') {
             $optMATNR = ['TEXT' => " AND MATNR EQ '{$materialCode}'"];
-        }
-        else{
+        } else {
             $optMATNR = ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"];
         }
 
@@ -59,37 +57,34 @@ class MovementRepository implements IMovementRepository
             ])
             ->getDataToArray();
 
-            $outbound = collect($lips);
+        $outbound = collect($lips);
 
-            if($outbound->count()){
-               $outbound = $outbound->map(function($item){
-                    $date = Carbon::parse($item['ERDAT'])->format('m/d/Y');
-                    $expiration = Carbon::parse($item['VFDAT'])->format('m/d/Y');
+        if ($outbound->count()) {
+            $outbound = $outbound->map(function ($item) {
+                $date = Carbon::parse($item['ERDAT'])->format('m/d/Y');
+                $expiration = Carbon::parse($item['VFDAT'])->format('m/d/Y');
 
-                    return [
-                        'date' => $date,
-                        'materialCode' => $item['MATNR'],
-                        'documentNo' => $item['VBELN'],
-                        'movementType' => "OUTBOUND",
-                        'description' => $item['ARKTX'],
-                        'batch' => $item['CHARG'],
-                        'expiration' => $expiration,
-                        'quantity' => $item['LFIMG'],
-                        'unit' => $item['VRKME'],
-                        'weight' => $item['BRGEW'],
-                        'warehouse' =>  str_replace('W', 'WH', $item['LGNUM']),
-                        'documentNoRef' => $item['VGBEL']
-                    ];
-                });
-            }
+                return [
+                    'date' => $date,
+                    'materialCode' => $item['MATNR'],
+                    'documentNo' => $item['VBELN'],
+                    'movementType' => 'OUTBOUND',
+                    'description' => $item['ARKTX'],
+                    'batch' => $item['CHARG'],
+                    'expiration' => $expiration,
+                    'quantity' => $item['LFIMG'],
+                    'unit' => $item['VRKME'],
+                    'weight' => $item['BRGEW'],
+                    'warehouse' => str_replace('W', 'WH', $item['LGNUM']),
+                    'documentNoRef' => $item['VGBEL'],
+                ];
+            });
+        }
 
         // lazy load the column headerText and reference
-        if($generateType === "table")
-        {
+        if ($generateType === 'table') {
             return $outbound->toArray();
-        }
-        else
-        {
+        } else {
             return $this->outboundMovExcel($outbound->toArray());
         }
 
@@ -99,25 +94,24 @@ class MovementRepository implements IMovementRepository
     {
         $collectionData = collect($data);
         $keysGroupOutbound = $collectionData
-            ->groupBy(function($item){
-                return $item['documentNo']."/".$item['documentNoRef'];
+            ->groupBy(function ($item) {
+                return $item['documentNo'].'/'.$item['documentNoRef'];
             })
             ->keys()
-            ->mapWithKeys(function($item){
-                [$documentNo, $documentNoRef] = explode("/", $item);
+            ->mapWithKeys(function ($item) {
+                [$documentNo, $documentNoRef] = explode('/', $item);
 
                 $subDetails = $this->outboundSubDetails($documentNo, $documentNoRef);
 
                 return [$item => $subDetails];
             });
 
-
-        $merged = $collectionData->map(function($item) use ($keysGroupOutbound){
-            $groupBy = $item['documentNo']."/".$item['documentNoRef'];
+        $merged = $collectionData->map(function ($item) use ($keysGroupOutbound) {
+            $groupBy = $item['documentNo'].'/'.$item['documentNoRef'];
             $subDetails = $keysGroupOutbound[$groupBy];
 
-                $item['headerText'] = $subDetails['headerText'];
-                $item['reference'] = $subDetails['reference'];
+            $item['headerText'] = $subDetails['headerText'];
+            $item['reference'] = $subDetails['reference'];
 
             return $item;
         });
@@ -134,50 +128,49 @@ class MovementRepository implements IMovementRepository
 
         $likpSubQuery = DB::raw("(SELECT BWMID, ERDAT, HEADR, VNMBR FROM LIKP WHERE ERDAT BETWEEN '{$fromDate}' AND '{$toDate}' GROUP BY BWMID, ERDAT, HEADR, VNMBR ) AS likp");
         $res = DB::connection('wms')->table('lips')
-                ->leftJoin($likpSubQuery,'lips.bwmid','=','likp.bwmid')
-                ->selectRaw('likp.bwmid, likp.erdat, likp.headr,
+            ->leftJoin($likpSubQuery, 'lips.bwmid', '=', 'likp.bwmid')
+            ->selectRaw('likp.bwmid, likp.erdat, likp.headr,
                     SUM(lips.lfimg) AS lfimg, SUM(lips.brgew) AS brgew,
                     lips.matnr, lips.maktx, lips.charg, lips.meinh,
                     lips.vfdat, lips.lgnum, likp.vnmbr'
-                )
-                ->when($isNotAllWarehouse,  function($query) use ($warehouseNo){
-                    $formatWarehouse = str_replace('BB', 'WH', $warehouseNo);
+            )
+            ->when($isNotAllWarehouse, function ($query) use ($warehouseNo) {
+                $formatWarehouse = str_replace('BB', 'WH', $warehouseNo);
 
-                    return $query->where('lips.lgnum', '=' , $formatWarehouse);
-                })
-                ->when($isAllMaterial, function($query) use ($customerCode){
-                    return $query->where('lips.matnr','like', $customerCode."%");
+                return $query->where('lips.lgnum', '=', $formatWarehouse);
+            })
+            ->when($isAllMaterial, function ($query) use ($customerCode) {
+                return $query->where('lips.matnr', 'like', $customerCode.'%');
 
-                    }, function($query) use ($materialCode){
-                    return $query->where('lips.matnr','=', $materialCode);
-                })
-                ->where('lips.charg','!=', 'null')
-                ->whereBetween('likp.erdat', [$fromDate, $toDate])
-                ->groupBy('lips.matnr','lips.charg','lips.meinh','lips.maktx', 'lips.vfdat', 'lips.lgnum' ,'likp.headr', 'likp.erdat','likp.bwmid','likp.vnmbr')
-                ->orderBy('likp.bwmid','asc')
-                ->get();
+            }, function ($query) use ($materialCode) {
+                return $query->where('lips.matnr', '=', $materialCode);
+            })
+            ->where('lips.charg', '!=', 'null')
+            ->whereBetween('likp.erdat', [$fromDate, $toDate])
+            ->groupBy('lips.matnr', 'lips.charg', 'lips.meinh', 'lips.maktx', 'lips.vfdat', 'lips.lgnum', 'likp.headr', 'likp.erdat', 'likp.bwmid', 'likp.vnmbr')
+            ->orderBy('likp.bwmid', 'asc')
+            ->get();
 
-                
-            $inbound = $res->map(function($item){
-                $qty = explode('/', $item->meinh)[1] ?? "";
-                $date = Carbon::parse($item->erdat)->format('m/d/Y');
-                $expiration = Carbon::parse($item->vfdat)->format('m/d/Y');
+        $inbound = $res->map(function ($item) {
+            $qty = explode('/', $item->meinh)[1] ?? '';
+            $date = Carbon::parse($item->erdat)->format('m/d/Y');
+            $expiration = Carbon::parse($item->vfdat)->format('m/d/Y');
 
-                return [
-                    'date' => $date,
-                    'materialCode' => $item->matnr,
-                    'documentNo' => $item->bwmid,
-                    'movementType' => "INBOUND",
-                    'description' => $item->maktx,
-                    'batch' => $item->charg,
-                    'expiration' => $expiration,
-                    'quantity' => $item->lfimg,
-                    'unit' => $qty,
-                    'weight' => $item->brgew,
-                    'headerText' => $item->headr,
-                    'reference' => $item->vnmbr,
-                    'warehouse' => $item->lgnum
-                ];
+            return [
+                'date' => $date,
+                'materialCode' => $item->matnr,
+                'documentNo' => $item->bwmid,
+                'movementType' => 'INBOUND',
+                'description' => $item->maktx,
+                'batch' => $item->charg,
+                'expiration' => $expiration,
+                'quantity' => $item->lfimg,
+                'unit' => $qty,
+                'weight' => $item->brgew,
+                'headerText' => $item->headr,
+                'reference' => $item->vnmbr,
+                'warehouse' => $item->lgnum,
+            ];
         });
 
         return $inbound->toArray();
@@ -191,8 +184,8 @@ class MovementRepository implements IMovementRepository
 
         $mergeInOut = array_merge($inbound, $outbound);
         $collectionMergeInOut = collect($mergeInOut)->sortBy('documentNo')
-                                ->values()
-                                ->all();
+            ->values()
+            ->all();
 
         return $collectionMergeInOut;
     }
@@ -201,39 +194,39 @@ class MovementRepository implements IMovementRepository
     {
         $mandt = SapRfcFacade::getMandt();
         $headerText = SapRfcFacade::functionModule('RFC_READ_TEXT')
-                        ->param('TEXT_LINES', array(
-                            "TEXT_LINES" => array(
-                                "TDOBJECT" => "VBBK",
-                                "TDID" => "0001",
-                                "TDSPRAS" => "E",
-                                "TDNAME" => $documentNo
-                            )
-                        ))
-                    ->getData();
+            ->param('TEXT_LINES', [
+                'TEXT_LINES' => [
+                    'TDOBJECT' => 'VBBK',
+                    'TDID' => '0001',
+                    'TDSPRAS' => 'E',
+                    'TDNAME' => $documentNo,
+                ],
+            ])
+            ->getData();
 
         $reference = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-                ->param('QUERY_TABLE', 'VBAK')
-                ->param('DELIMITER', ';')
-                ->param('ROWCOUNT', 1)
-                ->param('OPTIONS', [
-                    ['TEXT' => "MANDT EQ '{$mandt}'"],
-                    ['TEXT' => " AND VBELN EQ '{$documentNoRef}'"],
-                ])
-                ->param('FIELDS', [
-                    ['FIELDNAME' => 'BSTNK'],
-                    ['FIELDNAME' => 'VGBEL'],
-                ])
-                ->getDataToArray();
+            ->param('QUERY_TABLE', 'VBAK')
+            ->param('DELIMITER', ';')
+            ->param('ROWCOUNT', 1)
+            ->param('OPTIONS', [
+                ['TEXT' => "MANDT EQ '{$mandt}'"],
+                ['TEXT' => " AND VBELN EQ '{$documentNoRef}'"],
+            ])
+            ->param('FIELDS', [
+                ['FIELDNAME' => 'BSTNK'],
+                ['FIELDNAME' => 'VGBEL'],
+            ])
+            ->getDataToArray();
 
-        $textLines = collect($headerText['TEXT_LINES'])->reduce(function($total, $item) {
+        $textLines = collect($headerText['TEXT_LINES'])->reduce(function ($total, $item) {
             $total[] = trim($item['TDLINE']);
 
             return $total;
         }) ?? [];
 
         return [
-            'headerText' => implode(" ",$textLines),
-            'reference' => $reference[0]['BSTNK'] ?? "",
+            'headerText' => implode(' ', $textLines),
+            'reference' => $reference[0]['BSTNK'] ?? '',
         ];
     }
 
@@ -241,28 +234,27 @@ class MovementRepository implements IMovementRepository
     {
         $mandt = SapRfcFacade::getMandt();
         $makt = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-                ->param('QUERY_TABLE', 'MAKT')
-                ->param('DELIMITER', ';')
-                ->param('OPTIONS', [
-                    ['TEXT' => "MANDT EQ '{$mandt}'"],
-                    ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
-                ])
-                ->param('FIELDS', [
-                    ['FIELDNAME' => 'MATNR'],
-                    ['FIELDNAME' => 'MAKTX'],
-                ])
-                ->getDataToArray();
+            ->param('QUERY_TABLE', 'MAKT')
+            ->param('DELIMITER', ';')
+            ->param('OPTIONS', [
+                ['TEXT' => "MANDT EQ '{$mandt}'"],
+                ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+            ])
+            ->param('FIELDS', [
+                ['FIELDNAME' => 'MATNR'],
+                ['FIELDNAME' => 'MAKTX'],
+            ])
+            ->getDataToArray();
 
-                $collection = collect($makt)->map(function($item, $index){                
-                                    return [
-                                        "id" => $index += 1,
-                                        "material" => $item['MATNR'],
-                                        "description" => $item['MAKTX'],
-                                    ];
-                                })
-                            ->values()
-                            ->all();
-
+        $collection = collect($makt)->map(function ($item, $index) {
+            return [
+                'id' => $index += 1,
+                'material' => $item['MATNR'],
+                'description' => $item['MAKTX'],
+            ];
+        })
+            ->values()
+            ->all();
 
         return $collection;
     }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\Reports\WHSnapshotExport;
 use App\Exports\Reports\AgingExport;
+use App\Exports\Reports\WHSnapshotExport;
 use App\Http\Requests\ReportRequest;
 use App\Interfaces\IMemberRepository;
 use App\Interfaces\IReportsRepository;
@@ -35,11 +35,10 @@ class ReportsController extends Controller
             $reportType = $request->input('report_type');
             $groupBy = $request->input('group_by');
 
-            if($reportType === "wh-snapshot"){
+            if ($reportType === 'wh-snapshot') {
                 $export = new WHSnapshotExport($this->reports, $this->members);
                 $export->setFilterBy($customerCode, $warehouse, $groupBy);
-            }
-            else if($reportType === "aging-report"){
+            } elseif ($reportType === 'aging-report') {
                 $export = new AgingExport($this->reports, $this->members);
                 $export->setFilterBy($customerCode, $warehouse, $groupBy);
             }
@@ -76,10 +75,10 @@ class ReportsController extends Controller
             if ($reportType === 'stock-status') {
                 $res = $this->reports->getStocks($customerCode, $warehouse, $start_date, $end_date);
             }
-            if ($reportType === 'aging-report') {   
+            if ($reportType === 'aging-report') {
                 $res = $this->reports->getAging($customerCode, $warehouse, $groupBy);
             }
-            
+
             return $this->sendResponse($res);
         } catch (Exception $e) {
             return $this->sendError($e);

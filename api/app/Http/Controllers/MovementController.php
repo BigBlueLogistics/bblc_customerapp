@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Traits\HttpResponse;
-use App\Interfaces\IMovementRepository;
-use App\Interfaces\IMemberRepository;
-use App\Http\Requests\MovementRequest;
 use App\Exports\MovementExport;
+use App\Http\Requests\MovementRequest;
+use App\Interfaces\IMemberRepository;
+use App\Interfaces\IMovementRepository;
+use App\Traits\HttpResponse;
 use Carbon\Carbon;
 use Exception;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MovementController extends Controller
 {
@@ -36,21 +36,19 @@ class MovementController extends Controller
             $materialCode = $request->input('material_code');
             $customerCode = $request->user()->company()->value('customer_code');
             [$fromDate, $toDate] = $request->input('coverage_date');
- 
+
             $formatFromDate = Carbon::parse($fromDate)->format('Ymd');
             $formatToDate = Carbon::parse($toDate)->format('Ymd');
 
-            if($movementType === "outbound"){
-                $res = $this->movement->outboundMov($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode, "table");
-            }
-            else if($movementType === "inbound"){
+            if ($movementType === 'outbound') {
+                $res = $this->movement->outboundMov($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode, 'table');
+            } elseif ($movementType === 'inbound') {
                 $res = $this->movement->inboundMov($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode);
+            } else {
+                $res = $this->movement->mergeInOutbound($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode, 'table');
             }
-            else{
-                $res = $this->movement->mergeInOutbound($materialCode, $formatFromDate, $formatToDate, $warehouseNo, $customerCode, "table");
-            }   
 
-            return $this->sendResponse($res, "Movements details");
+            return $this->sendResponse($res, 'Movements details');
         } catch (Exception $e) {
             return $this->sendError($e);
         }
@@ -91,18 +89,21 @@ class MovementController extends Controller
             $customerCode = $request->input('customer_code');
 
             $res = $this->movement->materialAndDescription($customerCode);
+
             return $this->sendResponse($res);
         } catch (Exception $e) {
             return $this->sendError($e);
         }
     }
 
-    public function outboundSubDetails(Request $request){
+    public function outboundSubDetails(Request $request)
+    {
         try {
             $documentNo = $request->input('documentNo');
             $documentNoRef = $request->input('documentNoRef');
 
             $res = $this->movement->outboundSubDetails($documentNo, $documentNoRef);
+
             return $this->sendResponse($res);
         } catch (Exception $e) {
             return $this->sendError($e);

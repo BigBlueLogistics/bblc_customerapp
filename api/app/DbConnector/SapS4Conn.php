@@ -26,7 +26,7 @@ class SapS4Conn
             self::$sap_conn = $conn;
 
             return $conn;
-        } catch(SapException $ex) {
+        } catch (SapException $ex) {
             throw new Exception('Error connecting to SAP: '.$ex->getMessage().PHP_EOL);
         }
     }

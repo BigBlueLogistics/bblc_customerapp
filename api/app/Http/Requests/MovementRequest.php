@@ -24,12 +24,12 @@ class MovementRequest extends FormRequest
     public function rules()
     {
         return [
-            'warehouse_no' => 'required','string',
-            'movement_type' => 'required','string',
-            'material_code' => 'required','string',
-            'coverage_date' => 'required','array',
+            'warehouse_no' => 'required', 'string',
+            'movement_type' => 'required', 'string',
+            'material_code' => 'required', 'string',
+            'coverage_date' => 'required', 'array',
             'coverage_date.*' => 'date',
-            'customer_code' => 'nullable', 'string'
+            'customer_code' => 'nullable', 'string',
         ];
     }
 }

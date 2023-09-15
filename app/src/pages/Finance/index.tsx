@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect, ChangeEvent, useRef } from "react";
 import Grid from "@mui/material/Grid";
 
@@ -123,12 +124,12 @@ function Finance() {
         <MDBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
-              <Schedule data={listScheduleToday.data} />
+              <Schedule data={[]} />
             </Grid>
             <Grid item xs={12} md={6}>
               <Status
                 inputSearchRef={inputSearchRef}
-                data={listStatus.data}
+                data={[]}
                 searchData={searchVMR}
                 onOpen={onShowStatusDetails}
                 onChangeSearch={onChangeSearch}

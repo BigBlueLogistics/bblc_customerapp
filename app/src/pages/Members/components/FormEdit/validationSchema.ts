@@ -13,4 +13,5 @@ export default yup.object({
   email_verified_at: yup.date(),
   is_verify: yup.boolean(),
   is_active: yup.boolean(),
+  role_id: yup.number(),
 });

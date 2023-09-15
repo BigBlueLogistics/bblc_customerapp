@@ -95,7 +95,7 @@ class WHSnapshotExport implements FromView, ShouldAutoSize, WithEvents, WithDraw
         // Format numberic if empty default value is dash (-).
         $columnNumberFormat = 'D:K';
         $concernable = $event->getConcernable();
-        if($concernable->groupBy === 'batch' || $concernable->groupBy === 'expiry'){
+        if ($concernable->groupBy === 'batch' || $concernable->groupBy === 'expiry') {
             $columnNumberFormat = 'E:L';
         }
         $activeSheet->getStyle($columnNumberFormat)->getNumberFormat()->setFormatCode('_-* #,##0.000_-;-* #,##0.000_-;_-* "-"??_-;_-@_-');

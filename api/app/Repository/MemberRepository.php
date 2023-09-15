@@ -11,21 +11,21 @@ class MemberRepository implements IMemberRepository
     {
         $mandt = SapRfcFacade::getMandt();
         $customer = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-             ->param('QUERY_TABLE', 'KNA1')
-             ->param('DELIMITER', ';')
-             ->param('OPTIONS', [
-                 ['TEXT' => "MANDT EQ {$mandt}"],
-                 ['TEXT' => " AND KUNNR EQ '{$customerCode}'"],
-             ])
-             ->param('FIELDS', [
-                 ['FIELDNAME' => 'NAME1'], // customer fullname
-                 ['FIELDNAME' => 'STRAS'], // strict name
-                 ['FIELDNAME' => 'ORT01'], // city
-                 ['FIELDNAME' => 'LAND1'], // country
-                 ['FIELDNAME' => 'PSTLZ'], // zip code
-                 ['FIELDNAME' => 'TELF1'], // telephone
-             ])
-        ->getDataToArray();
+            ->param('QUERY_TABLE', 'KNA1')
+            ->param('DELIMITER', ';')
+            ->param('OPTIONS', [
+                ['TEXT' => "MANDT EQ {$mandt}"],
+                ['TEXT' => " AND KUNNR EQ '{$customerCode}'"],
+            ])
+            ->param('FIELDS', [
+                ['FIELDNAME' => 'NAME1'], // customer fullname
+                ['FIELDNAME' => 'STRAS'], // strict name
+                ['FIELDNAME' => 'ORT01'], // city
+                ['FIELDNAME' => 'LAND1'], // country
+                ['FIELDNAME' => 'PSTLZ'], // zip code
+                ['FIELDNAME' => 'TELF1'], // telephone
+            ])
+            ->getDataToArray();
 
         if (count($customer)) {
             return [

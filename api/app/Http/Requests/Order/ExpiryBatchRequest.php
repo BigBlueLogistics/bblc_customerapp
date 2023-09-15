@@ -24,8 +24,8 @@ class ExpiryBatchRequest extends FormRequest
     public function rules()
     {
         return [
-            'materialCode' => ['required','string'],
-            'warehouseNo' => ['required','string'],
+            'materialCode' => ['required', 'string'],
+            'warehouseNo' => ['required', 'string'],
         ];
     }
 }
