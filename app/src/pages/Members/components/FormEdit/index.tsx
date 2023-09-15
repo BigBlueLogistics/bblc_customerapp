@@ -10,6 +10,7 @@ import MDTypography from "atoms/MDTypography";
 import MDCheckbox from "atoms/MDCheckbox";
 import MDInput from "atoms/MDInput";
 import MDAlert2 from "atoms/MDAlert2";
+import MDSelect from "atoms/MDSelect";
 import SkeletonForm from "organisms/Skeleton/Form";
 import { useFormik } from "formik";
 import { format, parseISO } from "date-fns";
@@ -39,6 +40,7 @@ function FormEdit({
       email_verified_at: data.email_verified_at || "",
       is_verify: false,
       is_active: data.active === "true",
+      role_id: data.role_id || "",
     },
     onSubmit: (validatedVal) => {
       const isActive = validatedVal.is_active.toString();
@@ -195,6 +197,23 @@ function FormEdit({
                 onChange={handleChange}
               />
               <MDTypography variant="body2">Active</MDTypography>
+            </MDBox>
+            <MDBox mb={1}>
+              <MDSelect
+                sx={{ margin: 0 }}
+                name="role_id"
+                label="Type"
+                variant="outlined"
+                onChange={handleChange}
+                options={data.roles}
+                value={values.role_id}
+                showArrowIcon
+                optKeyValue="id"
+                optKeyLabel="name"
+                itemStyle={{
+                  textTransform: "uppercase",
+                }}
+              />
             </MDBox>
           </DialogContent>
           <DialogActions>

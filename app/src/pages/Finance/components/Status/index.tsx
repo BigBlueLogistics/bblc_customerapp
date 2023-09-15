@@ -41,7 +41,7 @@ function Status({
     <Card sx={{ height: "100%" }}>
       <MDBox pt={3} px={2} display="inline-flex" justifyContent="space-between">
         <MDTypography variant="h6" fontWeight="medium">
-          Trucks and Vans Status
+          Lorem ipsum
         </MDTypography>
 
         {renderSearch()}

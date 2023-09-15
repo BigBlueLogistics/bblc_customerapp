@@ -59,4 +59,5 @@ class User extends Authenticatable
     {
         return $this->hasOne(CompanyRepresent::class, 'user_id');
     }
+
 }

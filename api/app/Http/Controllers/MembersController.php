@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MemberUpdateRequest;
 use App\Models\CompanyRepresent;
 use App\Models\User;
+use App\Models\Role;
 use App\Traits\HttpResponse;
 use Carbon\Carbon;
 
@@ -37,12 +38,15 @@ class MembersController extends Controller
     public function edit($id)
     {
         try {
-            $member = User::find($id, ['id', 'fname', 'lname', 'email', 'email_verified_at', 'active']);
+            $member = User::find($id, ['id', 'fname', 'lname', 'email', 'email_verified_at', 'active', 'role_id']);
+            $roles = Role::where('id', '!=', 0)->select('id','name')->get();
+            $rolesWithNone = array_merge([[ 'id' => '', 'name' => '--None--']], $roles->toArray());
 
             if ($member) {
                 $member = array_merge($member->toArray(), [
                     'customer_code' => $member->company->customer_code ?? '',
                     'company' => $member->company->company ?? '',
+                    'roles' => $rolesWithNone
                 ]);
             }
 
@@ -69,11 +73,11 @@ class MembersController extends Controller
             $member->lname = $request->lname;
             $member->email = $request->email;
             $member->active = strval($request->is_active);
+            $member->role_id = $request->role_id;
 
             // Include column verify
             if ($request->is_verify === 'true') {
                 $member->email_verified_at = Carbon::now();
-                $member->role_id = 2;
             }
             $isSuccess = $member->save();
 
@@ -85,9 +89,13 @@ class MembersController extends Controller
                     ['customer_code' => $request->customer_code, 'company' => $request->company_name]
                 );
 
+                $roles = Role::where('id', '!=', 0)->select('id','name')->get();
+                $rolesWithNone = array_merge([[ 'id' => '', 'name' => '--None--']], $roles->toArray());
+
                 $member = array_merge($member->toArray(), [
                     'customer_code' => $companyDetails->customer_code ?? '',
                     'company' => $companyDetails->company ?? '',
+                    'roles' => $rolesWithNone
                 ]);
             }
 
