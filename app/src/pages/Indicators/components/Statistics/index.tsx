@@ -11,10 +11,18 @@ function Statistics() {
   const { customerCode } = selector();
   const initialStatistics: TStatistics = {
     data: {
-      inboundSum: 0,
-      outboundSum: 0,
-      transactionCount: 0,
-      activeSku: 0,
+      today: {
+        inboundSum: 0,
+        outboundSum: 0,
+        transactionCount: 0,
+        activeSku: 0,
+      },
+      yesterday: {
+        inboundSum: 0,
+        outboundSum: 0,
+        transactionCount: 0,
+        activeSku: 0,
+      },
     },
     status: "idle",
     message: "",
@@ -40,7 +48,20 @@ function Statistics() {
     fetchActiveSKu(customerCode);
   }, [customerCode]);
 
-  const { inboundSum, outboundSum, transactionCount, activeSku } = statistics.data || {};
+  const {
+    today: {
+      inboundSum: tdaInboundSum,
+      outboundSum: tdaOutboundSum,
+      transactionCount: tdaTransactionCount,
+      activeSku: tdaActiveSku,
+    },
+    yesterday: {
+      inboundSum: ydaInboundSum,
+      outboundSum: ydaOutboundSum,
+      transactionCount: ydaTransactionCount,
+      activeSku: ydaActiveSku,
+    },
+  } = statistics.data || {};
 
   if (statistics.status === "failed") {
     return (
@@ -57,11 +78,11 @@ function Statistics() {
           <ComplexStatisticsCard
             icon="weekend"
             title="Inbound Weight"
-            count={inboundSum}
+            count={tdaInboundSum}
             percentage={{
-              color: "success",
-              amount: "",
-              label: "Today",
+              color: "dark",
+              amount: ydaInboundSum,
+              label: "Yesterday",
             }}
           />
         </MDBox>
@@ -72,11 +93,11 @@ function Statistics() {
             color="warning"
             icon="leaderboard"
             title="Outbound Weight"
-            count={outboundSum}
+            count={tdaOutboundSum}
             percentage={{
-              color: "success",
-              amount: "",
-              label: "Today",
+              color: "dark",
+              amount: ydaOutboundSum,
+              label: "Yesterday",
             }}
           />
         </MDBox>
@@ -84,14 +105,14 @@ function Statistics() {
       <Grid item xs={12} md={6} lg={3}>
         <MDBox mb={1.5}>
           <ComplexStatisticsCard
-            color="success"
+            color="dark"
             icon="store"
             title="Total Transaction"
-            count={transactionCount}
+            count={tdaTransactionCount}
             percentage={{
-              color: "success",
-              amount: "",
-              label: "Today",
+              color: "dark",
+              amount: ydaTransactionCount,
+              label: "Yesterday",
             }}
           />
         </MDBox>
@@ -102,11 +123,11 @@ function Statistics() {
             color="primary"
             icon="person_add"
             title="Active SKU"
-            count={activeSku}
+            count={tdaActiveSku}
             percentage={{
-              color: "success",
-              amount: "",
-              label: "Today",
+              color: "dark",
+              amount: ydaActiveSku,
+              label: "Yesterday",
             }}
           />
         </MDBox>

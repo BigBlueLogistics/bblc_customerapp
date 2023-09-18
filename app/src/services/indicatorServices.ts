@@ -1,7 +1,7 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import {
   ResponseIndicatorsStatisticsEntity,
-  ResponseIndicatorsWtPalletsEntity,
+  ResponseIndicatorsInboundOutboundEntity,
 } from "entities/indicators";
 import HttpAdapter from "./httpAdapter";
 
@@ -12,7 +12,7 @@ class IndicatorServices extends HttpAdapter {
 
   getInOutbound(
     config: AxiosRequestConfig
-  ): Promise<AxiosResponse<ResponseIndicatorsWtPalletsEntity>> {
+  ): Promise<AxiosResponse<ResponseIndicatorsInboundOutboundEntity>> {
     return this.get("/indicators/in-out-bound", config);
   }
 }

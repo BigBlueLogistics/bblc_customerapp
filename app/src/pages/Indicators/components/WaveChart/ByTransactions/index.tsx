@@ -2,17 +2,17 @@ import { Grid } from "@mui/material";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import StackedBarChart from "organisms/Charts/BarCharts/StackedBarChart";
-import { TByPallets } from "./types";
+import { TByTransactions } from "./types";
 
-function ByPallets({ data }: TByPallets) {
+function ByTransactions({ data }: TByTransactions) {
   const { data: transData, status } = data;
-  const { byPalletCount, transactionsDates } = transData;
+  const { byTransactions } = transData;
 
-  const labels = transactionsDates || null;
+  const labels = byTransactions?.dates || null;
 
   const dataSets = () => {
-    if (byPalletCount) {
-      return byPalletCount.map((item, idx) => {
+    if (byTransactions?.counts) {
+      return byTransactions?.counts.map((item, idx) => {
         if (idx === 0) {
           return {
             label: "Inbound",
@@ -54,4 +54,4 @@ function ByPallets({ data }: TByPallets) {
   );
 }
 
-export default ByPallets;
+export default ByTransactions;

@@ -6,6 +6,7 @@ use App\Interfaces\IIndicatorsRepository;
 use App\Traits\HttpResponse;
 use Exception;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class IndicatorsController extends Controller
 {
@@ -22,9 +23,13 @@ class IndicatorsController extends Controller
     {
         try {
             $customerCode = $request->input('customer_code');
-            $res = $this->indicator->getInboundOutbound($customerCode);
+            $weight = $this->indicator->getInboundOutboundWt($customerCode);
+            $transactions = $this->indicator->getInboundOutboundTxn($customerCode);
 
-            return $this->sendResponse($res);
+            return $this->sendResponse([
+                'byWeight' => $weight,
+                'byTransactions' => $transactions,
+            ]);
         } catch (Exception $e) {
             return $this->sendError($e);
         }
@@ -35,9 +40,13 @@ class IndicatorsController extends Controller
     {
         try {
             $customerCode = $request->input('customer_code');
-            $res = $this->indicator->getActiveSku($customerCode);
+            $todayDate = Carbon::today()->format('Ymd');
+            $yesterdayDate = Carbon::yesterday()->format('Ymd');
 
-            return $this->sendResponse($res);
+            $today = $this->indicator->getActiveSku($customerCode, $todayDate);
+            $yesterday = $this->indicator->getActiveSku($customerCode, $yesterdayDate);
+
+            return $this->sendResponse(['today' => $today, 'yesterday' => $yesterday]);
         } catch (Exception $e) {
             return $this->sendError($e);
         }

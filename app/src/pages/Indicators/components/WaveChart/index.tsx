@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import MDBox from "atoms/MDBox";
 import { indicatorServices } from "services";
-import { ResponseIndicatorsWtPalletsEntity } from "entities/indicators";
+import { ResponseIndicatorsInboundOutboundEntity } from "entities/indicators";
 import ByWeight from "./ByWeight";
-import ByPallets from "./ByPallets";
+import ByTransactions from "./ByTransactions";
 import selector from "../../selector";
 
 function WaveChart() {
   const { customerCode } = selector();
-  const initialInOutbound: ResponseIndicatorsWtPalletsEntity = {
+  const initialInOutbound: ResponseIndicatorsInboundOutboundEntity = {
     data: {
       byWeight: null,
-      byPalletCount: null,
-      transactionsDates: null,
+      byTransactions: null,
     },
     status: "idle",
     message: "",
@@ -49,7 +48,7 @@ function WaveChart() {
         <ByWeight data={inOutBoundChart} />
       </MDBox>
       <MDBox mt={4.5}>
-        <ByPallets data={inOutBoundChart} />
+        <ByTransactions data={inOutBoundChart} />
       </MDBox>
     </>
   );

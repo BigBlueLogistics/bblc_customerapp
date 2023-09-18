@@ -4,7 +4,9 @@ namespace App\Interfaces;
 
 interface IIndicatorsRepository
 {
-    public function getInboundOutbound($customerCode);
+    public function getInboundOutboundWt($customerCode);
 
-    public function getActiveSku($customerCode);
+    public function getInboundOutboundTxn($customerCode);
+
+    public function getActiveSku($customerCode, $date);
 }

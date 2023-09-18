@@ -6,13 +6,13 @@ import { TByWeight } from "./types";
 
 function ByWeight({ data }: TByWeight) {
   const { data: transData, status } = data;
-  const { byWeight, transactionsDates } = transData;
+  const { byWeight } = transData;
 
-  const labels = transactionsDates || null;
+  const labels = byWeight?.dates || null;
 
   const dataSets = () => {
-    if (byWeight) {
-      return byWeight.map((item, idx) => {
+    if (byWeight?.weight) {
+      return byWeight.weight.map((item, idx) => {
         if (idx === 0) {
           return {
             label: "Inbound",

@@ -35,7 +35,14 @@ function ComplexStatisticsCard({ color, title, count, percentage, icon }: TCompl
       </MDBox>
       <Divider />
       <MDBox pb={2} px={2}>
-        <MDTypography component="p" variant="button" color="text" display="flex">
+        <MDTypography
+          component="p"
+          variant="button"
+          color="text"
+          display="flex"
+          justifyContent="space-between"
+        >
+          &nbsp;{percentage.label}
           <MDTypography
             component="span"
             variant="button"
@@ -44,7 +51,6 @@ function ComplexStatisticsCard({ color, title, count, percentage, icon }: TCompl
           >
             {percentage.amount}
           </MDTypography>
-          &nbsp;{percentage.label}
         </MDTypography>
       </MDBox>
     </Card>
