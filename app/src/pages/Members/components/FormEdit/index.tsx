@@ -27,7 +27,7 @@ function FormEdit({
   status,
   message,
 }: IFormEdit) {
-  const { values, handleChange, handleSubmit, touched, errors } = useFormik({
+  const { values, handleChange, handleSubmit, touched, errors, resetForm } = useFormik({
     enableReinitialize: true,
     validationSchema,
     initialValues: {
@@ -71,8 +71,13 @@ function FormEdit({
     return null;
   };
 
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">
       {isLoadingEdit ? (
         <SkeletonForm contentWidth={300} />
       ) : (
@@ -217,7 +222,7 @@ function FormEdit({
             </MDBox>
           </DialogContent>
           <DialogActions>
-            <MDButton onClick={onClose}>Close</MDButton>
+            <MDButton onClick={handleClose}>Close</MDButton>
             <MDButton type="submit" disabled={isLoadingUpdate} loading={isLoadingUpdate}>
               Update
             </MDButton>
