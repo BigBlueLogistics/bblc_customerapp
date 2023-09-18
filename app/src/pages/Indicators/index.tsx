@@ -3,7 +3,7 @@ import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
 import Statistics from "./components/Statistics";
-import WaveChart from "./components/WaveChart";
+import StackedChart from "./components/StackedChart";
 
 function Indicators() {
   return (
@@ -11,7 +11,7 @@ function Indicators() {
       <DashboardNavbar />
       <MDBox py={3}>
         <Statistics />
-        <WaveChart />
+        <StackedChart />
       </MDBox>
       <Footer />
     </DashboardLayout>

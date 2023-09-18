@@ -3,7 +3,7 @@ import MDBox from "atoms/MDBox";
 import { indicatorServices } from "services";
 import { ResponseIndicatorsInboundOutboundEntity } from "entities/indicators";
 import ByWeight from "./ByWeight";
-// import ByTransactions from "./ByTransactions";
+import ByTransactions from "./ByTransactions";
 import selector from "../../selector";
 
 function WaveChart() {
@@ -47,9 +47,9 @@ function WaveChart() {
       <MDBox mt={4.5}>
         <ByWeight data={inOutBoundChart} />
       </MDBox>
-      {/* <MDBox mt={4.5}>
+      <MDBox mt={4.5}>
         <ByTransactions data={inOutBoundChart} />
-      </MDBox> */}
+      </MDBox>
     </>
   );
 }

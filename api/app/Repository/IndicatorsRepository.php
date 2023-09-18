@@ -177,7 +177,7 @@ class IndicatorsRepository implements IIndicatorsRepository
                 ->groupBy('date')
                 ->map(function ($item) {
                     return [
-                        'transactions' => $item->pluck('docNo')->unique()->count()
+                        'transactions' => $item->pluck('slipNo')->unique()->count()
                     ];
                 });
         }
@@ -190,7 +190,7 @@ class IndicatorsRepository implements IIndicatorsRepository
                 ->groupBy('date')
                 ->map(function ($item) {
                     return [
-                        'transactions' => $item->pluck('slipNo')->unique()->count()
+                        'transactions' => $item->pluck('docNo')->unique()->count()
                     ];
                 });
 
