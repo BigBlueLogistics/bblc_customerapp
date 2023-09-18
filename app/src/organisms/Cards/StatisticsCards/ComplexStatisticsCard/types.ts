@@ -9,5 +9,6 @@ export type TComplexStatisticsCard = {
     amount: string | number;
     label: string;
   };
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
+  image?: React.ReactNode;
 };

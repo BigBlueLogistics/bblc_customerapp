@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
+import MDImageIcon from "atoms/MDImageIcon";
 import ComplexStatisticsCard from "organisms/Cards/StatisticsCards/ComplexStatisticsCard";
 import { indicatorServices } from "services";
+import { inbound, outbound, totalTxn, activeSku } from "assets/images";
 import selector from "../../selector";
 import { TStatistics } from "./types";
 
@@ -76,7 +78,7 @@ function Statistics() {
       <Grid item xs={12} md={6} lg={3}>
         <MDBox mb={1.5}>
           <ComplexStatisticsCard
-            icon="weekend"
+            image={<MDImageIcon src={inbound} alt="inbound" width="40px" height="40px" />}
             title="Inbound Weight"
             count={tdaInboundSum}
             percentage={{
@@ -90,8 +92,8 @@ function Statistics() {
       <Grid item xs={12} md={6} lg={3}>
         <MDBox mb={1.5}>
           <ComplexStatisticsCard
+            image={<MDImageIcon src={outbound} alt="outbound" width="40px" height="40px" />}
             color="warning"
-            icon="leaderboard"
             title="Outbound Weight"
             count={tdaOutboundSum}
             percentage={{
@@ -105,8 +107,8 @@ function Statistics() {
       <Grid item xs={12} md={6} lg={3}>
         <MDBox mb={1.5}>
           <ComplexStatisticsCard
+            image={<MDImageIcon src={totalTxn} alt="totalTxn" width="40px" height="40px" />}
             color="dark"
-            icon="store"
             title="Total Transaction"
             count={tdaTransactionCount}
             percentage={{
@@ -120,8 +122,8 @@ function Statistics() {
       <Grid item xs={12} md={6} lg={3}>
         <MDBox mb={1.5}>
           <ComplexStatisticsCard
+            image={<MDImageIcon src={activeSku} alt="activeSku" width="40px" height="40px" />}
             color="primary"
-            icon="person_add"
             title="Active SKU"
             count={tdaActiveSku}
             percentage={{

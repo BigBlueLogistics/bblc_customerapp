@@ -5,7 +5,14 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import { TComplexStatisticsCard } from "./types";
 
-function ComplexStatisticsCard({ color, title, count, percentage, icon }: TComplexStatisticsCard) {
+function ComplexStatisticsCard({
+  color,
+  title,
+  count,
+  percentage,
+  icon,
+  image,
+}: TComplexStatisticsCard) {
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" pt={1} px={2}>
@@ -22,9 +29,13 @@ function ComplexStatisticsCard({ color, title, count, percentage, icon }: TCompl
           height="4rem"
           mt={-3}
         >
-          <Icon fontSize="medium" color="inherit">
-            {icon}
-          </Icon>
+          {icon ? (
+            <Icon fontSize="medium" color="inherit">
+              {icon}
+            </Icon>
+          ) : (
+            image
+          )}
         </MDBox>
         <MDBox textAlign="right" lineHeight={1.25}>
           <MDTypography variant="button" fontWeight="light" color="text">
