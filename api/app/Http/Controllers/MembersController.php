@@ -18,9 +18,11 @@ class MembersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(User $user)
     {
         try {
+            $this->authorize('view', $user);
+
             $members = User::with('company:user_id,customer_code')->get();
 
             return $this->sendResponse($members, 'members list');
@@ -35,9 +37,11 @@ class MembersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user, $id)
     {
         try {
+            $this->authorize('view', $user);
+
             $member = User::find($id, ['id', 'fname', 'lname', 'email', 'email_verified_at', 'active', 'role_id']);
             $roles = Role::where('id', '!=', 0)->select('id','name')->get();
             $rolesWithNone = array_merge([[ 'id' => '', 'name' => '--None--']], $roles->toArray());
@@ -63,9 +67,11 @@ class MembersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(MemberUpdateRequest $request, $id)
+    public function update(User $user, MemberUpdateRequest $request, $id)
     {
         try {
+            $this->authorize('update', $user);
+
             $request->validated($request->all());
 
             $member = User::find($id);
