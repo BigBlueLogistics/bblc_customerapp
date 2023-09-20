@@ -107,6 +107,8 @@ export const authReducer = createSlice({
       .addCase(reAuthenticate.rejected, (state, action) => {
         state.failedRequests[signIn.rejected.type] = { message: action.error.message };
         state.request[signIn.pending.type] = { status: "failed" };
+        state.authenticated = false;
+        state.apiToken = "";
       });
   },
 });
