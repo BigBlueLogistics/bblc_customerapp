@@ -9,73 +9,80 @@ import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
 import DataTable from "organisms/Tables/DataTable";
-import { useAppDispatch } from "hooks";
-import { setIsAuthenticated } from "redux/auth/action";
-
 import { membersServices } from "services";
-import { AxiosError } from "axios";
-import { TStatus } from "types/status";
 import miscData from "./data";
 import FormEdit from "./components/FormEdit";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import { TMenuAction } from "./components/MenuAction/types";
+import { TMembers, TViewMemberDetails, TUpdateMemberDetails } from "./types";
 
 function Members() {
-  const dispatch = useAppDispatch();
   const { tableHeaders } = miscData();
-  const [rowsMembers, setRowsMembers] = useState([]);
-  const [memberDetails, setMemberDetails] = useState([]);
   const [action, setAction] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
 
-  const [tableStatus, setTableStatus] = useState<TStatus>("idle");
-  const [editStatus, setEditStatus] = useState<TStatus>("idle");
-  const [updateStatus, setUpdateStatus] = useState<TStatus>("idle");
-  const [error, setError] = useState<AxiosError | null>(null);
-  const [formMessage, setFormMessage] = useState("");
+  const [tableMembers, setTableMembers] = useState<TMembers>({
+    message: "",
+    data: [],
+    status: "idle",
+  });
+  const [viewMemberDetails, setViewMemberDetails] = useState<TViewMemberDetails>({
+    message: "",
+    data: null,
+    status: "idle",
+  });
+  const [updateMemberDetails, setUpdateMemberDetails] = useState<TUpdateMemberDetails>({
+    message: "",
+    data: null,
+    status: "idle",
+  });
 
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
 
   const fetchMembers = async () => {
-    setTableStatus("loading");
+    setTableMembers((prev) => ({ ...prev, status: "loading" }));
 
     try {
       const { data: rows } = await membersServices.getMembers();
-      setRowsMembers(rows.data);
-      setTableStatus("succeeded");
+      setTableMembers({
+        status: "succeeded",
+        data: rows.data,
+        message: rows.message,
+      });
     } catch (err) {
-      setError(err);
-      setTableStatus("failed");
+      setTableMembers({ status: "failed", message: err.message, data: [] });
     }
   };
 
   const fetchMemberById = async (userId: number) => {
-    setEditStatus("loading");
-    setUpdateStatus("idle");
+    setViewMemberDetails((prev) => ({ ...prev, status: "loading" }));
 
     try {
       const { data: rows } = await membersServices.getMemberById(userId);
-      setMemberDetails(rows.data);
-      setEditStatus("succeeded");
+      setViewMemberDetails({
+        status: "succeeded",
+        data: rows.data,
+        message: rows.message,
+      });
     } catch (err) {
-      setError(err);
-      setEditStatus("failed");
+      setViewMemberDetails({ status: "failed", message: err.message, data: null });
     }
   };
 
   const updateMember = async (userId: number, data: any) => {
-    setUpdateStatus("loading");
+    setUpdateMemberDetails((prev) => ({ ...prev, status: "loading" }));
 
     try {
       const { data: rows } = await membersServices.updateMember(userId, data);
-      setMemberDetails(rows.data);
-      setUpdateStatus("succeeded");
-      setFormMessage(rows.message);
+      setUpdateMemberDetails({
+        status: "succeeded",
+        data: rows.data,
+        message: rows.message,
+      });
     } catch (err) {
-      setFormMessage(err.message);
-      setUpdateStatus("failed");
+      setUpdateMemberDetails({ status: "failed", message: err.message, data: null });
     }
   };
 
@@ -98,16 +105,10 @@ function Members() {
   }, []);
 
   useEffect(() => {
-    if (updateStatus === "succeeded") {
+    if (updateMemberDetails.status === "succeeded") {
       fetchMembers();
     }
-  }, [updateStatus]);
-
-  useEffect(() => {
-    if (error?.response?.statusText === "Unauthorized" && error?.response?.status === 401) {
-      dispatch(setIsAuthenticated(false));
-    }
-  }, [error, dispatch]);
+  }, [updateMemberDetails]);
 
   const menuItemsAction: TMenuAction["items"] = [
     {
@@ -125,17 +126,16 @@ function Members() {
     <DashboardLayout>
       <DashboardNavbar />
 
-      {tableStatus === "failed" && <MDTypography variant="body2">{error.message}</MDTypography>}
+      {tableMembers.status === "failed" && (
+        <MDTypography variant="body2">{tableMembers.message}</MDTypography>
+      )}
 
       <FormEdit
         open={showEdit}
         onClose={onCloseEdit}
         onUpdate={updateMember}
-        data={memberDetails}
-        status={updateStatus}
-        message={formMessage}
-        isLoadingEdit={editStatus === "loading"}
-        isLoadingUpdate={updateStatus === "loading"}
+        viewData={viewMemberDetails}
+        updateData={updateMemberDetails}
       />
 
       <MDBox pt={6} pb={3}>
@@ -169,10 +169,10 @@ function Members() {
                 <DataTable
                   table={{
                     columns: tableHeaders({ onShowEdit }),
-                    rows: rowsMembers,
+                    rows: tableMembers.data,
                   }}
                   isSorted={false}
-                  isLoading={tableStatus === "loading"}
+                  isLoading={tableMembers.status === "loading"}
                   entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}
                   showTotalEntries
                   noEndBorder

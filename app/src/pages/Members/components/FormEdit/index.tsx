@@ -17,30 +17,25 @@ import { format, parseISO } from "date-fns";
 import { IFormEdit } from "./type";
 import validationSchema from "./validationSchema";
 
-function FormEdit({
-  open,
-  onClose,
-  onUpdate,
-  data,
-  isLoadingEdit,
-  isLoadingUpdate,
-  status,
-  message,
-}: IFormEdit) {
+function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) {
+  const { data: viewResult, status: viewStatus } = viewData || {};
+  const { status: updateStatus, message: updateMessage } = updateData || {};
+  const isLoadingUpdate = updateStatus === "loading";
+
   const { values, handleChange, handleSubmit, touched, errors, resetForm } = useFormik({
     enableReinitialize: true,
     validationSchema,
     initialValues: {
-      id: data.id || "",
-      customer_code: data.customer_code || "",
-      company_name: data.company || "",
-      fname: data.fname || "",
-      lname: data.lname || "",
-      email: data.email || "",
-      email_verified_at: data.email_verified_at || "",
+      id: viewResult?.id || null,
+      customer_code: viewResult?.customer_code || "",
+      company_name: viewResult?.company || "",
+      fname: viewResult?.fname || "",
+      lname: viewResult?.lname || "",
+      email: viewResult?.email || "",
+      email_verified_at: viewResult?.email_verified_at || "",
       is_verify: false,
-      is_active: data.active === "true",
-      role_id: data.role_id || "",
+      is_active: String(viewResult?.active) === "true",
+      role_id: viewResult?.role_id || "",
     },
     onSubmit: (validatedVal) => {
       const isActive = validatedVal.is_active.toString();
@@ -51,8 +46,8 @@ function FormEdit({
   });
 
   const renderMessage = () => {
-    if (status === "succeeded" || status === "failed") {
-      const severity = status === "succeeded" ? "success" : "error";
+    if (updateStatus === "succeeded" || updateStatus === "failed") {
+      const severity = updateStatus === "succeeded" ? "success" : "error";
       return (
         <MDAlert2
           severity={severity}
@@ -63,7 +58,7 @@ function FormEdit({
           })}
         >
           <MDTypography variant="body2" fontSize={14}>
-            {message}
+            {updateMessage}
           </MDTypography>
         </MDAlert2>
       );
@@ -78,7 +73,7 @@ function FormEdit({
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">
-      {isLoadingEdit ? (
+      {viewStatus === "loading" ? (
         <SkeletonForm contentWidth={300} />
       ) : (
         <MDBox component="form" role="form" onSubmit={handleSubmit}>
@@ -210,7 +205,7 @@ function FormEdit({
                 label="Type"
                 variant="outlined"
                 onChange={handleChange}
-                options={data.roles}
+                options={(viewResult?.roles as unknown as string[]) || []}
                 value={values.role_id}
                 showArrowIcon
                 optKeyValue="id"

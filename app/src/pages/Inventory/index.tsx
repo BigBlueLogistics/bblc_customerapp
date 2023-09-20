@@ -19,9 +19,8 @@ import excel from "assets/images/icons/excel.png";
 import miscData from "pages/Inventory/data";
 import { inventoryServices } from "services";
 import { AxiosError } from "axios";
-import { TStatus } from "types/status";
 import selector from "./selector";
-import { INotifyDownload } from "./types";
+import { INotifyDownload, TInventory } from "./types";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import { TMenuAction } from "./components/MenuAction/types";
@@ -35,11 +34,15 @@ function Inventory() {
     useState<INotifyDownload>(initialStateNotification);
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [warehouseList, setWarehouseList] = useState([]);
-  const [rowsInventory, setRowsInventory] = useState([]);
   const [action, setAction] = useState(null);
   const [toggleFilter, setToggleFilter] = useState(true);
 
-  const [tableStatus, setTableStatus] = useState<TStatus>("idle");
+  const [tableInventory, setTableInventory] = useState<TInventory>({
+    message: "",
+    data: [],
+    status: "idle",
+  });
+
   const [error, setError] = useState<AxiosError | null>(null);
 
   const {
@@ -66,7 +69,7 @@ function Inventory() {
   };
 
   const fetchInventoryTable = async (warehouse: string) => {
-    setTableStatus("loading");
+    setTableInventory((prev) => ({ ...prev, status: "loading" }));
 
     try {
       const tableBody = {
@@ -75,11 +78,13 @@ function Inventory() {
       };
 
       const { data: rows } = await inventoryServices.getInventoryList({ params: tableBody });
-      setRowsInventory(rows.data);
-      setTableStatus("succeeded");
+      setTableInventory({
+        status: "succeeded",
+        data: rows.data,
+        message: rows.message,
+      });
     } catch (err) {
-      setError(err);
-      setTableStatus("failed");
+      setTableInventory({ status: "failed", message: err.message, data: [] });
     }
   };
 
@@ -198,7 +203,9 @@ function Inventory() {
     <DashboardLayout>
       <DashboardNavbar />
 
-      {tableStatus === "failed" && <MDTypography variant="body2">{error.message}</MDTypography>}
+      {tableInventory.status === "failed" && (
+        <MDTypography variant="body2">{tableInventory.message}</MDTypography>
+      )}
 
       <MDSnackbar
         key={showNotifyDownload.key}
@@ -273,9 +280,9 @@ function Inventory() {
                   </MDBox>
                 </MDBox>
                 <DataTable
-                  table={{ columns: tableHeaders, rows: rowsInventory }}
+                  table={{ columns: tableHeaders, rows: tableInventory.data }}
                   isSorted={false}
-                  isLoading={tableStatus === "loading"}
+                  isLoading={tableInventory.status === "loading"}
                   entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}
                   showTotalEntries
                   noEndBorder

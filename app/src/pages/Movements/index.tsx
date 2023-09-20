@@ -50,7 +50,7 @@ function Movements() {
     filename,
   } = useDownloadFile();
 
-  const [tableOrders, setTableOrders] = useState<TTableOrder>({
+  const [tableMovements, setTableMovements] = useState<TTableOrder>({
     message: "",
     data: [],
     status: "idle",
@@ -100,7 +100,7 @@ function Movements() {
   };
 
   const fetchMovement = async ({ warehouseNo, type, materialCode, coverageDate }: TFiltered) => {
-    setTableOrders((prev) => ({ ...prev, status: "loading" }));
+    setTableMovements((prev) => ({ ...prev, status: "loading" }));
 
     try {
       const { data: rows } = await movementServices.getMovements({
@@ -111,13 +111,13 @@ function Movements() {
           coverage_date: coverageDate,
         },
       });
-      setTableOrders({
+      setTableMovements({
         status: "succeeded",
         data: rows.data,
-        message: rows.data.message,
+        message: rows.message,
       });
     } catch (err) {
-      setTableOrders({ status: "failed", message: err.message, data: [] });
+      setTableMovements({ status: "failed", message: err.message, data: [] });
     }
   };
 
@@ -157,7 +157,7 @@ function Movements() {
   const onClear = () => {
     setFiltered((prev) => ({ ...initialFiltered, coverageDate: prev.coverageDate }));
 
-    setTableOrders({
+    setTableMovements({
       message: "",
       data: [],
       status: "idle",
@@ -216,7 +216,7 @@ function Movements() {
       subRows = [{ headerText, reference }];
     }
 
-    setTableOrders((prev) => {
+    setTableMovements((prev) => {
       const clonePrev = prev;
       clonePrev.data[idx].subRows = subRows;
 
@@ -309,8 +309,8 @@ function Movements() {
     <DashboardLayout>
       <DashboardNavbar />
 
-      {tableOrders.status === "failed" && (
-        <MDTypography variant="body2">{tableOrders.message}</MDTypography>
+      {tableMovements.status === "failed" && (
+        <MDTypography variant="body2">{tableMovements.message}</MDTypography>
       )}
 
       <MDSnackbar
@@ -446,7 +446,7 @@ function Movements() {
                     </MDBox>
 
                     <MDButton
-                      disabled={tableOrders.status === "loading"}
+                      disabled={tableMovements.status === "loading"}
                       sx={{ margin: "8px" }}
                       size="small"
                       variant="gradient"
@@ -456,7 +456,7 @@ function Movements() {
                       Filter
                     </MDButton>
                     <MDButton
-                      disabled={tableOrders.status === "loading"}
+                      disabled={tableMovements.status === "loading"}
                       sx={{ margin: "8px" }}
                       size="small"
                       variant="gradient"
@@ -470,10 +470,10 @@ function Movements() {
                 <DataTable
                   table={{
                     columns: tableHeaders({ onUpdateSubRow }),
-                    rows: tableOrders.data,
+                    rows: tableMovements.data,
                   }}
                   isSorted={false}
-                  isLoading={tableOrders.status === "loading"}
+                  isLoading={tableMovements.status === "loading"}
                   entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}
                   renderRowSubComponent={subTable}
                   showTotalEntries

@@ -6,7 +6,9 @@ import {
 import HttpAdapter from "./httpAdapter";
 
 class IndicatorServices extends HttpAdapter {
-  getActiveSku(config: AxiosRequestConfig<AxiosResponse<ResponseIndicatorsStatisticsEntity>>) {
+  getActiveSku(
+    config: AxiosRequestConfig
+  ): Promise<AxiosResponse<ResponseIndicatorsStatisticsEntity>> {
     return this.get("/indicators/active-sku", config);
   }
 

@@ -1,15 +1,12 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
-
 import MDBox from "atoms/MDBox";
 import Sidenav from "organisms/Sidenav";
 import Configurator from "organisms/Configurator";
 import { useAppDispatch } from "hooks";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { signOut, setIsAuthenticated, reAuthenticate } from "redux/auth/action";
 
 import theme from "assets/theme";

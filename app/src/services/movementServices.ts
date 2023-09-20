@@ -1,8 +1,9 @@
-import { AxiosRequestConfig } from "axios";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
+import { ResponseMovementsEntity, ResponseSubMovementsEntity } from "entities/movements";
 import HttpAdapter from "./httpAdapter";
 
 class MovementServices extends HttpAdapter {
-  getMovements(config: AxiosRequestConfig) {
+  getMovements(config: AxiosRequestConfig): Promise<AxiosResponse<ResponseMovementsEntity>> {
     return this.get("/movements", config);
   }
 
@@ -10,7 +11,9 @@ class MovementServices extends HttpAdapter {
     return this.get("/movements/material-description", config);
   }
 
-  getOutboundSubDetails(config: AxiosRequestConfig) {
+  getOutboundSubDetails(
+    config: AxiosRequestConfig
+  ): Promise<AxiosResponse<ResponseSubMovementsEntity>> {
     return this.get("/movements/outbound-subdetails", config);
   }
 }

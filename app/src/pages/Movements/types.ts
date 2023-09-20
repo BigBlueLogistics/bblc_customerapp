@@ -1,4 +1,4 @@
-import { TStatus } from "types/status";
+import { ResponseMovementsEntity } from "entities/movements";
 
 export type INotifyDownload = {
   key: string | number;
@@ -19,11 +19,7 @@ export type TFiltered = {
   lastModified: Date | null;
 };
 
-export type TTableOrder = {
-  status: TStatus;
-  data: Record<string, any>[];
-  message: string;
-};
+export type TTableOrder = ResponseMovementsEntity;
 
 export type ITableHeader = {
   onUpdateSubRow?: (row: Record<string, any>) => Promise<void>;

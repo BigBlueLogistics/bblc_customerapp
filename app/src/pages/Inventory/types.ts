@@ -1,3 +1,7 @@
+import { ResponseInventoryEntity } from "entities/inventory";
+
+export type TInventory = ResponseInventoryEntity;
+
 export type INotifyDownload = {
   key: string | number;
   open: boolean;
