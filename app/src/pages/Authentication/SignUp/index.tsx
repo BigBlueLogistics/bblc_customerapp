@@ -12,7 +12,7 @@ import MDAlert2 from "atoms/MDAlert2";
 import CoverLayout from "pages/Authentication/components/CoverLayout";
 
 import { useAppDispatch } from "hooks";
-import { signUp } from "redux/auth/action";
+import { signUp, resetData } from "redux/auth/action";
 
 // Images
 import bgImage from "assets/images/bg-bblc-wh5.jpg";
@@ -63,7 +63,13 @@ function SignUp() {
     if (status === "succeeded") {
       resetForm();
     }
-  }, [resetForm, status]);
+
+    return () => {
+      if (status === "succeeded" || status === "failed") {
+        dispatch(resetData());
+      }
+    };
+  }, [dispatch, resetForm, status]);
 
   return (
     <CoverLayout image={bgImage}>

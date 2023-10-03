@@ -8,7 +8,7 @@ import MDAlert2 from "atoms/MDAlert2";
 import CoverLayout from "pages/Authentication/components/CoverLayout";
 
 import { useAppDispatch, useQueryString } from "hooks";
-import { resetPass } from "redux/auth/action";
+import { resetData, resetPass } from "redux/auth/action";
 
 import { useFormik } from "formik";
 import bgImage from "assets/images/bg-bblc-wh5.jpg";
@@ -59,7 +59,13 @@ function ResetPassword() {
     if (status === "succeeded") {
       resetForm();
     }
-  }, [resetForm, status]);
+
+    return () => {
+      if (status === "succeeded" || status === "failed") {
+        dispatch(resetData());
+      }
+    };
+  }, [resetForm, status, dispatch]);
 
   return (
     <CoverLayout coverHeight="50vh" image={bgImage}>

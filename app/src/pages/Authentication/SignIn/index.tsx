@@ -8,7 +8,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useFormik } from "formik";
 import { useAppDispatch } from "hooks";
-import { signIn } from "redux/auth/action";
+import { signIn, resetData } from "redux/auth/action";
 
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
@@ -64,7 +64,13 @@ function SignIn() {
       // Cache api token
       localStorage.setItem("apiToken", apiToken);
     }
-  }, [isAuthenticated, apiToken, navigate]);
+
+    return () => {
+      if (hasError) {
+        dispatch(resetData());
+      }
+    };
+  }, [isAuthenticated, apiToken, navigate, hasError, dispatch]);
 
   return (
     <BasicLayout image={bgImage}>
