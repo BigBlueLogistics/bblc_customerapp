@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DbConnector;
+namespace App\Support;
 
 use Exception;
 

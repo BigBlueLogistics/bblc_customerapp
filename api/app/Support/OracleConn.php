@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DbConnector;
+namespace App\Support;
 
 use Exception;
 
@@ -40,7 +40,6 @@ class OracleConn
             }
 
             if (! $conn) {
-                return 'test';
                 $err = oci_error($conn);
                 trigger_error(htmlentities($err['message'], ENT_QUOTES), E_USER_ERROR);
             }
