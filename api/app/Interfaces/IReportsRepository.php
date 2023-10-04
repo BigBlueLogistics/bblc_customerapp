@@ -11,4 +11,6 @@ interface IReportsRepository
     public function agingBy($customerCode, $warehouseNo, $fieldName);
 
     public function getAging($customerCode, $warehouseNo, $groupBy);
+
+    public function scheduleInventory($customerCode, $freqy, $invty1, $invty2, $invty3, $time1, $time2, $time3);
 }

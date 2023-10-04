@@ -6,6 +6,7 @@ use App\Facades\SapRfcFacade;
 use App\Interfaces\IReportsRepository;
 use App\Traits\StringEncode;
 use Carbon\Carbon;
+use DB;
 
 class ReportsRepository implements IReportsRepository
 {
@@ -584,5 +585,24 @@ class ReportsRepository implements IReportsRepository
         } else {
             return [];
         }
+    }
+
+    public function scheduleInventory($customerCode, $freqy, $invty1, $invty2, $invty3, $time1, $time2, $time3)
+    {
+        // If customerCode is exists update the row else insert the data.
+        $upSert = DB::connection('wms')->table('KNA1')->updateOrInsert(
+            ['KUNNR' => $customerCode],
+            [
+                'DAYIND' => $freqy,
+                'INVTYP1' => $invty1,
+                'INVTYP2' => $invty2,
+                'INVTYP3' => $invty3,
+                'TIMIND' => $time1,
+                'TIMIN2' => $time2,
+                'TIMIN3' => $time3,
+            ]
+        );
+
+        return $upSert;
     }
 }

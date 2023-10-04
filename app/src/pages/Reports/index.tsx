@@ -1,7 +1,7 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-
+import { FormikHelpers } from "formik";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDSelect from "atoms/MDSelect";
@@ -21,11 +21,14 @@ import excel from "assets/images/icons/excel.png";
 import miscData, { ITableHeadersKey, IGroupByKey } from "pages/Reports/data";
 import { reportServices, inventoryServices } from "services";
 import { AxiosError } from "axios";
+import { ResponseReportScheduleEntity } from "entities/reports";
 import selector from "./selector";
 import { INotifyDownload, TGroupBy, TTableReports } from "./types";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
+import ModalSchedule from "./components/ModalSchedule";
 import { TMenuAction } from "./components/MenuAction/types";
+import { TPropsUpdateSchedule } from "./components/ModalSchedule/type";
 
 function Reports() {
   const dispatch = useAppDispatch();
@@ -47,9 +50,15 @@ function Reports() {
   const [groupByKey, setGroupByKey] = useState<IGroupByKey>("stock");
   const [action, setAction] = useState(null);
   const [toggleFilter, setToggleFilter] = useState(true);
+  const [showSchedule, setShowSchedule] = useState(false);
 
   const [tableReports, setTableReports] = useState<TTableReports>(initialTableReports);
   const [error, setError] = useState<AxiosError | null>(null);
+  const [updateSchedule, setUpdateSchedule] = useState<ResponseReportScheduleEntity>({
+    message: "",
+    data: null,
+    status: "idle",
+  });
 
   const {
     downloadFile,
@@ -164,6 +173,41 @@ function Reports() {
     setTableReports(initialTableReports);
   };
 
+  const onShowSchedule = () => {
+    setShowSchedule(true);
+  };
+
+  const onCloseSchedule = () => {
+    setUpdateSchedule({
+      message: "",
+      data: null,
+      status: "idle",
+    });
+    setShowSchedule(false);
+  };
+
+  const onUpdateSchedule = async (
+    props: TPropsUpdateSchedule,
+    resetForm: FormikHelpers<TPropsUpdateSchedule>["resetForm"]
+  ) => {
+    setUpdateSchedule((prev) => ({ ...prev, status: "loading" }));
+
+    try {
+      const { data: rows } = await reportServices.updateSchedule({
+        customer_code: customerCode,
+        ...props,
+      });
+      setUpdateSchedule({
+        status: "succeeded",
+        data: rows.data,
+        message: rows.message,
+      });
+      resetForm();
+    } catch (err) {
+      setUpdateSchedule({ status: "failed", message: err.message, data: null });
+    }
+  };
+
   useEffect(() => {
     fetchWarehouseList();
   }, []);
@@ -247,6 +291,12 @@ function Reports() {
         <MDTypography variant="body2">{tableReports.message}</MDTypography>
       )}
 
+      <ModalSchedule
+        data={updateSchedule}
+        open={showSchedule}
+        onClose={onCloseSchedule}
+        onUpdateSchedule={onUpdateSchedule}
+      />
       <MDSnackbar
         key={showNotifyDownload.key}
         color={showNotifyDownload.color}
@@ -280,6 +330,13 @@ function Reports() {
                 </MDTypography>
 
                 <MDBox my="auto" marginLeft="auto">
+                  <MDButton
+                    variant="outlined"
+                    onClick={onShowSchedule}
+                    sx={{ marginRight: "20px" }}
+                  >
+                    Schedule
+                  </MDButton>
                   <ActionIcon
                     title={toggleFilter ? "close filter" : "open filter"}
                     onClick={onToggleFilter}

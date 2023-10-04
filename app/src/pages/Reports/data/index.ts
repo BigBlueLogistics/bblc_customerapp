@@ -207,6 +207,39 @@ export default function miscData() {
     status: "idle",
   };
 
+  const inventoryTypesOpts = [
+    { value: "", label: "None" },
+    { value: "Material Status", label: "Material Status" },
+    { value: "WH Status-Combined", label: "WH Status-Combined" },
+    { value: "WH Status-Expiry Date", label: "WH Status-Expiry Date" },
+    { value: "WH Status-Receiving Date", label: "WH Status-Receiving Date" },
+    { value: "WH Status-Batch", label: "WH Status-Batch" },
+    { value: "WH Aging-Expiry Date", label: "WH Aging-Expiry Date" },
+    { value: "WH Aging-Receiving Date", label: "WH Aging-Receiving Date" },
+    { value: "Movement Report-Daily", label: "Movement Report-Daily" },
+  ];
+
+  const freqyOpts = [
+    { value: "Daily", label: "Daily" },
+    { value: "Weekly", label: "Weekly" },
+    { value: "Monthly", label: "Monthly" },
+  ];
+
+  const sendingTimeOpts = () => {
+    const hoursCount = 12;
+    const am = [{ value: "", label: "None" }];
+    const pm = [];
+    let i = 1;
+
+    while (i <= hoursCount) {
+      am.push({ value: `${i} AM`, label: `${i} AM` });
+      pm.push({ value: `${i} PM`, label: `${i} PM` });
+      i += 1;
+    }
+
+    return am.concat(pm);
+  };
+
   return {
     tableHeaders: {
       "wh-snapshot": whSnapshot,
@@ -217,6 +250,9 @@ export default function miscData() {
     groupByData,
     initialStateNotification,
     initialTableReports,
+    sendingTimeOpts,
+    inventoryTypesOpts,
+    freqyOpts,
   };
 }
 

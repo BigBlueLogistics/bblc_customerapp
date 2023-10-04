@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Exports\Reports\AgingExport;
 use App\Exports\Reports\WHSnapshotExport;
-use App\Http\Requests\ReportRequest;
+use App\Http\Requests\Report\ReportRequest;
+use App\Http\Requests\Report\ScheduleRequest;
 use App\Interfaces\IMemberRepository;
 use App\Interfaces\IReportsRepository;
 use App\Traits\HttpResponse;
@@ -81,6 +82,29 @@ class ReportsController extends Controller
 
             return $this->sendResponse($res);
         } catch (Exception $e) {
+            return $this->sendError($e);
+        }
+    }
+
+    public function scheduleInventory(ScheduleRequest $request)
+    {
+        try {
+            $request->validated($request->all());
+
+            $customerCode = $request->input('customer_code');
+            $freqy  = $request->input('freqy');
+            $invty1 = $request->input('invty1');
+            $invty2 = $request->input('invty2');
+            $invty3 = $request->input('invty3');
+            $time1 = $request->input('time1');
+            $time2 = $request->input('time2');
+            $time3 = $request->input('time3');
+            $res = $this->reports->scheduleInventory($customerCode, $freqy, $invty1, $invty2, $invty3, $time1, $time2, $time3);
+
+            return $this->sendResponse($res, 'Successully created or updated report sending information');
+        }
+        catch (Exception $e)
+        {
             return $this->sendError($e);
         }
     }
