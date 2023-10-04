@@ -97,6 +97,11 @@ function Members() {
   };
 
   const onCloseEdit = () => {
+    setUpdateMemberDetails({
+      message: "",
+      data: null,
+      status: "idle",
+    });
     setShowEdit(false);
   };
 

@@ -4,6 +4,7 @@ export default yup.object({
   id: yup.number().required(),
   customer_code: yup
     .string()
+    .required("required")
     .min(8, "Must be exactly 8 characters")
     .max(8, "Must be exactly 8 characters"),
   company_name: yup.string().required("required"),
