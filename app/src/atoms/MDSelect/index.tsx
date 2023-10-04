@@ -26,7 +26,6 @@ function MDSelect({
     return (
       options?.length &&
       options.map((optValue, idx) => (
-        // @ts-ignore
         // eslint-disable-next-line react/no-array-index-key
         <MenuItem key={idx} value={optValue} sx={itemStyle}>
           {optValue}
