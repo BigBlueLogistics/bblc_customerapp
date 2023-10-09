@@ -61,16 +61,18 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      sx={{ "& .MuiDialog-paper": { maxWidth: "325px" } }}
+    >
       <MDBox component="form" role="form" onSubmit={handleSubmit}>
         <DialogTitle>Schedule Inventory Sending</DialogTitle>
         <DialogContent>
           {renderMessage()}
           <MDSelect
-            sx={({ breakpoints }) => ({
-              [breakpoints.up("sm")]: { width: "60%" },
-              [breakpoints.up("xs")]: { width: "100%" },
-            })}
+            sx={{ width: "94%" }}
             label="Sending Frequency"
             variant="outlined"
             name="freqy"
@@ -82,10 +84,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             helperText={touched.freqy ? errors.freqy : ""}
           />
           <MDSelect
-            sx={({ breakpoints }) => ({
-              [breakpoints.up("sm")]: { width: "60%" },
-              [breakpoints.up("xs")]: { width: "80%" },
-            })}
+            sx={{ width: "94%" }}
             label="Inventory Types 1"
             variant="outlined"
             name="invty1"
@@ -95,10 +94,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             showArrowIcon
           />
           <MDSelect
-            sx={({ breakpoints }) => ({
-              [breakpoints.up("sm")]: { width: "60%" },
-              [breakpoints.up("xs")]: { width: "80%" },
-            })}
+            sx={{ width: "94%" }}
             label="Inventory Types 2"
             variant="outlined"
             name="invty2"
@@ -108,10 +104,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             showArrowIcon
           />
           <MDSelect
-            sx={({ breakpoints }) => ({
-              [breakpoints.up("sm")]: { width: "60%" },
-              [breakpoints.up("xs")]: { width: "80%" },
-            })}
+            sx={{ width: "94%" }}
             label="Inventory Types 3"
             variant="outlined"
             name="invty3"
@@ -121,10 +114,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             showArrowIcon
           />
           <MDSelect
-            sx={({ breakpoints }) => ({
-              [breakpoints.up("sm")]: { width: "60%" },
-              [breakpoints.up("xs")]: { width: "100%" },
-            })}
+            sx={{ width: "94%" }}
             label="1st Sending Time"
             variant="outlined"
             name="time1"
@@ -134,10 +124,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             showArrowIcon
           />
           <MDSelect
-            sx={({ breakpoints }) => ({
-              [breakpoints.up("sm")]: { width: "60%" },
-              [breakpoints.up("xs")]: { width: "100%" },
-            })}
+            sx={{ width: "94%" }}
             label="2nd Sending Time"
             variant="outlined"
             name="time2"
@@ -147,10 +134,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             showArrowIcon
           />
           <MDSelect
-            sx={({ breakpoints }) => ({
-              [breakpoints.up("sm")]: { width: "60%" },
-              [breakpoints.up("xs")]: { width: "100%" },
-            })}
+            sx={{ width: "94%" }}
             label="3rd Sending Time"
             variant="outlined"
             name="time3"
