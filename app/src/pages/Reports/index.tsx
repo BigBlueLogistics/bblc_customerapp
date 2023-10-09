@@ -175,6 +175,7 @@ function Reports() {
 
   const onShowSchedule = () => {
     setShowSchedule(true);
+    closeAction();
   };
 
   const onCloseSchedule = () => {
