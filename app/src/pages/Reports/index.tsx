@@ -268,6 +268,15 @@ function Reports() {
       onClick: onRefresh,
     },
     {
+      icon: (
+        <Icon sx={{ cursor: "pointer" }} fontSize="small">
+          schedule_send
+        </Icon>
+      ),
+      label: "Schedule Auto-sending",
+      onClick: onShowSchedule,
+    },
+    {
       icon: <MDImageIcon src={excel} alt="export-excel-icon" width={18} height={18} />,
       label: "Export as XLS file",
       onClick: () => exportFile("xlsx"),
@@ -330,13 +339,6 @@ function Reports() {
                 </MDTypography>
 
                 <MDBox my="auto" marginLeft="auto">
-                  <MDButton
-                    variant="outlined"
-                    onClick={onShowSchedule}
-                    sx={{ marginRight: "20px" }}
-                  >
-                    Schedule
-                  </MDButton>
                   <ActionIcon
                     title={toggleFilter ? "close filter" : "open filter"}
                     onClick={onToggleFilter}
