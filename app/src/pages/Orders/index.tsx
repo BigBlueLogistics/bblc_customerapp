@@ -340,9 +340,22 @@ function Orders() {
                 </MDTypography>
 
                 <MDBox my="auto" marginLeft="auto">
-                  <MDButton variant="outlined" onClick={handleCreate} sx={{ marginRight: "20px" }}>
+                  <MDButton
+                    variant="outlined"
+                    size="small"
+                    onClick={handleCreate}
+                    sx={{ marginRight: "20px" }}
+                  >
                     Create new
                   </MDButton>
+                  {/* <MDButton
+                    variant="outlined"
+                    size="small"
+                    onClick={handleCreate}
+                    sx={{ marginRight: "20px" }}
+                  >
+                    Status update
+                  </MDButton> */}
                   <ActionIcon
                     title={toggleFilter ? "close filter" : "open filter"}
                     onClick={onToggleFilter}

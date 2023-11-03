@@ -21,6 +21,7 @@ export type ViewMemberEntity = {
   id: number;
   fname: string;
   lname: string;
+  phone_num: string;
   email: string;
   role_id: number;
   email_verified_at: string;

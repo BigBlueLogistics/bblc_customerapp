@@ -28,7 +28,7 @@ function SignUp() {
     initialValues: {
       fname: "",
       lname: "",
-      phone_no: "",
+      phone_num: "",
       company: "",
       email: "",
       password: "",
@@ -126,14 +126,14 @@ function SignUp() {
             <MDBox mb={1}>
               <MDInput
                 type="text"
-                name="phone_no"
+                name="phone_num"
                 label="Phone Number"
                 variant="standard"
                 fullWidth
                 placeholder="Eg: 09xxxxxxxxx"
-                value={values.phone_no}
-                error={touched.phone_no && Boolean(errors.phone_no)}
-                helperText={touched.phone_no ? errors.phone_no : ""}
+                value={values.phone_num}
+                error={touched.phone_num && Boolean(errors.phone_num)}
+                helperText={touched.phone_num ? errors.phone_num : ""}
                 onChange={handleChange}
               />
             </MDBox>

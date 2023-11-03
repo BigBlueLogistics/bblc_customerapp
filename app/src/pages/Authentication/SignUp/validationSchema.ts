@@ -3,7 +3,7 @@ import * as yup from "yup";
 export default yup.object({
   fname: yup.string().required("required"),
   lname: yup.string().required("required"),
-  phone_no: yup
+  phone_num: yup
     .string()
     .matches(/^[0-9]+$/, "Must be only digits")
     .min(11, "Must be exactly 11 digits")

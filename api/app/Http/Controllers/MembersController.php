@@ -42,7 +42,7 @@ class MembersController extends Controller
         try {
             $this->authorize('view', $user);
 
-            $member = User::find($id, ['id', 'fname', 'lname', 'email', 'email_verified_at', 'active', 'role_id', 'van_status']);
+            $member = User::find($id, ['id', 'fname', 'lname', 'email', 'email_verified_at', 'active', 'role_id', 'van_status', 'phone_num']);
             $roles = Role::where('id', '!=', 0)->select('id','name')->get();
             $rolesWithNone = array_merge([[ 'id' => '', 'name' => '--None--']], $roles->toArray());
 
@@ -79,6 +79,7 @@ class MembersController extends Controller
             $member->fname = $request->fname;
             $member->lname = $request->lname;
             $member->email = $request->email;
+            $member->phone_num = $request->phone_num;
             $member->active = strval($request->is_active);
             $member->role_id = $request->role_id;
             $member->van_status = strval($request->van_status) == "true" ? "x" : null;

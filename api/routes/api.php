@@ -9,6 +9,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\TrucksVansController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,7 +36,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('auth')->group(function () {
         Route::get('/logout', [AuthController::class, 'logout']);
         Route::get('/is-authenticated', [AuthController::class, 'isAuthenticated']);
-        Route::post('/change-password', [AuthController::class, 'changePass']);
     });
 
     Route::prefix('inventory')->group(function () {
@@ -89,5 +89,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/status', [TrucksVansController::class, 'status']);
         Route::get('/status-details', [TrucksVansController::class, 'statusDetails']);
         Route::get('/schedule-today', [TrucksVansController::class, 'scheduleToday']);
+    });
+
+    Route::prefix('profile')->group(function(){
+        Route::get('/edit', [ProfileController::class, 'edit']);
+        Route::post('/update', [ProfileController::class, 'update']);
+        Route::post('/change-password', [ProfileController::class, 'changePass']);
     });
 });

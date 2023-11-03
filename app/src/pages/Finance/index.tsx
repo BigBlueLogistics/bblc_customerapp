@@ -9,7 +9,7 @@ import Footer from "organisms/Footer";
 import Status from "pages/Finance/components/Status";
 import Schedule from "pages/Finance/components/Schedule";
 import StatusDetails from "pages/Finance/components/StatusDetails";
-import { trucksVansServies } from "services";
+import { trucksVansServices } from "services";
 import { TListStatus, TListStatusDetails, TListScheduleToday } from "pages/Finance/types";
 import { getValue } from "utils";
 
@@ -37,7 +37,7 @@ function Finance() {
     setListStatus((prev) => ({ ...prev, status: "loading" }));
 
     try {
-      const { data: truckVansStatus } = await trucksVansServies.getStatus();
+      const { data: truckVansStatus } = await trucksVansServices.getStatus();
 
       setListStatus({
         status: "succeeded",
@@ -53,7 +53,7 @@ function Finance() {
     setListStatusDetails((prev) => ({ ...prev, status: "loading" }));
 
     try {
-      const { data: truckVansStatus } = await trucksVansServies.getStatusDetails({
+      const { data: truckVansStatus } = await trucksVansServices.getStatusDetails({
         params: { vanMonitorNo, action },
       });
 
@@ -71,7 +71,7 @@ function Finance() {
     setListScheduleToday((prev) => ({ ...prev, status: "loading" }));
 
     try {
-      const { data: truckVansSchedule } = await trucksVansServies.getScheduleToday();
+      const { data: truckVansSchedule } = await trucksVansServices.getScheduleToday();
 
       setListScheduleToday({
         status: "succeeded",

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ChangePassRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\ResetPassRequest;
@@ -69,7 +68,7 @@ class AuthController extends Controller
                 'lname' => Str::lower($request->lname),
                 'password' => Hash::make($request->password),
                 'email' => $email,
-                'phone_no' => Str::lower($request->phone_no),
+                'phone_num' => Str::lower($request->phone_num),
             ]);
 
             if ($user) {
@@ -175,27 +174,5 @@ class AuthController extends Controller
             'user' => array_merge(Auth::user()->toArray(), $relations),
             'token' => $currentToken,
         ], __('auth.re-authenticate'));
-    }
-
-    public function changePass(ChangePassRequest $request)
-    {
-        $request->validated($request->all());
-
-        $email = Auth::user()->email;
-
-        $user = User::where('email', $email)->first();
-
-        if (! $user || ! Hash::check($request->current_password, $user->password)) {
-            return $this->sendError('Current password not match', Response::HTTP_UNAUTHORIZED);
-        }
-        if ($request->new_password !== $request->confirm_password) {
-            return $this->sendError('New and confirm new password not match.', Response::HTTP_UNAUTHORIZED);
-        }
-
-        // Update user password
-        $user->password = Hash::make($request->confirm_password);
-        $user->save();
-
-        return $this->sendResponse(null, 'New password has been set.');
     }
 }

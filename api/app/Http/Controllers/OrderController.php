@@ -111,6 +111,7 @@ class OrderController extends Controller
             $currentDatetime = Carbon::now();
 
             // Insert order header
+            // NOTE: transid is auto generated in model OrderHeader
             $orderHeader = OrderHeader::create([
                 'lgnum' => $request->source_wh,
                 'ponum' => $request->ref_number,

@@ -8,7 +8,7 @@ import Footer from "organisms/Footer";
 import Status from "pages/TrucksVans/components/Status";
 import Schedule from "pages/TrucksVans/components/Schedule";
 import StatusDetails from "pages/TrucksVans/components/StatusDetails";
-import { trucksVansServies } from "services";
+import { trucksVansServices } from "services";
 import { TListStatus, TListStatusDetails, TListScheduleToday } from "pages/TrucksVans/types";
 import { getValue } from "utils";
 
@@ -36,7 +36,7 @@ function TrucksVans() {
     setListStatus((prev) => ({ ...prev, status: "loading" }));
 
     try {
-      const { data: truckVansStatus } = await trucksVansServies.getStatus();
+      const { data: truckVansStatus } = await trucksVansServices.getStatus();
 
       setListStatus({
         status: "succeeded",
@@ -52,7 +52,7 @@ function TrucksVans() {
     setListStatusDetails((prev) => ({ ...prev, status: "loading" }));
 
     try {
-      const { data: truckVansStatus } = await trucksVansServies.getStatusDetails({
+      const { data: truckVansStatus } = await trucksVansServices.getStatusDetails({
         params: { vanMonitorNo, action },
       });
 
@@ -70,7 +70,7 @@ function TrucksVans() {
     setListScheduleToday((prev) => ({ ...prev, status: "loading" }));
 
     try {
-      const { data: truckVansSchedule } = await trucksVansServies.getScheduleToday();
+      const { data: truckVansSchedule } = await trucksVansServices.getScheduleToday();
 
       setListScheduleToday({
         status: "succeeded",

@@ -8,7 +8,8 @@ import { useFormik } from "formik";
 import { TChangePassword } from "./types";
 import validationSchema from "./validationSchema";
 
-function ChangePassword({ title, onChangePass, shadow, isLoading }: TChangePassword) {
+function ChangePassword({ data, title, onChangePass, shadow = false }: TChangePassword) {
+  const { status } = data;
   const { values, handleSubmit, handleChange, errors, touched } = useFormik({
     validationSchema,
     initialValues: {
@@ -30,6 +31,7 @@ function ChangePassword({ title, onChangePass, shadow, isLoading }: TChangePassw
       <MDBox p={2} component="form" role="form" onSubmit={handleSubmit}>
         <MDBox mb={2}>
           <MDInput
+            variant="standard"
             name="current_password"
             type="password"
             label="Current password"
@@ -42,6 +44,7 @@ function ChangePassword({ title, onChangePass, shadow, isLoading }: TChangePassw
         </MDBox>
         <MDBox mb={2}>
           <MDInput
+            variant="standard"
             name="new_password"
             type="password"
             label="New password"
@@ -54,6 +57,7 @@ function ChangePassword({ title, onChangePass, shadow, isLoading }: TChangePassw
         </MDBox>
         <MDBox mb={2}>
           <MDInput
+            variant="standard"
             name="confirm_password"
             type="password"
             label="Confirm new password"
@@ -69,19 +73,15 @@ function ChangePassword({ title, onChangePass, shadow, isLoading }: TChangePassw
             type="submit"
             variant="gradient"
             color="info"
-            disabled={isLoading}
-            loading={isLoading}
+            disabled={status === "loading"}
+            loading={status === "loading"}
           >
-            Change
+            Save
           </MDButton>
         </MDBox>
       </MDBox>
     </Card>
   );
 }
-
-ChangePassword.defaultProps = {
-  shadow: true,
-};
 
 export default ChangePassword;

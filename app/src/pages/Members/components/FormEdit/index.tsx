@@ -31,6 +31,7 @@ function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) 
       company_name: viewResult?.company || "",
       fname: viewResult?.fname || "",
       lname: viewResult?.lname || "",
+      phone_num: viewResult?.phone_num || "",
       email: viewResult?.email || "",
       email_verified_at: viewResult?.email_verified_at || "",
       is_verify: false,
@@ -195,9 +196,23 @@ function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) 
                 onChange={handleChange}
               />
             </MDBox>
+            <MDBox mb={1.5}>
+              <MDInput
+                type="text"
+                name="phone_num"
+                label="Phone Number"
+                variant="standard"
+                fullWidth
+                placeholder="Eg: 09xxxxxxxxx"
+                value={values.phone_num}
+                error={touched.phone_num && Boolean(errors.phone_num)}
+                helperText={touched.phone_num ? errors.phone_num : ""}
+                onChange={handleChange}
+              />
+            </MDBox>
             <MDBox mb={1} display="flex" flexDirection="column">
               <MDTypography component="label" variant="caption" color="text">
-                Van Status
+                Van Status Recipient
               </MDTypography>
               <MDBox display="flex" flexDirection="row" alignItems="center">
                 <MDTypography variant="body2">Inactive</MDTypography>

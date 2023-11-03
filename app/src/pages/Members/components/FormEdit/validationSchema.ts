@@ -12,6 +12,12 @@ export default yup.object({
   lname: yup.string().required("required"),
   email: yup.string().email("Enter valid email").required("required"),
   email_verified_at: yup.date(),
+  phone_num: yup
+    .string()
+    .matches(/^[0-9]+$/, "Must be only digits")
+    .min(11, "Must be exactly 11 digits")
+    .max(11, "Must be exactly 11 digits")
+    .required("required"),
   is_verify: yup.boolean(),
   is_active: yup.boolean(),
   role_id: yup.number(),

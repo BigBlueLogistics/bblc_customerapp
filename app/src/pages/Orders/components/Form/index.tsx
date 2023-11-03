@@ -35,7 +35,6 @@ function FormRequests({
   data,
   warehouseList,
 }: IForm) {
-  console.log("onShowEdit formData", data);
   const { initialOrder } = miscData();
   const initialRowId = uuidv4();
   initialOrder.requests[0].uuid = initialRowId;
@@ -78,7 +77,7 @@ function FormRequests({
         setMaterialList(resp.data);
       }
     } catch (error) {
-      console.log(error);
+      /* empty */
     }
   }, []);
 
