@@ -28,6 +28,7 @@ export type ViewMemberEntity = {
   customer_code: string;
   company: string;
   roles: { id: number; name: string }[];
+  van_status: boolean;
 };
 
 export type UpdateMemberEntity = ViewMemberEntity;

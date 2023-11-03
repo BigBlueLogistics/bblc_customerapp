@@ -15,4 +15,5 @@ export default yup.object({
   is_verify: yup.boolean(),
   is_active: yup.boolean(),
   role_id: yup.number(),
+  van_status: yup.boolean(),
 });

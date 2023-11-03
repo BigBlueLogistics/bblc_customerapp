@@ -36,11 +36,18 @@ function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) 
       is_verify: false,
       is_active: String(viewResult?.active) === "true",
       role_id: viewResult?.role_id || "",
+      van_status: String(viewResult?.van_status) === "true",
     },
     onSubmit: (validatedVal) => {
       const isActive = validatedVal.is_active.toString();
       const isVerify = validatedVal.is_verify.toString();
-      const argsData = { ...validatedVal, is_active: isActive, is_verify: isVerify };
+      const vanStatus = validatedVal.van_status.toString();
+      const argsData = {
+        ...validatedVal,
+        is_active: isActive,
+        is_verify: isVerify,
+        van_status: vanStatus,
+      };
       onUpdate(validatedVal.id, argsData);
     },
   });
@@ -188,15 +195,35 @@ function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) 
                 onChange={handleChange}
               />
             </MDBox>
-            <MDBox mb={1} display="flex" alignItems="center">
-              <MDTypography variant="body2">Inactive</MDTypography>
-              <Switch
-                name="is_active"
-                color="primary"
-                checked={String(values.is_active) === "true"}
-                onChange={handleChange}
-              />
-              <MDTypography variant="body2">Active</MDTypography>
+            <MDBox mb={1} display="flex" flexDirection="column">
+              <MDTypography component="label" variant="caption" color="text">
+                Van Status
+              </MDTypography>
+              <MDBox display="flex" flexDirection="row" alignItems="center">
+                <MDTypography variant="body2">Inactive</MDTypography>
+                <Switch
+                  name="van_status"
+                  color="primary"
+                  checked={String(values.van_status) === "true"}
+                  onChange={handleChange}
+                />
+                <MDTypography variant="body2">Active</MDTypography>
+              </MDBox>
+            </MDBox>
+            <MDBox mb={1} display="flex" flexDirection="column">
+              <MDTypography component="label" variant="caption" color="text">
+                Account Status
+              </MDTypography>
+              <MDBox display="flex" flexDirection="row" alignItems="center">
+                <MDTypography variant="body2">Inactive</MDTypography>
+                <Switch
+                  name="is_active"
+                  color="primary"
+                  checked={String(values.is_active) === "true"}
+                  onChange={handleChange}
+                />
+                <MDTypography variant="body2">Active</MDTypography>
+              </MDBox>
             </MDBox>
             <MDBox mb={1}>
               <MDSelect
