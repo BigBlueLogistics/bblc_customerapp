@@ -17,7 +17,7 @@ import MDButton from "atoms/MDButton";
 import MDAlert2 from "atoms/MDAlert2";
 import BasicLayout from "pages/Authentication/components/BasicLayout";
 
-import bgImage from "assets/images/bg-bblc-wh5.jpg";
+import { bblcWh5 } from "assets/images";
 import validationSchema from "./validationSchema";
 import selector from "./selector";
 
@@ -73,7 +73,7 @@ function SignIn() {
   }, [isAuthenticated, apiToken, navigate, hasError, dispatch]);
 
   return (
-    <BasicLayout image={bgImage}>
+    <BasicLayout image={bblcWh5}>
       <Card>
         <MDBox
           variant="gradient"

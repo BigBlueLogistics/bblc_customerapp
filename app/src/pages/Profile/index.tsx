@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Unstable_Grid2";
 import Divider from "@mui/material/Divider";
 
 import MDBox from "atoms/MDBox";
@@ -17,20 +17,13 @@ import { ChangePassType } from "types/authForm";
 import { capitalizeWord } from "utils";
 
 import { TProfileData } from "organisms/Profile/Main/types";
-import { TProfile, TProfileChangePass } from "./types";
+import miscData from "./data";
 import selector from "./selector";
 
 function Profile() {
-  const [viewChangePass, setChangePass] = useState<TProfileChangePass>({
-    message: "",
-    data: null,
-    status: "idle",
-  });
-  const [viewProfileDetails, setProfileDetails] = useState<TProfile>({
-    message: "",
-    data: null,
-    status: "idle",
-  });
+  const { initialStateChangePass, initialStateProfle } = miscData();
+  const [viewChangePass, setChangePass] = useState(initialStateChangePass);
+  const [viewProfileDetails, setProfileDetails] = useState(initialStateProfle);
   const { name, email, roleName } = selector();
   const capitalizeName = capitalizeWord(name);
 
@@ -43,6 +36,7 @@ function Profile() {
         data: rows.data,
         message: rows.message,
       });
+      setProfileDetails((prev) => ({ ...prev, status: "idle" }));
     } catch (err) {
       setChangePass({ status: "failed", message: err.message, data: null });
     }
@@ -73,6 +67,7 @@ function Profile() {
         data: rows.data,
         message: rows.message,
       });
+      setChangePass((prev) => ({ ...prev, status: "idle" }));
     } catch (err) {
       setProfileDetails({ status: "failed", message: err.message, data: null });
     }
@@ -133,7 +128,7 @@ function Profile() {
         {renderMessage()}
         <MDBox mt={5} mb={3}>
           <Grid container spacing={1}>
-            <Grid item xs={12} md={6} xl={4} sx={{ display: "flex" }}>
+            <Grid xs={12} md={6} xl={4} sx={{ display: "flex" }}>
               <ProfileInfoCard
                 title="profile information"
                 description={`Hi, ${capitalizeName} , Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality).`}
@@ -147,7 +142,7 @@ function Profile() {
               />
               <Divider orientation="vertical" sx={{ mx: 0 }} />
             </Grid>
-            <Grid item xs={12} xl={4}>
+            <Grid xs={12} md={6} xl={4} sx={{ display: "flex" }}>
               <ChangePassword
                 title="Change password"
                 data={viewChangePass}
@@ -156,7 +151,7 @@ function Profile() {
               />
               <Divider orientation="vertical" sx={{ mx: 0 }} />
             </Grid>
-            <Grid item xs={12} xl={4}>
+            <Grid xs={12} md={6} xl={4}>
               <Main
                 title="Profile"
                 data={viewProfileDetails}

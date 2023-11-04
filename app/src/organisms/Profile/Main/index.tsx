@@ -28,7 +28,7 @@ function Main({ data, title, onUpdateProfile, shadow = true }: TMain) {
     },
   });
   return (
-    <Card sx={{ height: "100%", boxShadow: !shadow && "none" }}>
+    <Card sx={{ width: "100%", height: "100%", boxShadow: !shadow && "none" }}>
       <MDBox pt={2} px={2}>
         <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
           {title}

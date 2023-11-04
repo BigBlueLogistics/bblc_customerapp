@@ -7,10 +7,7 @@ import MDAvatar from "atoms/MDAvatar";
 
 // base styles
 import breakpoints from "assets/theme/base/breakpoints";
-
-// Images
-// import burceMars from "assets/images/bruce-mars.jpg";
-import backgroundImage from "assets/images/bg-profile.jpeg";
+import { bblcWh5 } from "assets/images";
 import selector from "pages/Profile/selector";
 import { THeader } from "./types";
 
@@ -51,7 +48,7 @@ function Header({ children }: THeader) {
             `${linearGradient(
               rgba(gradients.info.main, 0.6),
               rgba(gradients.info.state, 0.6)
-            )}, url(${backgroundImage})`,
+            )}, url(${bblcWh5})`,
           backgroundSize: "cover",
           backgroundPosition: "50%",
           overflow: "hidden",

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Card from "@mui/material/Card";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
@@ -10,7 +11,7 @@ import validationSchema from "./validationSchema";
 
 function ChangePassword({ data, title, onChangePass, shadow = false }: TChangePassword) {
   const { status } = data;
-  const { values, handleSubmit, handleChange, errors, touched } = useFormik({
+  const { values, handleSubmit, handleChange, errors, touched, resetForm } = useFormik({
     validationSchema,
     initialValues: {
       current_password: "",
@@ -21,8 +22,15 @@ function ChangePassword({ data, title, onChangePass, shadow = false }: TChangePa
       onChangePass(validatedVal);
     },
   });
+
+  useEffect(() => {
+    if (data.status === "succeeded") {
+      resetForm();
+    }
+  }, [data, resetForm]);
+
   return (
-    <Card sx={{ height: "100%", boxShadow: !shadow && "none" }}>
+    <Card sx={{ width: "100%", height: "100%", boxShadow: !shadow && "none" }}>
       <MDBox pt={2} px={2}>
         <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
           {title}
