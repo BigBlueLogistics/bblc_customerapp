@@ -1,5 +1,5 @@
 import { CellAction, CellStatus } from "../components/TableCell";
-import { TNotifyOrder, TOrderData } from "../types";
+import { TNotifyOrder, TOrderData, TStatusUpdateData } from "../types";
 import { TData } from "./types";
 
 export default function miscData() {
@@ -129,6 +129,13 @@ export default function miscData() {
     requestsDelete: [],
   };
 
+  const initialOutboundDetails: TStatusUpdateData = {
+    message: "",
+    data: null,
+    status: "idle",
+    action: null,
+  };
+
   return {
     tableHeaders,
     typeReportsData,
@@ -136,5 +143,6 @@ export default function miscData() {
     initialFiltered,
     initialNotification,
     initialOrder,
+    initialOutboundDetails,
   };
 }

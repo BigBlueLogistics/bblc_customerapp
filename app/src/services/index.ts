@@ -1,3 +1,4 @@
+import { urls } from "config";
 import Auth from "./authService";
 import Inventory from "./inventoryService";
 import Members from "./membersService";
@@ -8,11 +9,13 @@ import Movement from "./movementServices";
 import TrucksVans from "./trucksVansService";
 import Profile from "./profileService";
 
+const { bwmsApiUrl } = urls();
+
 export const authServices = new Auth();
 export const inventoryServices = new Inventory();
 export const membersServices = new Members();
 export const reportServices = new Reports();
-export const ordersServices = new Orders();
+export const ordersServices = new Orders(bwmsApiUrl);
 export const indicatorServices = new Indicators();
 export const movementServices = new Movement();
 export const trucksVansServices = new TrucksVans();
