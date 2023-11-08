@@ -235,16 +235,16 @@ function Orders() {
   };
 
   const fetchOutboundDetails = async (docNo: string) => {
-    setOutboundDetails((prev) => ({ ...prev, status: "loading" }));
+    setOutboundDetails((prev) => ({ ...prev, status: "loading", action: "edit" }));
 
     try {
       const { data } = await ordersServices.getOutboundDetails(docNo);
-      setOutboundDetails({
+      setOutboundDetails((prev) => ({
+        ...prev,
         status: "succeeded",
         data,
         message: data.message,
-        action: "edit",
-      });
+      }));
     } catch (err) {
       setOutboundDetails({ status: "failed", message: err.message, data: null, action: null });
     }
