@@ -26,18 +26,21 @@ import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import { TMenuAction } from "./components/MenuAction/types";
 import CancelConfirmation from "./components/CancelConfirmation";
+import StatusUpdate from "./components/StatusUpdate";
 
 function Orders() {
   const dispatch = useAppDispatch();
-  const { tableHeaders, initialFiltered, initialNotification } = miscData();
+  const { tableHeaders, initialFiltered, initialNotification, initialOutboundDetails } = miscData();
   const [showNotify, setShowNotify] = useState<TNotifyOrder>(initialNotification);
   const [showForm, setShowForm] = useState(false);
+  const [showStatusUpdate, setShowStatusUpdate] = useState(false);
   const [warehouseList, setWarehouseList] = useState([]);
   const [statusList, setStatusList] = useState([]);
   const [action, setAction] = useState(null);
   const [error, setError] = useState<AxiosError | null>(null);
   const [toggleFilter, setToggleFilter] = useState(true);
   const [filtered, setFiltered] = useState<TFiltered>(initialFiltered);
+  const [outboundDetails, setOutboundDetails] = useState(initialOutboundDetails);
 
   const [tableOrders, setTableOrders] = useState<TTableOrder>({
     message: "",
@@ -85,7 +88,16 @@ function Orders() {
   };
 
   const onToggleFilter = () => {
-    setToggleFilter((prevState) => !prevState);
+    setToggleFilter((prev) => !prev);
+  };
+
+  const onShowStatusUpdate = () => {
+    setShowStatusUpdate(true);
+  };
+
+  const onCloseStatusUpdate = () => {
+    setShowStatusUpdate(false);
+    setOutboundDetails(initialOutboundDetails);
   };
 
   const fetchOrderList = async ({ status, createdAt, lastModified }: TFiltered) => {
@@ -143,7 +155,7 @@ function Orders() {
     fetchOrderList(initialFiltered);
   };
 
-  const handleCreate = () => {
+  const onCreate = () => {
     onShowForm();
     setFormOrder({
       message: "",
@@ -219,6 +231,52 @@ function Orders() {
       setFormOrder((prev) => ({ ...prev, data: data.data, status: "succeeded", id: transId }));
     } catch (err: any) {
       setFormOrder((prev) => ({ ...prev, message: err.message, status: "failed" }));
+    }
+  };
+
+  const fetchOutboundDetails = async (docNo: string) => {
+    setOutboundDetails((prev) => ({ ...prev, status: "loading", action: "edit" }));
+
+    try {
+      const { data } = await ordersServices.getOutboundDetails(docNo);
+      setOutboundDetails((prev) => ({
+        ...prev,
+        status: "succeeded",
+        data,
+        message: data.message,
+      }));
+    } catch (err) {
+      setOutboundDetails({ status: "failed", message: err.message, data: null, action: null });
+    }
+  };
+
+  const onCreateOutboundDetails = async (docNo: string) => {
+    setOutboundDetails((prev) => ({ ...prev, status: "loading", action: "create" }));
+
+    try {
+      const {
+        data: { bininfo },
+      } = outboundDetails;
+
+      const params = {
+        vbeln: docNo,
+        kunnr: bininfo?.at(0).KUNAG,
+        createddate: bininfo?.at(0).ERDAT,
+        createdtime: bininfo?.at(0).ERZET,
+        createdby: bininfo?.at(0).ERNAM,
+        ponum: bininfo?.at(0).SONUM,
+        lgnum: bininfo?.at(0).LGNUM,
+      };
+
+      const { data } = await ordersServices.createOutboundDetails(params);
+      setOutboundDetails((prev) => ({
+        ...prev,
+        status: "succeeded",
+        data,
+        message: data.message,
+      }));
+    } catch (err) {
+      setOutboundDetails({ status: "failed", message: err.message, data: null, action: null });
     }
   };
 
@@ -319,6 +377,14 @@ function Orders() {
         OnCancelNo={onCloseCancelConfirmation}
       />
 
+      <StatusUpdate
+        data={outboundDetails}
+        open={showStatusUpdate}
+        onClose={onCloseStatusUpdate}
+        onGetOutbound={fetchOutboundDetails}
+        onCreateOutbound={onCreateOutboundDetails}
+      />
+
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
@@ -343,19 +409,19 @@ function Orders() {
                   <MDButton
                     variant="outlined"
                     size="small"
-                    onClick={handleCreate}
+                    onClick={onCreate}
                     sx={{ marginRight: "20px" }}
                   >
                     Create new
                   </MDButton>
-                  {/* <MDButton
+                  <MDButton
                     variant="outlined"
                     size="small"
-                    onClick={handleCreate}
+                    onClick={onShowStatusUpdate}
                     sx={{ marginRight: "20px" }}
                   >
                     Status update
-                  </MDButton> */}
+                  </MDButton>
                   <ActionIcon
                     title={toggleFilter ? "close filter" : "open filter"}
                     onClick={onToggleFilter}

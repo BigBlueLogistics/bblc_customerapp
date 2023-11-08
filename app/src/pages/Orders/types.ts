@@ -56,3 +56,28 @@ export type TFormOrderState = {
   message: string;
   openConfirmation: boolean;
 };
+
+export type TStatusDetailsData = {
+  header: string;
+  status: string;
+  budat: string;
+  bunam: string;
+  bininfo: {
+    KUNAG: string;
+    ERDAT: string;
+    ERZET: string;
+    ERNAM: string;
+    BSTNK: string;
+    BTGEW: number;
+    SONUM: number;
+    LGNUM: string;
+    VBELN: string;
+  }[];
+};
+
+export type TStatusUpdateData = {
+  status: TStatus;
+  data: TStatusDetailsData;
+  message: string;
+  action: "edit" | "create" | null;
+};
