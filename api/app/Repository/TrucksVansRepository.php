@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class TrucksVansRepository implements ITrucksVansRepository
 {
+    // Order By van no and werks
     public function getTrucksVansStatus($customerCode)
     {
         $res = DB::connection('wms')->table('VANS')
@@ -19,6 +20,8 @@ class TrucksVansRepository implements ITrucksVansRepository
             ->whereNull('odatu')
             ->where('kunnr', '=', $customerCode)
             ->orderBy('adatu', 'desc')
+            ->orderBy('vnmbr', 'asc')
+            ->orderBy('werks', 'asc')
             ->get();
 
         return $res;
