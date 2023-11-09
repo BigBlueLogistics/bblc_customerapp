@@ -238,12 +238,12 @@ function Orders() {
     setOutboundDetails((prev) => ({ ...prev, status: "loading", action: "edit" }));
 
     try {
-      const { data } = await ordersServices.getOutboundDetails(docNo);
+      const { data: row } = await ordersServices.getAdhocOutbound(docNo);
       setOutboundDetails((prev) => ({
         ...prev,
         status: "succeeded",
-        data,
-        message: data.message,
+        data: row.data,
+        message: row.message,
       }));
     } catch (err) {
       setOutboundDetails({ status: "failed", message: err.message, data: null, action: null });
@@ -255,17 +255,17 @@ function Orders() {
 
     try {
       const {
-        data: { bininfo },
+        data: { info },
       } = outboundDetails;
 
       const params = {
-        vbeln: docNo,
-        kunnr: bininfo?.at(0).KUNAG,
-        createddate: bininfo?.at(0).ERDAT,
-        createdtime: bininfo?.at(0).ERZET,
-        createdby: bininfo?.at(0).ERNAM,
-        ponum: bininfo?.at(0).SONUM,
-        lgnum: bininfo?.at(0).LGNUM,
+        docNo,
+        customerCode: info?.customerCode,
+        createdDate: info?.createdDate,
+        createdTime: info?.createdTime,
+        createdBy: info?.createdBy,
+        soNum: info?.soNum,
+        warehouse: info?.warehouse,
       };
 
       const { data } = await ordersServices.createOutboundDetails(params);

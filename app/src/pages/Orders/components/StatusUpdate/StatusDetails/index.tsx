@@ -1,14 +1,11 @@
 import { Paper } from "@mui/material";
-import { CheckCircle } from "@mui/icons-material";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
-import selector from "pages/Orders/selector";
 import { getValue } from "utils";
 import { TStatusDetails } from "../types";
 
-function StatusDetails({ data }: TStatusDetails) {
-  const { customerCode } = selector();
-  const { data: viewStatus, status, action } = data;
+function StatusDetails({ data: response }: TStatusDetails) {
+  const { status, action, message, data: viewStatus } = response;
 
   const renderText = (
     label: string,
@@ -32,10 +29,7 @@ function StatusDetails({ data }: TStatusDetails) {
     );
   };
 
-  const isEditSuccess = status === "succeeded" && action === "edit";
-  const isCustomerMatch =
-    viewStatus?.bininfo?.at(0).KUNAG.toLowerCase() === (customerCode as string).toLowerCase();
-  const isStatusPosted = viewStatus?.status.toLowerCase().includes("posted");
+  console.log("datazz", status === "succeeded" && action === "edit", response);
 
   return (
     <MDBox
@@ -46,7 +40,7 @@ function StatusDetails({ data }: TStatusDetails) {
         paddingX: 1.5,
       })}
     >
-      {isEditSuccess && isCustomerMatch && !isStatusPosted ? (
+      {status === "succeeded" && action === "edit" ? (
         <>
           <MDBox mb={0.6}>
             <MDTypography
@@ -59,41 +53,32 @@ function StatusDetails({ data }: TStatusDetails) {
             </MDTypography>
           </MDBox>
 
-          {renderText("Customer:", viewStatus?.bininfo?.at(0).KUNAG)}
+          {renderText("Customer:", viewStatus?.info?.customerCode)}
           {renderText(
             "Date created:",
-            `${viewStatus?.bininfo?.at(0)?.ERDAT || "n/a"} ${
-              viewStatus?.bininfo?.at(0)?.ERZET || ""
-            }`
+            `${viewStatus?.info?.createdDate || "n/a"} ${viewStatus?.info?.createdTime || ""}`
           )}
-          {renderText("Created by:", viewStatus?.bininfo?.at(0).ERNAM)}
-          {renderText("Customer reference:", viewStatus?.bininfo?.at(0).BSTNK)}
+          {renderText("Created by:", viewStatus?.info?.createdBy)}
+          {renderText("Customer reference:", viewStatus?.info?.requestNum)}
           {renderText(
             "Total weight:",
-            viewStatus?.bininfo?.at(0).BTGEW ? `${viewStatus?.bininfo?.at(0).BTGEW} KG` : null
+            viewStatus?.info?.totalWeight ? `${viewStatus?.info?.totalWeight} KG` : null
           )}
-          {renderText("SO number:", viewStatus?.bininfo?.at(0).SONUM)}
+          {renderText("SO number:", viewStatus?.info?.soNum)}
           {renderText("Status:", viewStatus?.status)}
-          {renderText("Warehouse:", viewStatus?.bininfo?.at(0).LGNUM?.replace("W", "WH"))}
+          {renderText("Warehouse:", viewStatus?.info?.warehouse?.replace("W", "WH"))}
           <MDBox mb={0.6}>
             <MDTypography component="div" variant="caption" color="text" fontSize={13}>
               Remarks:
             </MDTypography>
             <MDTypography component="div" variant="caption" fontWeight="regular" fontSize={13}>
-              {getValue(viewStatus?.header, "n/a")}
+              {getValue(viewStatus?.remarks, "n/a")}
             </MDTypography>
           </MDBox>
         </>
       ) : (
         <MDTypography component="div" variant="caption" fontWeight="light" textAlign="center">
-          {!isEditSuccess || !isCustomerMatch ? (
-            "No data available."
-          ) : (
-            <MDBox display="flex" justifyContent="center" alignItems="center">
-              <CheckCircle color="success" sx={{ marginRight: 0.5 }} />
-              <span>Request completed, no further action needed</span>
-            </MDBox>
-          )}
+          {status === "failed" ? message : "No data available."}
         </MDTypography>
       )}
     </MDBox>

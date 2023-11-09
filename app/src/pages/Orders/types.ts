@@ -58,21 +58,23 @@ export type TFormOrderState = {
 };
 
 export type TStatusDetailsData = {
-  header: string;
+  remarks: string;
   status: string;
+  message?: string;
   budat: string;
   bunam: string;
-  bininfo: {
-    KUNAG: string;
-    ERDAT: string;
-    ERZET: string;
-    ERNAM: string;
-    BSTNK: string;
-    BTGEW: number;
-    SONUM: number;
-    LGNUM: string;
-    VBELN: string;
-  }[];
+  info?: {
+    docNo: string;
+    customerCode: string;
+    customerName: string;
+    createdDate: string;
+    createdTime: string;
+    createdBy: string;
+    requestNum: string;
+    soNum: string;
+    totalWeight: string;
+    warehouse: string;
+  };
 };
 
 export type TStatusUpdateData = {

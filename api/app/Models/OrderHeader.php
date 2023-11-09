@@ -24,6 +24,7 @@ class OrderHeader extends Model
         'miles', 'erdat', 'ertim',
         'apstat', 'transid', 'ernam',
         'pudat', 'kunnr', 'access',
+        'vbeln', 'audat'
     ];
 
     protected $casts = [
@@ -35,7 +36,7 @@ class OrderHeader extends Model
         parent::boot();
 
         // Auto fill the transaction ID with
-        // format of: <timestamp>-<user ID>
+        // format of: <user ID>-<timestamp>
         if (auth()->check()) {
             self::creating(function ($model) {
                 $model->transid = auth()->id().'-'.Carbon::now()->timestamp;

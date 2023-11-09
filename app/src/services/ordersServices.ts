@@ -2,13 +2,6 @@ import { AxiosRequestConfig } from "axios";
 import HttpAdapter from "./httpAdapter";
 
 class OrdersServices extends HttpAdapter {
-  bwmsApiUrl = null;
-
-  constructor(bwmsApiUrl: string) {
-    super();
-    this.bwmsApiUrl = bwmsApiUrl;
-  }
-
   getMaterialDescription(config: AxiosRequestConfig) {
     return this.get("/orders/material-description", config);
   }
@@ -45,26 +38,12 @@ class OrdersServices extends HttpAdapter {
     return this.get("/orders/status/list");
   }
 
-  getOutboundDetails(docNo: string) {
-    return this.post(
-      "/getoutbounddetail",
-      { server: "prd", VBELN: docNo },
-      {
-        baseURL: this.bwmsApiUrl,
-        withCredentials: false,
-      }
-    );
+  getAdhocOutbound(docNo: string) {
+    return this.get("/orders/adhoc-outbound-details", { params: { docNo } });
   }
 
   createOutboundDetails(data: any) {
-    return this.post(
-      "/tagoutboundprocess",
-      { server: "bctp", ...data },
-      {
-        baseURL: this.bwmsApiUrl,
-        withCredentials: false,
-      }
-    );
+    return this.post("/orders/create-adhoc", data);
   }
 }
 

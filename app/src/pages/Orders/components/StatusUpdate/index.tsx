@@ -39,7 +39,7 @@ function StatusUpdate({ data, open, onClose, onGetOutbound, onCreateOutbound }: 
   };
 
   const handleCreate = () => {
-    if (viewStatus?.bininfo.length) {
+    if (viewStatus?.info) {
       onCreateOutbound(values.docNo);
     }
   };
@@ -88,8 +88,8 @@ function StatusUpdate({ data, open, onClose, onGetOutbound, onCreateOutbound }: 
   };
 
   const isDisabledNotify =
-    !(status === "succeeded" && viewStatus.bininfo) ||
-    viewStatus.bininfo.at(0).VBELN !== values.docNo ||
+    !(status === "succeeded" && viewStatus.info) ||
+    viewStatus.info.docNo !== values.docNo ||
     !isValid;
 
   return (
@@ -100,7 +100,7 @@ function StatusUpdate({ data, open, onClose, onGetOutbound, onCreateOutbound }: 
       sx={{ "& .MuiDialog-paper": { maxWidth: "370px" } }}
     >
       <MDBox component="form" role="form" onSubmit={handleSubmit}>
-        <DialogTitle textTransform="uppercase">Outbound status notification</DialogTitle>
+        <DialogTitle>Outbound status notification</DialogTitle>
         <DialogContent>
           {renderMessage()}
           <MDInput

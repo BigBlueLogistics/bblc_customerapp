@@ -27,6 +27,7 @@ RUN apt update && apt install -y --no-install-recommends \
       build-essential \
       libaio1 \
       libzip-dev \
+      nano \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
@@ -78,7 +79,7 @@ RUN a2enconf php8.1-fpm && \
     a2enmod actions fcgid alias proxy_fcgi setenvif
 
 # Increase the php memory limit from 128M to
-RUN echo "memory_limit= 500M" >> /etc/php/8.1/fpm/conf.d/30-memory_limit.ini
+RUN echo "memory_limit= 900M" >> /etc/php/8.1/fpm/conf.d/30-memory_limit.ini
 
 # RUN mv /etc/php/8.1/fpm/pool.d/www.conf /etc/php/8.1/fpm/pool.d/www.conf-BK
 # COPY ./docker/config/pool.d/www.conf /etc/php/8.1/fpm/pool.d

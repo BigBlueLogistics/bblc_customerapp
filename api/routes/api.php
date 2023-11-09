@@ -71,6 +71,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/cancel/{transid}', [OrderController::class, 'cancel'])->where('transid', '^[0-9]+-[0-9]{10}$');
 
         Route::get('/status/list', [OrderController::class, 'statusList']);
+        Route::get('/adhoc-outbound-details', [OrderController::class, 'adhocDetails']);
+        Route::post('/create-adhoc',[OrderController::class, 'createAdhocRequest']);
     });
 
     Route::prefix('indicators')->group(function () {

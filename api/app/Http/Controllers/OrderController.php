@@ -7,6 +7,8 @@ use App\Http\Requests\Order\ExpiryBatchRequest;
 use App\Http\Requests\Order\ListRequest;
 use App\Http\Requests\Order\MaterialRequest;
 use App\Http\Requests\Order\ProductUnitsRequest;
+use App\Http\Requests\Order\AdhocDetailsRequest;
+use App\Http\Requests\Order\CreateAdhocRequest;
 use App\Interfaces\IOrderRepository;
 use App\Models\OrderHeader;
 use App\Models\OrderItems;
@@ -247,6 +249,42 @@ class OrderController extends Controller
                 ->get();
 
             return $this->sendResponse($status, 'Order status list');
+        } catch (Exception $e) {
+            return $this->sendError($e);
+        }
+    }
+
+    public function adhocDetails(AdhocDetailsRequest $request)
+    {
+        try {
+            $request->validated($request->all());
+
+            $docNo = $request->input('docNo');
+            $customerCode = auth()->user()->company->customer_code;
+
+            $details = $this->order->adhocDetails($customerCode, $docNo);
+
+            if($details["status"] === "failed"){
+                return $this->sendError($details["message"]);
+            }
+            return $this->sendResponse($details, 'Outbound details');
+        } catch (Exception $e) {
+            return $this->sendError($e);
+        }
+    }
+
+    public function createAdhocRequest(CreateAdhocRequest $request)
+    {
+        try {
+            $request->validated($request->all());
+
+            $adhocRequest = $this->order->createAdhocRequest($request);
+
+            if($adhocRequest){
+                return $this->sendResponse(null, $adhocRequest);
+            }
+            return $this->sendError("Failed request notification");
+
         } catch (Exception $e) {
             return $this->sendError($e);
         }

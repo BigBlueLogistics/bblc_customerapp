@@ -9,4 +9,10 @@ interface IOrderRepository
     public function productUnits($materialCode);
 
     public function expiryBatch($customerCode, $warehouseNo);
+
+    public function readText($docNo);
+    
+    public function adhocDetails($customerCode, $docNo);
+
+    public function createAdhocRequest($data);
 }
