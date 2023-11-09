@@ -21,7 +21,7 @@ import { TStatusUpdate } from "./types";
 
 function StatusUpdate({ data, open, onClose, onGetOutbound, onCreateOutbound }: TStatusUpdate) {
   const { status, message, data: viewStatus, action } = data;
-  const { values, handleChange, handleSubmit, resetForm, touched, errors, isValid } =
+  const { values, handleChange, handleSubmit, resetForm, setFieldValue, touched, errors, isValid } =
     useFormik<TValidationSchema>({
       enableReinitialize: true,
       validationSchema,
@@ -29,7 +29,9 @@ function StatusUpdate({ data, open, onClose, onGetOutbound, onCreateOutbound }: 
         docNo: "",
       },
       onSubmit: ({ docNo }) => {
-        onGetOutbound(docNo);
+        const padDocNo = docNo.padStart(10, "0");
+        setFieldValue("docNo", padDocNo);
+        onGetOutbound(padDocNo);
       },
     });
 
@@ -133,7 +135,6 @@ function StatusUpdate({ data, open, onClose, onGetOutbound, onCreateOutbound }: 
             color="info"
             disabled={isDisabledNotify}
             onClick={handleCreate}
-            loading={status === "loading" && action === "create"}
           >
             Notify Me
           </MDButton>

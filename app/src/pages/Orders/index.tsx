@@ -255,7 +255,7 @@ function Orders() {
 
     try {
       const {
-        data: { info },
+        data: { info, status },
       } = outboundDetails;
 
       const params = {
@@ -266,6 +266,7 @@ function Orders() {
         createdBy: info?.createdBy,
         soNum: info?.soNum,
         warehouse: info?.warehouse,
+        status,
       };
 
       const { data } = await ordersServices.createOutboundDetails(params);

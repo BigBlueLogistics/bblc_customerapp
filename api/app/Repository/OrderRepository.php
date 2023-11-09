@@ -347,12 +347,20 @@ class OrderRepository implements IOrderRepository
         $currentDatetime = Carbon::now()->format('Y/m/d H:i:s');
         $isOrderExist = OrderHeader::where('vbeln', $request->docNo)->first();
 
+        // Check if status had been "posted".
+        $isStatusPosted = preg_match('/posted/i', $request->status);
+        $statusPostedMsg =  'Transaction already posted, no further actions can be made.';
+
         if($isOrderExist){
            $updateOrder = OrderHeader::where('vbeln', $request->docNo)
                      ->update(['audat' => $currentDatetime]);
 
             if($updateOrder){
-                return 'Successfully updated entry.';
+
+                if($isStatusPosted){
+                    return $statusPostedMsg;
+                }
+                return 'Request to be notified successfully updated.';
             }
             return null;
         }
@@ -372,7 +380,11 @@ class OrderRepository implements IOrderRepository
             ]);
 
             if($createOrder){
-                return 'Successfully created entry.';
+
+                if($isStatusPosted){
+                    return $statusPostedMsg;
+                }
+                return 'Request to be notified successfully created.';
             }
             return null;
         }
