@@ -100,7 +100,7 @@ function StatusUpdate({ data, open, onClose, onGetOutbound, onCreateOutbound }: 
       sx={{ "& .MuiDialog-paper": { maxWidth: "370px" } }}
     >
       <MDBox component="form" role="form" onSubmit={handleSubmit}>
-        <DialogTitle>Outbound status notification</DialogTitle>
+        <DialogTitle>Outbound Status Notification</DialogTitle>
         <DialogContent>
           {renderMessage()}
           <MDInput

@@ -29,8 +29,6 @@ function StatusDetails({ data: response }: TStatusDetails) {
     );
   };
 
-  console.log("datazz", status === "succeeded" && action === "edit", response);
-
   return (
     <MDBox
       component={Paper}
