@@ -267,6 +267,7 @@ function Orders() {
         soNum: info?.soNum,
         warehouse: info?.warehouse,
         status,
+        date: info?.date,
       };
 
       const { data } = await ordersServices.createOutboundDetails(params);

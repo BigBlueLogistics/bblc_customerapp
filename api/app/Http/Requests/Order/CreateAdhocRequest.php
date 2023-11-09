@@ -28,6 +28,7 @@ class CreateAdhocRequest extends FormRequest
             'createdDate' => ['required', 'string'],
             'createdTime' => ['required', 'string'],
             'soNum' => ['required','numeric'],
+            'date' => ['required','string'],
         ];
     }
 }

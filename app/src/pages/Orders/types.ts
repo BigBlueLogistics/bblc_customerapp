@@ -74,6 +74,7 @@ export type TStatusDetailsData = {
     soNum: string;
     totalWeight: string;
     warehouse: string;
+    date: string;
   };
 };
 

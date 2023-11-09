@@ -157,6 +157,7 @@ class OrderRepository implements IOrderRepository
             ['FIELDNAME' => 'KUNAG'],
             ['FIELDNAME' => 'LGNUM'],
             ['FIELDNAME' => 'ERZET'],
+            ['FIELDNAME' => 'WADAT'],
         ])
         ->getDataToArray();
 
@@ -245,6 +246,7 @@ class OrderRepository implements IOrderRepository
         }
 
         $createdDate = count($vbak) ? date('m/d/Y', strtotime($vbak[0]['ERDAT'])) : '';
+        $date = $docDetails[0]['ERDAT'] ? date('m/d/Y', strtotime($docDetails[0]['WADAT'])) : '';
         
         $erzet = $docDetails[0]['ERZET'] ?? '';
         $createdTime = substr($erzet,0,2).":".substr($erzet,2,2).":".substr($erzet,4,2);
@@ -260,6 +262,7 @@ class OrderRepository implements IOrderRepository
             'soNum' => $vbelv,
             'totalWeight' => $docDetails[0]['BTGEW'],
             'warehouse' => $docDetails[0]['LGNUM'],
+            'date' => $date
         ];
 
         // remarks
@@ -377,6 +380,7 @@ class OrderRepository implements IOrderRepository
                 'ponum' => $request->soNum,
                 'vbeln' => $request->docNo,
                 'audat' => $currentDatetime,
+                'podat' => $request->date
             ]);
 
             if($createOrder){
