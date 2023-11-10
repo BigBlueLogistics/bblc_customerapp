@@ -446,8 +446,7 @@ class OrderRepository implements IOrderRepository
                 'ertim' => $ertim,
                 'ponum' => $request->soNum,
                 'vbeln' => $request->docNo,
-                'audat' => $currentDatetime,
-                'podat' => $request->date
+                'pudat' => $request->date
             ]);
 
             $createMilestone = Milestone::create([
