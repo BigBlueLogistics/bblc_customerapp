@@ -18,7 +18,7 @@ import MDAlert2 from "atoms/MDAlert2";
 import BasicLayout from "pages/Authentication/components/BasicLayout";
 
 import { bblcWh5 } from "assets/images";
-import validationSchema from "./validationSchema";
+import validationSchema, { TValidationSchema } from "./validationSchema";
 import selector from "./selector";
 
 function SignIn() {
@@ -26,7 +26,7 @@ function SignIn() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { values, handleSubmit, handleChange, errors, touched } = useFormik({
+  const { values, handleSubmit, handleChange, errors, touched } = useFormik<TValidationSchema>({
     validationSchema,
     initialValues: {
       email: "",

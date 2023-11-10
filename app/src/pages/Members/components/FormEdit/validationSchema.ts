@@ -1,7 +1,7 @@
 import * as yup from "yup";
 
-export default yup.object({
-  id: yup.number().required(),
+const validationSchema = yup.object({
+  id: yup.string().required(),
   customer_code: yup
     .string()
     .required("required")
@@ -11,15 +11,18 @@ export default yup.object({
   fname: yup.string().required("required"),
   lname: yup.string().required("required"),
   email: yup.string().email("Enter valid email").required("required"),
-  email_verified_at: yup.date(),
+  email_verified_at: yup.string(),
   phone_num: yup
     .string()
     .matches(/^[0-9]+$/, "Must be only digits")
     .min(11, "Must be exactly 11 digits")
-    .max(11, "Must be exactly 11 digits")
-    .required("required"),
+    .max(11, "Must be exactly 11 digits"),
   is_verify: yup.boolean(),
   is_active: yup.boolean(),
-  role_id: yup.number(),
+  role_id: yup.string(),
   van_status: yup.boolean(),
 });
+
+export type TValidationSchema = yup.InferType<typeof validationSchema>;
+
+export default validationSchema;

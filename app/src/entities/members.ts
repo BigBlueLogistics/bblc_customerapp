@@ -18,12 +18,12 @@ export type MembersEntity = {
 };
 
 export type ViewMemberEntity = {
-  id: number;
+  id: string;
   fname: string;
   lname: string;
   phone_num: string;
   email: string;
-  role_id: number;
+  role_id: string;
   email_verified_at: string;
   active: boolean;
   customer_code: string;

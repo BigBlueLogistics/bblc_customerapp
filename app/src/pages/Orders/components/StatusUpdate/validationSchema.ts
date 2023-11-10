@@ -5,4 +5,5 @@ const validationSchema = yup.object({
 });
 
 export type TValidationSchema = yup.InferType<typeof validationSchema>;
+
 export default validationSchema;

@@ -7,21 +7,22 @@ import MDButton from "atoms/MDButton";
 
 import { useFormik } from "formik";
 import { TChangePassword } from "./types";
-import validationSchema from "./validationSchema";
+import validationSchema, { TValidationSchema } from "./validationSchema";
 
 function ChangePassword({ data, title, onChangePass, shadow = false }: TChangePassword) {
   const { status } = data;
-  const { values, handleSubmit, handleChange, errors, touched, resetForm } = useFormik({
-    validationSchema,
-    initialValues: {
-      current_password: "",
-      new_password: "",
-      confirm_password: "",
-    },
-    onSubmit: (validatedVal) => {
-      onChangePass(validatedVal);
-    },
-  });
+  const { values, handleSubmit, handleChange, errors, touched, resetForm } =
+    useFormik<TValidationSchema>({
+      validationSchema,
+      initialValues: {
+        current_password: "",
+        new_password: "",
+        confirm_password: "",
+      },
+      onSubmit: (validatedVal) => {
+        onChangePass(validatedVal);
+      },
+    });
 
   useEffect(() => {
     if (data.status === "succeeded") {

@@ -4,7 +4,7 @@ import { ResponseUpdateMemberEntity, ResponseViewMemberEntity } from "entities/m
 export type IFormEdit = {
   open: boolean;
   onClose: () => void;
-  onUpdate: (userId: number, data: { [key: string]: any }) => void;
+  onUpdate: (userId: string, data: { [key: string]: any }) => void;
   // data: {
   //   [key: string]: any;
   // };

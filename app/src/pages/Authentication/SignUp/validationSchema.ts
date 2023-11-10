@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-export default yup.object({
+const validationSchema = yup.object({
   fname: yup.string().required("required"),
   lname: yup.string().required("required"),
   phone_num: yup
@@ -13,3 +13,7 @@ export default yup.object({
   email: yup.string().email("Invalid email address").required("required"),
   password: yup.string().min(8, "Requires minimum of 8 characters.").required("required"),
 });
+
+export type TValidationSchema = yup.InferType<typeof validationSchema>;
+
+export default validationSchema;

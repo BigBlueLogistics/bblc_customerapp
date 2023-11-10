@@ -1,3 +1,3 @@
 export type TData = {
-  onShowEdit: (userId: number) => void;
+  onShowEdit: (userId: string) => void;
 };

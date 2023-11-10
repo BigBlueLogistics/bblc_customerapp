@@ -16,27 +16,28 @@ import { signUp, resetData } from "redux/auth/action";
 
 // Images
 import bgImage from "assets/images/bg-bblc-wh5.jpg";
-import validationSchema from "./validationSchema";
+import validationSchema, { TValidationSchema } from "./validationSchema";
 import selector from "./selector";
 
 function SignUp() {
   const dispatch = useAppDispatch();
   const { status, message, isSigningUp } = selector();
 
-  const { values, errors, handleSubmit, handleChange, touched, resetForm } = useFormik({
-    validationSchema,
-    initialValues: {
-      fname: "",
-      lname: "",
-      phone_num: "",
-      company: "",
-      email: "",
-      password: "",
-    },
-    onSubmit: (validatedVal) => {
-      dispatch(signUp(validatedVal));
-    },
-  });
+  const { values, errors, handleSubmit, handleChange, touched, resetForm } =
+    useFormik<TValidationSchema>({
+      validationSchema,
+      initialValues: {
+        fname: "",
+        lname: "",
+        phone_num: "",
+        company: "",
+        email: "",
+        password: "",
+      },
+      onSubmit: (validatedVal) => {
+        dispatch(signUp(validatedVal));
+      },
+    });
 
   const renderMessage = () => {
     if (status === "succeeded" || status === "failed") {

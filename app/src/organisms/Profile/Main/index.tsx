@@ -7,11 +7,11 @@ import MDInput from "atoms/MDInput";
 
 import { useFormik } from "formik";
 import { TMain } from "./types";
-import validationSchema from "./validationSchema";
+import validationSchema, { TValidationSchema } from "./validationSchema";
 
 function Main({ data, title, onUpdateProfile, shadow = true }: TMain) {
   const { data: viewProfile, status } = data;
-  const { values, handleSubmit, handleChange, touched, errors } = useFormik({
+  const { values, handleSubmit, handleChange, touched, errors } = useFormik<TValidationSchema>({
     enableReinitialize: true,
     validationSchema,
     initialValues: {

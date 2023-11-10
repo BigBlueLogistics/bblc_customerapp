@@ -12,7 +12,7 @@ import { resetData, resetPass } from "redux/auth/action";
 
 import { useFormik } from "formik";
 import bgImage from "assets/images/bg-bblc-wh5.jpg";
-import validationSchema from "./validationSchema";
+import validationSchema, { TValidationSchema } from "./validationSchema";
 import selector from "./selector";
 
 function ResetPassword() {
@@ -20,19 +20,20 @@ function ResetPassword() {
   const queryString = useQueryString();
   const { status, message, isResettingPass } = selector();
 
-  const { values, errors, handleChange, handleSubmit, touched, resetForm } = useFormik({
-    validationSchema,
-    initialValues: {
-      password: "",
-      confirm_password: "",
-    },
-    onSubmit: (validatedVal) => {
-      const token = queryString.get("token");
-      const email = queryString.get("email");
+  const { values, errors, handleChange, handleSubmit, touched, resetForm } =
+    useFormik<TValidationSchema>({
+      validationSchema,
+      initialValues: {
+        password: "",
+        confirm_password: "",
+      },
+      onSubmit: (validatedVal) => {
+        const token = queryString.get("token");
+        const email = queryString.get("email");
 
-      dispatch(resetPass({ token, email, ...validatedVal }));
-    },
-  });
+        dispatch(resetPass({ token, email, ...validatedVal }));
+      },
+    });
 
   const renderMessage = () => {
     if (status === "succeeded" || status === "failed") {

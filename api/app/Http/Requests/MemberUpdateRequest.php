@@ -32,9 +32,9 @@ class MemberUpdateRequest extends FormRequest
             'company_name' => ['required', 'string'],
             'is_verify' => [Rule::in('true', 'false')],
             'is_active' => [Rule::in('true', 'false')],
-            'role_id' => ['numeric'],
+            'role_id' => ['numeric', 'nullable'],
             'van_status' => [Rule::in('true', 'false')],
-            'phone_num' => ['required','numeric','min_digits:11', 'max_digits:11'],
+            'phone_num' => ['numeric', 'nullable', 'min_digits:11', 'max_digits:11'],
         ];
     }
 

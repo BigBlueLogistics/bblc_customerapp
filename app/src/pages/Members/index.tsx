@@ -56,7 +56,7 @@ function Members() {
     }
   };
 
-  const fetchMemberById = async (userId: number) => {
+  const fetchMemberById = async (userId: string) => {
     setViewMemberDetails((prev) => ({ ...prev, status: "loading" }));
 
     try {
@@ -71,7 +71,7 @@ function Members() {
     }
   };
 
-  const updateMember = async (userId: number, data: any) => {
+  const updateMember = async (userId: string, data: any) => {
     setUpdateMemberDetails((prev) => ({ ...prev, status: "loading" }));
 
     try {
@@ -91,7 +91,7 @@ function Members() {
     closeAction();
   };
 
-  const onShowEdit = (memberId: number) => {
+  const onShowEdit = (memberId: string) => {
     setShowEdit(true);
     fetchMemberById(memberId);
   };

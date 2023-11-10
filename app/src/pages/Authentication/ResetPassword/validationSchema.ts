@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-export default yup.object({
+const validationSchema = yup.object({
   password: yup.string().min(8, "Requires minimum of 8 characters.").required("required"),
   confirm_password: yup
     .string()
@@ -8,3 +8,7 @@ export default yup.object({
     .oneOf([yup.ref("password"), null], "Password must match")
     .required("required"),
 });
+
+export type TValidationSchema = yup.InferType<typeof validationSchema>;
+
+export default validationSchema;

@@ -5,11 +5,11 @@ class MembersService extends HttpAdapter {
     return this.get("/members");
   }
 
-  getMemberById(userId: number) {
+  getMemberById(userId: string) {
     return this.get(`/members/${userId}`);
   }
 
-  updateMember(userId: number, data: any) {
+  updateMember(userId: string, data: any) {
     return this.post(`/members/update/${userId}`, data);
   }
 }

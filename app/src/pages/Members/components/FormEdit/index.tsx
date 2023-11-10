@@ -15,43 +15,44 @@ import SkeletonForm from "organisms/Skeleton/Form";
 import { useFormik } from "formik";
 import { format, parseISO } from "date-fns";
 import { IFormEdit } from "./type";
-import validationSchema from "./validationSchema";
+import validationSchema, { TValidationSchema } from "./validationSchema";
 
 function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) {
   const { data: viewResult, status: viewStatus } = viewData || {};
   const { status: updateStatus, message: updateMessage } = updateData || {};
   const isLoadingUpdate = updateStatus === "loading";
 
-  const { values, handleChange, handleSubmit, touched, errors, resetForm } = useFormik({
-    enableReinitialize: true,
-    validationSchema,
-    initialValues: {
-      id: viewResult?.id || null,
-      customer_code: viewResult?.customer_code || "",
-      company_name: viewResult?.company || "",
-      fname: viewResult?.fname || "",
-      lname: viewResult?.lname || "",
-      phone_num: viewResult?.phone_num || "",
-      email: viewResult?.email || "",
-      email_verified_at: viewResult?.email_verified_at || "",
-      is_verify: false,
-      is_active: String(viewResult?.active) === "true",
-      role_id: viewResult?.role_id || "",
-      van_status: String(viewResult?.van_status) === "true",
-    },
-    onSubmit: (validatedVal) => {
-      const isActive = validatedVal.is_active.toString();
-      const isVerify = validatedVal.is_verify.toString();
-      const vanStatus = validatedVal.van_status.toString();
-      const argsData = {
-        ...validatedVal,
-        is_active: isActive,
-        is_verify: isVerify,
-        van_status: vanStatus,
-      };
-      onUpdate(validatedVal.id, argsData);
-    },
-  });
+  const { values, handleChange, handleSubmit, touched, errors, resetForm } =
+    useFormik<TValidationSchema>({
+      enableReinitialize: true,
+      validationSchema,
+      initialValues: {
+        id: viewResult?.id || "",
+        customer_code: viewResult?.customer_code || "",
+        company_name: viewResult?.company || "",
+        fname: viewResult?.fname || "",
+        lname: viewResult?.lname || "",
+        phone_num: viewResult?.phone_num || "",
+        email: viewResult?.email || "",
+        email_verified_at: viewResult?.email_verified_at || "",
+        is_verify: false,
+        is_active: String(viewResult?.active) === "true",
+        role_id: viewResult?.role_id || "",
+        van_status: String(viewResult?.van_status) === "true",
+      },
+      onSubmit: (validatedVal) => {
+        const isActive = validatedVal.is_active.toString();
+        const isVerify = validatedVal.is_verify.toString();
+        const vanStatus = validatedVal.van_status.toString();
+        const argsData = {
+          ...validatedVal,
+          is_active: isActive,
+          is_verify: isVerify,
+          van_status: vanStatus,
+        };
+        onUpdate(validatedVal.id, argsData);
+      },
+    });
 
   const renderMessage = () => {
     if (updateStatus === "succeeded" || updateStatus === "failed") {

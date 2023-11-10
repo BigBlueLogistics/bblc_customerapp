@@ -12,22 +12,23 @@ import { resetPassLink, resetData } from "redux/auth/action";
 
 import { useFormik } from "formik";
 import bgImage from "assets/images/bg-bblc-wh5.jpg";
-import validationSchema from "./validationSchema";
+import validationSchema, { TValidationSchema } from "./validationSchema";
 import selector from "./selector";
 
 function ResetPasswordLink() {
   const dispatch = useAppDispatch();
   const { status, message, isResetting } = selector();
 
-  const { values, errors, handleChange, handleSubmit, touched, resetForm } = useFormik({
-    validationSchema,
-    initialValues: {
-      email: "",
-    },
-    onSubmit: (validatedVal) => {
-      dispatch(resetPassLink(validatedVal));
-    },
-  });
+  const { values, errors, handleChange, handleSubmit, touched, resetForm } =
+    useFormik<TValidationSchema>({
+      validationSchema,
+      initialValues: {
+        email: "",
+      },
+      onSubmit: (validatedVal) => {
+        dispatch(resetPassLink(validatedVal));
+      },
+    });
 
   const renderMessage = () => {
     if (status === "succeeded" || status === "failed") {
