@@ -6,6 +6,7 @@ use App\Facades\SapRfcFacade;
 use App\Interfaces\IOrderRepository;
 use App\Traits\StringEncode;
 use App\Models\OrderHeader;
+use App\Models\Milestone;
 use Carbon\Carbon;
 use DB;
 
@@ -345,7 +346,7 @@ class OrderRepository implements IOrderRepository
         return $output;
     }
 
-    function createAdhocRequest($request)
+    function createAdhocRequest($request, $authUser)
     {
         $currentDatetime = Carbon::now()->format('Y/m/d H:i:s');
         $isOrderExist = OrderHeader::where('vbeln', $request->docNo)->first();
@@ -383,7 +384,15 @@ class OrderRepository implements IOrderRepository
                 'podat' => $request->date
             ]);
 
-            if($createOrder){
+            $createMilestone = Milestone::create([
+                'customer' => $request->customerCode,
+                'delivery' => $request->docNo,
+                'email' => $authUser->email,
+                'phone_num' => $authUser->phone_num,
+                'miles' => 6
+            ]);
+
+            if($createOrder && $createMilestone){
 
                 if($isStatusPosted){
                     return $statusPostedMsg;

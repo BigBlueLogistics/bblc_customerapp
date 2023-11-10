@@ -277,8 +277,9 @@ class OrderController extends Controller
     {
         try {
             $request->validated($request->all());
+            $authUser = auth()->user();
 
-            $adhocRequest = $this->order->createAdhocRequest($request);
+            $adhocRequest = $this->order->createAdhocRequest($request, $authUser);
 
             if($adhocRequest){
                 return $this->sendResponse(null, $adhocRequest);

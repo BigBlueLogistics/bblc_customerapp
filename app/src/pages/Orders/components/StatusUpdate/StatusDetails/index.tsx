@@ -52,7 +52,7 @@ function StatusDetails({ data: response }: TStatusDetails) {
           </MDBox>
 
           {renderText("Customer:", viewStatus?.info?.customerCode)}
-          {renderText("Date:", viewStatus?.info?.date)}
+          {renderText("Date required:", viewStatus?.info?.date)}
           {renderText(
             "Date created:",
             `${viewStatus?.info?.createdDate || "n/a"} ${viewStatus?.info?.createdTime || ""}`

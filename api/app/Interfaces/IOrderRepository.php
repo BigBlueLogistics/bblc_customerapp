@@ -14,5 +14,5 @@ interface IOrderRepository
     
     public function adhocDetails($customerCode, $docNo);
 
-    public function createAdhocRequest($data);
+    public function createAdhocRequest($data, $authUser);
 }
