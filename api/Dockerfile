@@ -28,9 +28,13 @@ RUN apt update && apt install -y --no-install-recommends \
       libaio1 \
       libzip-dev \
       nano \
+      tzdata \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
+
+# Set timezone
+ENV TZ='Asia/Manila'
 
 # dependencies required for running "phpize"
 # https://github.com/docker-library/php/blob/2af934c6dd18d0ccbacb2cd8efb8f0b6f81be5b2/8.1/bullseye/apache/Dockerfile#L20

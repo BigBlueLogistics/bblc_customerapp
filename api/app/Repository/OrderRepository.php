@@ -139,6 +139,7 @@ class OrderRepository implements IOrderRepository
 
     function adhocDetails($customerCode, $docNo)
     {
+        $mandt = SapRfcFacade::getMandt();
         $docDetails = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
         ->param('QUERY_TABLE', 'LIKP')
         ->param('DELIMITER', ';')
@@ -285,48 +286,113 @@ class OrderRepository implements IOrderRepository
         ->getDataToArray();
 
         if(count($refDoc)){
-            $output['status']='WH Order Created';
+            $docId = $refDoc[0]['DOCID'];
 
-            // check if picking has started
-            $ltak = DB::connection('wms')->select("SELECT VBELN, KQUIT FROM LTAK WHERE VBELN='{$docNo}'");
-
-            if(!empty($ltak)){
-                $output['status']='WH Picking Started';
-                
-                //check if all picked
-                $kquit='';
-                foreach($ltak as $val){
-                    if($val->kquit == 'X'){
-                        $kquit='X';
-                    }
-                }
-                if($kquit == 'X'){
-                    $output['status']='WH Picking Completed';
-                }
-
-            }
-
-             // check here if posted
-             $mkpf = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
-                ->param('QUERY_TABLE', 'MKPF')
+            // check if with existing WO
+            $ordimO = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                ->param('QUERY_TABLE', '/SCWM/ORDIM_O')
                 ->param('DELIMITER', ';')
                 ->param('ROWCOUNT', 1)
                 ->param('OPTIONS', [
-                ['TEXT' => "LE_VBELN EQ '{$docNo}'"],
+                ['TEXT' => "MANDT EQ '{$mandt}'"],
+                ["TEXT" => " AND RDOCID EQ '{$docId}'",]
             ])
             ->param('FIELDS', [
-                ['FIELDNAME' => 'BUDAT'],
-                ['FIELDNAME' => 'USNAM']
+                ['FIELDNAME' => 'TANUM']
             ])
             ->getDataToArray();
 
-            if(count($mkpf)){
-                $output['status']='Outbound Posted';
 
-                $output['budat'] = date('m/d/Y',strtotime($mkpf[0]['BUDAT']));
-                $output['bunam'] = $mkpf[0]['USNAM'];
+            if(count($ordimO)){
+
+                // check if there are confirmed
+                $ordimC = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                    ->param('QUERY_TABLE', '/SCWM/ORDIM_C')
+                    ->param('DELIMITER', ';')
+                    ->param('ROWCOUNT', 1)
+                    ->param('OPTIONS', [
+                    ['TEXT' => "MANDT EQ '{$mandt}'"],
+                    ["TEXT" => " AND RDOCID EQ '{$docId}'",]
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'TANUM']
+                ])
+                ->getDataToArray();
+
+                if(count($ordimC['DATA'])){
+                    $output['status'] = 'Picking had already been started';
+                }
+                else{
+                    $output['status'] = 'Waiting for picker assignment';
+                }    
+
+
             }
+            else{
+                // check the confirmed
+                $ordimC = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                    ->param('QUERY_TABLE', '/SCWM/ORDIM_C')
+                    ->param('DELIMITER', ';')
+                    ->param('ROWCOUNT', 1)
+                    ->param('OPTIONS', [
+                    ['TEXT' => "MANDT EQ '{$mandt}'"],
+                    ["TEXT" => " AND RDOCID EQ '{$docId}'",]
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'TANUM']
+                ])
+                ->getDataToArray();
 
+                if(count($ordimC)){
+                    $output['status'] = 'WH Picking Completed';
+                }
+                else{
+                    $output['status'] = 'No Picklist(s) created yet';
+                }   
+
+                // check if picking has started
+                $ltak = DB::connection('wms')->select("SELECT VBELN, KQUIT FROM LTAK WHERE VBELN='{$docNo}'");
+
+                if(!empty($ltak)){
+                    $output['status']='WH Picking Started';
+                    
+                    //check if all picked
+                    $kquit='';
+                    foreach($ltak as $val){
+                        if($val->kquit == 'X'){
+                            $kquit='X';
+                        }
+                    }
+                    if($kquit == 'X'){
+                        $output['status']='WH Picking Completed';
+                    }
+
+                }
+
+                // check if posted
+                $mkpf = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+                    ->param('QUERY_TABLE', 'MKPF')
+                    ->param('DELIMITER', ';')
+                    ->param('ROWCOUNT', 1)
+                    ->param('OPTIONS', [
+                    ['TEXT' => "LE_VBELN EQ '{$docNo}'"],
+                ])
+                ->param('FIELDS', [
+                    ['FIELDNAME' => 'BUDAT'],
+                    ['FIELDNAME' => 'USNAM']
+                ])
+                ->getDataToArray();
+
+                if(count($mkpf)){
+                    $output['status']='Outbound Posted';
+
+                    $output['budat'] = date('m/d/Y',strtotime($mkpf[0]['BUDAT']));
+                    $output['bunam'] = $mkpf[0]['USNAM'];
+                }
+            }
+        }
+        else{
+            $output['status']='No Picklist(s) created yet';
         }
 
         // get the total pallet count
