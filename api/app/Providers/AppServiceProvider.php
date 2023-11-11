@@ -19,7 +19,6 @@ use App\Repository\ReportsRepository;
 use App\Repository\TrucksVansRepository;
 use App\Repository\WarehouseRepository;
 use App\Support\SapRfc;
-use App\Support\SqlServerOptConnector;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -32,7 +31,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('sap-rfc', function () {
             return new SapRfc('prd', 'Local');
         });
-        $this->app->bind('db.connector.sqlsrv', SqlServerOptConnector::class);
         $this->app->bind(IInventoryRepository::class, InventoryRepository::class);
         $this->app->bind(IWarehouseRepository::class, WarehouseRepository::class);
         $this->app->bind(IReportsRepository::class, ReportsRepository::class);
