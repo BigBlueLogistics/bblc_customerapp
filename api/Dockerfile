@@ -33,9 +33,6 @@ RUN apt update && apt install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
 
-# Set timezone
-ENV TZ='Asia/Manila'
-
 # dependencies required for running "phpize"
 # https://github.com/docker-library/php/blob/2af934c6dd18d0ccbacb2cd8efb8f0b6f81be5b2/8.1/bullseye/apache/Dockerfile#L20
 ENV PHPIZE_DEPS \
@@ -61,6 +58,11 @@ RUN set -eux; \
 		xz-utils \
 	; \
 	rm -rf /var/lib/apt/lists/*
+
+# Set timezone and create a symbolic link
+RUN cp /usr/share/zoneinfo/Asia/Manila /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+ENV TZ='Asia/Manila'
 
 # Add the PPA PHP and Apache2
 RUN curl -sSL https://packages.sury.org/php/README.txt | bash -x && \
@@ -94,14 +96,14 @@ RUN apt update && apt upgrade -y && \
 RUN apt install php8.1-dev php8.1-xml -y
 
 # MSSQL Driver Installation and PHP extension
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-    curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc && \
+    curl https://packages.microsoft.com/config/debian/11/prod.list | tee /etc/apt/sources.list.d/mssql-release.list && \
     apt-get update && \
     ACCEPT_EULA=Y apt-get install -y msodbcsql17 && \
     ACCEPT_EULA=Y apt-get install -y mssql-tools && \
     apt-get install -y unixodbc-dev && \
-    pecl install sqlsrv && \
-    pecl install pdo_sqlsrv && \
+    pecl install sqlsrv-5.11.1 && \
+    pecl install pdo_sqlsrv-5.11.1 && \
     printf "; priority=20\nextension=sqlsrv.so\n" > /etc/php/8.1/mods-available/sqlsrv.ini && \
     printf "; priority=30\nextension=pdo_sqlsrv.so\n" > /etc/php/8.1/mods-available/pdo_sqlsrv.ini && \
     phpenmod -v 8.1 sqlsrv pdo_sqlsrv
