@@ -319,7 +319,7 @@ class OrderRepository implements IOrderRepository
                 ])
                 ->getDataToArray();
 
-                if(count($ordimC['DATA'])){
+                if(count($ordimC)){
                     $output['status'] = 'Picking had already been started';
                 }
                 else{
