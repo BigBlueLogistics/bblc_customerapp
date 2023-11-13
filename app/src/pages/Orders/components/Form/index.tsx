@@ -363,7 +363,7 @@ function FormRequests({
     if (dateVal) {
       return new Date(dateVal);
     }
-    return null;
+    return new Date();
   };
 
   const getAllUnits = async (orderData: TOrderData["requests"]) => {
