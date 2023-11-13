@@ -24,7 +24,7 @@ class MainRequest extends FormRequest
     {
         return [
             'phone_num' => ['required','numeric','min_digits:11', 'max_digits:11'],
-            'van_status' => [Rule::in('true', 'false')],
+            'van_status' => ['boolean'],
             'invnt_report' => ['boolean']
         ];
     }

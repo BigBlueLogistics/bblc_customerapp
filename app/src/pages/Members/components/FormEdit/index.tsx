@@ -36,22 +36,13 @@ function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) 
         email: viewResult?.email || "",
         email_verified_at: viewResult?.email_verified_at || "",
         is_verify: false,
-        is_active: String(viewResult?.active) === "true",
+        is_active: viewResult?.active || false,
         role_id: viewResult?.role_id || "",
-        van_status: String(viewResult?.van_status) === "true",
-        invnt_report: String(viewResult?.invnt_report) === "true",
+        van_status: viewResult?.van_status || false,
+        invnt_report: viewResult?.invnt_report || false,
       },
       onSubmit: (validatedVal) => {
-        const isActive = validatedVal.is_active.toString();
-        const isVerify = validatedVal.is_verify.toString();
-        const vanStatus = validatedVal.van_status.toString();
-        const argsData = {
-          ...validatedVal,
-          is_active: isActive,
-          is_verify: isVerify,
-          van_status: vanStatus,
-        };
-        onUpdate(validatedVal.id, argsData);
+        onUpdate(validatedVal.id, validatedVal);
       },
     });
 
@@ -126,7 +117,7 @@ function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) 
                 label="Verify?"
                 name="is_verify"
                 onChange={handleChange}
-                checked={String(values.is_verify) === "true"}
+                checked={values.is_verify}
               />
             )}
 
@@ -223,7 +214,7 @@ function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) 
                 <Switch
                   name="van_status"
                   color="primary"
-                  checked={String(values.van_status) === "true"}
+                  checked={values.van_status}
                   onChange={handleChange}
                 />
                 <MDTypography variant="caption" fontWeight="regular" color="dark">
@@ -242,7 +233,7 @@ function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) 
                 <Switch
                   name="invnt_report"
                   color="primary"
-                  checked={String(values.invnt_report) === "true"}
+                  checked={values.invnt_report}
                   onChange={handleChange}
                 />
                 <MDTypography variant="caption" fontWeight="regular" color="dark">
@@ -261,7 +252,7 @@ function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) 
                 <Switch
                   name="is_active"
                   color="primary"
-                  checked={String(values.is_active) === "true"}
+                  checked={values.is_active}
                   onChange={handleChange}
                 />
                 <MDTypography variant="caption" fontWeight="regular" color="dark">

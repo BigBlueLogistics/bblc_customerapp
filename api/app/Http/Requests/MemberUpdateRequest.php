@@ -30,10 +30,10 @@ class MemberUpdateRequest extends FormRequest
             'lname' => ['required', 'string'],
             'email' => ['required',  'email', 'string'],
             'company_name' => ['required', 'string'],
-            'is_verify' => [Rule::in('true', 'false')],
-            'is_active' => [Rule::in('true', 'false')],
+            'is_verify' => ['boolean'],
+            'is_active' => ['boolean'],
             'role_id' => ['numeric', 'nullable'],
-            'van_status' => [Rule::in('true', 'false')],
+            'van_status' => ['boolean'],
             'invnt_report' => ['boolean'],
             'phone_num' => ['numeric', 'nullable', 'min_digits:11', 'max_digits:11'],
         ];

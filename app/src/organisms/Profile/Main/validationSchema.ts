@@ -7,7 +7,7 @@ const validationSchema = yup.object({
     .min(11, "Must be exactly 11 digits")
     .max(11, "Must be exactly 11 digits")
     .required("required"),
-  van_status: yup.boolean().required("required"),
+  van_status: yup.boolean(),
   invnt_report: yup.boolean(),
 });
 

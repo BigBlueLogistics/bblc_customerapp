@@ -15,17 +15,12 @@ function Main({ data, title, onUpdateProfile, shadow = true }: TMain) {
     enableReinitialize: true,
     validationSchema,
     initialValues: {
-      van_status: String(viewProfile?.van_status) === "true",
       phone_num: viewProfile?.phone_num || "",
+      van_status: viewProfile?.van_status || false,
       invnt_report: viewProfile?.invnt_report || false,
     },
     onSubmit: (validatedVal) => {
-      const vanStatus = validatedVal.van_status.toString();
-      const argsData = {
-        ...validatedVal,
-        van_status: vanStatus,
-      };
-      onUpdateProfile(argsData, false);
+      onUpdateProfile(validatedVal, false);
     },
   });
   return (
@@ -61,7 +56,7 @@ function Main({ data, title, onUpdateProfile, shadow = true }: TMain) {
             <Switch
               name="van_status"
               color="primary"
-              checked={String(values.van_status) === "true"}
+              checked={values.van_status}
               onChange={handleChange}
             />
             <MDTypography variant="caption" fontWeight="regular" color="dark">
@@ -80,7 +75,7 @@ function Main({ data, title, onUpdateProfile, shadow = true }: TMain) {
             <Switch
               name="invnt_report"
               color="primary"
-              checked={String(values.invnt_report) === "true"}
+              checked={values.invnt_report}
               onChange={handleChange}
             />
             <MDTypography variant="caption" fontWeight="regular" color="dark">

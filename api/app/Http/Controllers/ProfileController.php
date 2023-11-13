@@ -29,8 +29,8 @@ class ProfileController extends Controller
             $profile = User::where('email', $email)->first(['phone_num', 'van_status', 'invnt_report']);
 
             if($profile){
-                $vanStatus = $profile->van_status == "x" ? "true" : "false";
-                $invntReport = $profile->invnt_report == "x";
+                $vanStatus = $profile->van_status == 'x';
+                $invntReport = $profile->invnt_report == 'x';
                 return $this->sendResponse([
                     'van_status' => $vanStatus,
                     'phone_num' => $profile->phone_num,
@@ -51,8 +51,8 @@ class ProfileController extends Controller
 
             $profile = User::find($authUser->id);
             $profile->phone_num = $request->phone_num;
-            $profile->van_status = strval($request->van_status) == "true" ? "x" : null;
-            $profile->invnt_report = $request->invnt_report ? "x" : null;
+            $profile->van_status = $request->van_status ? 'x' : null;
+            $profile->invnt_report = $request->invnt_report ? 'x' : null;
             $isSuccess = $profile->save();
 
             if($isSuccess){
@@ -69,7 +69,7 @@ class ProfileController extends Controller
             }
 
             $data = $profile->only(['phone_num','van_status','invnt_report']);
-            $vanStatus = $data['van_status'] == "x" ? "true" : "false";
+            $vanStatus = $data['van_status'] == 'x' ;
             $invntReport = $data['invnt_report'] == 'x';
 
             return $this->sendResponse([

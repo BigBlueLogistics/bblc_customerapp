@@ -56,13 +56,20 @@ class MembersController extends Controller
             $rolesWithNone = array_merge([[ 'id' => '', 'name' => '--None--']], $roles->toArray());
 
             if ($member) {
-                $vanStatus = $member->van_status == "x" ? "true" : "false";
-                $invntReport = $member->invnt_report == "x" ? "true" : "false";
-                $member = array_merge([...$member->toArray(), 'van_status' => $vanStatus, 'invnt_report' => $invntReport], [
-                    'customer_code' => $member->company->customer_code ?? '',
-                    'company' => $member->company->company ?? '',
-                    'roles' => $rolesWithNone
-                ]);
+                $vanStatus = $member->van_status == 'x';
+                $invntReport = $member->invnt_report == 'x';
+                $isActive = boolval($member->active);
+                $member = array_merge([...$member->toArray(), 
+                        'van_status' => $vanStatus, 
+                        'invnt_report' => $invntReport,
+                        'active' => $isActive,
+                    ], 
+                    [
+                        'customer_code' => $member->company->customer_code ?? '',
+                        'company' => $member->company->company ?? '',
+                        'roles' => $rolesWithNone
+                    ]
+                );
             }
 
             return $this->sendResponse($member, 'member details');
@@ -90,13 +97,13 @@ class MembersController extends Controller
             $member->lname = $request->lname;
             $member->email = $request->email;
             $member->phone_num = $request->phone_num;
-            $member->active = strval($request->is_active);
+            $member->active = $request->is_active;
             $member->role_id = $request->role_id;
-            $member->van_status = strval($request->van_status) == "true" ? "x" : null;
-            $member->invnt_report = $request->invnt_report ? "x" : null;
+            $member->van_status = $request->van_status ? 'x' : null;
+            $member->invnt_report = $request->invnt_report ? 'x' : null;
 
             // Include column verify
-            if ($request->is_verify === 'true') {
+            if ($request->is_verify) {
                 $member->email_verified_at = Carbon::now();
             }
             $isSuccess = $member->save();
@@ -112,7 +119,12 @@ class MembersController extends Controller
                 $roles = Role::where('id', '!=', 0)->select('id','name')->get();
                 $rolesWithNone = array_merge([[ 'id' => '', 'name' => '--None--']], $roles->toArray());
 
-                $member = array_merge($member->toArray(), [
+                $vanStatus = $member->van_status == 'x';
+                $invntReport = $member->invnt_report == 'x';
+                $member = array_merge([...$member->toArray(), 
+                    'van_status' => $vanStatus, 
+                    'invnt_report' => $invntReport,
+                ],[
                     'customer_code' => $companyDetails->customer_code ?? '',
                     'company' => $companyDetails->company ?? '',
                     'roles' => $rolesWithNone

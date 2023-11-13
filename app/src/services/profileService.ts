@@ -1,12 +1,13 @@
-import { ChangePassType } from "types/authForm";
+import { TValidationSchema as TChangePass } from "organisms/Profile/ChangePassword/validationSchema";
+import { TValidationSchema as TUpdateProfile } from "organisms/Profile/Main/validationSchema";
 import HttpAdapter from "./httpAdapter";
 
 class ProfileService extends HttpAdapter {
-  changePass(data: ChangePassType) {
+  changePass(data: TChangePass) {
     return this.post("/profile/change-password", data);
   }
 
-  updateProfile(data: { phone_num: string; van_status: string }) {
+  updateProfile(data: TUpdateProfile) {
     return this.post("/profile/update", data);
   }
 

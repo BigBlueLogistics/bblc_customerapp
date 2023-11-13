@@ -1,8 +1,9 @@
 import { ResponseProfileEntity } from "entities/profile";
 
 export type TProfileData = {
-  van_status: string;
   phone_num: string;
+  van_status: boolean;
+  invnt_report: boolean;
 };
 
 export type TMain = {
