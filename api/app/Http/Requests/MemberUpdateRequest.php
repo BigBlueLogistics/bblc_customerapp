@@ -34,6 +34,7 @@ class MemberUpdateRequest extends FormRequest
             'is_active' => [Rule::in('true', 'false')],
             'role_id' => ['numeric', 'nullable'],
             'van_status' => [Rule::in('true', 'false')],
+            'invnt_report' => ['boolean'],
             'phone_num' => ['numeric', 'nullable', 'min_digits:11', 'max_digits:11'],
         ];
     }

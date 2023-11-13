@@ -21,6 +21,7 @@ const validationSchema = yup.object({
   is_active: yup.boolean(),
   role_id: yup.string(),
   van_status: yup.boolean(),
+  invnt_report: yup.boolean(),
 });
 
 export type TValidationSchema = yup.InferType<typeof validationSchema>;

@@ -30,6 +30,7 @@ export type ViewMemberEntity = {
   company: string;
   roles: { id: number; name: string }[];
   van_status: boolean;
+  invnt_report: boolean;
 };
 
 export type UpdateMemberEntity = ViewMemberEntity;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\IMemberRepository;
 use App\Http\Requests\MemberUpdateRequest;
 use App\Models\CompanyRepresent;
 use App\Models\User;
@@ -12,6 +13,12 @@ use Carbon\Carbon;
 class MembersController extends Controller
 {
     use HttpResponse;
+
+    private $members;
+
+    public function __construct(IMemberRepository $members) {
+        $this->members = $members;
+    }
 
     /**
      * Display a listing of the resource.
@@ -42,13 +49,16 @@ class MembersController extends Controller
         try {
             $this->authorize('view', $user);
 
-            $member = User::find($id, ['id', 'fname', 'lname', 'email', 'email_verified_at', 'active', 'role_id', 'van_status', 'phone_num']);
+            $member = User::find($id, ['id', 'fname', 'lname', 'email', 'email_verified_at', 'active', 
+                    'role_id', 'van_status','invnt_report' , 'phone_num'
+            ]);
             $roles = Role::where('id', '!=', 0)->select('id','name')->get();
             $rolesWithNone = array_merge([[ 'id' => '', 'name' => '--None--']], $roles->toArray());
 
             if ($member) {
                 $vanStatus = $member->van_status == "x" ? "true" : "false";
-                $member = array_merge([...$member->toArray(), 'van_status' => $vanStatus], [
+                $invntReport = $member->invnt_report == "x" ? "true" : "false";
+                $member = array_merge([...$member->toArray(), 'van_status' => $vanStatus, 'invnt_report' => $invntReport], [
                     'customer_code' => $member->company->customer_code ?? '',
                     'company' => $member->company->company ?? '',
                     'roles' => $rolesWithNone
@@ -83,6 +93,7 @@ class MembersController extends Controller
             $member->active = strval($request->is_active);
             $member->role_id = $request->role_id;
             $member->van_status = strval($request->van_status) == "true" ? "x" : null;
+            $member->invnt_report = $request->invnt_report ? "x" : null;
 
             // Include column verify
             if ($request->is_verify === 'true') {
@@ -106,6 +117,11 @@ class MembersController extends Controller
                     'company' => $companyDetails->company ?? '',
                     'roles' => $rolesWithNone
                 ]);
+
+                // insert inventory report
+                $invntReport = $this->members->createInventoryReport($request);
+                $member['invnt_report_message'] = $invntReport;
+                
             }
 
             return $this->sendResponse($member, __('members.updated'));

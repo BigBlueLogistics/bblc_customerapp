@@ -14,7 +14,7 @@ import MDSelect from "atoms/MDSelect";
 import SkeletonForm from "organisms/Skeleton/Form";
 import { useFormik } from "formik";
 import { format, parseISO } from "date-fns";
-import { IFormEdit } from "./type";
+import { IFormEdit } from "./types";
 import validationSchema, { TValidationSchema } from "./validationSchema";
 
 function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) {
@@ -39,6 +39,7 @@ function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) 
         is_active: String(viewResult?.active) === "true",
         role_id: viewResult?.role_id || "",
         van_status: String(viewResult?.van_status) === "true",
+        invnt_report: String(viewResult?.invnt_report) === "true",
       },
       onSubmit: (validatedVal) => {
         const isActive = validatedVal.is_active.toString();
@@ -212,33 +213,60 @@ function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) 
               />
             </MDBox>
             <MDBox mb={1} display="flex" flexDirection="column">
-              <MDTypography component="label" variant="caption" color="text">
+              <MDTypography component="label" variant="caption" fontWeight="regular" color="text">
                 Van Status Recipient
               </MDTypography>
               <MDBox display="flex" flexDirection="row" alignItems="center">
-                <MDTypography variant="body2">Inactive</MDTypography>
+                <MDTypography variant="caption" fontWeight="regular" color="dark">
+                  Inactive
+                </MDTypography>
                 <Switch
                   name="van_status"
                   color="primary"
                   checked={String(values.van_status) === "true"}
                   onChange={handleChange}
                 />
-                <MDTypography variant="body2">Active</MDTypography>
+                <MDTypography variant="caption" fontWeight="regular" color="dark">
+                  Active
+                </MDTypography>
               </MDBox>
             </MDBox>
             <MDBox mb={1} display="flex" flexDirection="column">
-              <MDTypography component="label" variant="caption" color="text">
+              <MDTypography component="label" variant="caption" fontWeight="regular" color="text">
+                Inventory Report Recipient
+              </MDTypography>
+              <MDBox display="flex" flexDirection="row" alignItems="center">
+                <MDTypography variant="caption" fontWeight="regular" color="dark">
+                  Inactive
+                </MDTypography>
+                <Switch
+                  name="invnt_report"
+                  color="primary"
+                  checked={String(values.invnt_report) === "true"}
+                  onChange={handleChange}
+                />
+                <MDTypography variant="caption" fontWeight="regular" color="dark">
+                  Active
+                </MDTypography>
+              </MDBox>
+            </MDBox>
+            <MDBox mb={1} display="flex" flexDirection="column">
+              <MDTypography component="label" variant="caption" fontWeight="regular" color="text">
                 Account Status
               </MDTypography>
               <MDBox display="flex" flexDirection="row" alignItems="center">
-                <MDTypography variant="body2">Inactive</MDTypography>
+                <MDTypography variant="caption" fontWeight="regular" color="dark">
+                  Inactive
+                </MDTypography>
                 <Switch
                   name="is_active"
                   color="primary"
                   checked={String(values.is_active) === "true"}
                   onChange={handleChange}
                 />
-                <MDTypography variant="body2">Active</MDTypography>
+                <MDTypography variant="caption" fontWeight="regular" color="dark">
+                  Active
+                </MDTypography>
               </MDBox>
             </MDBox>
             <MDBox mb={1}>
