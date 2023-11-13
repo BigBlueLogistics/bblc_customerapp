@@ -119,7 +119,7 @@ class MembersController extends Controller
                 ]);
 
                 // insert inventory report
-                $invntReport = $this->members->createInventoryReport($request);
+                $invntReport = $this->members->createInventoryReport($request->all());
                 $member['invnt_report_message'] = $invntReport;
                 
             }

@@ -6,5 +6,5 @@ interface IMemberRepository
 {
     public function getMemberInfo($customerCode);
 
-    public function createInventoryReport($request);
+    public function createInventoryReport($data);
 }

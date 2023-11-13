@@ -17,6 +17,7 @@ function Main({ data, title, onUpdateProfile, shadow = true }: TMain) {
     initialValues: {
       van_status: String(viewProfile?.van_status) === "true",
       phone_num: viewProfile?.phone_num || "",
+      invnt_report: viewProfile?.invnt_report || false,
     },
     onSubmit: (validatedVal) => {
       const vanStatus = validatedVal.van_status.toString();
@@ -50,18 +51,41 @@ function Main({ data, title, onUpdateProfile, shadow = true }: TMain) {
           />
         </MDBox>
         <MDBox mb={1} display="flex" flexDirection="column">
-          <MDTypography component="label" variant="caption" color="text">
+          <MDTypography component="label" variant="caption" fontWeight="regular" color="text">
             Van Status Recipient
           </MDTypography>
           <MDBox display="flex" flexDirection="row" alignItems="center">
-            <MDTypography variant="body2">Inactive</MDTypography>
+            <MDTypography variant="caption" fontWeight="regular" color="dark">
+              Inactive
+            </MDTypography>
             <Switch
               name="van_status"
               color="primary"
               checked={String(values.van_status) === "true"}
               onChange={handleChange}
             />
-            <MDTypography variant="body2">Active</MDTypography>
+            <MDTypography variant="caption" fontWeight="regular" color="dark">
+              Active
+            </MDTypography>
+          </MDBox>
+        </MDBox>
+        <MDBox mb={1} display="flex" flexDirection="column">
+          <MDTypography component="label" variant="caption" fontWeight="regular" color="text">
+            Inventory Report Recipient
+          </MDTypography>
+          <MDBox display="flex" flexDirection="row" alignItems="center">
+            <MDTypography variant="caption" fontWeight="regular" color="dark">
+              Inactive
+            </MDTypography>
+            <Switch
+              name="invnt_report"
+              color="primary"
+              checked={String(values.invnt_report) === "true"}
+              onChange={handleChange}
+            />
+            <MDTypography variant="caption" fontWeight="regular" color="dark">
+              Active
+            </MDTypography>
           </MDBox>
         </MDBox>
         <MDBox mb={2}>

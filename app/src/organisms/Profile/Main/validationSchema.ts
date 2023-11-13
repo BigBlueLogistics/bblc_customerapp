@@ -8,6 +8,7 @@ const validationSchema = yup.object({
     .max(11, "Must be exactly 11 digits")
     .required("required"),
   van_status: yup.boolean().required("required"),
+  invnt_report: yup.boolean(),
 });
 
 export type TValidationSchema = yup.InferType<typeof validationSchema>;

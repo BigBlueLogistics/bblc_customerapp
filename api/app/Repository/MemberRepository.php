@@ -40,13 +40,13 @@ class MemberRepository implements IMemberRepository
         return [];
     }
 
-    public function createInventoryReport($request)
+    public function createInventoryReport($data)
     {
-        $email = $request->input('email'); 
-        $customerCode = $request->input('customer_code'); 
-        $fname = $request->input('fname'); 
-        $lname = $request->input('lname'); 
-        $phone = strtoupper($request->input('phone_num')); 
+        $email = $data['email']; 
+        $customerCode = $data['customer_code']; 
+        $fname = $data['fname']; 
+        $lname = $data['lname']; 
+        $phone = strtoupper($data['phone_num']); 
 
         // check first if exists
         $recipient = DB::connection('wms')->table('PRTR')->select('*')

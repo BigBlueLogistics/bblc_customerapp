@@ -3,6 +3,7 @@ import { TResponse } from "./response";
 export type ProfileEntity = {
   phone_num: string;
   van_status: boolean;
+  invnt_report: boolean;
 };
 
 export type ProfileChangePassEntity = string;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Profile\ChangePassRequest;
 use App\Http\Requests\Profile\MainRequest;
 use App\Models\User;
+use App\Interfaces\IMemberRepository;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -14,18 +15,26 @@ class ProfileController extends Controller
 {
     use HttpResponse;
 
+    private $members;
+
+    public function __construct(IMemberRepository $members) {
+        $this->members = $members;
+    }
+
     public function edit()
     {
         try {
             $email = Auth::user()->email;
 
-            $profile = User::where('email', $email)->first(['phone_num', 'van_status']);
+            $profile = User::where('email', $email)->first(['phone_num', 'van_status', 'invnt_report']);
 
             if($profile){
                 $vanStatus = $profile->van_status == "x" ? "true" : "false";
+                $invntReport = $profile->invnt_report == "x";
                 return $this->sendResponse([
                     'van_status' => $vanStatus,
-                    'phone_num' => $profile->phone_num
+                    'phone_num' => $profile->phone_num,
+                    'invnt_report' => $invntReport
                 ]);
             }
         } catch (Throwable $th) {
@@ -38,18 +47,36 @@ class ProfileController extends Controller
         try {
             $request->validated($request->all());
 
-            $id = Auth::user()->id;
+            $authUser = Auth::user();
 
-            $profile = User::find($id);
+            $profile = User::find($authUser->id);
             $profile->phone_num = $request->phone_num;
             $profile->van_status = strval($request->van_status) == "true" ? "x" : null;
-            $profile->save();
+            $profile->invnt_report = $request->invnt_report ? "x" : null;
+            $isSuccess = $profile->save();
 
-            $data = $profile->only(['van_status','phone_num']);
+            if($isSuccess){
+                // insert inventory report
+                $invntReportData = $request->only('phone_num','invnt_report');
+                $invntNewReportData = array_merge($invntReportData, [
+                    'fname' => $authUser->fname,
+                    'lname' => $authUser->lname,
+                    'email' => $authUser->email,
+                    'customer_code' =>  $authUser->company->customer_code
+                ]);
+                
+                $invntReportMsg = $this->members->createInventoryReport($invntNewReportData);
+            }
+
+            $data = $profile->only(['phone_num','van_status','invnt_report']);
             $vanStatus = $data['van_status'] == "x" ? "true" : "false";
+            $invntReport = $data['invnt_report'] == 'x';
+
             return $this->sendResponse([
+                'phone_num' => $data['phone_num'],
                 'van_status' => $vanStatus,
-                'phone_num' => $data['phone_num']
+                'invnt_report' => $invntReport,
+                'invnt_report_msg' => $invntReportMsg
                 ], 
                 'Succesfully update profile information'
             );
