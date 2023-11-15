@@ -4,7 +4,7 @@ import { TOwnerState } from "./types";
 
 export default styled(Select)<TOwnerState>(({ theme, ownerState }) => {
   const { palette, borders, functions } = theme;
-  const { background } = palette;
+  const { transparent } = palette;
   const { showArrowIcon, variant } = ownerState;
 
   const { borderRadius } = borders;
@@ -20,18 +20,13 @@ export default styled(Select)<TOwnerState>(({ theme, ownerState }) => {
     return {};
   };
 
-  const backgroundColor = variant === "outlined" ? palette.white.main : background.default;
+  const backgroundColor = variant === "outlined" ? palette.white.main : transparent.main;
 
   return {
     backgroundColor,
     borderRadius: borderRadius.md,
-
     "& .MuiSvgIcon-root": {
       ...arrowIcon(),
-    },
-
-    "&::before": {
-      borderBottom: "none",
     },
   };
 });

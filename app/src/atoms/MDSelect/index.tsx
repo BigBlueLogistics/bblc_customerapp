@@ -53,7 +53,7 @@ function MDSelect({
   };
 
   return (
-    <MDFormControlRoot {...rest}>
+    <MDFormControlRoot variant={variant} error={error} {...rest}>
       <InputLabel id={`select-label-${label}`}>{label}</InputLabel>
       <MDSelectRoot
         name={name}
@@ -68,7 +68,11 @@ function MDSelect({
       >
         {renderOptionsWithCustomKeys()}
       </MDSelectRoot>
-      {helperText && <FormHelperText error={error}>{helperText}</FormHelperText>}
+      {helperText && (
+        <FormHelperText error={error} variant={variant}>
+          {helperText}
+        </FormHelperText>
+      )}
     </MDFormControlRoot>
   );
 }

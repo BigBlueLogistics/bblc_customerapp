@@ -1,5 +1,6 @@
-import TextField from "@mui/material/TextField";
+// import TextField from "@mui/material/TextField";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import MDInput from "atoms/MDInput";
 import { IAutoCompleteExpiryData, IAutoCompleteExpiry } from "./types";
 
 function AutoCompleteExpiry({
@@ -31,7 +32,14 @@ function AutoCompleteExpiry({
       }}
       sx={{ width: 250 }}
       renderInput={(params) => (
-        <TextField {...params} error={error} helperText={helperText} label="Select expiry" />
+        <MDInput
+          {...params}
+          error={error}
+          helperText={helperText}
+          label="Select expiry"
+          variant="standard"
+          endAdornment={false}
+        />
       )}
       renderOption={(props, option) => {
         return (

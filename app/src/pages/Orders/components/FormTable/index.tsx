@@ -141,6 +141,7 @@ function FormTable(props: FormikProps<TOrderData> & IFormTable) {
                             helperText={displayRowError(index, "qty")}
                             endAdornment={false}
                             onChange={handleChange}
+                            sx={{ marginTop: "13px", marginBottom: 0 }}
                           />
                         </TableBodyCell>
                         <TableBodyCell>

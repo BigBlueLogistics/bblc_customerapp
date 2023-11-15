@@ -515,24 +515,23 @@ function FormRequests({
               >
                 <input type="hidden" value={formikProp.values?.id || ""} />
 
-                <MDBox mb={1} display="flex" justifyContent="space-between">
+                <MDBox mb={1} display="flex" justifyContent="space-between" alignItems="baseline">
                   <MDSelect
                     name="source_wh"
                     label="Source warehouse"
-                    variant="outlined"
                     optKeyValue="PLANT"
                     optKeyLabel="NAME1"
                     error={formikProp.touched.source_wh && Boolean(formikProp.errors.source_wh)}
                     helperText={formikProp.touched.source_wh ? formikProp.errors.source_wh : ""}
                     options={warehouseList}
                     value={formikProp.values?.source_wh}
-                    sx={{ width: 220 }}
+                    sx={{ width: 212, marginLeft: 0 }}
                     onChange={(e) => handleWarehouseNo(e, formikProp.handleChange)}
                   />
                   <MDInput
                     autoCapitalize="characters"
                     fullWidth
-                    sx={{ width: "22%" }}
+                    sx={{ width: 212 }}
                     margin="dense"
                     name="ref_number"
                     label="Reference Number"
@@ -546,7 +545,7 @@ function FormRequests({
                     onChange={formikProp.handleChange}
                   />
                 </MDBox>
-                <MDBox mb={1} display="flex" justifyContent="space-between">
+                <MDBox mb={1} display="flex" justifyContent="space-between" alignItems="baseline">
                   <MDatePicker
                     label="Pickup DateTime"
                     name="pickup_date"
@@ -556,6 +555,7 @@ function FormRequests({
                     minDate={new Date()}
                     selected={formikProp.values?.pickup_date}
                     onChange={(date: Date) => handlePickupDate(date, formikProp.setValues)}
+                    inputStyle={{ width: 212 }}
                   />
 
                   <MDCheckbox
@@ -563,7 +563,10 @@ function FormRequests({
                     name="allow_notify"
                     checked={formikProp.values?.allow_notify}
                     onChange={formikProp.handleChange}
-                    sx={{ "& span:last-child": { fontWeight: "400" }, justifyContent: "end" }}
+                    sx={{
+                      "& span:last-child": { fontWeight: "400" },
+                      alignSelf: "flex-end",
+                    }}
                   />
                 </MDBox>
                 <MDBox mb={2}>

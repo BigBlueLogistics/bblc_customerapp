@@ -1,4 +1,4 @@
-import TextField from "@mui/material/TextField";
+import MDInput from "atoms/MDInput";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { IAutoCompleteUnitsData, IAutoCompleteUnits } from "./types";
 
@@ -29,7 +29,14 @@ function AutoCompleteUnits({
       }}
       sx={{ width: 150 }}
       renderInput={(params) => (
-        <TextField error={error} helperText={helperText} {...params} label="Select unit" />
+        <MDInput
+          error={error}
+          helperText={helperText}
+          {...params}
+          label="Select unit"
+          variant="standard"
+          endAdornment={false}
+        />
       )}
     />
   );

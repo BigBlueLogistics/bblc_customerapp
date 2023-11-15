@@ -19,7 +19,7 @@ export type TMDSelect = {
 
 export type TOwnerState = {
   ownerState: {
-    showArrowIcon: TMDSelect["showArrowIcon"];
     variant: "filled" | "standard" | "outlined";
+    showArrowIcon?: TMDSelect["showArrowIcon"];
   };
 };

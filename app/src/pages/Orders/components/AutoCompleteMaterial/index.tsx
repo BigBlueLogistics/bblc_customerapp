@@ -1,4 +1,4 @@
-import TextField from "@mui/material/TextField";
+import MDInput from "atoms/MDInput";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { IAutoCompleteMaterialData, IAutoCompleteMaterial } from "./types";
 
@@ -31,7 +31,14 @@ function AutoCompleteMaterial({
       }}
       sx={{ width: 250 }}
       renderInput={(params) => (
-        <TextField error={error} helperText={helperText} {...params} label="Select material" />
+        <MDInput
+          error={error}
+          helperText={helperText}
+          {...params}
+          label="Select material"
+          variant="standard"
+          endAdornment={false}
+        />
       )}
       renderOption={(props, option) => {
         return (
