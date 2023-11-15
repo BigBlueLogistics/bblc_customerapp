@@ -36,7 +36,7 @@ function FormEdit({ open, onClose, onUpdate, viewData, updateData }: IFormEdit) 
         email: viewResult?.email || "",
         email_verified_at: viewResult?.email_verified_at || "",
         is_verify: false,
-        is_active: viewResult?.active || false,
+        is_active: String(viewResult?.active) === "true",
         role_id: viewResult?.role_id || "",
         van_status: viewResult?.van_status || false,
         invnt_report: viewResult?.invnt_report || false,

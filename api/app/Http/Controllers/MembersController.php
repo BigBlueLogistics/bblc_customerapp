@@ -58,7 +58,7 @@ class MembersController extends Controller
             if ($member) {
                 $vanStatus = $member->van_status == 'x';
                 $invntReport = $member->invnt_report == 'x';
-                $isActive = boolval($member->active);
+                $isActive = $member->active;
                 $member = array_merge([...$member->toArray(), 
                         'van_status' => $vanStatus, 
                         'invnt_report' => $invntReport,
