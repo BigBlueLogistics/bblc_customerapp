@@ -18,7 +18,6 @@ class TrucksVansRepository implements ITrucksVansRepository
              wschd AS whSchedule')
             ->whereNull('odatu')
             ->where('kunnr', '=', $customerCode)
-            ->orderBy('vnmbr', 'desc')
             ->orderBy('werks', 'desc')
             ->get();
 
