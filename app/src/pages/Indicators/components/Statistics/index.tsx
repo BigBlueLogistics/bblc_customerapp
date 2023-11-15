@@ -79,7 +79,7 @@ function Statistics() {
         <MDBox mb={1.5}>
           <ComplexStatisticsCard
             image={<MDImageIcon src={inbound} alt="inbound" width="40px" height="40px" />}
-            title="Inbound Weight"
+            title="Inbound Weight (kg)"
             count={tdaInboundSum}
             percentage={{
               color: "dark",
@@ -94,7 +94,7 @@ function Statistics() {
           <ComplexStatisticsCard
             image={<MDImageIcon src={outbound} alt="outbound" width="40px" height="40px" />}
             color="warning"
-            title="Outbound Weight"
+            title="Outbound Weight (kg)"
             count={tdaOutboundSum}
             percentage={{
               color: "dark",

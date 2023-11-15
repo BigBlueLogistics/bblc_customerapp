@@ -39,7 +39,7 @@ function ByTransactions({ data }: TByTransactions) {
             title="By Transaction"
             description={
               <MDTypography variant="button" fontWeight="light" color="text">
-                Inbound/Outbound by Transactions and Pallets
+                Inbound/Outbound by Transactions
               </MDTypography>
             }
             chart={{
