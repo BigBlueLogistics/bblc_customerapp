@@ -5,7 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { AutocompleteChangeReason } from "@mui/material/Autocomplete";
 import { v4 as uuidv4 } from "uuid";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import MDBox from "atoms/MDBox";
 import MDButton from "atoms/MDButton";
 import MDTypography from "atoms/MDTypography";
@@ -307,7 +307,7 @@ function FormRequests({
   };
 
   const handlePickupDate = (date: Date, setValues: FormikHelpers<TOrderData>["setValues"]) => {
-    setValues((prev) => ({ ...prev, pickup_date: date?.toLocaleString() }));
+    setValues((prev) => ({ ...prev, pickup_date: date }));
   };
 
   const handleWarehouseNo = (e: any, handleChange: FormikHandlers["handleChange"]) => {
@@ -357,13 +357,6 @@ function FormRequests({
       available: "",
       uuid,
     });
-  };
-
-  const convertPickupToDate = (dateVal: string) => {
-    if (dateVal) {
-      return new Date(dateVal);
-    }
-    return new Date();
   };
 
   const getAllUnits = async (orderData: TOrderData["requests"]) => {
@@ -479,6 +472,18 @@ function FormRequests({
   const formHeaderTitle = isUpdate ? "update" : data.type;
   const canCancel = !isCreate && data.data?.status.id === 0;
 
+  const parseData = (orderData: TOrderData): TOrderData => {
+    const pickupDate = orderData ? new Date(orderData.pickup_date) : null;
+
+    if (isValid(pickupDate)) {
+      return {
+        ...orderData,
+        pickup_date: pickupDate,
+      };
+    }
+    return orderData;
+  };
+
   return (
     <Dialog open={open} fullWidth maxWidth="lg">
       {isFetchingData ? (
@@ -487,16 +492,13 @@ function FormRequests({
         <Formik
           enableReinitialize={data.type === "edit" || data.type === "view"}
           validationSchema={validationSchema}
-          initialValues={data.type === "create" ? initialOrder : data.data}
+          initialValues={data.type === "create" ? initialOrder : parseData(data.data)}
           onSubmit={(validatedData: TOrderData, actions) => {
-            const formattedPickupDate = format(
-              convertPickupToDate(validatedData.pickup_date),
-              "MM/dd/yyyy HH:mm:ss"
-            );
+            const formattedPickupDate = format(validatedData.pickup_date, "MM/dd/yyyy HH:mm:ss");
             onSave(
               {
                 ...validatedData,
-                pickup_date: formattedPickupDate,
+                pickup_date: formattedPickupDate as unknown as Date,
               },
               actions
             );
@@ -549,10 +551,11 @@ function FormRequests({
                     label="Pickup DateTime"
                     name="pickup_date"
                     autoComplete="off"
+                    dateFormat="MM/dd/yyyy h:mm aa"
                     showTimeInput
                     minDate={new Date()}
-                    selected={convertPickupToDate(formikProp.values?.pickup_date)}
-                    onChange={(date) => handlePickupDate(date, formikProp.setValues)}
+                    selected={formikProp.values?.pickup_date}
+                    onChange={(date: Date) => handlePickupDate(date, formikProp.setValues)}
                   />
 
                   <MDCheckbox

@@ -14,7 +14,7 @@ export type TGroupBy = TGroupByWhSnapshot | TGroupByAging;
 
 export type TOrderData = {
   id: string;
-  pickup_date: string | null;
+  pickup_date: Date | null;
   ref_number: string;
   instruction: string;
   allow_notify: boolean;
