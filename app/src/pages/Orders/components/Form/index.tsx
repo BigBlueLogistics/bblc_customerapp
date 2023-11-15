@@ -617,7 +617,7 @@ function FormRequests({
                       color="success"
                       type="submit"
                       sx={{ marginLeft: 2 }}
-                      disabled={isSaving}
+                      disabled={isSaving || !formikProp.dirty || !formikProp.isValid}
                       loading={isSaving}
                       onClick={formikProp.handleSubmit}
                     >
