@@ -97,8 +97,8 @@ class MembersController extends Controller
             $member->lname = $request->lname;
             $member->email = $request->email;
             $member->phone_num = $request->phone_num;
-            $member->active = $request->is_active;
             $member->role_id = $request->role_id;
+            $member->active = $request->is_active ? 'true' : 'false';
             $member->van_status = $request->van_status ? 'x' : null;
             $member->invnt_report = $request->invnt_report ? 'x' : null;
 
