@@ -6,7 +6,7 @@ import MDFormControlRoot from "atoms/MDSelect/MDFormControlRoot";
 import MDSelectRoot from "atoms/MDSelect/MDSelectRoot";
 import { TMDSelect } from "./types";
 
-function MDSelect({
+function MDSelect<TOption extends object = { value: string | number; label: string }[]>({
   name,
   onChange,
   variant,
@@ -21,14 +21,14 @@ function MDSelect({
   withOptionKeys,
   itemStyle,
   ...rest
-}: TMDSelect) {
+}: TMDSelect<TOption>) {
   const renderOptionsWithoutCustomKeys = () => {
     return (
       options?.length &&
       options.map((optValue, idx) => (
         // eslint-disable-next-line react/no-array-index-key
-        <MenuItem key={idx} value={optValue} sx={itemStyle}>
-          {optValue}
+        <MenuItem key={idx} value={optValue as unknown as string} sx={itemStyle}>
+          {optValue as unknown as string}
         </MenuItem>
       ))
     );
@@ -36,14 +36,18 @@ function MDSelect({
 
   const renderOptionsWithCustomKeys = () => {
     if (withOptionKeys) {
-      const customOptValue = optKeyValue || "value";
-      const customOptLabel = optKeyLabel || "label";
+      const customOptValue = optKeyValue;
+      const customOptLabel = optKeyLabel;
 
       return (
         options?.length &&
         options.map((opt) => (
-          <MenuItem key={opt[customOptValue]} value={opt[customOptValue]} sx={itemStyle}>
-            {opt[customOptLabel]}
+          <MenuItem
+            key={opt[customOptValue] as string}
+            value={opt[customOptValue] as unknown as string}
+            sx={itemStyle}
+          >
+            {opt[customOptLabel] as unknown as string}
           </MenuItem>
         ))
       );

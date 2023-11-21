@@ -9,7 +9,7 @@ export type IForm = {
   onSave: (data: TOrderData, actions: FormikHelpers<TOrderData>) => void;
   onShowCancelConfirmation: (transid: string) => void;
   data: TFormOrderState;
-  warehouseList: { value: string | number; label: string }[];
+  warehouseList: { PLANT: string | number; NAME1: string }[];
 };
 
 export type IReducerState = {

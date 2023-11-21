@@ -15,28 +15,15 @@ import FormEdit from "./components/FormEdit";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import { TMenuAction } from "./components/MenuAction/types";
-import { TMembers, TViewMemberDetails, TUpdateMemberDetails } from "./types";
+import { TMembers, TViewMemberDetails } from "./types";
 
 function Members() {
-  const { tableHeaders } = miscData();
+  const { tableHeaders, initialMembers, initialViewMember } = miscData();
   const [action, setAction] = useState(null);
-  const [showEdit, setShowEdit] = useState(false);
+  const [showFormEdit, setShowFormEdit] = useState(false);
 
-  const [tableMembers, setTableMembers] = useState<TMembers>({
-    message: "",
-    data: [],
-    status: "idle",
-  });
-  const [viewMemberDetails, setViewMemberDetails] = useState<TViewMemberDetails>({
-    message: "",
-    data: null,
-    status: "idle",
-  });
-  const [updateMemberDetails, setUpdateMemberDetails] = useState<TUpdateMemberDetails>({
-    message: "",
-    data: null,
-    status: "idle",
-  });
+  const [tableMembers, setTableMembers] = useState<TMembers>(initialMembers);
+  const [viewMemberDetails, setViewMemberDetails] = useState<TViewMemberDetails>(initialViewMember);
 
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
@@ -57,32 +44,34 @@ function Members() {
   };
 
   const fetchMemberById = async (userId: string) => {
-    setViewMemberDetails((prev) => ({ ...prev, status: "loading" }));
+    setViewMemberDetails((prev) => ({ ...prev, status: "loading", action: "edit" }));
 
     try {
       const { data: rows } = await membersServices.getMemberById(userId);
-      setViewMemberDetails({
+      setViewMemberDetails((prev) => ({
+        ...prev,
         status: "succeeded",
         data: rows.data,
         message: rows.message,
-      });
+      }));
     } catch (err) {
-      setViewMemberDetails({ status: "failed", message: err.message, data: null });
+      setViewMemberDetails({ status: "failed", message: err.message, data: null, action: null });
     }
   };
 
   const updateMember = async (userId: string, data: any) => {
-    setUpdateMemberDetails((prev) => ({ ...prev, status: "loading" }));
+    setViewMemberDetails((prev) => ({ ...prev, status: "loading", action: "update" }));
 
     try {
       const { data: rows } = await membersServices.updateMember(userId, data);
-      setUpdateMemberDetails({
+      setViewMemberDetails((prev) => ({
+        ...prev,
         status: "succeeded",
         data: rows.data,
         message: rows.message,
-      });
+      }));
     } catch (err) {
-      setUpdateMemberDetails({ status: "failed", message: err.message, data: null });
+      setViewMemberDetails({ status: "failed", message: err.message, data: null, action: null });
     }
   };
 
@@ -92,17 +81,13 @@ function Members() {
   };
 
   const onShowEdit = (memberId: string) => {
-    setShowEdit(true);
+    setShowFormEdit(true);
     fetchMemberById(memberId);
   };
 
   const onCloseEdit = () => {
-    setUpdateMemberDetails({
-      message: "",
-      data: null,
-      status: "idle",
-    });
-    setShowEdit(false);
+    setViewMemberDetails(initialViewMember);
+    setShowFormEdit(false);
   };
 
   useEffect(() => {
@@ -110,10 +95,11 @@ function Members() {
   }, []);
 
   useEffect(() => {
-    if (updateMemberDetails.status === "succeeded") {
+    const { action: actionMember, status: statusMember } = viewMemberDetails;
+    if (showFormEdit && actionMember === "update" && statusMember === "succeeded") {
       fetchMembers();
     }
-  }, [updateMemberDetails]);
+  }, [showFormEdit, viewMemberDetails]);
 
   const menuItemsAction: TMenuAction["items"] = [
     {
@@ -136,11 +122,10 @@ function Members() {
       )}
 
       <FormEdit
-        open={showEdit}
+        open={showFormEdit}
         onClose={onCloseEdit}
         onUpdate={updateMember}
         viewData={viewMemberDetails}
-        updateData={updateMemberDetails}
       />
 
       <MDBox pt={6} pb={3}>

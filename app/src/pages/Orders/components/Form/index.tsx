@@ -519,11 +519,11 @@ function FormRequests({
                   <MDSelect
                     name="source_wh"
                     label="Source warehouse"
+                    options={warehouseList}
                     optKeyValue="PLANT"
                     optKeyLabel="NAME1"
                     error={formikProp.touched.source_wh && Boolean(formikProp.errors.source_wh)}
                     helperText={formikProp.touched.source_wh ? formikProp.errors.source_wh : ""}
-                    options={warehouseList}
                     value={formikProp.values?.source_wh}
                     sx={{ width: 212, marginLeft: 0 }}
                     onChange={(e) => handleWarehouseNo(e, formikProp.handleChange)}

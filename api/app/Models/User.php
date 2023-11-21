@@ -60,4 +60,9 @@ class User extends Authenticatable
         return $this->hasOne(CompanyRepresent::class, 'user_id');
     }
 
+    public function companies()
+    {
+        return $this->hasMany(CompanyRepresent::class, 'user_id');
+    }
+
 }

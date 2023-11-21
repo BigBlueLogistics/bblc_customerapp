@@ -1,8 +1,4 @@
-import {
-  ResponseMembersEntity,
-  ResponseViewMemberEntity,
-  ResponseUpdateMemberEntity,
-} from "entities/members";
+import { ResponseMembersEntity, ResponseViewMemberEntity } from "entities/members";
 
 export type INotifyDownload = {
   open: boolean;
@@ -12,5 +8,4 @@ export type INotifyDownload = {
 };
 
 export type TMembers = ResponseMembersEntity;
-export type TViewMemberDetails = ResponseViewMemberEntity;
-export type TUpdateMemberDetails = ResponseUpdateMemberEntity;
+export type TViewMemberDetails = ResponseViewMemberEntity & { action: "edit" | "update" | null };
