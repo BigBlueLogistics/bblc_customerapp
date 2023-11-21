@@ -19,7 +19,7 @@ export type TFiltered = {
   lastModified: Date | null;
 };
 
-export type TTableOrder = ResponseMovementsEntity;
+export type TTableMovements = ResponseMovementsEntity;
 
 export type ITableHeader = {
   onUpdateSubRow?: (row: Record<string, any>) => Promise<void>;

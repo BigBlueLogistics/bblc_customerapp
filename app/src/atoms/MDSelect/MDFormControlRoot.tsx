@@ -8,7 +8,6 @@ export default styled(FormControl)(({ theme }) => {
   const { fontWeightRegular } = typography;
 
   return {
-    margin: "8px",
     minWidth: "130px",
     "& .MuiFormHelperText-root": {
       color: white.main,

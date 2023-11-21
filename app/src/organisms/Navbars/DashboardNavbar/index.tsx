@@ -1,13 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, MouseEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import Icon from "@mui/material/Icon";
+import { AppBar, Toolbar, IconButton, Menu, Icon } from "@mui/material";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import Breadcrumbs from "organisms/Breadcrumbs";
+import MDSelect from "atoms/MDSelect";
 import NotificationItem from "organisms/Items/NotificationItem";
 import {
   navbar,
@@ -17,7 +14,7 @@ import {
   navbarMobileMenu,
 } from "organisms/Navbars/DashboardNavbar/styles";
 import { useAppDispatch } from "hooks";
-import { signOut, setIsAuthenticated } from "redux/auth/action";
+import { signOut, setIsAuthenticated, setCustomerCode } from "redux/auth/action";
 
 import { useMaterialUIController, setTransparentNavbar, setMiniSidenav } from "context";
 import { Theme } from "@mui/material/styles/createTheme";
@@ -27,7 +24,7 @@ import { TDashboardNavbar, CSSPosition } from "./types";
 
 function DashboardNavbar({ absolute, light, isMini }: TDashboardNavbar) {
   const reduxDispatch = useAppDispatch();
-  const { name, customerCode } = selector();
+  const { name, companies, customerCode } = selector();
   const [navbarType, setNavbarType] = useState("sticky");
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, darkMode } = controller;
@@ -63,9 +60,10 @@ function DashboardNavbar({ absolute, light, isMini }: TDashboardNavbar) {
   }, [dispatch, fixedNavbar]);
 
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
-  const handleOpenProfile = (event) => setOpenProfile(event.currentTarget);
+  const handleOpenProfile = (event: MouseEvent<any>) => setOpenProfile(event.currentTarget);
   const handleCloseProfile = () => setOpenProfile(null);
-  const handleOpenNotification = (event) => setOpenNotification(event.currentTarget);
+  const handleOpenNotification = (event: MouseEvent<any>) =>
+    setOpenNotification(event.currentTarget);
   const handleCloseNotification = () => setOpenNotification(null);
 
   const handleSignOut = () => {
@@ -78,11 +76,15 @@ function DashboardNavbar({ absolute, light, isMini }: TDashboardNavbar) {
     navigate("/profile");
   };
 
+  const handleSetCustomerCode = (code: string) => {
+    reduxDispatch(setCustomerCode(code));
+  };
+
   // Render the notifications menu
   const renderProfile = () => (
     <Menu
       anchorEl={openProfile}
-      anchorReference={null}
+      // anchorReference={null}
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "right",
@@ -103,7 +105,7 @@ function DashboardNavbar({ absolute, light, isMini }: TDashboardNavbar) {
   const renderNotification = () => (
     <Menu
       anchorEl={openNotification}
-      anchorReference={null}
+      // anchorReference={null}
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "right",
@@ -130,6 +132,39 @@ function DashboardNavbar({ absolute, light, isMini }: TDashboardNavbar) {
     },
   });
 
+  const renderSelectCompany = () => {
+    if (companies.length === 1) {
+      return (
+        <MDTypography
+          variant="h6"
+          component="div"
+          fontWeight="regular"
+          textTransform="uppercase"
+          sx={({ typography: { pxToRem }, palette: { text } }) => ({
+            fontSize: pxToRem(11),
+            color: text.main,
+          })}
+        >
+          {companies[0]}
+        </MDTypography>
+      );
+    }
+    if (companies.length >= 1) {
+      return (
+        <MDSelect
+          sx={{ "& .MuiInputBase-root": { height: "25px" } }}
+          withOptionKeys={false}
+          variant="outlined"
+          options={companies}
+          value={customerCode || ""}
+          onChange={(e) => handleSetCustomerCode(e.target.value as string)}
+        />
+      );
+    }
+
+    return null;
+  };
+
   return (
     <AppBar
       position={(absolute ? "absolute" : navbarType) as CSSPosition}
@@ -154,18 +189,7 @@ function DashboardNavbar({ absolute, light, isMini }: TDashboardNavbar) {
               >
                 {name}
               </MDTypography>
-              <MDTypography
-                variant="h6"
-                component="div"
-                fontWeight="regular"
-                textTransform="uppercase"
-                sx={({ typography: { pxToRem }, palette: { text } }) => ({
-                  fontSize: pxToRem(11),
-                  color: text.main,
-                })}
-              >
-                {customerCode}
-              </MDTypography>
+              {renderSelectCompany()}
             </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
               <IconButton

@@ -36,7 +36,7 @@ function MDatePicker({
   onChange,
   name,
   label,
-  containerStyle,
+  sx,
   inputStyle,
   disabled,
   showTimeInput,
@@ -46,7 +46,7 @@ function MDatePicker({
   ...rest
 }: TMDatePicker) {
   return (
-    <MDatePickerRoot sx={containerStyle}>
+    <MDatePickerRoot sx={sx}>
       <DatePicker
         selected={selected}
         onChange={onChange}

@@ -72,7 +72,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
         <DialogContent>
           {renderMessage()}
           <MDSelect
-            sx={{ width: "94%" }}
+            sx={{ width: "94%", marginY: "10px" }}
             label="Sending Frequency"
             variant="outlined"
             name="freqy"
@@ -84,7 +84,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             helperText={touched.freqy ? errors.freqy : ""}
           />
           <MDSelect
-            sx={{ width: "94%" }}
+            sx={{ width: "94%", marginBottom: "10px" }}
             label="Inventory Types 1"
             variant="outlined"
             name="invty1"
@@ -94,7 +94,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             showArrowIcon
           />
           <MDSelect
-            sx={{ width: "94%" }}
+            sx={{ width: "94%", marginBottom: "10px" }}
             label="Inventory Types 2"
             variant="outlined"
             name="invty2"
@@ -104,7 +104,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             showArrowIcon
           />
           <MDSelect
-            sx={{ width: "94%" }}
+            sx={{ width: "94%", marginBottom: "10px" }}
             label="Inventory Types 3"
             variant="outlined"
             name="invty3"
@@ -114,7 +114,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             showArrowIcon
           />
           <MDSelect
-            sx={{ width: "94%" }}
+            sx={{ width: "94%", marginBottom: "10px" }}
             label="1st Sending Time"
             variant="outlined"
             name="time1"
@@ -124,7 +124,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             showArrowIcon
           />
           <MDSelect
-            sx={{ width: "94%" }}
+            sx={{ width: "94%", marginBottom: "10px" }}
             label="2nd Sending Time"
             variant="outlined"
             name="time2"

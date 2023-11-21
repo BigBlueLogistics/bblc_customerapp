@@ -1,5 +1,13 @@
 import { formatDecimal } from "utils";
-import { INotifyDownload, TGroupBy, TTableReports } from "../types";
+import { ResponseReportScheduleEntity } from "entities/reports";
+import {
+  INotifyDownload,
+  TFiltered,
+  TGroupBy,
+  TGroupByKey,
+  TReportType,
+  TTableReports,
+} from "../types";
 
 export default function miscData() {
   const commonHeaders = [
@@ -157,7 +165,7 @@ export default function miscData() {
     },
   ];
 
-  const groupByData = {
+  const groupByData: Record<TGroupByKey, { value: string; label: string }[]> = {
     stock: [
       {
         value: "material",
@@ -240,12 +248,26 @@ export default function miscData() {
     return am.concat(pm);
   };
 
+  const initialFilter: TFiltered = {
+    reportType: "wh-snapshot",
+    groupBy: "",
+    warehouse: "",
+  };
+
+  const tableHeaders: Record<TReportType, any> = {
+    "wh-snapshot": whSnapshot,
+    "aging-report": aging,
+    "stock-status": () => [],
+  };
+
+  const initialUpdateSchedule: ResponseReportScheduleEntity = {
+    message: "",
+    data: null,
+    status: "idle",
+  };
+
   return {
-    tableHeaders: {
-      "wh-snapshot": whSnapshot,
-      "aging-report": aging,
-      "stock-status": () => [],
-    },
+    tableHeaders,
     typeReportsData,
     groupByData,
     initialStateNotification,
@@ -253,10 +275,7 @@ export default function miscData() {
     sendingTimeOpts,
     inventoryTypesOpts,
     freqyOpts,
+    initialFilter,
+    initialUpdateSchedule,
   };
 }
-
-const { groupByData, tableHeaders } = miscData();
-
-export type ITableHeadersKey = keyof typeof tableHeaders;
-export type IGroupByKey = keyof typeof groupByData;

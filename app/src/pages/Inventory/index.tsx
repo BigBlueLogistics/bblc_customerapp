@@ -14,6 +14,7 @@ import DataTable from "organisms/Tables/DataTable";
 import { useDownloadFile, useAppDispatch } from "hooks";
 import { setIsAuthenticated } from "redux/auth/action";
 
+import MDButton from "atoms/MDButton";
 import MDImageIcon from "atoms/MDImageIcon";
 import excel from "assets/images/icons/excel.png";
 import miscData from "pages/Inventory/data";
@@ -28,21 +29,16 @@ import { TMenuAction } from "./components/MenuAction/types";
 function Inventory() {
   const dispatch = useAppDispatch();
   const { customerCode } = selector();
-  const { tableHeaders, initialStateNotification } = miscData();
+  const { tableHeaders, initialStateNotification, initialInventory, initialFilter } = miscData();
 
   const [showNotifyDownload, setShowNotifyDownload] =
     useState<INotifyDownload>(initialStateNotification);
-  const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [warehouseList, setWarehouseList] = useState([]);
   const [action, setAction] = useState(null);
   const [toggleFilter, setToggleFilter] = useState(true);
 
-  const [tableInventory, setTableInventory] = useState<TInventory>({
-    message: "",
-    data: [],
-    status: "idle",
-  });
-
+  const [tableInventory, setTableInventory] = useState<TInventory>(initialInventory);
+  const [filtered, setFiltered] = useState(initialFilter);
   const [error, setError] = useState<AxiosError | null>(null);
 
   const {
@@ -68,12 +64,12 @@ function Inventory() {
     setShowNotifyDownload((prevState) => ({ ...prevState, open: false }));
   };
 
-  const fetchInventoryTable = async (warehouse: string) => {
+  const fetchInventoryTable = async (warehouse: string, customer: string) => {
     setTableInventory((prev) => ({ ...prev, status: "loading" }));
 
     try {
       const tableBody = {
-        customer_code: customerCode,
+        customer_code: customer,
         warehouse,
       };
 
@@ -99,9 +95,10 @@ function Inventory() {
   };
 
   const exportFile = (format: "xlsx" | "csv") => {
-    const data = { customer_code: customerCode, warehouse: selectedWarehouse, format };
+    const { warehouse } = filtered;
+    const data = { customer_code: customerCode, warehouse, format };
 
-    const fileName = `INVENTORY-${customerCode}-${selectedWarehouse}.${format}`;
+    const fileName = `INVENTORY-${customerCode}-${warehouse}.${format}`;
     downloadFile({
       url: "/inventory/export-excel",
       filename: fileName,
@@ -111,8 +108,7 @@ function Inventory() {
   };
 
   const onChangeWarehouse = (e: ChangeEvent<HTMLInputElement>) => {
-    setSelectedWarehouse(e.target.value);
-    fetchInventoryTable(e.target.value);
+    setFiltered({ warehouse: e.target.value });
   };
 
   const onToggleFilter = () => {
@@ -120,8 +116,18 @@ function Inventory() {
   };
 
   const onRefresh = () => {
-    fetchInventoryTable(selectedWarehouse);
+    fetchInventoryTable(filtered.warehouse, customerCode);
     closeAction();
+  };
+
+  const onFilter = () => {
+    fetchInventoryTable(filtered.warehouse, customerCode);
+  };
+
+  const onClear = () => {
+    setFiltered(initialFilter);
+
+    setTableInventory(initialInventory);
   };
 
   useEffect(() => {
@@ -133,6 +139,15 @@ function Inventory() {
       dispatch(setIsAuthenticated(false));
     }
   }, [error, dispatch]);
+
+  useEffect(() => {
+    if (customerCode) {
+      // Clear filtering
+      setFiltered(initialFilter);
+      setTableInventory(initialInventory);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerCode]);
 
   useEffect(() => {
     const { message } = downloadError || {};
@@ -272,11 +287,32 @@ function Inventory() {
                       variant="outlined"
                       onChange={onChangeWarehouse}
                       options={warehouseList}
-                      value={selectedWarehouse}
+                      value={filtered.warehouse}
                       showArrowIcon
                       optKeyValue="PLANT"
                       optKeyLabel="NAME1"
+                      sx={{ marginRight: "12px" }}
                     />
+
+                    <MDButton
+                      disabled={tableInventory.status === "loading"}
+                      sx={{ marginRight: "12px" }}
+                      size="small"
+                      variant="gradient"
+                      color="info"
+                      onClick={onFilter}
+                    >
+                      Filter
+                    </MDButton>
+                    <MDButton
+                      disabled={tableInventory.status === "loading"}
+                      size="small"
+                      variant="gradient"
+                      color="warning"
+                      onClick={onClear}
+                    >
+                      clear
+                    </MDButton>
                   </MDBox>
                 </MDBox>
                 <DataTable

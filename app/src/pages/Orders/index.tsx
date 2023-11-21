@@ -449,6 +449,7 @@ function Orders() {
                 >
                   <MDBox
                     sx={({ breakpoints }) => ({
+                      marginRight: "8px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "start",
@@ -470,9 +471,10 @@ function Orders() {
                       itemStyle={{
                         textTransform: "uppercase",
                       }}
+                      sx={{ marginRight: "8px" }}
                     />
 
-                    <MDBox margin="8px">
+                    <MDBox>
                       <MDatePicker
                         label="Created at"
                         onChange={onCreatedAt}
@@ -480,24 +482,26 @@ function Orders() {
                         dateFormat="MM/dd/yyyy"
                         minTime={new Date()}
                         selected={filtered.createdAt}
+                        sx={{ marginRight: "8px" }}
                         inputStyle={{ "& .MuiInputBase-root": { backgroundColor: "#fff" } }}
                       />
                     </MDBox>
 
-                    <MDBox margin="8px">
+                    <MDBox>
                       <MDatePicker
                         label="Last modified"
                         onChange={onLastModified}
                         inputVariant="outlined"
                         dateFormat="MM/dd/yyyy"
                         selected={filtered.lastModified}
+                        sx={{ marginRight: "12px" }}
                         inputStyle={{ "& .MuiInputBase-root": { backgroundColor: "#fff" } }}
                       />
                     </MDBox>
 
                     <MDButton
                       disabled={tableOrders.status === "loading"}
-                      sx={{ margin: "8px" }}
+                      sx={{ marginRight: "12px" }}
                       size="small"
                       variant="gradient"
                       color="info"
@@ -507,7 +511,6 @@ function Orders() {
                     </MDButton>
                     <MDButton
                       disabled={tableOrders.status === "loading"}
-                      sx={{ margin: "8px" }}
                       size="small"
                       variant="gradient"
                       color="warning"

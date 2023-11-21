@@ -64,14 +64,16 @@ export default function App() {
   // Setting page scroll to 0 when changing the route
   useEffect(() => {
     document.documentElement.scrollTop = 0;
-    document.scrollingElement.scrollTop = 0;
+
+    if (document.scrollingElement) {
+      document.scrollingElement.scrollTop = 0;
+    }
   }, [pathname]);
 
   // Check user if authenticated when page reload
   useEffect(() => {
     const apiToken = localStorage.getItem("apiToken");
     if (apiToken && pathname !== "/sign-in") {
-      // console.log("run redux reauth");
       reduxDispatch(reAuthenticate());
     }
   }, [reduxDispatch]);
@@ -108,7 +110,7 @@ export default function App() {
           <Sidenav
             color={sidenavColor}
             brand={brand}
-            brandName={process.env.REACT_APP_NAME}
+            brandName={process.env.REACT_APP_NAME || ""}
             accountRole={accountRole}
             routes={routes}
             handleSignOut={handleSignOut}

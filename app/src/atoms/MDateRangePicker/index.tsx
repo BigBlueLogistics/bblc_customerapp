@@ -29,7 +29,7 @@ DatePickButton.displayName = "DatePickButton";
 function MDateRangePicker({
   onChange,
   label,
-  containerStyle,
+  sx,
   buttonStyle,
   disabled,
   ...rest
@@ -46,7 +46,7 @@ function MDateRangePicker({
   };
 
   return (
-    <MDateRangePickerRoot sx={containerStyle}>
+    <MDateRangePickerRoot sx={sx}>
       <DatePicker
         selected={startDate}
         onChange={onChangeDate}

@@ -260,7 +260,6 @@ function FormEdit({ open, onClose, onUpdate, viewData }: IFormEdit) {
               </MDBox>
               <MDBox mb={1}>
                 <MDSelect
-                  sx={{ margin: 0 }}
                   name="role_id"
                   label="Type"
                   variant="outlined"

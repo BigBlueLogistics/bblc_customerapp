@@ -1,3 +1,4 @@
+import { SelectInputProps } from "@mui/material/Select/SelectInput";
 import { SxProps, Theme } from "@mui/system";
 
 export type TMDSelect<TOptions> = {
@@ -6,7 +7,7 @@ export type TMDSelect<TOptions> = {
   label?: string;
   helperText?: string;
   error?: boolean;
-  onChange: (e: any) => void;
+  onChange: SelectInputProps<HTMLElement>["onChange"];
   showArrowIcon?: boolean;
   optKeyValue?: keyof TOptions;
   optKeyLabel?: keyof TOptions;

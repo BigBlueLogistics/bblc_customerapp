@@ -1,5 +1,4 @@
-import { TextField, createFilterOptions } from "@mui/material";
-import AutoCompleteMaterialRoot from "./AutoCompleteMaterialRoot";
+import { TextField, createFilterOptions, Autocomplete } from "@mui/material";
 import { IAutoCompleteMaterialData, IAutoCompleteMaterial } from "./types";
 
 function AutoCompleteMaterial({
@@ -16,7 +15,7 @@ function AutoCompleteMaterial({
   });
 
   return (
-    <AutoCompleteMaterialRoot
+    <Autocomplete
       id="movements-filter-material"
       value={value as any}
       onChange={(e, selectedValue, reason) => onChange(selectedValue as any, reason)}
