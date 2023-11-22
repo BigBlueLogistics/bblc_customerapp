@@ -7,8 +7,8 @@ import { AxiosRequestConfig, AxiosResponse } from "axios";
 import HttpAdapter from "./httpAdapter";
 
 class TrucksVansServices extends HttpAdapter {
-  getStatus(): Promise<AxiosResponse<ResponseTrucksVansStatusEntity>> {
-    return this.get("/trucks-vans/status");
+  getStatus(config: AxiosRequestConfig): Promise<AxiosResponse<ResponseTrucksVansStatusEntity>> {
+    return this.get("/trucks-vans/status", config);
   }
 
   getStatusDetails(
@@ -18,7 +18,7 @@ class TrucksVansServices extends HttpAdapter {
   }
 
   getScheduleToday(
-    config?: AxiosRequestConfig
+    config: AxiosRequestConfig
   ): Promise<AxiosResponse<ResponseTrucksVansScheduleTodayEntity>> {
     return this.get("/trucks-vans/schedule-today", config);
   }

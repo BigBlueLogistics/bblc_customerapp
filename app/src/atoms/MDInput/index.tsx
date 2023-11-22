@@ -23,7 +23,7 @@ MDInput.defaultProps = {
   success: false,
   disabled: false,
   endAdornment: true,
-  variant: "standard",
+  variant: "outlined",
 };
 
 export default MDInput;

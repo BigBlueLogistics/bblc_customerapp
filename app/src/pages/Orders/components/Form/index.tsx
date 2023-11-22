@@ -498,6 +498,7 @@ function FormRequests({
             onSave(
               {
                 ...validatedData,
+                customer_code: customerCode,
                 pickup_date: formattedPickupDate as unknown as Date,
               },
               actions

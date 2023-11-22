@@ -6,7 +6,10 @@ import { IAutoCompleteMaterialData } from "../AutoCompleteMaterial/types";
 export type IForm = {
   open: boolean;
   onClose: () => void;
-  onSave: (data: TOrderData, actions: FormikHelpers<TOrderData>) => void;
+  onSave: (
+    data: TOrderData & { customer_code: string },
+    actions: FormikHelpers<TOrderData>
+  ) => void;
   onShowCancelConfirmation: (transid: string) => void;
   data: TFormOrderState;
   warehouseList: { PLANT: string | number; NAME1: string }[];

@@ -31,11 +31,11 @@ class MovementController extends Controller
         try {
             $request->validated($request->all());
 
-            $warehouseNo = $request->input('warehouse_no');
-            $movementType = $request->input('movement_type');
-            $materialCode = $request->input('material_code');
-            $customerCode = $request->user()->company()->value('customer_code');
-            [$fromDate, $toDate] = $request->input('coverage_date');
+            $warehouseNo = $request->input('warehouseNo');
+            $movementType = $request->input('movementType');
+            $materialCode = $request->input('materialCode');
+            $customerCode = $request->input('customerCode');
+            [$fromDate, $toDate] = $request->input('coverageDate');
 
             $formatFromDate = Carbon::parse($fromDate)->format('Ymd');
             $formatToDate = Carbon::parse($toDate)->format('Ymd');
@@ -59,11 +59,11 @@ class MovementController extends Controller
         try {
             $request->validated($request->all());
 
-            $warehouseNo = $request->input('warehouse_no');
-            $materialCode = $request->input('material_code');
-            $movementType = $request->input('movement_type');
-            $coverageDate = $request->input('coverage_date');
-            $customerCode = $request->input('customer_code');
+            $warehouseNo = $request->input('warehouseNo');
+            $materialCode = $request->input('materialCode');
+            $movementType = $request->input('movementType');
+            $coverageDate = $request->input('coverageDate');
+            $customerCode = $request->input('customerCode');
             $format = $request->input('format');
 
             $export = new MovementExport($this->movement, $this->member);

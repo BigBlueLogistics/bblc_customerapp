@@ -5,7 +5,7 @@ namespace App\Http\Requests\TrucksVans;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StatusRequest extends FormRequest
+class StatusDetailsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,6 +23,7 @@ class StatusRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'customerCode' => ['required', 'string', 'size:8'],
             'vanMonitorNo' => ['required', 'string'],
             'action' => ['required', Rule::in(['search', 'view'])],
         ];

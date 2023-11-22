@@ -107,10 +107,11 @@ function Movements() {
     try {
       const { data: rows } = await movementServices.getMovements({
         params: {
-          material_code: materialCode,
-          movement_type: type,
-          warehouse_no: warehouseNo,
-          coverage_date: coverageDate,
+          materialCode,
+          movementType: type,
+          warehouseNo,
+          coverageDate,
+          customerCode,
         },
       });
       setTableMovements({
@@ -165,11 +166,11 @@ function Movements() {
   const exportFile = (format: "xlsx" | "csv") => {
     const { warehouseNo, type, materialCode, coverageDate } = filtered;
     const data = {
-      customer_code: customerCode,
-      movement_type: type,
-      warehouse_no: warehouseNo,
-      material_code: materialCode,
-      coverage_date: coverageDate,
+      materialCode,
+      movementType: type,
+      warehouseNo,
+      coverageDate,
+      customerCode,
       format,
     };
 

@@ -19,6 +19,7 @@ import { setIsAuthenticated } from "redux/auth/action";
 
 import { inventoryServices, ordersServices } from "services";
 import { AxiosError } from "axios";
+import selector from "./selector";
 import miscData from "./data";
 import { TNotifyOrder, TOrderData, TFormOrderState, TTableOrder, TFiltered } from "./types";
 import Form from "./components/Form";
@@ -30,7 +31,14 @@ import StatusUpdate from "./components/StatusUpdate";
 
 function Orders() {
   const dispatch = useAppDispatch();
-  const { tableHeaders, initialFiltered, initialNotification, initialOutboundDetails } = miscData();
+  const { customerCode } = selector();
+  const {
+    tableHeaders,
+    initialFilter,
+    initialNotification,
+    initialOutboundDetails,
+    initialTableOrders,
+  } = miscData();
   const [showNotify, setShowNotify] = useState<TNotifyOrder>(initialNotification);
   const [showForm, setShowForm] = useState(false);
   const [showStatusUpdate, setShowStatusUpdate] = useState(false);
@@ -39,14 +47,10 @@ function Orders() {
   const [action, setAction] = useState(null);
   const [error, setError] = useState<AxiosError | null>(null);
   const [toggleFilter, setToggleFilter] = useState(true);
-  const [filtered, setFiltered] = useState<TFiltered>(initialFiltered);
+  const [filtered, setFiltered] = useState<TFiltered>(initialFilter);
   const [outboundDetails, setOutboundDetails] = useState(initialOutboundDetails);
 
-  const [tableOrders, setTableOrders] = useState<TTableOrder>({
-    message: "",
-    data: [],
-    status: "idle",
-  });
+  const [tableOrders, setTableOrders] = useState<TTableOrder>(initialTableOrders);
 
   const [formOrder, setFormOrder] = useState<TFormOrderState>({
     message: "",
@@ -151,8 +155,8 @@ function Orders() {
   };
 
   const onClear = () => {
-    setFiltered(initialFiltered);
-    fetchOrderList(initialFiltered);
+    setFiltered(initialFilter);
+    fetchOrderList(initialFilter);
   };
 
   const onCreate = () => {
@@ -238,7 +242,7 @@ function Orders() {
     setOutboundDetails((prev) => ({ ...prev, status: "loading", action: "edit" }));
 
     try {
-      const { data: row } = await ordersServices.getAdhocOutbound(docNo);
+      const { data: row } = await ordersServices.getAdhocOutbound({ docNo, customerCode });
       setOutboundDetails((prev) => ({
         ...prev,
         status: "succeeded",
@@ -292,7 +296,7 @@ function Orders() {
   }, [formOrder]);
 
   useEffect(() => {
-    fetchOrderList(initialFiltered);
+    fetchOrderList(initialFilter);
     fetchWarehouseList();
     fetchStatusList();
 
@@ -331,6 +335,15 @@ function Orders() {
       });
     }
   }, [showForm, formOrder]);
+
+  useEffect(() => {
+    if (customerCode) {
+      // Clear filtering values
+      setFiltered(initialFilter);
+      setTableOrders(initialTableOrders);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerCode]);
 
   const menuItemsAction: TMenuAction["items"] = [
     {
