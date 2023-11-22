@@ -355,9 +355,9 @@ function Reports() {
 
               <MDBox pt={3}>
                 <MDBox
-                  sx={({ palette: { grey } }) => ({
+                  sx={({ palette: { grey, searchFilter } }) => ({
                     display: toggleFilter ? "block" : "none",
-                    backgroundColor: grey[200],
+                    backgroundColor: searchFilter.container.default,
                     borderTop: `2px solid ${grey[400]}`,
                     width: "100%",
                     overflowX: "auto",

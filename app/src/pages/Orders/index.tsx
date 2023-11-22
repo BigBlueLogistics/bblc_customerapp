@@ -439,9 +439,9 @@ function Orders() {
 
               <MDBox pt={3}>
                 <MDBox
-                  sx={({ palette: { grey } }) => ({
+                  sx={({ palette: { grey, searchFilter } }) => ({
                     display: toggleFilter ? "block" : "none",
-                    backgroundColor: grey[200],
+                    backgroundColor: searchFilter.container.default,
                     borderTop: `2px solid ${grey[400]}`,
                     width: "100%",
                     overflowX: "auto",
@@ -483,7 +483,6 @@ function Orders() {
                         minTime={new Date()}
                         selected={filtered.createdAt}
                         sx={{ marginRight: "8px" }}
-                        inputStyle={{ "& .MuiInputBase-root": { backgroundColor: "#fff" } }}
                       />
                     </MDBox>
 
@@ -495,7 +494,6 @@ function Orders() {
                         dateFormat="MM/dd/yyyy"
                         selected={filtered.lastModified}
                         sx={{ marginRight: "12px" }}
-                        inputStyle={{ "& .MuiInputBase-root": { backgroundColor: "#fff" } }}
                       />
                     </MDBox>
 

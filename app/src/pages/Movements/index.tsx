@@ -394,12 +394,7 @@ function Movements() {
                       itemStyle={{
                         textTransform: "uppercase",
                       }}
-                      sx={({ palette }) => ({
-                        marginRight: "8px",
-                        "& .MuiInputBase-root": {
-                          backgroundColor: `${palette.searchFilter.input.main} !important`,
-                        },
-                      })}
+                      sx={{ marginRight: "8px" }}
                       optKeyValue="PLANT"
                       optKeyLabel="NAME1"
                     />
@@ -414,12 +409,7 @@ function Movements() {
                       itemStyle={{
                         textTransform: "uppercase",
                       }}
-                      sx={({ palette }) => ({
-                        marginRight: "8px",
-                        "& .MuiInputBase-root": {
-                          backgroundColor: `${palette.searchFilter.input.main} !important`,
-                        },
-                      })}
+                      sx={{ marginRight: "8px" }}
                     />
 
                     <AutoCompleteMaterial

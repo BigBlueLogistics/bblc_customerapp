@@ -153,6 +153,7 @@ function DashboardNavbar({ absolute, light, isMini }: TDashboardNavbar) {
       return (
         <MDSelect
           sx={{ "& .MuiInputBase-root": { height: "25px" } }}
+          // sx={{ height: "25px", "& .MuiInputBase-root": { marginTop: 0 } }}
           withOptionKeys={false}
           variant="outlined"
           options={companies}

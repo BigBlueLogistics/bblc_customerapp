@@ -57,7 +57,7 @@ function MDSelect<TOption extends object = { value: string | number; label: stri
   };
 
   return (
-    <MDFormControlRoot variant={variant} error={error} {...rest}>
+    <MDFormControlRoot variant={variant} error={error} ownerState={{ variant }} {...rest}>
       <InputLabel id={`select-label-${label}`}>{label}</InputLabel>
       <MDSelectRoot
         name={name}
