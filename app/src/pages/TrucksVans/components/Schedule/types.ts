@@ -1,5 +1,5 @@
-import { TruckVansScheduleTodayEntity } from "entities/trucksVans";
+import { TListScheduleToday } from "../../types";
 
 export type TSchedule = {
-  data: TruckVansScheduleTodayEntity[];
+  data: TListScheduleToday;
 };

@@ -152,10 +152,9 @@ function DashboardNavbar({ absolute, light, isMini }: TDashboardNavbar) {
     if (companies.length >= 1) {
       return (
         <MDSelect
-          sx={{ "& .MuiInputBase-root": { height: "25px" } }}
-          // sx={{ height: "25px", "& .MuiInputBase-root": { marginTop: 0 } }}
+          sx={{ "& .MuiInputBase-root": { height: "25px", marginTop: 0 } }}
           withOptionKeys={false}
-          variant="outlined"
+          variant="standard"
           options={companies}
           value={customerCode || ""}
           onChange={(e) => handleSetCustomerCode(e.target.value as string)}

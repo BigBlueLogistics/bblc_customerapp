@@ -113,8 +113,8 @@ function TrucksVans() {
 
   useEffect(() => {
     if (customerCode) {
-      fetchStatus(customerCode);
       fetchScheduleToday(customerCode);
+      fetchStatus(customerCode);
     }
   }, [customerCode]);
 
@@ -131,12 +131,12 @@ function TrucksVans() {
         <MDBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
-              <Schedule data={listScheduleToday.data} />
+              <Schedule data={listScheduleToday} />
             </Grid>
             <Grid item xs={12} md={6}>
               <Status
                 inputSearchRef={inputSearchRef}
-                data={listStatus.data}
+                data={listStatus}
                 searchData={searchVMR}
                 onOpen={onShowStatusDetails}
                 onChangeSearch={onChangeSearch}
