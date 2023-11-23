@@ -4,17 +4,17 @@ export type RouteParams = {
   type?: "collapse" | "title" | "divider" | "";
   name?: string;
   icon?: React.ReactNode;
-  collapse?: Array<any>;
+  collapse?: any[];
   href?: string;
   title?: string;
   key: string;
   index?: boolean;
-  allowedRoles?: Array<string>;
+  allowedRoles?: string[];
   component?: React.ReactNode;
   route?: string;
   access: "public" | "protected";
 };
 
-type RoutesType = Array<RouteParams>;
+type RoutesType = RouteParams[];
 
 export default RoutesType;
