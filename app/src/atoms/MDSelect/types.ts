@@ -1,3 +1,4 @@
+import { FormControlProps } from "@mui/material";
 import { SelectInputProps } from "@mui/material/Select/SelectInput";
 import { SxProps, Theme } from "@mui/system";
 
@@ -13,10 +14,9 @@ export type TMDSelect<TOptions> = {
   optKeyLabel?: keyof TOptions;
   options: TOptions[];
   value: string | number;
-  sx?: SxProps<Theme>;
   itemStyle?: SxProps<Theme>;
   withOptionKeys?: boolean;
-};
+} & FormControlProps;
 
 export type TOwnerState = {
   ownerState: {

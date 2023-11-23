@@ -17,21 +17,22 @@
 // import Billing from "pages/billing";
 // import RTL from "pages/rtl";
 // import Notifications from "pages/notifications";
-import Profile from "pages/Profile";
-import Members from "pages/Members";
-import SignIn from "pages/Authentication/SignIn";
-import SignUp from "pages/Authentication/SignUp";
-import ResetPasswordLink from "pages/Authentication/ResetPasswordLink";
-import ResetPassword from "pages/Authentication/ResetPassword";
-import Inventory from "pages/Inventory";
-import Movements from "pages/Movements";
-import Orders from "pages/Orders";
-import Reports from "pages/Reports";
-import Indicators from "pages/Indicators";
-import TrucksVans from "pages/TrucksVans";
-import Finance from "pages/Finance";
-import DefaultPage from "pages/DefaultPage";
-import NotFound from "pages/NotFound";
+import { lazy } from "react";
+// import Profile from "pages/Profile";
+// import Members from "pages/Members";
+// import SignIn from "pages/Authentication/SignIn";
+// import SignUp from "pages/Authentication/SignUp";
+// import ResetPasswordLink from "pages/Authentication/ResetPasswordLink";
+// import ResetPassword from "pages/Authentication/ResetPassword";
+// import Inventory from "pages/Inventory";
+// import Movements from "pages/Movements";
+// import Orders from "pages/Orders";
+// import Reports from "pages/Reports";
+// import Indicators from "pages/Indicators";
+// import TrucksVans from "pages/TrucksVans";
+// import Finance from "pages/Finance";
+// import DefaultPage from "pages/DefaultPage";
+// import NotFound from "pages/NotFound";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -45,6 +46,22 @@ import LocalShipping from "@mui/icons-material/LocalShipping";
 import AccountBalance from "@mui/icons-material/AccountBalance";
 
 import RoutesType from "types/routes";
+
+const Profile = lazy(() => import("pages/Profile"));
+const Members = lazy(() => import("pages/Members"));
+const SignIn = lazy(() => import("pages/Authentication/SignIn"));
+const SignUp = lazy(() => import("pages/Authentication/SignUp"));
+const ResetPasswordLink = lazy(() => import("pages/Authentication/ResetPasswordLink"));
+const ResetPassword = lazy(() => import("pages/Authentication/ResetPassword"));
+const Inventory = lazy(() => import("pages/Inventory"));
+const Movements = lazy(() => import("pages/Movements"));
+const Orders = lazy(() => import("pages/Orders"));
+const Reports = lazy(() => import("pages/Reports"));
+const Indicators = lazy(() => import("pages/Indicators"));
+const TrucksVans = lazy(() => import("pages/TrucksVans"));
+const Finance = lazy(() => import("pages/Finance"));
+const DefaultPage = lazy(() => import("pages/DefaultPage"));
+const NotFound = lazy(() => import("pages/NotFound"));
 
 const routes: RoutesType = [
   // {

@@ -20,7 +20,7 @@ function MDSelect<TOption extends object = { value: string | number; label: stri
   optKeyLabel,
   withOptionKeys,
   itemStyle,
-  ...rest
+  sx,
 }: TMDSelect<TOption>) {
   const renderOptionsWithoutCustomKeys = () => {
     return (
@@ -57,7 +57,7 @@ function MDSelect<TOption extends object = { value: string | number; label: stri
   };
 
   return (
-    <MDFormControlRoot variant={variant} error={error} ownerState={{ variant }} {...rest}>
+    <MDFormControlRoot variant={variant} error={error} ownerState={{ variant }} sx={sx}>
       <InputLabel id={`select-label-${label}`}>{label}</InputLabel>
       <MDSelectRoot
         name={name}

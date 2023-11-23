@@ -133,7 +133,7 @@ function DashboardNavbar({ absolute, light, isMini }: TDashboardNavbar) {
   });
 
   const renderSelectCompany = () => {
-    if (companies.length === 1) {
+    if (companies?.length === 1) {
       return (
         <MDTypography
           variant="h6"
@@ -149,10 +149,12 @@ function DashboardNavbar({ absolute, light, isMini }: TDashboardNavbar) {
         </MDTypography>
       );
     }
-    if (companies.length >= 1) {
+    if (companies?.length >= 1) {
       return (
         <MDSelect
-          sx={{ "& .MuiInputBase-root": { height: "25px", marginTop: 0 } }}
+          sx={({ typography: { pxToRem } }) => ({
+            "& .MuiInputBase-root": { height: "25px", marginTop: 0, fontSize: pxToRem(12) },
+          })}
           withOptionKeys={false}
           variant="standard"
           options={companies}

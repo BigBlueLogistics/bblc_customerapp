@@ -29,7 +29,7 @@ export default function App() {
   const { miniSidenav, direction, layout, openConfigurator, sidenavColor, darkMode } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
-  const { accountRole } = selector();
+  const { accountRole, isAuthenticated } = selector();
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -105,7 +105,7 @@ export default function App() {
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      {layout === "dashboard" && (
+      {isAuthenticated && layout === "dashboard" && (
         <>
           <Sidenav
             color={sidenavColor}
@@ -121,7 +121,7 @@ export default function App() {
           {configsButton}
         </>
       )}
-      {layout === "vr" && <Configurator />}
+      {isAuthenticated && layout === "vr" && <Configurator />}
       <RootNavigator accountRole={accountRole} />
     </ThemeProvider>
   );

@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
+import ContentLoader from "organisms/ContentLoader";
 import RoutesType from "types/routes";
 import ProtectedRoute from "./ProtectedRoute";
 import routes from "../routes";
@@ -35,7 +37,11 @@ function RootNavigator({ accountRole }: { accountRole: string }) {
     });
   };
 
-  return <Routes> {renderRoutes(routes)}</Routes>;
+  return (
+    <Suspense fallback={<ContentLoader />}>
+      <Routes> {renderRoutes(routes)}</Routes>
+    </Suspense>
+  );
 }
 
 export default RootNavigator;
