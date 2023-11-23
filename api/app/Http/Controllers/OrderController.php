@@ -33,8 +33,10 @@ class OrderController extends Controller
     {
         try {
             $request->validated($request->all());
+            $customerCode = $request->input('customerCode');
+            $warehouseNo = $request->input('warehouseNo');
 
-            $result = $this->order->materialAndDescription($request->customerCode, $request->warehouseNo);
+            $result = $this->order->materialAndDescription($customerCode, $warehouseNo);
 
             return $this->sendResponse($result, 'materials and descriptions');
         } catch (Exception $e) {
@@ -46,8 +48,9 @@ class OrderController extends Controller
     {
         try {
             $request->validated($request->all());
+            $materialCode = $request->input('materialCode');
 
-            $result = $this->order->productUnits($request->materialCode);
+            $result = $this->order->productUnits($materialCode);
 
             return $this->sendResponse($result, 'units');
         } catch (\Exception $e) {
@@ -59,8 +62,10 @@ class OrderController extends Controller
     {
         try {
             $request->validated($request->all());
+            $materialCode = $request->input('materialCode');
+            $warehouseNo = $request->input('warehouseNo');
 
-            $result = $this->order->expiryBatch($request->materialCode, $request->warehouseNo);
+            $result = $this->order->expiryBatch($materialCode, $warehouseNo);
 
             return $this->sendResponse($result, 'units');
         } catch (Exception $e) {
@@ -115,12 +120,12 @@ class OrderController extends Controller
             // Insert order header
             // NOTE: transid is auto generated in model OrderHeader
             $orderHeader = OrderHeader::create([
-                'lgnum' => $request->source_wh,
-                'ponum' => $request->ref_number,
-                'pudat' => $request->pickup_date,
-                'miles' => $request->allow_notify,
-                'header' => $request->instruction,
-                'kunnr' => $authUser->company->customer_code,
+                'lgnum' => $request->input('source_wh'),
+                'ponum' => $request->input('ref_number'),
+                'pudat' => $request->input('pickup_date'),
+                'miles' => $request->input('allow_notify'),
+                'header' => $request->input('instruction'),
+                'kunnr' => $request->input('customer_code'),
                 'ernam' => $authUser->id,
                 'apstat' => 0,
                 'access' => 0,
@@ -132,7 +137,7 @@ class OrderController extends Controller
                 $id = $orderHeader['transid'];
                 $createdOrder = OrderHeader::where('id', $id)->first(['transid', 'lgnum']);
 
-                $mappedData = $createdOrder->withMapOrderDetails($request->requests);
+                $mappedData = $createdOrder->withMapOrderDetails($request->input('requests'));
 
                 // Bulk insert order items
                 OrderItems::insert($mappedData);
@@ -260,7 +265,7 @@ class OrderController extends Controller
             $request->validated($request->all());
 
             $docNo = $request->input('docNo');
-            $customerCode = auth()->user()->company->customer_code;
+            $customerCode = $request->input('customer_code');
 
             $details = $this->order->adhocDetails($customerCode, $docNo);
 

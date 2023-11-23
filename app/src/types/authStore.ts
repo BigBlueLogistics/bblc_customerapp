@@ -4,4 +4,5 @@ export type AuthStoreType = {
   request: object;
   authenticated: boolean;
   apiToken: string;
+  customerCode: string;
 };

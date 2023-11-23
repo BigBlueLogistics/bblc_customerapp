@@ -28,6 +28,7 @@ class CreateRequest extends FormRequest
             'ref_number' => ['required', 'regex:/^[^\'%"]+$/i', 'max:12'],
             'pickup_date' => ['nullable', 'date'],
             'instruction' => ['nullable', 'regex:/^[^\'%"]+$/i'],
+            'customer_code' => ['required', 'string', 'size:8'],
             'requests' => ['required', 'array'],
             'requests.*.uuid' => ['required', 'uuid'],
             'requests.*.material' => ['required', 'string'],

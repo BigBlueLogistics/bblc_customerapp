@@ -39,7 +39,9 @@ function WaveChart() {
   };
 
   useEffect(() => {
-    fetchInOutbound(customerCode);
+    if (customerCode) {
+      fetchInOutbound(customerCode);
+    }
   }, [customerCode]);
 
   return (

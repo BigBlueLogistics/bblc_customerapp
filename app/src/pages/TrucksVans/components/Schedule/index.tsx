@@ -1,10 +1,16 @@
 import Card from "@mui/material/Card";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
+import { useMaterialUIController } from "context";
+import SkeletonList from "organisms/Skeleton/List";
 import ItemSchedule from "../ItemSchedule";
 import { TSchedule } from "./types";
 
 function Schedule({ data }: TSchedule) {
+  const [controller] = useMaterialUIController();
+  const { darkMode } = controller;
+  const { data: viewStatus, status } = data;
+
   return (
     <Card sx={{ height: "100%" }}>
       <MDBox pt={3} px={2} display="inline-flex" justifyContent="space-between">
@@ -13,17 +19,11 @@ function Schedule({ data }: TSchedule) {
         </MDTypography>
       </MDBox>
       <MDBox pt={1} pb={2} px={2}>
-        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          {data && data.length ? (
-            data.map((item) => <ItemSchedule key={item.id} data={item} />)
-          ) : (
-            <MDBox component="li" display="flex" justifyContent="center" alignItems="center">
-              <MDTypography variant="body2" fontWeight="light" textAlign="center">
-                No data available.
-              </MDTypography>
-            </MDBox>
-          )}
-        </MDBox>
+        {status === "loading" ? (
+          <SkeletonList darkMode={darkMode} noOfItems={5} width="100%" height="98px" />
+        ) : (
+          <ItemSchedule data={viewStatus} darkMode={darkMode} />
+        )}
       </MDBox>
     </Card>
   );

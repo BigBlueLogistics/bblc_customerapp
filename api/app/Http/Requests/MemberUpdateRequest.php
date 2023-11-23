@@ -25,16 +25,19 @@ class MemberUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'customer_code' => ['required', 'string', 'size:8'],
             'fname' => ['required', 'string'],
             'lname' => ['required', 'string'],
             'email' => ['required',  'email', 'string'],
-            'company_name' => ['required', 'string'],
             'is_verify' => ['boolean'],
             'is_active' => ['boolean'],
             'role_id' => ['numeric', 'nullable'],
             'van_status' => ['boolean'],
             'invnt_report' => ['boolean'],
+            'companies'=> ['required', 'array'],
+            'companies.*.id'=> ['nullable', 'integer'],
+            'companies.*.customer_code'=> ['required', 'string', 'size:8'],
+            'companies.*.company'=> ['required', 'string'],
+            'delete_companies' => ['nullable', 'array'],
             'phone_num' => ['numeric', 'nullable', 'min_digits:11', 'max_digits:11'],
         ];
     }

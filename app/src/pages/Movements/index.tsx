@@ -21,7 +21,7 @@ import MDImageIcon from "atoms/MDImageIcon";
 import excel from "assets/images/icons/excel.png";
 import miscData from "./data";
 import selector from "./selector";
-import { INotifyDownload, TTableOrder, TFiltered } from "./types";
+import { INotifyDownload, TTableMovements, TFiltered } from "./types";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import AutoCompleteMaterial from "./components/AutoCompleteMaterial";
@@ -31,8 +31,14 @@ import { TMenuAction } from "./components/MenuAction/types";
 function Movements() {
   const dispatch = useAppDispatch();
   const { customerCode } = selector();
-  const { tableHeaders, subTableHeaders, initialFiltered, initialNotification, movementType } =
-    miscData();
+  const {
+    tableHeaders,
+    subTableHeaders,
+    initialFilter,
+    initialNotification,
+    initialMovements,
+    movementType,
+  } = miscData();
   const [showNotifyDownload, setShowNotifyDownload] =
     useState<INotifyDownload>(initialNotification);
 
@@ -41,7 +47,7 @@ function Movements() {
   const [action, setAction] = useState(null);
   const [error, setError] = useState<AxiosError | null>(null);
   const [toggleFilter, setToggleFilter] = useState(true);
-  const [filtered, setFiltered] = useState<TFiltered>(initialFiltered);
+  const [filtered, setFiltered] = useState<TFiltered>(initialFilter);
 
   const {
     downloadFile,
@@ -50,11 +56,7 @@ function Movements() {
     filename,
   } = useDownloadFile();
 
-  const [tableMovements, setTableMovements] = useState<TTableOrder>({
-    message: "",
-    data: [],
-    status: "idle",
-  });
+  const [tableMovements, setTableMovements] = useState<TTableMovements>(initialMovements);
 
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
@@ -105,10 +107,11 @@ function Movements() {
     try {
       const { data: rows } = await movementServices.getMovements({
         params: {
-          material_code: materialCode,
-          movement_type: type,
-          warehouse_no: warehouseNo,
-          coverage_date: coverageDate,
+          materialCode,
+          movementType: type,
+          warehouseNo,
+          coverageDate,
+          customerCode,
         },
       });
       setTableMovements({
@@ -155,23 +158,19 @@ function Movements() {
   };
 
   const onClear = () => {
-    setFiltered((prev) => ({ ...initialFiltered, coverageDate: prev.coverageDate }));
+    setFiltered((prev) => ({ ...initialFilter, coverageDate: prev.coverageDate }));
 
-    setTableMovements({
-      message: "",
-      data: [],
-      status: "idle",
-    });
+    setTableMovements(initialMovements);
   };
 
   const exportFile = (format: "xlsx" | "csv") => {
     const { warehouseNo, type, materialCode, coverageDate } = filtered;
     const data = {
-      customer_code: customerCode,
-      movement_type: type,
-      warehouse_no: warehouseNo,
-      material_code: materialCode,
-      coverage_date: coverageDate,
+      materialCode,
+      movementType: type,
+      warehouseNo,
+      coverageDate,
+      customerCode,
       format,
     };
 
@@ -230,8 +229,14 @@ function Movements() {
 
   useEffect(() => {
     if (customerCode) {
+      // Clear filtering values
+      setFiltered(initialFilter);
+      setTableMovements(initialMovements);
+
+      // Refetch the material
       fetchMaterialDescription(customerCode);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerCode]);
 
   useEffect(() => {
@@ -390,11 +395,7 @@ function Movements() {
                       itemStyle={{
                         textTransform: "uppercase",
                       }}
-                      sx={({ palette }) => ({
-                        "& .MuiInputBase-root": {
-                          backgroundColor: `${palette.searchFilter.input.main} !important`,
-                        },
-                      })}
+                      sx={{ marginRight: "8px" }}
                       optKeyValue="PLANT"
                       optKeyLabel="NAME1"
                     />
@@ -409,22 +410,19 @@ function Movements() {
                       itemStyle={{
                         textTransform: "uppercase",
                       }}
-                      sx={({ palette }) => ({
-                        "& .MuiInputBase-root": {
-                          backgroundColor: `${palette.searchFilter.input.main} !important`,
-                        },
-                      })}
+                      sx={{ marginRight: "8px" }}
                     />
 
                     <AutoCompleteMaterial
                       options={materialList}
                       value={filtered.materialCode}
                       onChange={onMaterial}
-                      sx={{ minWidth: "300px" }}
+                      sx={{ minWidth: "300px", marginRight: "8px" }}
                     />
 
-                    <MDBox margin="8px">
+                    <MDBox>
                       <MDateRangePicker
+                        sx={{ marginRight: "12px" }}
                         label="Coverage Date"
                         onChange={onCoverageDate}
                         buttonStyle={({ palette }) => ({
@@ -447,7 +445,7 @@ function Movements() {
 
                     <MDButton
                       disabled={tableMovements.status === "loading"}
-                      sx={{ margin: "8px" }}
+                      sx={{ marginRight: "12px" }}
                       size="small"
                       variant="gradient"
                       color="info"
@@ -457,7 +455,6 @@ function Movements() {
                     </MDButton>
                     <MDButton
                       disabled={tableMovements.status === "loading"}
-                      sx={{ margin: "8px" }}
                       size="small"
                       variant="gradient"
                       color="warning"

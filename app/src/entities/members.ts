@@ -26,15 +26,11 @@ export type ViewMemberEntity = {
   role_id: string;
   email_verified_at: string;
   active: boolean;
-  customer_code: string;
-  company: string;
-  roles: { id: number; name: string }[];
+  companies: { id: string; customer_code: string; company: string }[];
+  roles: { id: string | number; name: string }[];
   van_status: boolean;
   invnt_report: boolean;
 };
 
-export type UpdateMemberEntity = ViewMemberEntity;
-
 export type ResponseMembersEntity = TResponse<MembersEntity[]>;
 export type ResponseViewMemberEntity = TResponse<ViewMemberEntity>;
-export type ResponseUpdateMemberEntity = TResponse<UpdateMemberEntity>;

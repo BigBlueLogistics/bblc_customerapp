@@ -18,12 +18,12 @@ import { setIsAuthenticated } from "redux/auth/action";
 
 import MDImageIcon from "atoms/MDImageIcon";
 import excel from "assets/images/icons/excel.png";
-import miscData, { ITableHeadersKey, IGroupByKey } from "pages/Reports/data";
+import miscData from "pages/Reports/data";
 import { reportServices, inventoryServices } from "services";
 import { AxiosError } from "axios";
 import { ResponseReportScheduleEntity } from "entities/reports";
 import selector from "./selector";
-import { INotifyDownload, TGroupBy, TTableReports } from "./types";
+import { INotifyDownload, TFiltered, TReportType, TTableReports, TGroupByKey } from "./types";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import ModalSchedule from "./components/ModalSchedule";
@@ -39,26 +39,23 @@ function Reports() {
     groupByData,
     initialStateNotification,
     initialTableReports,
+    initialFilter,
+    initialUpdateSchedule,
   } = miscData();
   const [showNotifyDownload, setShowNotifyDownload] =
     useState<INotifyDownload>(initialStateNotification);
-  const [selectedReport, setSelectedReport] = useState<ITableHeadersKey>("wh-snapshot");
-  const [selectedGroupBy, setSelectedGroupBy] = useState<TGroupBy>("");
-  const [selectedWarehouse, setSelectedWarehouse] = useState("");
+  const [filtered, setFiltered] = useState<TFiltered>(initialFilter);
   const [, setDateRange] = useState(null);
   const [warehouseList, setWarehouseList] = useState([]);
-  const [groupByKey, setGroupByKey] = useState<IGroupByKey>("stock");
+  const [groupByKey, setGroupByKey] = useState<TGroupByKey>("stock");
   const [action, setAction] = useState(null);
   const [toggleFilter, setToggleFilter] = useState(true);
   const [showSchedule, setShowSchedule] = useState(false);
 
   const [tableReports, setTableReports] = useState<TTableReports>(initialTableReports);
   const [error, setError] = useState<AxiosError | null>(null);
-  const [updateSchedule, setUpdateSchedule] = useState<ResponseReportScheduleEntity>({
-    message: "",
-    data: null,
-    status: "idle",
-  });
+  const [updateSchedule, setUpdateSchedule] =
+    useState<ResponseReportScheduleEntity>(initialUpdateSchedule);
 
   const {
     downloadFile,
@@ -84,18 +81,18 @@ function Reports() {
   };
 
   const onChangeReport = (e: ChangeEvent<HTMLInputElement>) => {
-    const data = e.target.value as keyof typeof tableHeaders;
-    const key = ["stock-status", "wh-snapshot"].includes(data) ? "stock" : "aging";
-    setSelectedReport(data);
+    const reportType = e.target.value as TReportType;
+    const key = ["stock-status", "wh-snapshot"].includes(reportType) ? "stock" : "aging";
+    setFiltered((prev) => ({ ...prev, reportType }));
     setGroupByKey(key);
   };
 
   const onChangeGroupBy = (e: ChangeEvent<HTMLInputElement>) => {
-    setSelectedGroupBy(e.target.value as TGroupBy);
+    setFiltered((prev) => ({ ...prev, groupBy: e.target.value }));
   };
 
   const onChangeWarehouse = (e: ChangeEvent<HTMLInputElement>) => {
-    setSelectedWarehouse(e.target.value);
+    setFiltered((prev) => ({ ...prev, warehouse: e.target.value }));
   };
 
   const onChangeDateRange = (dates) => {
@@ -112,9 +109,9 @@ function Reports() {
     try {
       const tableBody = {
         customer_code: customerCode,
-        warehouse: selectedWarehouse,
-        group_by: selectedGroupBy,
-        report_type: selectedReport,
+        warehouse: filtered.warehouse,
+        group_by: filtered.groupBy,
+        report_type: filtered.reportType,
       };
 
       const { data: rows } = await reportServices.getReports({ params: tableBody });
@@ -139,16 +136,16 @@ function Reports() {
   };
 
   const exportFile = (format: "xlsx" | "csv") => {
+    const { warehouse, groupBy, reportType } = filtered;
     const data = {
       customer_code: customerCode,
-      warehouse: selectedWarehouse,
-      group_by: selectedGroupBy,
-      report_type: selectedReport,
+      warehouse,
+      group_by: groupBy,
+      report_type: reportType,
       format,
     };
 
-    const fileName =
-      `${selectedReport}-${customerCode}-${selectedGroupBy}-${selectedWarehouse}`.toUpperCase();
+    const fileName = `${reportType}-${customerCode}-${groupBy}-${warehouse}`.toUpperCase();
     downloadFile({
       url: "/reports/export-excel",
       filename: `${fileName}.${format}`,
@@ -167,9 +164,7 @@ function Reports() {
   };
 
   const onClear = () => {
-    setSelectedReport("wh-snapshot");
-    setSelectedWarehouse("");
-    setSelectedGroupBy("");
+    setFiltered(initialFilter);
     setTableReports(initialTableReports);
   };
 
@@ -179,11 +174,7 @@ function Reports() {
   };
 
   const onCloseSchedule = () => {
-    setUpdateSchedule({
-      message: "",
-      data: null,
-      status: "idle",
-    });
+    setUpdateSchedule(initialUpdateSchedule);
     setShowSchedule(false);
   };
 
@@ -218,6 +209,15 @@ function Reports() {
       dispatch(setIsAuthenticated(false));
     }
   }, [error, dispatch]);
+
+  useEffect(() => {
+    if (customerCode) {
+      // Clear filtering values
+      setFiltered(initialFilter);
+      setTableReports(initialTableReports);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerCode]);
 
   useEffect(() => {
     const { message } = downloadError || {};
@@ -355,9 +355,9 @@ function Reports() {
 
               <MDBox pt={3}>
                 <MDBox
-                  sx={({ palette: { grey } }) => ({
+                  sx={({ palette: { grey, searchFilter } }) => ({
                     display: toggleFilter ? "block" : "none",
-                    backgroundColor: grey[200],
+                    backgroundColor: searchFilter.container.default,
                     borderTop: `2px solid ${grey[400]}`,
                     width: "100%",
                     overflowX: "auto",
@@ -379,8 +379,9 @@ function Reports() {
                       variant="outlined"
                       onChange={onChangeReport}
                       options={typeReportsData}
-                      value={selectedReport}
+                      value={filtered.reportType}
                       showArrowIcon
+                      sx={{ marginRight: "8px" }}
                     />
 
                     <MDSelect
@@ -388,10 +389,11 @@ function Reports() {
                       variant="outlined"
                       onChange={onChangeWarehouse}
                       options={warehouseList}
-                      value={selectedWarehouse}
+                      value={filtered.warehouse}
                       showArrowIcon
                       optKeyValue="PLANT"
                       optKeyLabel="NAME1"
+                      sx={{ marginRight: "8px" }}
                     />
 
                     <MDSelect
@@ -399,24 +401,27 @@ function Reports() {
                       variant="outlined"
                       onChange={onChangeGroupBy}
                       options={groupByData[groupByKey]}
-                      value={selectedGroupBy as number | string}
+                      value={filtered.groupBy as number | string}
                       showArrowIcon
+                      sx={{ marginRight: "8px" }}
                     />
 
-                    <MDBox margin="8px">
+                    <MDBox>
                       <MDateRangePicker
                         label="Dates.."
                         onChange={onChangeDateRange}
-                        disabled={selectedReport !== "stock-status"}
-                        containerStyle={{
-                          cursor: selectedReport !== "stock-status" ? "not-allowed" : "default",
+                        disabled={filtered.reportType !== "stock-status"}
+                        sx={{
+                          marginRight: "12px",
+                          cursor:
+                            filtered.reportType !== "stock-status" ? "not-allowed" : "default",
                         }}
                       />
                     </MDBox>
 
                     <MDButton
                       disabled={tableReports.status === "loading"}
-                      sx={{ margin: "8px" }}
+                      sx={{ marginRight: "12px" }}
                       size="small"
                       variant="gradient"
                       color="info"
@@ -426,7 +431,6 @@ function Reports() {
                     </MDButton>
                     <MDButton
                       disabled={tableReports.status === "loading"}
-                      sx={{ margin: "8px" }}
                       size="small"
                       variant="gradient"
                       color="warning"
@@ -438,7 +442,7 @@ function Reports() {
                 </MDBox>
                 <DataTable
                   table={{
-                    columns: tableHeaders[selectedReport](selectedGroupBy),
+                    columns: tableHeaders[filtered.reportType](filtered.groupBy),
                     rows: tableReports.data,
                   }}
                   isSorted={false}

@@ -4,6 +4,8 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
+import { useMaterialUIController } from "context";
+import SkeletonList from "organisms/Skeleton/List";
 import ItemStatus from "../ItemStatus";
 import { TStatus } from "./types";
 
@@ -15,8 +17,12 @@ function Status({
   onChangeSearch,
   onOpenSearch,
 }: TStatus) {
+  const [controller] = useMaterialUIController();
+  const { darkMode } = controller;
+  const { data: viewStatus, status } = data;
+
   const renderSearch = () => {
-    if (data?.length) {
+    if (viewStatus?.length) {
       return (
         <MDBox>
           <MDInput
@@ -47,23 +53,11 @@ function Status({
         {renderSearch()}
       </MDBox>
       <MDBox pt={1} pb={2} px={2}>
-        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          {data && data.length ? (
-            data.map((item) => (
-              <ItemStatus
-                key={item.vmrno}
-                data={item}
-                onOpenStatusDetails={() => onOpen(item.vmrno, "view")}
-              />
-            ))
-          ) : (
-            <MDBox component="li" display="flex" justifyContent="center" alignItems="center">
-              <MDTypography variant="body2" fontWeight="light" textAlign="center">
-                No data available.
-              </MDTypography>
-            </MDBox>
-          )}
-        </MDBox>
+        {status === "loading" ? (
+          <SkeletonList darkMode={darkMode} noOfItems={5} width="100%" height="98px" />
+        ) : (
+          <ItemStatus data={viewStatus} darkMode={darkMode} onOpenStatusDetails={onOpen} />
+        )}
       </MDBox>
     </Card>
   );

@@ -1,16 +1,17 @@
+import { SelectInputProps } from "@mui/material/Select/SelectInput";
 import { SxProps, Theme } from "@mui/system";
 
-export type TMDSelect = {
+export type TMDSelect<TOptions> = {
   variant: "filled" | "standard" | "outlined";
   name?: string;
   label?: string;
   helperText?: string;
   error?: boolean;
-  onChange: (e: any) => void;
+  onChange: SelectInputProps<HTMLElement>["onChange"];
   showArrowIcon?: boolean;
-  optKeyValue?: string;
-  optKeyLabel?: string;
-  options: { value: string | number; label: string }[] | string[];
+  optKeyValue?: keyof TOptions;
+  optKeyLabel?: keyof TOptions;
+  options: TOptions[];
   value: string | number;
   sx?: SxProps<Theme>;
   itemStyle?: SxProps<Theme>;
@@ -20,6 +21,6 @@ export type TMDSelect = {
 export type TOwnerState = {
   ownerState: {
     variant: "filled" | "standard" | "outlined";
-    showArrowIcon?: TMDSelect["showArrowIcon"];
+    showArrowIcon?: TMDSelect<object>["showArrowIcon"];
   };
 };

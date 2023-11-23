@@ -18,4 +18,13 @@ export type INotifyDownload = {
 
 export type TGroupByWhSnapshot = "batch" | "expiry" | "material";
 export type TGroupByAging = "expiration" | "receiving" | "production";
+export type TReportType = "wh-snapshot" | "aging-report" | "stock-status";
 export type TGroupBy = LooseType<TGroupByWhSnapshot | TGroupByAging>;
+
+export type TFiltered = {
+  reportType: TReportType;
+  warehouse: string;
+  groupBy: TGroupBy;
+};
+
+export type TGroupByKey = "stock" | "aging";

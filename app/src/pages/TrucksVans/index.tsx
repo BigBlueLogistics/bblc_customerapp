@@ -11,8 +11,10 @@ import StatusDetails from "pages/TrucksVans/components/StatusDetails";
 import { trucksVansServices } from "services";
 import { TListStatus, TListStatusDetails, TListScheduleToday } from "pages/TrucksVans/types";
 import { getValue } from "utils";
+import selector from "./selector";
 
 function TrucksVans() {
+  const { customerCode } = selector();
   const [listStatus, setListStatus] = useState<TListStatus>({
     message: null,
     data: null,
@@ -32,11 +34,13 @@ function TrucksVans() {
   const [searchVMR, setSearchVMR] = useState("");
   const inputSearchRef = useRef<HTMLInputElement>(null);
 
-  const fetchStatus = async () => {
+  const fetchStatus = async (customer: string) => {
     setListStatus((prev) => ({ ...prev, status: "loading" }));
 
     try {
-      const { data: truckVansStatus } = await trucksVansServices.getStatus();
+      const { data: truckVansStatus } = await trucksVansServices.getStatus({
+        params: { customerCode: customer },
+      });
 
       setListStatus({
         status: "succeeded",
@@ -53,7 +57,7 @@ function TrucksVans() {
 
     try {
       const { data: truckVansStatus } = await trucksVansServices.getStatusDetails({
-        params: { vanMonitorNo, action },
+        params: { vanMonitorNo, action, customerCode },
       });
 
       setListStatusDetails({
@@ -66,11 +70,13 @@ function TrucksVans() {
     }
   };
 
-  const fetchScheduleToday = async () => {
+  const fetchScheduleToday = async (customer: string) => {
     setListScheduleToday((prev) => ({ ...prev, status: "loading" }));
 
     try {
-      const { data: truckVansSchedule } = await trucksVansServices.getScheduleToday();
+      const { data: truckVansSchedule } = await trucksVansServices.getScheduleToday({
+        params: { customerCode: customer },
+      });
 
       setListScheduleToday({
         status: "succeeded",
@@ -106,9 +112,11 @@ function TrucksVans() {
   };
 
   useEffect(() => {
-    fetchStatus();
-    fetchScheduleToday();
-  }, []);
+    if (customerCode) {
+      fetchScheduleToday(customerCode);
+      fetchStatus(customerCode);
+    }
+  }, [customerCode]);
 
   return (
     <DashboardLayout>
@@ -123,12 +131,12 @@ function TrucksVans() {
         <MDBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
-              <Schedule data={listScheduleToday.data} />
+              <Schedule data={listScheduleToday} />
             </Grid>
             <Grid item xs={12} md={6}>
               <Status
                 inputSearchRef={inputSearchRef}
-                data={listStatus.data}
+                data={listStatus}
                 searchData={searchVMR}
                 onOpen={onShowStatusDetails}
                 onChangeSearch={onChangeSearch}

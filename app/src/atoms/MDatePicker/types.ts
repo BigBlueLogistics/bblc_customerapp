@@ -13,7 +13,7 @@ export type TMDatePicker = {
   onChange: (date: Date) => void;
   name?: string;
   defaultValue?: Date | null;
-  containerStyle?: SxProps<Theme>;
+  sx?: SxProps<Theme>;
   inputStyle?: SxProps<Theme>;
   label?: string;
   disabled?: boolean;

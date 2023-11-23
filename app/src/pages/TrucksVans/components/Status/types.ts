@@ -1,9 +1,9 @@
-import { TrucksVansStatusEntity } from "entities/trucksVans";
 import { ChangeEvent, MutableRefObject } from "react";
+import { TListStatus } from "../../types";
 
 export type TStatus = {
   inputSearchRef: MutableRefObject<any>;
-  data: TrucksVansStatusEntity[];
+  data: TListStatus;
   searchData: string;
   onOpen: (vanMonitorNo: string, action: "search" | "view") => void;
   onChangeSearch: (e: ChangeEvent<HTMLInputElement>) => void;

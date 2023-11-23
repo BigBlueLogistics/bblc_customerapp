@@ -39,7 +39,7 @@ class AuthController extends Controller
 
         $token = $user->createToken($user->email)->plainTextToken;
         $relations = [
-            'customer_code' => $user->company()->value('customer_code'),
+            'companies' => collect($user->companies)->pluck('customer_code'),
             'role_name' => Role::where('id', $user->role_id)->first(['name'])->name ?? null,
         ];
 
@@ -164,7 +164,7 @@ class AuthController extends Controller
     public function isAuthenticated(Request $request)
     {
         $relations = [
-            'customer_code' => $request->user()->company()->value('customer_code'),
+            'companies' => collect($request->user()->companies)->pluck('customer_code'),
             'role_name' => Role::where('id', $request->user()->role_id)->first(['name'])->name ?? null,
         ];
         $currentToken = $request->bearerToken();

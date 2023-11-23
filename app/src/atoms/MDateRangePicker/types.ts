@@ -10,7 +10,7 @@ export type TMDatePicker = {
 
 export type TMDateRangePicker = {
   onChange: (date: [Date, Date]) => void;
-  containerStyle?: SxProps<Theme>;
+  sx?: SxProps<Theme>;
   buttonStyle?: SxProps<Theme>;
   label?: string;
   disabled?: boolean;

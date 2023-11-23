@@ -38,8 +38,8 @@ class OrdersServices extends HttpAdapter {
     return this.get("/orders/status/list");
   }
 
-  getAdhocOutbound(docNo: string) {
-    return this.get("/orders/adhoc-outbound-details", { params: { docNo } });
+  getAdhocOutbound(data: any) {
+    return this.get("/orders/adhoc-outbound-details", { params: data });
   }
 
   createOutboundDetails(data: any) {

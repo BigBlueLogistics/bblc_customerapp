@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class CompanyRepresent extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $table = 'company_represent';
 

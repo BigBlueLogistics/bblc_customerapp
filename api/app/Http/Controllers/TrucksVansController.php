@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TrucksVans\ScheduleTodayRequest;
-use App\Http\Requests\TrucksVans\StatusRequest;
+use App\Http\Requests\TrucksVans\StatusDetailsRequest;
+use App\Http\Requests\TrucksVans\TrucksVansRequest;
 use App\Interfaces\ITrucksVansRepository;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
@@ -19,10 +20,12 @@ class TrucksVansController extends Controller
         $this->trucks = $trucks;
     }
 
-    public function status(Request $request)
+    public function status(TrucksVansRequest $request)
     {
         try {
-            $customerCode = $request->user()->company()->value('customer_code');
+            $request->validated($request->all());
+
+            $customerCode = $request->input('customerCode');
 
             $status = $this->trucks->getTrucksVansStatus($customerCode);
 
@@ -33,14 +36,14 @@ class TrucksVansController extends Controller
 
     }
 
-    public function statusDetails(StatusRequest $request)
+    public function statusDetails(StatusDetailsRequest $request)
     {
         try {
             $request->validated($request->all());
 
             $searchVal = $request->input('vanMonitorNo');
             $action = $request->input('action');
-            $customerCode = $request->user()->company()->value('customer_code');
+            $customerCode = $request->input('customerCode');
 
             $details = $this->trucks->getTrucksVansStatusDetails($searchVal, $customerCode, $action);
 
@@ -54,7 +57,7 @@ class TrucksVansController extends Controller
     public function scheduleToday(ScheduleTodayRequest $request)
     {
         try {
-            $customerCode = $request->user()->company()->value('customer_code');
+            $customerCode = $request->input('customerCode');
 
             $schedule = $this->trucks->getScheduleToday($customerCode);
 

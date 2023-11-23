@@ -37,6 +37,7 @@ function Finance() {
     setListStatus((prev) => ({ ...prev, status: "loading" }));
 
     try {
+      // @ts-ignore
       const { data: truckVansStatus } = await trucksVansServices.getStatus();
 
       setListStatus({
@@ -71,6 +72,7 @@ function Finance() {
     setListScheduleToday((prev) => ({ ...prev, status: "loading" }));
 
     try {
+      // @ts-ignore
       const { data: truckVansSchedule } = await trucksVansServices.getScheduleToday();
 
       setListScheduleToday({

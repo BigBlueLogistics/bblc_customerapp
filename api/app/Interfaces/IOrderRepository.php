@@ -8,7 +8,7 @@ interface IOrderRepository
 
     public function productUnits($materialCode);
 
-    public function expiryBatch($customerCode, $warehouseNo);
+    public function expiryBatch($materialCode, $warehouseNo);
 
     public function readText($docNo);
     

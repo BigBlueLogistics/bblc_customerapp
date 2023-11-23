@@ -8,7 +8,7 @@ type TProtectedRoute = {
   authenticated: boolean;
   apiToken: string;
   accountRole: string;
-  allowedRoles: Array<string>;
+  allowedRoles: string[];
 };
 
 function ProtectedRoute({ authenticated, apiToken, accountRole, allowedRoles }: TProtectedRoute) {

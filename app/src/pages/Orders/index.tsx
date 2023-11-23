@@ -19,6 +19,7 @@ import { setIsAuthenticated } from "redux/auth/action";
 
 import { inventoryServices, ordersServices } from "services";
 import { AxiosError } from "axios";
+import selector from "./selector";
 import miscData from "./data";
 import { TNotifyOrder, TOrderData, TFormOrderState, TTableOrder, TFiltered } from "./types";
 import Form from "./components/Form";
@@ -30,7 +31,14 @@ import StatusUpdate from "./components/StatusUpdate";
 
 function Orders() {
   const dispatch = useAppDispatch();
-  const { tableHeaders, initialFiltered, initialNotification, initialOutboundDetails } = miscData();
+  const { customerCode } = selector();
+  const {
+    tableHeaders,
+    initialFilter,
+    initialNotification,
+    initialOutboundDetails,
+    initialTableOrders,
+  } = miscData();
   const [showNotify, setShowNotify] = useState<TNotifyOrder>(initialNotification);
   const [showForm, setShowForm] = useState(false);
   const [showStatusUpdate, setShowStatusUpdate] = useState(false);
@@ -39,14 +47,10 @@ function Orders() {
   const [action, setAction] = useState(null);
   const [error, setError] = useState<AxiosError | null>(null);
   const [toggleFilter, setToggleFilter] = useState(true);
-  const [filtered, setFiltered] = useState<TFiltered>(initialFiltered);
+  const [filtered, setFiltered] = useState<TFiltered>(initialFilter);
   const [outboundDetails, setOutboundDetails] = useState(initialOutboundDetails);
 
-  const [tableOrders, setTableOrders] = useState<TTableOrder>({
-    message: "",
-    data: [],
-    status: "idle",
-  });
+  const [tableOrders, setTableOrders] = useState<TTableOrder>(initialTableOrders);
 
   const [formOrder, setFormOrder] = useState<TFormOrderState>({
     message: "",
@@ -151,8 +155,8 @@ function Orders() {
   };
 
   const onClear = () => {
-    setFiltered(initialFiltered);
-    fetchOrderList(initialFiltered);
+    setFiltered(initialFilter);
+    fetchOrderList(initialFilter);
   };
 
   const onCreate = () => {
@@ -238,7 +242,7 @@ function Orders() {
     setOutboundDetails((prev) => ({ ...prev, status: "loading", action: "edit" }));
 
     try {
-      const { data: row } = await ordersServices.getAdhocOutbound(docNo);
+      const { data: row } = await ordersServices.getAdhocOutbound({ docNo, customerCode });
       setOutboundDetails((prev) => ({
         ...prev,
         status: "succeeded",
@@ -292,7 +296,7 @@ function Orders() {
   }, [formOrder]);
 
   useEffect(() => {
-    fetchOrderList(initialFiltered);
+    fetchOrderList(initialFilter);
     fetchWarehouseList();
     fetchStatusList();
 
@@ -331,6 +335,15 @@ function Orders() {
       });
     }
   }, [showForm, formOrder]);
+
+  useEffect(() => {
+    if (customerCode) {
+      // Clear filtering values
+      setFiltered(initialFilter);
+      setTableOrders(initialTableOrders);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerCode]);
 
   const menuItemsAction: TMenuAction["items"] = [
     {
@@ -439,9 +452,9 @@ function Orders() {
 
               <MDBox pt={3}>
                 <MDBox
-                  sx={({ palette: { grey } }) => ({
+                  sx={({ palette: { grey, searchFilter } }) => ({
                     display: toggleFilter ? "block" : "none",
-                    backgroundColor: grey[200],
+                    backgroundColor: searchFilter.container.default,
                     borderTop: `2px solid ${grey[400]}`,
                     width: "100%",
                     overflowX: "auto",
@@ -449,6 +462,7 @@ function Orders() {
                 >
                   <MDBox
                     sx={({ breakpoints }) => ({
+                      marginRight: "8px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "start",
@@ -470,9 +484,10 @@ function Orders() {
                       itemStyle={{
                         textTransform: "uppercase",
                       }}
+                      sx={{ marginRight: "8px" }}
                     />
 
-                    <MDBox margin="8px">
+                    <MDBox>
                       <MDatePicker
                         label="Created at"
                         onChange={onCreatedAt}
@@ -480,24 +495,24 @@ function Orders() {
                         dateFormat="MM/dd/yyyy"
                         minTime={new Date()}
                         selected={filtered.createdAt}
-                        inputStyle={{ "& .MuiInputBase-root": { backgroundColor: "#fff" } }}
+                        sx={{ marginRight: "8px" }}
                       />
                     </MDBox>
 
-                    <MDBox margin="8px">
+                    <MDBox>
                       <MDatePicker
                         label="Last modified"
                         onChange={onLastModified}
                         inputVariant="outlined"
                         dateFormat="MM/dd/yyyy"
                         selected={filtered.lastModified}
-                        inputStyle={{ "& .MuiInputBase-root": { backgroundColor: "#fff" } }}
+                        sx={{ marginRight: "12px" }}
                       />
                     </MDBox>
 
                     <MDButton
                       disabled={tableOrders.status === "loading"}
-                      sx={{ margin: "8px" }}
+                      sx={{ marginRight: "12px" }}
                       size="small"
                       variant="gradient"
                       color="info"
@@ -507,7 +522,6 @@ function Orders() {
                     </MDButton>
                     <MDButton
                       disabled={tableOrders.status === "loading"}
-                      sx={{ margin: "8px" }}
                       size="small"
                       variant="gradient"
                       color="warning"

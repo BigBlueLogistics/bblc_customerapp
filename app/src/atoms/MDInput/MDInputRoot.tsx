@@ -2,9 +2,9 @@ import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import { TOwnerState } from "./types";
 
-export default styled(TextField)<TOwnerState>(({ theme, ownerState = {} }) => {
+export default styled(TextField)<TOwnerState>(({ theme, ownerState }) => {
   const { palette, functions } = theme;
-  const { error, success, disabled, endAdornment } = ownerState;
+  const { error, success, disabled, endAdornment, variant } = ownerState;
 
   const { grey, transparent, error: colorError, success: colorSuccess } = palette;
   const { pxToRem } = functions;
@@ -55,8 +55,21 @@ export default styled(TextField)<TOwnerState>(({ theme, ownerState = {} }) => {
     },
   });
 
+  const backgroundColor = () => {
+    if (variant === "outlined") {
+      return {
+        "& .MuiOutlinedInput-root ": {
+          backgroundColor: `${palette.searchFilter.input.main} !important`,
+        },
+      };
+    }
+    return {
+      backgroundColor: disabled ? `${grey[200]} !important` : transparent.main,
+    };
+  };
+
   return {
-    backgroundColor: disabled ? `${grey[200]} !important` : transparent.main,
+    ...backgroundColor(),
     pointerEvents: disabled ? "none" : "auto",
     ...(error && errorStyles()),
     ...(success && successStyles()),

@@ -4,11 +4,11 @@ export type TInput = Partial<{
   error: boolean;
   success: boolean;
   disabled: boolean;
-  endAdornment?: boolean;
+  endAdornment: boolean;
 }>;
 
 export type TMDInput = TInput & TextFieldProps;
 
 export type TOwnerState = {
-  ownerState?: TInput;
+  ownerState?: TInput & { variant?: TextFieldProps["variant"] };
 };

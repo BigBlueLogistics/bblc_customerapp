@@ -1,6 +1,6 @@
 import { formatDecimal } from "utils";
 import { CellTotal } from "../components/TableCell";
-import { INotifyDownload, ITableHeaderProps } from "../types";
+import { INotifyDownload, ITableHeaderProps, TInventory } from "../types";
 
 export default function miscData() {
   const initialStateNotification: INotifyDownload = {
@@ -79,8 +79,20 @@ export default function miscData() {
     },
   ];
 
+  const initialInventory: TInventory = {
+    message: "",
+    data: [],
+    status: "idle",
+  };
+
+  const initialFilter = {
+    warehouse: "",
+  };
+
   return {
     initialStateNotification,
     tableHeaders,
+    initialInventory,
+    initialFilter,
   };
 }

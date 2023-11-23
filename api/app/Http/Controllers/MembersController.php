@@ -44,32 +44,35 @@ class MembersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user, $id)
+    public function edit(User $user, $loggedUserId)
     {
         try {
             $this->authorize('view', $user);
 
-            $member = User::find($id, ['id', 'fname', 'lname', 'email', 'email_verified_at', 'active', 
+            $member = User::find($loggedUserId, ['id', 'fname', 'lname', 'email', 'email_verified_at', 'active', 
                     'role_id', 'van_status','invnt_report' , 'phone_num'
             ]);
             $roles = Role::where('id', '!=', 0)->select('id','name')->get();
-            $rolesWithNone = array_merge([[ 'id' => '', 'name' => '--None--']], $roles->toArray());
+            $rolesWithNone = [['id' => '', 'name' => '--None--'], ...$roles->toArray()];
 
             if ($member) {
                 $vanStatus = $member->van_status == 'x';
                 $invntReport = $member->invnt_report == 'x';
                 $isActive = $member->active;
-                $member = array_merge([...$member->toArray(), 
+                $companies = collect($member->companies)->map(function($item){
+                    return $item->only(['id','customer_code','company']);
+                })->all();
+
+                $member = [...$member->toArray(), 
                         'van_status' => $vanStatus, 
                         'invnt_report' => $invntReport,
                         'active' => $isActive,
-                    ], 
-                    [
+                        'companies' => $companies,
                         'customer_code' => $member->company->customer_code ?? '',
                         'company' => $member->company->company ?? '',
                         'roles' => $rolesWithNone
-                    ]
-                );
+                    ];
+              
             }
 
             return $this->sendResponse($member, 'member details');
@@ -85,14 +88,14 @@ class MembersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(User $user, MemberUpdateRequest $request, $id)
+    public function update(User $user, MemberUpdateRequest $request, $loggedUserId)
     {
         try {
             $this->authorize('update', $user);
 
             $request->validated($request->all());
 
-            $member = User::find($id);
+            $member = User::find($loggedUserId);
             $member->fname = $request->fname;
             $member->lname = $request->lname;
             $member->email = $request->email;
@@ -108,31 +111,41 @@ class MembersController extends Controller
             }
             $isSuccess = $member->save();
 
-            // Update customer code and company if user exist else not insert the record.
+            // If user existed, update the field customer code and company name
+            // else not insert the record.
             if ($isSuccess) {
-                $currentCompanyName = $member->company ? $member->company->company : null;
-                $companyDetails = CompanyRepresent::updateOrCreate(
-                    ['user_id' => $id, 'company' => $currentCompanyName],
-                    ['customer_code' => $request->customer_code, 'company' => $request->company_name]
-                );
+                foreach ($request->companies as $value) {
+                    CompanyRepresent::updateOrCreate(
+                        ['id' => $value['id'], 'user_id' => $loggedUserId],
+                        ['customer_code' => $value['customer_code'], 'company' => $value['company']]
+                    );
+                }
+
+                // Delete assigned companies
+                if($request->delete_companies){
+                    CompanyRepresent::where('user_id', $loggedUserId)
+                        ->whereIn('id', $request->delete_companies)
+                        ->delete();
+                }
 
                 $roles = Role::where('id', '!=', 0)->select('id','name')->get();
-                $rolesWithNone = array_merge([[ 'id' => '', 'name' => '--None--']], $roles->toArray());
+                $rolesWithNone = [['id' => '', 'name' => '--None--'], ...$roles->toArray()];
 
                 $vanStatus = $member->van_status == 'x';
                 $invntReport = $member->invnt_report == 'x';
-                $member = array_merge([...$member->toArray(), 
+                $newCompanies = CompanyRepresent::where('user_id', $loggedUserId)->get(['id','customer_code','company']);
+
+                $member = [...$member->toArray(), 
                     'van_status' => $vanStatus, 
                     'invnt_report' => $invntReport,
-                ],[
-                    'customer_code' => $companyDetails->customer_code ?? '',
-                    'company' => $companyDetails->company ?? '',
-                    'roles' => $rolesWithNone
-                ]);
+                    'companies' => $newCompanies,
+                    'roles' => $rolesWithNone,
+                ];
 
-                // insert inventory report
-                $invntReport = $this->members->createInventoryReport($request->all());
-                $member['invnt_report_message'] = $invntReport;
+                // TODO: incorporate the multiple custome code
+                // // insert inventory report
+                // $invntReport = $this->members->createInventoryReport($request->all());
+                // $member['invnt_report_message'] = $invntReport;
                 
             }
 

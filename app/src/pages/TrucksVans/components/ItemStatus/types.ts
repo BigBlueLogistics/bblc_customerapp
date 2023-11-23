@@ -1,7 +1,8 @@
 import { TrucksVansStatusEntity } from "entities/trucksVans";
 
 export type TItemStatus = {
-  data: TrucksVansStatusEntity;
+  data: TrucksVansStatusEntity[];
   noGutter?: boolean;
-  onOpenStatusDetails: () => void;
+  darkMode?: boolean;
+  onOpenStatusDetails: (vmrno: string, action: "view" | "search") => void;
 };

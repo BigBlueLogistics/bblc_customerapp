@@ -47,7 +47,9 @@ function Statistics() {
   };
 
   useEffect(() => {
-    fetchActiveSKu(customerCode);
+    if (customerCode) {
+      fetchActiveSKu(customerCode);
+    }
   }, [customerCode]);
 
   const {

@@ -8,6 +8,7 @@ const initialState: AuthStoreType = {
   request: {},
   authenticated: false,
   apiToken: "",
+  customerCode: "",
 };
 
 export const authReducer = createSlice({
@@ -19,6 +20,9 @@ export const authReducer = createSlice({
     },
     resetData: () => {
       return initialState;
+    },
+    setCustomerCode: (state, action) => {
+      state.customerCode = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -36,6 +40,10 @@ export const authReducer = createSlice({
         state.request[signIn.pending.type] = { status: "succeeded" };
         state.authenticated = true;
         state.apiToken = action.payload.data.token;
+        state.customerCode =
+          action.payload.data.user.companies.length >= 1
+            ? action.payload.data.user.companies[0]
+            : "";
       })
       .addCase(signIn.rejected, (state, action) => {
         state.failedRequests[signIn.rejected.type] = { message: action.error.message };
@@ -90,6 +98,7 @@ export const authReducer = createSlice({
         // Clear sign-in
         state.successfulRequests[signIn.fulfilled.type] = {};
         state.apiToken = "";
+        state.customerCode = "";
       })
       .addCase(signOut.rejected, (state, action) => {
         state.failedRequests[signOut.rejected.type] = { message: action.error.message };
@@ -112,9 +121,10 @@ export const authReducer = createSlice({
         state.request[signIn.pending.type] = { status: "failed" };
         state.authenticated = false;
         state.apiToken = "";
+        state.customerCode = "";
       });
   },
 });
 
-export const { setIsAuthenticated, resetData } = authReducer.actions;
+export const { setIsAuthenticated, resetData, setCustomerCode } = authReducer.actions;
 export default authReducer.reducer;
