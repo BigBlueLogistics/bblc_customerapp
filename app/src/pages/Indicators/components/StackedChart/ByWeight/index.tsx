@@ -6,7 +6,7 @@ import { TByWeight } from "./types";
 
 function ByWeight({ data }: TByWeight) {
   const { data: transData, status } = data;
-  const { byWeight } = transData;
+  const { byWeight } = transData || {};
 
   const labels = byWeight?.dates || null;
 

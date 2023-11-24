@@ -54,6 +54,7 @@ function FieldArrayCompanies({ arrayHelper, formik, onDeleteCompanies }: IFieldA
           helperText={displayRowError(idx, "customer_code")}
           onChange={handleChange}
           sx={{ marginTop: 0 }}
+          inputProps={{ style: { textTransform: "uppercase" } }}
         />
 
         <MDInput
@@ -69,6 +70,7 @@ function FieldArrayCompanies({ arrayHelper, formik, onDeleteCompanies }: IFieldA
           helperText={displayRowError(idx, "company")}
           onChange={handleChange}
           sx={{ marginTop: 0 }}
+          inputProps={{ style: { textTransform: "capitalize" } }}
         />
 
         {values.companies.length > 1 ? (

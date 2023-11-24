@@ -6,7 +6,7 @@ import { TByTransactions } from "./types";
 
 function ByTransactions({ data }: TByTransactions) {
   const { data: transData, status } = data;
-  const { byTransactions } = transData;
+  const { byTransactions } = transData || {};
 
   const labels = byTransactions?.dates || null;
 
