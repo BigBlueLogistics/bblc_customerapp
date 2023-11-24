@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import ErrorBoundary from "organisms/ErrorBoundary";
 import App from "App";
 
 // Context Provider
@@ -14,13 +15,15 @@ const { store, persistor } = configStore();
 const root = createRoot(document.getElementById("root"));
 
 root.render(
-  <Provider store={store}>
-    <BrowserRouter basename="/portal/">
-      <PersistGate loading={null} persistor={persistor}>
-        <MaterialUIControllerProvider>
-          <App />
-        </MaterialUIControllerProvider>
-      </PersistGate>
-    </BrowserRouter>
-  </Provider>
+  <ErrorBoundary>
+    <Provider store={store}>
+      <BrowserRouter basename="/portal/">
+        <PersistGate loading={null} persistor={persistor}>
+          <MaterialUIControllerProvider>
+            <App />
+          </MaterialUIControllerProvider>
+        </PersistGate>
+      </BrowserRouter>
+    </Provider>
+  </ErrorBoundary>
 );
