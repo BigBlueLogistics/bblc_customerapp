@@ -59,7 +59,8 @@ class IndicatorsRepository implements IIndicatorsRepository
                 return $formatDate;
             })
             ->values();
-
+      
+        $totalWtInbound = null;
         if ($wtGroupByDate->has('INBOUND')) {
             $inboundArr = $wtGroupByDate->only(['INBOUND']);
 
@@ -73,6 +74,7 @@ class IndicatorsRepository implements IIndicatorsRepository
                 });
         }
 
+        $totalWtOutbound = null;
         if ($wtGroupByDate->has('OUTBOUND')) {
             $outboundArr = $wtGroupByDate->only(['OUTBOUND']);
 
@@ -89,24 +91,35 @@ class IndicatorsRepository implements IIndicatorsRepository
 
         // Check the difference by key DATE
         // Inbound
-        $inboundDiffFromOutbound = $totalWtOutbound->diffKeys($totalWtInbound)->map(function ($item) {
-            return [
-                ...$item,
-                'weight' => 0,
-            ];
-        })->union($totalWtInbound)->sortKeys();
+        if($totalWtInbound && $totalWtOutbound){
+            $inboundDiffFromOutbound = $totalWtOutbound->diffKeys($totalWtInbound)->map(function ($item) {
+                return [
+                    ...$item,
+                    'weight' => 0,
+                ];
+            })->union($totalWtInbound)->sortKeys();
 
-        $inboundWt = $inboundDiffFromOutbound->pluck('weight');
+            $inboundWt = $inboundDiffFromOutbound->pluck('weight');
+        }
+        else{
+            $inboundWt = $totalWtInbound ? $totalWtInbound->pluck('weight'): null;
+        }
+
 
         // Outbound
-        $outboundDiffFromInbound = $totalWtInbound->diffKeys($totalWtOutbound)->map(function ($item) {
-            return [
-                ...$item,
-                'weight' => 0,
-            ];
-        })->union($totalWtOutbound)->sortKeys();
+        if($totalWtOutbound && $totalWtInbound){
+            $outboundDiffFromInbound = $totalWtInbound->diffKeys($totalWtOutbound)->map(function ($item) {
+                return [
+                    ...$item,
+                    'weight' => 0,
+                ];
+            })->union($totalWtOutbound)->sortKeys();
 
-        $outboundWt = $outboundDiffFromInbound->pluck('weight');
+            $outboundWt = $outboundDiffFromInbound->pluck('weight');
+        }
+        else{
+            $outboundWt = $totalWtOutbound ? $totalWtOutbound->pluck('weight') : null;
+        }
 
         return [
             'dates' => $wtDates,
@@ -169,6 +182,7 @@ class IndicatorsRepository implements IIndicatorsRepository
             })
             ->values();
 
+        $countTnxInbound = null;
         if ($txnGroupByDate->has('INBOUND')) {
             $inboundArr = $txnGroupByDate->only(['INBOUND']);
 
@@ -182,6 +196,7 @@ class IndicatorsRepository implements IIndicatorsRepository
                 });
         }
 
+        $countTnxOutbound = null;
         if ($txnGroupByDate->has('OUTBOUND')) {
             $outboundArr = $txnGroupByDate->only(['OUTBOUND']);
 
@@ -198,24 +213,34 @@ class IndicatorsRepository implements IIndicatorsRepository
 
         // Check the difference by key DATE
         // Inbound
-        $inboundDiffFromOutbound = $countTnxOutbound->diffKeys($countTnxInbound)->map(function ($item) {
-            return [
-                ...$item,
-                'transactions' => 0,
-            ];
-        })->union($countTnxInbound)->sortKeys();
+        if($countTnxInbound && $countTnxOutbound){
+            $inboundDiffFromOutbound = $countTnxOutbound->diffKeys($countTnxInbound)->map(function ($item) {
+                return [
+                    ...$item,
+                    'transactions' => 0,
+                ];
+            })->union($countTnxInbound)->sortKeys();
 
-        $inboundTransactions = $inboundDiffFromOutbound->pluck('transactions');
+            $inboundTransactions = $inboundDiffFromOutbound->pluck('transactions');
+        }
+        else{
+            $inboundTransactions = $countTnxInbound ? $countTnxInbound->pluck('transactions'): null ;
+        }
 
         // Outbound
-        $outboundDiffFromInbound = $countTnxInbound->diffKeys($countTnxOutbound)->map(function ($item) {
-            return [
-                ...$item,
-                'transactions' => 0,
-            ];
-        })->union($countTnxOutbound)->sortKeys();
+        if($countTnxOutbound && $countTnxInbound){
+            $outboundDiffFromInbound = $countTnxInbound->diffKeys($countTnxOutbound)->map(function ($item) {
+                return [
+                    ...$item,
+                    'transactions' => 0,
+                ];
+            })->union($countTnxOutbound)->sortKeys();
 
-        $outboundTransactions = $outboundDiffFromInbound->pluck('transactions');
+            $outboundTransactions = $outboundDiffFromInbound->pluck('transactions');
+        }
+        else{
+            $outboundTransactions = $countTnxOutbound ? $countTnxOutbound->pluck('transactions') : null;
+        }
 
         return [
             'dates' => $txnDates,
