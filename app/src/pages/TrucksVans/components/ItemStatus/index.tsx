@@ -1,3 +1,4 @@
+import { Tooltip } from "@mui/material";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDButton from "atoms/MDButton";
@@ -10,29 +11,31 @@ function ItemStatus({ data, darkMode, noGutter = false, onOpenStatusDetails }: T
   const renderPluggedIcon = (pluggedstatus: string) => {
     if (pluggedstatus === "PLUGGED-IN") {
       return (
-        <MDIcon
-          color="success"
-          sx={({ typography: { pxToRem } }) => ({
-            transform: "rotate(45deg)",
-            fontSize: `${pxToRem(50)} !important`,
-          })}
-          title={pluggedstatus}
-        >
-          power
-        </MDIcon>
+        <Tooltip title={pluggedstatus} placement="top">
+          <MDIcon
+            color="success"
+            sx={({ typography: { pxToRem } }) => ({
+              transform: "rotate(45deg)",
+              fontSize: `${pxToRem(50)} !important`,
+            })}
+          >
+            power
+          </MDIcon>
+        </Tooltip>
       );
     }
 
     if (pluggedstatus === "PLUGGED-OUT") {
       return (
-        <MDIcon
-          sx={({ typography: { pxToRem } }) => ({
-            fontSize: `${pxToRem(50)} !important`,
-          })}
-          title={pluggedstatus}
-        >
-          power_off
-        </MDIcon>
+        <Tooltip title={pluggedstatus} placement="top">
+          <MDIcon
+            sx={({ typography: { pxToRem } }) => ({
+              fontSize: `${pxToRem(50)} !important`,
+            })}
+          >
+            power_off
+          </MDIcon>
+        </Tooltip>
       );
     }
 
@@ -182,16 +185,17 @@ function ItemStatus({ data, darkMode, noGutter = false, onOpenStatusDetails }: T
                 {renderPluggedIcon(pluggedstatus)}
               </MDBox>
 
-              <MDButton
-                variant="text"
-                iconOnly
-                onClick={() => onOpenStatusDetails(vmrno, "view")}
-                title="View details"
-              >
-                <MDIcon fontSize={25} color="action">
-                  visibility
-                </MDIcon>
-              </MDButton>
+              <Tooltip title="View details" placement="top">
+                <MDButton
+                  variant="text"
+                  iconOnly
+                  onClick={() => onOpenStatusDetails(vmrno, "view")}
+                >
+                  <MDIcon fontSize={25} color="info">
+                    visibility
+                  </MDIcon>
+                </MDButton>
+              </Tooltip>
             </MDBox>
           </MDBox>
         )

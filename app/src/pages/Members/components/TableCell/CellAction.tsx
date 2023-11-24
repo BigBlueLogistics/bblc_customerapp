@@ -18,7 +18,7 @@ function CellAction(props: TTableCellProps) {
   return (
     <MDBox display="flex" width="fit-content" alignItems="center">
       <Tooltip title="Edit" placement="top">
-        <IconButton aria-label="edit" onClick={() => showEdit(userId)}>
+        <IconButton aria-label="edit" onClick={() => showEdit(userId)} color="success">
           <EditIcon />
         </IconButton>
       </Tooltip>

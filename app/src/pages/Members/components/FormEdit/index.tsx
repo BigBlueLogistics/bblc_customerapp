@@ -286,7 +286,7 @@ function FormEdit({ open, onClose, onUpdate, viewData }: IFormEdit) {
                 variant="gradient"
                 color="success"
               >
-                Update
+                Save
               </MDButton>
             </DialogActions>
           </MDBox>

@@ -18,22 +18,6 @@
 // import RTL from "pages/rtl";
 // import Notifications from "pages/notifications";
 import { lazy } from "react";
-// import Profile from "pages/Profile";
-// import Members from "pages/Members";
-// import SignIn from "pages/Authentication/SignIn";
-// import SignUp from "pages/Authentication/SignUp";
-// import ResetPasswordLink from "pages/Authentication/ResetPasswordLink";
-// import ResetPassword from "pages/Authentication/ResetPassword";
-// import Inventory from "pages/Inventory";
-// import Movements from "pages/Movements";
-// import Orders from "pages/Orders";
-// import Reports from "pages/Reports";
-// import Indicators from "pages/Indicators";
-// import TrucksVans from "pages/TrucksVans";
-// import Finance from "pages/Finance";
-// import DefaultPage from "pages/DefaultPage";
-// import NotFound from "pages/NotFound";
-
 // @mui icons
 import Icon from "@mui/material/Icon";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
