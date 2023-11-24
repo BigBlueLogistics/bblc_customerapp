@@ -24,6 +24,20 @@ export const authReducer = createSlice({
     setCustomerCode: (state, action) => {
       state.customerCode = action.payload;
     },
+    updateProfileFromMember: (state, action) => {
+      const { payload } = action || {};
+      const companies = payload.companies.map((company) => company.customer_code);
+      const [newRole] = payload.roles.filter((role) => Number(role.id) === Number(payload.role_id));
+
+      state.successfulRequests[signIn.fulfilled.type].data = {
+        ...payload,
+        companies,
+        role_name: newRole.name,
+      };
+
+      // Set default customer_code
+      state.customerCode = payload.companies?.length ? payload.companies[0].customer_code : "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -126,5 +140,6 @@ export const authReducer = createSlice({
   },
 });
 
-export const { setIsAuthenticated, resetData, setCustomerCode } = authReducer.actions;
+export const { setIsAuthenticated, resetData, setCustomerCode, updateProfileFromMember } =
+  authReducer.actions;
 export default authReducer.reducer;

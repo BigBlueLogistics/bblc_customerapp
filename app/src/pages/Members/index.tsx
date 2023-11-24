@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -10,6 +11,10 @@ import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
 import DataTable from "organisms/Tables/DataTable";
 import { membersServices } from "services";
+import { useAppDispatch } from "hooks";
+import { updateProfileFromMember } from "redux/auth/reducer";
+import { ViewMemberEntity } from "entities/members";
+import selector from "./selector";
 import miscData from "./data";
 import FormEdit from "./components/FormEdit";
 import MenuAction from "./components/MenuAction";
@@ -18,6 +23,8 @@ import { TMenuAction } from "./components/MenuAction/types";
 import { TMembers, TViewMemberDetails } from "./types";
 
 function Members() {
+  const dispatch = useAppDispatch();
+  const { loggedUserId } = selector();
   const { tableHeaders, initialMembers, initialViewMember } = miscData();
   const [action, setAction] = useState(null);
   const [showFormEdit, setShowFormEdit] = useState(false);
@@ -27,6 +34,13 @@ function Members() {
 
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
+
+  const updateProfile = (userId: string, newProfileData: ViewMemberEntity) => {
+    // console.log(userId === loggedUserId);
+    if (userId === loggedUserId) {
+      dispatch(updateProfileFromMember(newProfileData));
+    }
+  };
 
   const fetchMembers = async () => {
     setTableMembers((prev) => ({ ...prev, status: "loading" }));
@@ -70,6 +84,8 @@ function Members() {
         data: rows.data,
         message: rows.message,
       }));
+      // console.log("updatezz");
+      updateProfile(userId, rows.data);
     } catch (err) {
       setViewMemberDetails({ status: "failed", message: err.message, data: null, action: null });
     }
