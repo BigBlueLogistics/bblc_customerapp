@@ -27,7 +27,7 @@ export type IFormTable = {
     setValues: FormikHelpers<TOrderData>["setValues"]
   ) => void;
   handleExpiryBatch: (
-    value: IAutoCompleteExpiryData,
+    value: IAutoCompleteExpiryData & Partial<{ materialCode: string }>,
     reason: AutocompleteChangeReason,
     uuid: string,
     index: number,

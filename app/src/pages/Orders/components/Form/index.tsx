@@ -140,7 +140,7 @@ function FormRequests({
     }
   };
 
-  const computeAvailableQty = useCallback(
+  const computeAvailableQtyPerBatch = useCallback(
     (uuid: string, selectedExpiry: string, selectedBatch: string) => {
       if (expiryBatchList[uuid]?.length) {
         return expiryBatchList[uuid]
@@ -164,7 +164,7 @@ function FormRequests({
     if (list?.length) {
       return list
         .reduce((totalQty, current) => {
-          let prevTotalQty = Number(totalQty);
+          let prevTotalQty = Number(totalQty || 0);
           prevTotalQty += current.quantity;
 
           return prevTotalQty;
@@ -220,6 +220,7 @@ function FormRequests({
         clonePrev.requests[index].units = "";
         clonePrev.requests[index].expiry = "";
         clonePrev.requests[index].batch = "";
+        clonePrev.requests[index].qty = "";
         clonePrev.requests[index].available = "";
 
         return clonePrev;
@@ -274,8 +275,8 @@ function FormRequests({
     }
   };
 
-  const handleExpiryBatch = (
-    value: IAutoCompleteExpiryData,
+  const handleExpiryBatch = async (
+    value: IAutoCompleteExpiryData & Partial<{ materialCode: string }>,
     reason: AutocompleteChangeReason,
     uuid: string,
     index: number,
@@ -283,7 +284,7 @@ function FormRequests({
   ) => {
     if (reason === "selectOption" && value) {
       const { expiry, batch } = value;
-      const availabeQty = computeAvailableQty(uuid, expiry, batch);
+      const availabeQty = computeAvailableQtyPerBatch(uuid, expiry, batch);
       setValues((prev) => {
         const clonePrev = prev;
         clonePrev.requests[index].expiry = expiry;
@@ -295,11 +296,15 @@ function FormRequests({
     }
 
     if (reason === "clear") {
+      const { materialCode } = value || {};
+      const expiry = await fetchExpiryBatch(materialCode, warehouseNo);
+      setExpiryBatchList((prev) => ({ ...prev, [uuid]: expiry }));
+
       setValues((prev) => {
         const clonePrev = prev;
         clonePrev.requests[index].expiry = "";
         clonePrev.requests[index].batch = "";
-        clonePrev.requests[index].available = "";
+        clonePrev.requests[index].available = computeAllAvailableQty(expiry);
 
         return clonePrev;
       });
@@ -415,13 +420,14 @@ function FormRequests({
   const onMountForm = useCallback(
     (setValues: FormikProps<TOrderData>["setValues"]) => {
       const { type, data: tableData, status } = data;
-      if ((type === "edit" || type === "view") && status === "succeeded" && tableData?.id) {
+      if (open && (type === "edit" || type === "view") && status === "succeeded" && tableData?.id) {
         setValues((prev) => {
           const cloneRequests = prev.requests;
           const newRequests = cloneRequests.map(({ uuid, expiry, batch }, idx) => {
+            const availableQty = computeAvailableQtyPerBatch(uuid, expiry, batch);
             return {
               ...cloneRequests[idx],
-              available: computeAvailableQty(uuid, expiry, batch),
+              available: availableQty,
             };
           });
 
@@ -429,7 +435,7 @@ function FormRequests({
         });
       }
     },
-    [computeAvailableQty, data]
+    [computeAvailableQtyPerBatch, data, open]
   );
 
   // Open form
@@ -618,7 +624,7 @@ function FormRequests({
                       color="success"
                       type="submit"
                       sx={{ marginLeft: 2 }}
-                      disabled={isSaving || !formikProp.dirty || !formikProp.isValid}
+                      disabled={isSaving || !formikProp.dirty}
                       loading={isSaving}
                       onClick={formikProp.handleSubmit}
                     >

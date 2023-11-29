@@ -125,7 +125,13 @@ function FormTable(props: FormikProps<TOrderData> & IFormTable) {
                             options={expiryBatch[uuid] || []}
                             value={expiryBatch[uuid]?.length ? values.requests[index].expiry : ""}
                             onChange={(value, reason) =>
-                              handleExpiryBatch(value, reason, uuid, index, setValues)
+                              handleExpiryBatch(
+                                { materialCode: values.requests[index].material, ...value },
+                                reason,
+                                uuid,
+                                index,
+                                setValues
+                              )
                             }
                           />
                         </TableBodyCell>
