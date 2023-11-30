@@ -177,7 +177,7 @@ function Members() {
                     columns: tableHeaders({ onShowEdit }),
                     rows: tableMembers.data,
                   }}
-                  isSorted={false}
+                  isSorted
                   isLoading={tableMembers.status === "loading"}
                   entriesPerPage={{ defaultValue: 5, entries: [5, 10, 15, 20, 25] }}
                   showTotalEntries

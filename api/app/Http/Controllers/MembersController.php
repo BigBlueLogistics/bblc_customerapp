@@ -30,7 +30,10 @@ class MembersController extends Controller
         try {
             $this->authorize('view', $user);
 
-            $members = User::with('company:user_id,customer_code')->get();
+            $members = User::with('company:user_id,customer_code')
+                        ->orderBy('active','asc')
+                        ->orderBy('email_verified_at','desc')
+                        ->get();
 
             return $this->sendResponse($members, 'members list');
         } catch (Throwable $th) {
