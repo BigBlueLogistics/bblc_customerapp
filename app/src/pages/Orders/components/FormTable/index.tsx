@@ -1,11 +1,12 @@
 import { useEffect } from "react";
-import { TableContainer, Table, TableCell, TableHead, TableBody, TableRow } from "@mui/material";
+import { TableContainer, Table, TableHead, TableBody, TableRow } from "@mui/material";
 import { FieldArray, FormikProps } from "formik";
 import Icon from "@mui/material/Icon";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
 import MDTypography from "atoms/MDTypography";
 import { TOrderData } from "pages/Orders/types";
+import TableHeadCell from "./TableHeadCell";
 import TableBodyCell from "./TableBodyCell";
 import AutoCompleteMaterial from "../AutoCompleteMaterial";
 import AutoCompleteUnits from "../AutoCompleteUnits";
@@ -84,12 +85,10 @@ function FormTable(props: FormikProps<TOrderData> & IFormTable) {
   return (
     <TableContainer sx={{ maxHeight: 440 }}>
       <Table stickyHeader>
-        <TableHead>
+        <TableHead sx={{ display: "table-header-group" }}>
           <TableRow>
             {tHeaders.map((title) => (
-              <TableCell key={title} variant="body">
-                {title}
-              </TableCell>
+              <TableHeadCell key={title}>{title}</TableHeadCell>
             ))}
           </TableRow>
         </TableHead>
