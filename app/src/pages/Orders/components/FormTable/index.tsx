@@ -31,7 +31,15 @@ function FormTable(props: FormikProps<TOrderData> & IFormTable) {
     handleAddRow,
   } = props;
 
-  const tHeaders = ["Material", "Units", "Expiry / Batch", "Quantity", "Available Quantity", ""];
+  const tHeaders = [
+    "Material",
+    "Units",
+    "Expiry / Batch",
+    "Quantity",
+    "Available Quantity",
+    "Remarks",
+    "",
+  ];
 
   useEffect(() => {
     if (values.id) {
@@ -158,6 +166,22 @@ function FormTable(props: FormikProps<TOrderData> & IFormTable) {
                           >
                             {values.requests[index].available || 0}
                           </MDTypography>
+                        </TableBodyCell>
+                        <TableBodyCell>
+                          <MDInput
+                            margin="dense"
+                            name={`requests[${index}].remarks`}
+                            type="text"
+                            variant="standard"
+                            autoComplete="off"
+                            multiline
+                            value={values.requests[index].remarks || ""}
+                            error={Boolean(displayRowError(index, "remarks"))}
+                            helperText={displayRowError(index, "remarks")}
+                            endAdornment={false}
+                            onChange={handleChange}
+                            sx={{ marginTop: "13px", marginBottom: 0 }}
+                          />
                         </TableBodyCell>
                         <TableBodyCell>
                           <MDButton

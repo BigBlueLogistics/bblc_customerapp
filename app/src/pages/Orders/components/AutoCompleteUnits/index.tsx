@@ -20,6 +20,7 @@ function AutoCompleteUnits({
     <Autocomplete
       id={`${index}-filter-units`}
       value={value as any}
+      clearOnBlur
       onChange={(e, selectedValue, reason) => onChange(selectedValue as any, reason)}
       options={options}
       noOptionsText="No units"

@@ -178,6 +178,7 @@ class OrderController extends Controller
                 'meinh' => $field['units'],
                 'charg' => $field['batch'],
                 'vfdat' => $field['expiry'],
+                'remarks' => $field['remarks'],
             ];
         })->all();
     }
@@ -208,7 +209,7 @@ class OrderController extends Controller
                 $mapRequests = $this->withUpdateMapOrderDetails($request->requests, ['lgnum' => $header->lgnum, 'transid' => $header->transid]);
 
                 // Insert if uuid and transid not exist else it updates the record.
-                OrderItems::upsert($mapRequests, ['uuid', 'transid'], ['lgnum', 'matnr', 'quan', 'meinh', 'charg', 'vfdat']);
+                OrderItems::upsert($mapRequests, ['uuid', 'transid'], ['lgnum', 'matnr', 'quan', 'meinh', 'charg', 'vfdat', 'remarks']);
 
                 // Delete existing order items
                 if ($request->requestsDelete) {

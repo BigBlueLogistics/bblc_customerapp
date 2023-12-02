@@ -18,6 +18,7 @@ function AutoCompleteMaterial({
   return (
     <Autocomplete
       id={`${index}-filter-material`}
+      clearOnBlur
       value={value as any}
       onChange={(e, selectedValue, reason) => onChange(selectedValue as any, reason)}
       options={options}

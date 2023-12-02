@@ -1,5 +1,6 @@
 import { TStatus } from "types/status";
 import { LooseType } from "types/utility";
+import { TValidationSchema } from "./components/Form/validationSchema";
 
 export type TNotifyOrder = {
   open: boolean;
@@ -14,28 +15,12 @@ export type TGroupBy = TGroupByWhSnapshot | TGroupByAging;
 
 export type TOrderData = {
   id: string;
-  pickup_date: Date | null;
-  ref_number: string;
-  instruction: string;
-  allow_notify: boolean;
-  source_wh: string;
   status: {
     id: number;
     name: string;
   };
-  requests: {
-    uuid: string;
-    material: string;
-    description: string;
-    qty: string;
-    units: string;
-    batch: string;
-    expiry: string;
-    available: string | number;
-    created_at?: Date;
-  }[];
   requestsDelete?: string[];
-};
+} & TValidationSchema;
 
 export type TFiltered = {
   status: string;

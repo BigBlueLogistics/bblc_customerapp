@@ -1,4 +1,3 @@
-// import TextField from "@mui/material/TextField";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import MDInput from "atoms/MDInput";
 import { IAutoCompleteExpiryData, IAutoCompleteExpiry } from "./types";
@@ -20,6 +19,7 @@ function AutoCompleteExpiry({
     <Autocomplete
       id={`${index}-filter-expiry`}
       value={value as any}
+      clearOnBlur
       onChange={(e, selectedValue, reason) => onChange(selectedValue as any, reason)}
       options={options}
       noOptionsText="No expiry/batch"

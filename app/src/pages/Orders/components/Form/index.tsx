@@ -204,7 +204,7 @@ function FormRequests({
       // Auto-fill available qty
       setValues((prev) => {
         const clonePrev = prev;
-        clonePrev.requests[index].available = computeAllAvailableQty(expiry);
+        clonePrev.requests[index].available = computeAllAvailableQty(expiry) as number;
         return clonePrev;
       });
     }
@@ -220,8 +220,8 @@ function FormRequests({
         clonePrev.requests[index].units = "";
         clonePrev.requests[index].expiry = "";
         clonePrev.requests[index].batch = "";
-        clonePrev.requests[index].qty = "";
-        clonePrev.requests[index].available = "";
+        clonePrev.requests[index].qty = 0;
+        clonePrev.requests[index].available = 0;
 
         return clonePrev;
       });
@@ -304,7 +304,7 @@ function FormRequests({
         const clonePrev = prev;
         clonePrev.requests[index].expiry = "";
         clonePrev.requests[index].batch = "";
-        clonePrev.requests[index].available = computeAllAvailableQty(expiry);
+        clonePrev.requests[index].available = computeAllAvailableQty(expiry) as number;
 
         return clonePrev;
       });
@@ -352,16 +352,7 @@ function FormRequests({
 
   const handleAddRow = (push: ArrayHelpers["push"]) => {
     const uuid = uuidv4();
-    push({
-      material: "",
-      description: "",
-      qty: "",
-      units: "",
-      batch: "",
-      expiry: "",
-      available: "",
-      uuid,
-    });
+    push({ ...initialOrder.requests[0], uuid });
   };
 
   const getAllUnits = async (orderData: TOrderData["requests"]) => {

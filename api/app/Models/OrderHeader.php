@@ -80,8 +80,10 @@ class OrderHeader extends Model
                 'charg' => $field['batch'],
                 'vfdat' => $field['expiry'],
                 'created_at' => Carbon::now(),
+                'remarks' => $field['remarks']
             ];
-        })->all();
+        })
+        ->all();
     }
 
     public function toFormattedOrderDetails()
@@ -119,6 +121,7 @@ class OrderHeader extends Model
                 'batch' => $item['charg'],
                 'expiry' => $expiry,
                 'created_at' => $item['created_at'],
+                'remarks' => $item['remarks'],
             ];
         });
     }
