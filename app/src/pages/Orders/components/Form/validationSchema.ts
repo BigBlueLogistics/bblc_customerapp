@@ -18,10 +18,10 @@ const validationSchema = yup.object({
       yup.object({
         uuid: yup.string(),
         material: yup.string().required("required"),
-        description: yup.string(),
+        description: yup.string().nullable(),
         units: yup.string().required("required"),
-        batch: yup.string(),
-        expiry: yup.string(),
+        batch: yup.string().nullable(),
+        expiry: yup.string().nullable(),
         available: yup.number().typeError("numbers only"),
         qty: yup
           .number()
@@ -31,6 +31,7 @@ const validationSchema = yup.object({
           .min(1, ({ min }) => `must be greater than or equal to ${min}`),
         remarks: yup
           .string()
+          .nullable()
           .max(35, "maximum of 35 characters")
           .matches(/^[^'%"]+$/i, `not allowed characters: '%"`),
         created_at: yup.string(),

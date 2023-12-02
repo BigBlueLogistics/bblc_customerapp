@@ -162,9 +162,10 @@ function FormTable(props: FormikProps<TOrderData> & IFormTable) {
                           <MDTypography
                             sx={({ typography: { pxToRem } }) => ({
                               fontSize: pxToRem(14),
+                              textAlign: "center",
                             })}
                           >
-                            {values.requests[index].available || 0}
+                            {values.requests[index].available}
                           </MDTypography>
                         </TableBodyCell>
                         <TableBodyCell>
@@ -180,7 +181,7 @@ function FormTable(props: FormikProps<TOrderData> & IFormTable) {
                             helperText={displayRowError(index, "remarks")}
                             endAdornment={false}
                             onChange={handleChange}
-                            sx={{ marginTop: "13px", marginBottom: 0 }}
+                            sx={{ marginTop: "13px", marginBottom: 0, width: 150 }}
                           />
                         </TableBodyCell>
                         <TableBodyCell>

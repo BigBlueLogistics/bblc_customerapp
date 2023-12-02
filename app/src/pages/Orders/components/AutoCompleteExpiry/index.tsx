@@ -30,7 +30,7 @@ function AutoCompleteExpiry({
         }
         return option.id.toString();
       }}
-      sx={{ width: 250 }}
+      sx={{ width: 150 }}
       renderInput={(params) => (
         <MDInput
           {...params}
