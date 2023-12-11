@@ -28,8 +28,15 @@ class MovementRequest extends FormRequest
             'movementType' => ['required', 'string'],
             'materialCode' => ['required', 'string'],
             'customerCode' => ['required', 'string', 'size:8'],
-            'coverageDate' => ['required', 'array'],
+            'coverageDate' => ['required', 'array','size:2'],
             'coverageDate.*' => ['date'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'coverageDate.size' => 'The coverage date must contain 2 dates.'
         ];
     }
 }

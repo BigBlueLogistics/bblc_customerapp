@@ -8,7 +8,13 @@ function TableHeadCell(props: TableCellProps) {
   const { darkMode } = controller;
 
   return (
-    <TableCell variant="head" {...props}>
+    <TableCell
+      variant="head"
+      sx={({ typography: { pxToRem } }) => ({
+        lineHeight: pxToRem(18),
+      })}
+      {...props}
+    >
       <MDBox
         color={darkMode ? "white" : "secondary"}
         opacity={0.7}

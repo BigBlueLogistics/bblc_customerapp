@@ -29,7 +29,7 @@ class CreateRequest extends FormRequest
             'pickup_date' => ['nullable', 'date'],
             'instruction' => ['nullable', 'regex:/^[^\'%"]+$/i'],
             'customer_code' => ['required', 'string', 'size:8'],
-            'requests' => ['required', 'array'],
+            'requests' => ['required', 'array', 'min:1'],
             'requests.*.uuid' => ['required', 'uuid'],
             'requests.*.material' => ['required', 'string'],
             'requests.*.qty' => ['required', 'numeric'],

@@ -48,7 +48,10 @@ function FormRequests({
 
   const renderMessage = () => {
     const { message, status: formStatus, type } = data;
-    if (type === "update" && (formStatus === "succeeded" || formStatus === "failed")) {
+    if (
+      (type === "create" || type === "update") &&
+      (formStatus === "succeeded" || formStatus === "failed")
+    ) {
       const severity = formStatus === "succeeded" ? "success" : "error";
       return (
         <MDAlert2

@@ -6,7 +6,7 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDSelect from "atoms/MDSelect";
 import MDSnackbar from "atoms/MDSnackbar";
-import MDateRangePicker from "atoms/MDateRangePicker";
+// import MDateRangePicker from "atoms/MDateRangePicker";
 import MDButton from "atoms/MDButton";
 import Icon from "@mui/material/Icon";
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
@@ -45,7 +45,7 @@ function Reports() {
   const [showNotifyDownload, setShowNotifyDownload] =
     useState<INotifyDownload>(initialStateNotification);
   const [filtered, setFiltered] = useState<TFiltered>(initialFilter);
-  const [, setDateRange] = useState(null);
+  // const [, setDateRange] = useState(null);
   const [warehouseList, setWarehouseList] = useState([]);
   const [groupByKey, setGroupByKey] = useState<TGroupByKey>("stock");
   const [action, setAction] = useState(null);
@@ -95,9 +95,9 @@ function Reports() {
     setFiltered((prev) => ({ ...prev, warehouse: e.target.value }));
   };
 
-  const onChangeDateRange = (dates) => {
-    setDateRange(dates);
-  };
+  // const onChangeDateRange = (dates) => {
+  //   setDateRange(dates);
+  // };
 
   const onToggleFilter = () => {
     setToggleFilter((prevState) => !prevState);
@@ -406,7 +406,7 @@ function Reports() {
                       sx={{ marginRight: "8px" }}
                     />
 
-                    <MDBox>
+                    {/* <MDBox>
                       <MDateRangePicker
                         label="Dates.."
                         onChange={onChangeDateRange}
@@ -417,7 +417,7 @@ function Reports() {
                             filtered.reportType !== "stock-status" ? "not-allowed" : "default",
                         }}
                       />
-                    </MDBox>
+                    </MDBox> */}
 
                     <MDButton
                       disabled={tableReports.status === "loading"}

@@ -33,7 +33,7 @@ class MemberUpdateRequest extends FormRequest
             'role_id' => ['numeric', 'nullable'],
             'van_status' => ['boolean'],
             'invnt_report' => ['boolean'],
-            'companies'=> ['required', 'array'],
+            'companies'=> ['required', 'array', 'min:1'],
             'companies.*.id'=> ['nullable', 'integer'],
             'companies.*.customer_code'=> ['required', 'string', 'size:8'],
             'companies.*.company'=> ['required', 'string'],
