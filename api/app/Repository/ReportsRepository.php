@@ -12,6 +12,66 @@ class ReportsRepository implements IReportsRepository
 {
     use StringEncode;
 
+    public function getAllocatedStocks($customerCode, $warehouseNo, $groupBy)
+    {
+        $mandt = SapRfcFacade::getMandt();
+
+        $materials = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+        ->param('QUERY_TABLE', 'NDBSMATG16')
+        ->param('DELIMITER', ';')
+        ->param('OPTIONS', [
+            ['TEXT' => "MANDT EQ {$mandt}"],
+            ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+        ])
+        ->param('FIELDS', [
+            ['FIELDNAME' => 'MATNR'],
+            ['FIELDNAME' => 'GUID'],
+        ])
+        ->getDataToArray();
+
+        // Get the DOCCAT=PDO
+        $warehouseNoFilter = $warehouseNo ? ["TEXT" => " AND LGNUM EQ '{$warehouseNo}'"] : [];
+        $aqua = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+        ->param('QUERY_TABLE', '/SCWM/AQUA')
+        ->param('DELIMITER', ';')
+        ->param('OPTIONS', [
+            ['TEXT' => "MANDT EQ {$mandt}"],
+            ['TEXT' => " AND DOCCAT EQ 'PDO'"],
+            $warehouseNoFilter,
+        ])
+        ->param('FIELDS', [
+            ['FIELDNAME' => 'MATID'],
+            ['FIELDNAME' => 'QUAN'],
+            ['FIELDNAME' => 'VFDAT'],
+            ['FIELDNAME' => 'CAT'],
+            ['FIELDNAME' => 'HUIDENT'],
+            ['FIELDNAME' => 'LGPLA'],
+            ['FIELDNAME' => 'CHARG'],
+        ])
+        ->getDataToArray();
+
+        $materials = collect($materials)->mapWithKeys(function($item){
+            return [
+                $item['GUID'] => $item['MATNR']
+            ];
+        })->toArray();
+
+        // Check if MATID has match with GUID
+        $aqua = collect($aqua)->groupBy($groupBy)->filter(function($_, $key) use ($materials){
+            return array_key_exists($key, $materials);
+        })
+        ->mapWithKeys(function($item, $key) use ($materials){
+            return [
+                $materials[$key] => [
+                    'materialCode' => $materials[$key],
+                    'initialAllocatedWt' => $item->sum("QUAN")
+                ]
+            ];
+        });
+
+        return $aqua->toArray() ?? [];
+    }
+
     public function getWhSnapshot($customerCode, $warehouseNo, $groupBy)
     {
         $mandt = SapRfcFacade::getMandt();
@@ -89,13 +149,13 @@ class ReportsRepository implements IReportsRepository
         // Add up initialAllocated, available and restricted
         $groupProductDetails = $collectionProducts->groupBy($fieldName)
             ->map(function ($group) use ($groupBy, $fieldName) {
-                $initialAllocatedWt = $group->reduce(function ($total, $current) {
-                    if ($current['LGTYP'] === 'GIZN') {
-                        $total += (float) $current['QUAN'];
-                    }
+                // $initialAllocatedWt = $group->reduce(function ($total, $current) {
+                //     if ($current['LGTYP'] === 'GIZN') {
+                //         $total += (float) $current['QUAN'];
+                //     }
 
-                    return $total;
-                }, 0);
+                //     return $total;
+                // }, 0);
                 $restrictedWt = $group->reduce(function ($total, $current) {
                     if (in_array(strtoupper($current['CAT']), ['Q1', 'B1']) && $current['LGTYP'] !== 'GIZN') {
                         $total += (float) $current['QUAN'];
@@ -104,7 +164,7 @@ class ReportsRepository implements IReportsRepository
                     return $total;
                 }, 0);
                 $availableWt = $group->reduce(function ($total, $current) {
-                    if (in_array(strtoupper($current['CAT']), ['F1']) && $current['LGTYP'] !== 'GIZN') {
+                    if (in_array(strtoupper($current['CAT']), ['F1'])) {
                         $total += (float) $current['QUAN'];
                     }
 
@@ -114,7 +174,7 @@ class ReportsRepository implements IReportsRepository
                 $transformData = [
                     'materialCode' => $group[0]['MATNR'],
                     'description' => $group[0]['MAKTX'],
-                    'initialAllocatedWt' => round($initialAllocatedWt, 3),
+                    // 'initialAllocatedWt' => round($initialAllocatedWt, 3),
                     'restrictedWt' => round($restrictedWt, 3),
                     'availableWt' => round($availableWt, 3),
                 ];
@@ -180,23 +240,27 @@ class ReportsRepository implements IReportsRepository
             ];
         });
 
+        $initialAllocatedWt = $this->getAllocatedStocks($customerCode, $warehouseNo, $groupBy);
+
         $merged = $groupProductDetails->filter(function ($data) {
             // Return only data if anyone of the field below has value.
             return
                 (array_key_exists('availableWt', $data)
-                            || array_key_exists('restrictedWt', $data)
-                            || array_key_exists('initialAllocatedWt', $data))
+                            || array_key_exists('restrictedWt', $data))
+                            // || array_key_exists('initialAllocatedWt', $data))
                             && array_key_exists('materialCode', $data);
         })
-            ->map(function ($data) use ($keyedFixedWt, $totalVsolmWt) {
+            ->map(function ($data) use ($keyedFixedWt, $totalVsolmWt, $initialAllocatedWt) {
                 $materialCode = $data['materialCode'];
                 $fixedWt = $keyedFixedWt[$materialCode]['fixedWt'] ?? 1;
                 $unit = $keyedFixedWt[$materialCode]['unit'] ?? 'KG';
                 $totalVsolmWt = $totalVsolmWt[$materialCode]['totalVsolmWt'] ?? 0;
 
-                $availableWt = array_key_exists('availableWt', $data) ? $data['availableWt'] : 0;
                 $restrictedWt = array_key_exists('restrictedWt', $data) ? $data['restrictedWt'] : 0;
-                $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) ? $data['initialAllocatedWt'] : 0;
+                $initialAllocatedWt = count($initialAllocatedWt) && array_key_exists($materialCode, $initialAllocatedWt)
+                                    ? $initialAllocatedWt[$materialCode]['initialAllocatedWt'] : 0 ;
+                // $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) ? $data['initialAllocatedWt'] : 0;
+                $availableWt = array_key_exists('availableWt', $data) ? $data['availableWt'] - $initialAllocatedWt  : 0;
                 $allocatedWt = $initialAllocatedWt + $totalVsolmWt;
 
                 // Calculate the quantity.
