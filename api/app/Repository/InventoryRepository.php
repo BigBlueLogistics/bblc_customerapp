@@ -10,6 +10,65 @@ class InventoryRepository implements IInventoryRepository
 {
     use StringEncode;
 
+    public function getAllocatedStocks($customerCode, $warehouseNo)
+    {
+        $mandt = SapRfcFacade::getMandt();
+        $materials = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+        ->param('QUERY_TABLE', 'NDBSMATG16')
+        ->param('DELIMITER', ';')
+        ->param('OPTIONS', [
+            ['TEXT' => "MANDT EQ {$mandt}"],
+            ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"],
+        ])
+        ->param('FIELDS', [
+            ['FIELDNAME' => 'MATNR'],
+            ['FIELDNAME' => 'GUID'],
+        ])
+        ->getDataToArray();
+
+        // Get the DOCCAT=PDO
+        $warehouseNoFilter = $warehouseNo ? ["TEXT" => " AND LGNUM EQ '{$warehouseNo}'"] : [];
+        $aqua = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
+        ->param('QUERY_TABLE', '/SCWM/AQUA')
+        ->param('DELIMITER', ';')
+        ->param('OPTIONS', [
+            ['TEXT' => "MANDT EQ {$mandt}"],
+            ['TEXT' => " AND DOCCAT EQ 'PDO'"],
+            $warehouseNoFilter,
+        ])
+        ->param('FIELDS', [
+            ['FIELDNAME' => 'MATID'],
+            ['FIELDNAME' => 'QUAN'],
+            ['FIELDNAME' => 'VFDAT'],
+            ['FIELDNAME' => 'CAT'],
+            ['FIELDNAME' => 'HUIDENT'],
+            ['FIELDNAME' => 'LGPLA'],
+            ['FIELDNAME' => 'CHARG'],
+        ])
+        ->getDataToArray();
+
+        $materials = collect($materials)->mapWithKeys(function($item){
+            return [
+                $item['GUID'] => $item['MATNR']
+            ];
+        })->toArray();
+
+        // Check if MATID has match with GUID
+        $aqua = collect($aqua)->groupBy('MATID')->filter(function($_, $key) use ($materials){
+            return array_key_exists($key, $materials);
+        })
+        ->mapWithKeys(function($item, $key) use ($materials){
+            return [
+                $materials[$key] => [
+                    'materialCode' => $materials[$key],
+                    'initialAllocatedWt' => $item->sum("QUAN")
+                ]
+            ];
+        });
+
+        return $aqua->toArray() ?? [];
+    }
+
     public function getStocksInventory($customerCode, $warehouseNo)
     {
         $mandt = SapRfcFacade::getMandt();
@@ -82,14 +141,14 @@ class InventoryRepository implements IInventoryRepository
 
         $groupProductDetails = $collectionProducts->groupBy('MATNR')
             ->map(function ($group) {
-                // Add up initialAllocated, available and restricted
-                $initialAllocatedWt = $group->reduce(function ($total, $current) {
-                    if ($current['LGTYP'] === 'GIZN') {
-                        $total += (float) $current['QUAN'];
-                    }
+                // // Add up initialAllocated, available and restricted
+                // $initialAllocatedWt = $group->reduce(function ($total, $current) {
+                //     if ($current['LGTYP'] === 'GIZN') {
+                //         $total += (float) $current['QUAN'];
+                //     }
 
-                    return $total;
-                }, 0);
+                //     return $total;
+                // }, 0);
                 $restrictedWt = $group->reduce(function ($total, $current) {
                     if (in_array(strtoupper($current['CAT']), ['Q1', 'B1'])) {
                         $total += (float) $current['QUAN'];
@@ -108,7 +167,7 @@ class InventoryRepository implements IInventoryRepository
                 return [
                     'materialCode' => $group[0]['MATNR'],
                     'description' => $group[0]['MAKTX'],
-                    'initialAllocatedWt' => round($initialAllocatedWt, 3),
+                    // 'initialAllocatedWt' => round($initialAllocatedWt, 3),
                     'restrictedWt' => round($restrictedWt, 3),
                     'availableWt' => round($availableWt, 3),
                     'warehouse' => $group[0]['LGNUM'],
@@ -166,6 +225,8 @@ class InventoryRepository implements IInventoryRepository
             ];
         });
 
+        $allocatedStocks = $this->getAllocatedStocks($customerCode, $warehouseNo);
+
         $mergedProducts = $groupProductDetails->mergeRecursive($keyedFixedWt);
         $merged = $mergedProducts->mergeRecursive($totalVsolmWt)
             ->filter(function ($data) {
@@ -173,15 +234,18 @@ class InventoryRepository implements IInventoryRepository
                 return
                     (array_key_exists('availableWt', $data)
                  || array_key_exists('restrictedWt', $data)
-                 || array_key_exists('initialAllocatedWt', $data)
+                //  || array_key_exists('initialAllocatedWt', $data)
                  || array_key_exists('totalVsolmWt', $data))
                  && array_key_exists('materialCode', $data);
             })
-            ->map(function ($data) {
+            ->map(function ($data) use ($allocatedStocks) {
+                $materialCode = $data['materialCode'];
                 $fixedWt = array_key_exists('fixedWt', $data) ? $data['fixedWt'] : 1;
-                $availableWt = array_key_exists('availableWt', $data) ? $data['availableWt'] : 0;
                 $restrictedWt = array_key_exists('restrictedWt', $data) ? $data['restrictedWt'] : 0;
-                $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) ? $data['initialAllocatedWt'] : 0;
+                $initialAllocatedWt = count($allocatedStocks) && array_key_exists($materialCode, $allocatedStocks)
+                                ? $allocatedStocks[$materialCode]['initialAllocatedWt'] : 0 ;
+                // $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) ? $data['initialAllocatedWt'] : 0;
+                $availableWt = array_key_exists('availableWt', $data) ? $data['availableWt'] - $initialAllocatedWt  : 0;
                 $totalVsolmWt = array_key_exists('totalVsolmWt', $data) ? $data['totalVsolmWt'] : 0;
                 $unit = array_key_exists('unit', $data) ? $data['unit'] : 'KG';
                 $warehouse = array_key_exists('warehouse', $data) ? $data['warehouse'] : '';

@@ -249,7 +249,7 @@ class ReportsRepository implements IReportsRepository
             ];
         });
 
-        $initialAllocatedWt = $this->getAllocatedStocks($customerCode, $warehouseNo, $groupBy);
+        $allocatedStocks = $this->getAllocatedStocks($customerCode, $warehouseNo, $groupBy);
 
         $merged = $groupProductDetails->filter(function ($data) {
             // Return only data if anyone of the field below has value.
@@ -259,15 +259,15 @@ class ReportsRepository implements IReportsRepository
                             // || array_key_exists('initialAllocatedWt', $data))
                             && array_key_exists('materialCode', $data);
         })
-            ->map(function ($data) use ($keyedFixedWt, $totalVsolmWt, $initialAllocatedWt) {
+            ->map(function ($data) use ($keyedFixedWt, $totalVsolmWt, $allocatedStocks) {
                 $materialCode = $data['materialCode'];
                 $fixedWt = $keyedFixedWt[$materialCode]['fixedWt'] ?? 1;
                 $unit = $keyedFixedWt[$materialCode]['unit'] ?? 'KG';
                 $totalVsolmWt = $totalVsolmWt[$materialCode]['totalVsolmWt'] ?? 0;
 
                 $restrictedWt = array_key_exists('restrictedWt', $data) ? $data['restrictedWt'] : 0;
-                $initialAllocatedWt = count($initialAllocatedWt) && array_key_exists($materialCode, $initialAllocatedWt)
-                                    ? $initialAllocatedWt[$materialCode]['initialAllocatedWt'] : 0 ;
+                $initialAllocatedWt = count($allocatedStocks) && array_key_exists($materialCode, $allocatedStocks)
+                                    ? $allocatedStocks[$materialCode]['initialAllocatedWt'] : 0 ;
                 // $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) ? $data['initialAllocatedWt'] : 0;
                 $availableWt = array_key_exists('availableWt', $data) ? $data['availableWt'] - $initialAllocatedWt  : 0;
                 $allocatedWt = $initialAllocatedWt + $totalVsolmWt;
