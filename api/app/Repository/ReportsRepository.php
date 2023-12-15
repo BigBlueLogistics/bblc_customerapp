@@ -16,6 +16,15 @@ class ReportsRepository implements IReportsRepository
     {
         $mandt = SapRfcFacade::getMandt();
 
+        $fieldName = null;
+        if ($groupBy === 'batch') {
+            $fieldName = 'CHARG';
+        } elseif ($groupBy === 'expiry') {
+            $fieldName = 'VFDAT';
+        } else {
+            $fieldName = 'MATID';
+        }
+
         $materials = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
         ->param('QUERY_TABLE', 'NDBSMATG16')
         ->param('DELIMITER', ';')
@@ -57,7 +66,7 @@ class ReportsRepository implements IReportsRepository
         })->toArray();
 
         // Check if MATID has match with GUID
-        $aqua = collect($aqua)->groupBy($groupBy)->filter(function($_, $key) use ($materials){
+        $aqua = collect($aqua)->groupBy($fieldName)->filter(function($_, $key) use ($materials){
             return array_key_exists($key, $materials);
         })
         ->mapWithKeys(function($item, $key) use ($materials){
