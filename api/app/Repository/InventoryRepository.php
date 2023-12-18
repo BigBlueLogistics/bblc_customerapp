@@ -241,32 +241,34 @@ class InventoryRepository implements IInventoryRepository
             ->map(function ($data) use ($allocatedStocks) {
                 $materialCode = $data['materialCode'];
                 $fixedWt = array_key_exists('fixedWt', $data) ? $data['fixedWt'] : 1;
-                $restrictedWt = array_key_exists('restrictedWt', $data) ? $data['restrictedWt'] : 0;
-                $initialAllocatedWt = count($allocatedStocks) && array_key_exists($materialCode, $allocatedStocks)
+                $restrictedWt = array_key_exists('restrictedWt', $data) && $data['restrictedWt'] > 0 ? $data['restrictedWt'] : 0;
+                $initialAllocatedWt = count($allocatedStocks) 
+                            && array_key_exists($materialCode, $allocatedStocks)
+                            && $allocatedStocks[$materialCode]['initialAllocatedWt'] > 0
                                 ? $allocatedStocks[$materialCode]['initialAllocatedWt'] : 0 ;
                 // $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) ? $data['initialAllocatedWt'] : 0;
-                $availableWt = array_key_exists('availableWt', $data) ? $data['availableWt'] - $initialAllocatedWt  : 0;
-                $totalVsolmWt = array_key_exists('totalVsolmWt', $data) ? $data['totalVsolmWt'] : 0;
+                $availableWt = array_key_exists('availableWt', $data) && $data['availableWt'] > 0 ? $data['availableWt'] : 0;
+                $totalVsolmWt = array_key_exists('totalVsolmWt', $data) && $data['totalVsolmWt'] > 0 ? $data['totalVsolmWt'] : 0;
                 $unit = array_key_exists('unit', $data) ? $data['unit'] : 'KG';
                 $warehouse = array_key_exists('warehouse', $data) ? $data['warehouse'] : '';
-                $allocatedWt = $initialAllocatedWt + $totalVsolmWt;
+                $newAvailableWt = $availableWt - $initialAllocatedWt;
                 $allocatedWt = $initialAllocatedWt + $totalVsolmWt;
 
                 // Calculate the quantity.
-                $availableQty = $availableWt / $fixedWt;
+                $availableQty = $newAvailableWt / $fixedWt;
                 $allocatedQty = $allocatedWt / $fixedWt;
                 $restrictedQty = $restrictedWt / $fixedWt;
 
                 // Quantity
-                $res['availableQty'] = $availableQty;
-                $res['allocatedQty'] = $allocatedQty;
-                $res['restrictedQty'] = $restrictedQty;
-                $res['totalQty'] = $availableQty + $allocatedQty + $restrictedQty;
+                $res['availableQty'] = round($availableQty, 3);
+                $res['allocatedQty'] = round($allocatedQty, 3);
+                $res['restrictedQty'] = round($restrictedQty, 3);
+                $res['totalQty'] = round($availableQty + $allocatedQty + $restrictedQty, 3);
 
                 // Weight
-                $res['availableWt'] = $availableWt;
-                $res['allocatedWt'] = $allocatedWt;
-                $res['restrictedWt'] = $restrictedWt;
+                $res['availableWt'] = round($newAvailableWt, 3);
+                $res['allocatedWt'] = round($allocatedWt, 3);
+                $res['restrictedWt'] = round($restrictedWt, 3);
                 $res['fixedWt'] = $fixedWt.' / '.$unit;
                 $res['warehouse'] = $warehouse;
 
