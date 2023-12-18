@@ -157,7 +157,7 @@ class InventoryRepository implements IInventoryRepository
                     return $total;
                 }, 0);
                 $availableWt = $group->reduce(function ($total, $current) {
-                    if (! in_array(strtoupper($current['CAT']), ['Q1', 'B1']) && $current['LGTYP'] !== 'GIZN') {
+                    if (! in_array(strtoupper($current['CAT']), ['Q1', 'B1'])) {
                         $total += (float) $current['QUAN'];
                     }
 
