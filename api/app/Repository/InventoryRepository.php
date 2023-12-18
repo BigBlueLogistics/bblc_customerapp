@@ -260,15 +260,15 @@ class InventoryRepository implements IInventoryRepository
                 $restrictedQty = $restrictedWt / $fixedWt;
 
                 // Quantity
-                $res['availableQty'] = round($availableQty, 3);
-                $res['allocatedQty'] = round($allocatedQty, 3);
-                $res['restrictedQty'] = round($restrictedQty, 3);
-                $res['totalQty'] = round($availableQty + $allocatedQty + $restrictedQty, 3);
+                $res['availableQty'] = round(max($availableQty, 0), 3);
+                $res['allocatedQty'] = round(max($allocatedQty, 0), 3);
+                $res['restrictedQty'] = round(max($restrictedQty, 0), 3);
+                $res['totalQty'] = round(max($availableQty + $allocatedQty + $restrictedQty, 0), 3);
 
                 // Weight
-                $res['availableWt'] = round($newAvailableWt, 3);
-                $res['allocatedWt'] = round($allocatedWt, 3);
-                $res['restrictedWt'] = round($restrictedWt, 3);
+                $res['availableWt'] = round(max($newAvailableWt, 0), 3);
+                $res['allocatedWt'] = round(max($allocatedWt, 0), 3);
+                $res['restrictedWt'] = round(max($restrictedWt, 0), 3);
                 $res['fixedWt'] = $fixedWt.' / '.$unit;
                 $res['warehouse'] = $warehouse;
 
