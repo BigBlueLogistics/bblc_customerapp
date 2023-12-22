@@ -94,7 +94,7 @@ class InventoryRepository implements IInventoryRepository
                     return $total;
                 }, 0);
                 $restrictedWt = $group->reduce(function ($total, $current) {
-                    if (in_array(strtoupper($current['CAT']), ['R1', 'B1'])) {
+                    if (in_array(strtoupper($current['CAT']), ['B1', 'R1', 'Q1'])) {
                         $total += (float) $current['QUAN'];
                     }
 
