@@ -101,7 +101,7 @@ class InventoryRepository implements IInventoryRepository
                     return $total;
                 }, 0);
                 $initialAllocatedWt = $group->reduce(function ($total, $current) {
-                    if ($current['DOCCAT'] !== '') {
+                    if (array_key_exists('DOCCAT', $current) && $current['DOCCAT'] !== '') {
                         $total += (float) $current['QUAN'];
                     }
 
