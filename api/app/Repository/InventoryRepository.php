@@ -84,7 +84,7 @@ class InventoryRepository implements IInventoryRepository
             ->map(function ($group) {
                 // Add up available, initialAllocated and restricted
                 $availableWt = $group->reduce(function ($total, $current) {
-                    if (! in_array(strtoupper($current['CAT']), ['F1']) 
+                    if (in_array(strtoupper($current['CAT']), ['F1']) 
                         && array_key_exists('DOCCAT', $current) 
                         && $current['DOCCAT'] === "") 
                     {
