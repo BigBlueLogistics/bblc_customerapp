@@ -55,7 +55,6 @@ function MDateRangePicker({
         selectsRange
         monthsShown={2}
         isClearable
-        minDate={startDate}
         disabled={disabled}
         customInput={<DatePickButton buttonStyle={buttonStyle} label={label} />}
         {...rest}
