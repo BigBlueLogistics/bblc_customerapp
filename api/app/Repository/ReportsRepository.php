@@ -122,7 +122,7 @@ class ReportsRepository implements IReportsRepository
                     'availableWt' => round($availableWt, 3),
                 ];
 
-                if ($groupBy === 'batch') {
+                if ($groupBy == 'batch') {
                     $transformData['batch'] = $group[0][$fieldName];
                 }
                 if ($groupBy == 'expiry') {
@@ -165,9 +165,9 @@ class ReportsRepository implements IReportsRepository
         }, []);
 
         // Add up vsolm means for picking.
-        $totalVsolmWt = $collectionPicking->mapToGroups(function ($item) {
+        $totalVsolmWt = $collectionPicking->mapToGroups(function ($item) use ($fieldName) {
             return [
-                $item['MATNR'] => [
+                $item[$fieldName] => [
                     'totalVsolmWt' => $item['VSOLM'],
                 ],
             ];
@@ -192,13 +192,15 @@ class ReportsRepository implements IReportsRepository
                             || array_key_exists('initialAllocatedWt', $data))
                             && array_key_exists('materialCode', $data);
         })
-            ->map(function ($data) use ($keyedFixedWt, $totalVsolmWt) {
+            ->map(function ($data, $key) use ($keyedFixedWt, $totalVsolmWt) {
+               
                 $materialCode = $data['materialCode'];
                 $fixedWt = $keyedFixedWt[$materialCode]['fixedWt'] ?? 1;
                 $unit = $keyedFixedWt[$materialCode]['unit'] ?? 'KG';
-                $totalVsolmWt = array_key_exists($materialCode, $totalVsolmWt) 
-                        && $totalVsolmWt[$materialCode]['totalVsolmWt'] > 0
-                            ? $totalVsolmWt[$materialCode]['totalVsolmWt'] : 0;
+                $totalVsolmWt = array_key_exists($key, $totalVsolmWt) 
+                        && $totalVsolmWt[$key]['totalVsolmWt'] > 0
+                            ? $totalVsolmWt[$key]['totalVsolmWt'] : 0;
+
                 $restrictedWt = array_key_exists('restrictedWt', $data) && $data['restrictedWt'] > 0 ? $data['restrictedWt'] : 0;
                 $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) && $data['initialAllocatedWt'] > 0 ? $data['initialAllocatedWt'] : 0;
                 $availableWt = array_key_exists('availableWt', $data) && $data['availableWt'] > 0 ? $data['availableWt']  : 0;
