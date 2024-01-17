@@ -398,7 +398,7 @@ class ReportsRepository implements IReportsRepository
         return $result;
     }
 
-    public function agingBy($customerCode, $warehouseNo, $fieldName)
+    public function agingBy($customerCode, $warehouseNo, $groupBy)
     {
         $mandt = SapRfcFacade::getMandt();
         $warehouseNo = str_replace('BB', 'WH', $warehouseNo);
@@ -486,7 +486,7 @@ class ReportsRepository implements IReportsRepository
         $mergedProducts = array_merge_recursive($collectionProducts, $collectionPicking);
 
         $today = Carbon::today();
-        $groupProductDetails = collect($mergedProducts)->map(function ($group) use ($today, $fieldName) {
+        $groupProductDetails = collect($mergedProducts)->map(function ($group) use ($today, $groupBy) {
             $qty_gt_120 = 0;
             $qty_gt_60 = 0;
             $qty_gt_30 = 0;
@@ -494,7 +494,7 @@ class ReportsRepository implements IReportsRepository
             $qty_lt_15 = 0;
             $qty_expired = 0;
             foreach ($group as $value) {
-                $expiryDate = Carbon::parse($value[$fieldName]);
+                $expiryDate = Carbon::parse($value[$groupBy]);
                 $agingDays = $today->diffInDays($expiryDate, false);
 
                 // > 120 days
