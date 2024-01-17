@@ -79,16 +79,23 @@ class ReportsRepository implements IReportsRepository
 
         $fieldName = null;
         if ($groupBy === 'batch') {
-            $fieldName = 'CHARG';
+            $fieldName = ['CHARG','VFDAT'];
         } elseif ($groupBy === 'expiry') {
-            $fieldName = 'VFDAT';
+            $fieldName = ['VFDAT'];
         } else {
-            $fieldName = 'MATNR';
+            $fieldName = ['MATNR'];
         }
 
         // Add up initialAllocated, available and restricted
-        $groupProductDetails = $collectionProducts->groupBy($fieldName)
-            ->map(function ($group) use ($groupBy, $fieldName) {
+        $groupProductDetails = $collectionProducts->groupBy(function (array $item) use ($fieldName) {
+            // Multiple grouping
+            if (count($fieldName) > 1) {
+                return $item[$fieldName[0]].'/'.$item[$fieldName[1]];
+            }
+            // Single grouping
+            return $item[$fieldName[0]];
+        })
+            ->map(function ($group) use ($groupBy) {
                 $availableWt = $group->reduce(function ($total, $current) {
                     if (in_array(strtoupper($current['CAT']), ['F1']) 
                         && array_key_exists('DOCCAT', $current) 
@@ -123,10 +130,11 @@ class ReportsRepository implements IReportsRepository
                 ];
 
                 if ($groupBy == 'batch') {
-                    $transformData['batch'] = $group[0][$fieldName];
+                    $transformData['batch'] = $group[0]['CHARG'];
+                    $transformData['expiry'] = $group[0]['VFDAT'];
                 }
                 if ($groupBy == 'expiry') {
-                    $transformData['expiry'] = Carbon::parse($group[0][$fieldName])->format('m/d/Y');
+                    $transformData['expiry'] = Carbon::parse($group[0]['VFDAT'])->format('m/d/Y');
                 }
 
                 return $transformData;
@@ -166,11 +174,21 @@ class ReportsRepository implements IReportsRepository
 
         // Add up vsolm means for picking.
         $totalVsolmWt = $collectionPicking->mapToGroups(function ($item) use ($fieldName) {
+
+            // Multiple grouping
+            if (count($fieldName) > 1) {
+                return [
+                    $item[$fieldName[0]].'/'.$item[$fieldName[1]] => [
+                        'totalVsolmWt' => $item['VSOLM'],
+                    ],
+                ];
+            }
             return [
-                $item[$fieldName] => [
+                $item[$fieldName[0]] => [
                     'totalVsolmWt' => $item['VSOLM'],
                 ],
             ];
+
         })->map(function ($item) {
             $totalVsolm = $item->reduce(function ($total, $current) {
                 $total += (float) $current['totalVsolmWt'];

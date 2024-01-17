@@ -50,6 +50,7 @@ export default function miscData() {
       return [
         ...commonHeaders,
         { Header: "Batch / Lot", accessor: "batch", align: "left" },
+        { Header: "Expiry date", accessor: "expiry", align: "left" },
         ...headers,
       ];
     }
