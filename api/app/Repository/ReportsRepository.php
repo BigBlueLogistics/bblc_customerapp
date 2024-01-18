@@ -131,7 +131,7 @@ class ReportsRepository implements IReportsRepository
 
                 if ($groupBy == 'batch') {
                     $transformData['batch'] = $group[0]['CHARG'];
-                    $transformData['expiry'] = $group[0]['VFDAT'];
+                    $transformData['expiry'] = Carbon::parse($group[0]['VFDAT'])->format('m/d/Y');
                 }
                 if ($groupBy == 'expiry') {
                     $transformData['expiry'] = Carbon::parse($group[0]['VFDAT'])->format('m/d/Y');
