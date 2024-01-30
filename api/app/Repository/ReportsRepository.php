@@ -81,7 +81,7 @@ class ReportsRepository implements IReportsRepository
         if ($groupBy === 'batch') {
             $fieldName = ['CHARG','VFDAT'];
         } elseif ($groupBy === 'expiry') {
-            $fieldName = ['VFDAT'];
+            $fieldName = ['MATNR','VFDAT'];
         } else {
             $fieldName = ['MATNR'];
         }
