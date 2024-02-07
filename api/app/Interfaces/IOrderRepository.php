@@ -11,7 +11,7 @@ interface IOrderRepository
     public function expiryBatch($materialCode, $warehouseNo);
 
     public function readText($docNo);
-    
+
     public function adhocDetails($customerCode, $docNo);
 
     public function createAdhocRequest($data, $authUser);

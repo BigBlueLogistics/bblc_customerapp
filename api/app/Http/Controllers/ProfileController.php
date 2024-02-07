@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Profile\ChangePassRequest;
 use App\Http\Requests\Profile\MainRequest;
-use App\Models\User;
 use App\Interfaces\IMemberRepository;
+use App\Models\User;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +17,8 @@ class ProfileController extends Controller
 
     private $members;
 
-    public function __construct(IMemberRepository $members) {
+    public function __construct(IMemberRepository $members)
+    {
         $this->members = $members;
     }
 
@@ -28,13 +29,14 @@ class ProfileController extends Controller
 
             $profile = User::where('email', $email)->first(['phone_num', 'van_status', 'invnt_report']);
 
-            if($profile){
+            if ($profile) {
                 $vanStatus = $profile->van_status == 'x';
                 $invntReport = $profile->invnt_report == 'x';
+
                 return $this->sendResponse([
                     'van_status' => $vanStatus,
                     'phone_num' => $profile->phone_num,
-                    'invnt_report' => $invntReport
+                    'invnt_report' => $invntReport,
                 ]);
             }
         } catch (Throwable $th) {
@@ -55,29 +57,29 @@ class ProfileController extends Controller
             $profile->invnt_report = $request->invnt_report ? 'x' : null;
             $isSuccess = $profile->save();
 
-            if($isSuccess){
+            if ($isSuccess) {
                 // insert inventory report
-                $invntReportData = $request->only('phone_num','invnt_report');
+                $invntReportData = $request->only('phone_num', 'invnt_report');
                 $invntNewReportData = array_merge($invntReportData, [
                     'fname' => $authUser->fname,
                     'lname' => $authUser->lname,
                     'email' => $authUser->email,
-                    'customer_code' =>  $authUser->company->customer_code
+                    'customer_code' => $authUser->company->customer_code,
                 ]);
-                
+
                 $invntReportMsg = $this->members->createInventoryReport($invntNewReportData);
             }
 
-            $data = $profile->only(['phone_num','van_status','invnt_report']);
-            $vanStatus = $data['van_status'] == 'x' ;
+            $data = $profile->only(['phone_num', 'van_status', 'invnt_report']);
+            $vanStatus = $data['van_status'] == 'x';
             $invntReport = $data['invnt_report'] == 'x';
 
             return $this->sendResponse([
                 'phone_num' => $data['phone_num'],
                 'van_status' => $vanStatus,
                 'invnt_report' => $invntReport,
-                'invnt_report_msg' => $invntReportMsg
-                ], 
+                'invnt_report_msg' => $invntReportMsg,
+            ],
                 'Succesfully update profile information'
             );
         } catch (Throwable $th) {

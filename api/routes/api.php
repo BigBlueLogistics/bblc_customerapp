@@ -6,10 +6,10 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MembersController;
 use App\Http\Controllers\MovementController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\TrucksVansController;
 use App\Http\Controllers\WarehouseController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -72,7 +72,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::get('/status/list', [OrderController::class, 'statusList']);
         Route::get('/adhoc-outbound-details', [OrderController::class, 'adhocDetails']);
-        Route::post('/create-adhoc',[OrderController::class, 'createAdhocRequest']);
+        Route::post('/create-adhoc', [OrderController::class, 'createAdhocRequest']);
     });
 
     Route::prefix('indicators')->group(function () {
@@ -93,7 +93,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/schedule-today', [TrucksVansController::class, 'scheduleToday']);
     });
 
-    Route::prefix('profile')->group(function(){
+    Route::prefix('profile')->group(function () {
         Route::get('/edit', [ProfileController::class, 'edit']);
         Route::post('/update', [ProfileController::class, 'update']);
         Route::post('/change-password', [ProfileController::class, 'changePass']);

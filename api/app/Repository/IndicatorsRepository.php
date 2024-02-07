@@ -59,7 +59,7 @@ class IndicatorsRepository implements IIndicatorsRepository
                 return $formatDate;
             })
             ->values();
-      
+
         $totalWtInbound = null;
         if ($wtGroupByDate->has('INBOUND')) {
             $inboundArr = $wtGroupByDate->only(['INBOUND']);
@@ -91,7 +91,7 @@ class IndicatorsRepository implements IIndicatorsRepository
 
         // Check the difference by key DATE
         // Inbound
-        if($totalWtInbound && $totalWtOutbound){
+        if ($totalWtInbound && $totalWtOutbound) {
             $inboundDiffFromOutbound = $totalWtOutbound->diffKeys($totalWtInbound)->map(function ($item) {
                 return [
                     ...$item,
@@ -100,14 +100,12 @@ class IndicatorsRepository implements IIndicatorsRepository
             })->union($totalWtInbound)->sortKeys();
 
             $inboundWt = $inboundDiffFromOutbound->pluck('weight');
+        } else {
+            $inboundWt = $totalWtInbound ? $totalWtInbound->pluck('weight') : null;
         }
-        else{
-            $inboundWt = $totalWtInbound ? $totalWtInbound->pluck('weight'): null;
-        }
-
 
         // Outbound
-        if($totalWtOutbound && $totalWtInbound){
+        if ($totalWtOutbound && $totalWtInbound) {
             $outboundDiffFromInbound = $totalWtInbound->diffKeys($totalWtOutbound)->map(function ($item) {
                 return [
                     ...$item,
@@ -116,8 +114,7 @@ class IndicatorsRepository implements IIndicatorsRepository
             })->union($totalWtOutbound)->sortKeys();
 
             $outboundWt = $outboundDiffFromInbound->pluck('weight');
-        }
-        else{
+        } else {
             $outboundWt = $totalWtOutbound ? $totalWtOutbound->pluck('weight') : null;
         }
 
@@ -145,7 +142,7 @@ class IndicatorsRepository implements IIndicatorsRepository
 
             ])
             ->param('FIELDS', [
-                ['FIELDNAME' => 'VBELN'], 
+                ['FIELDNAME' => 'VBELN'],
                 ['FIELDNAME' => 'XABLN'],
                 ['FIELDNAME' => 'ERDAT'],
             ])
@@ -159,8 +156,8 @@ class IndicatorsRepository implements IIndicatorsRepository
                 $type = null;
                 if (substr($item['VBELN'], 0, 3) == '018') {
                     $type = 'INBOUND';
-                } 
-                if (substr($item['VBELN'], 0, 3) == '008') { 
+                }
+                if (substr($item['VBELN'], 0, 3) == '008') {
                     $type = 'OUTBOUND';
                 }
 
@@ -191,7 +188,7 @@ class IndicatorsRepository implements IIndicatorsRepository
                 ->groupBy('date')
                 ->map(function ($item) {
                     return [
-                        'transactions' => $item->pluck('slipNo')->unique()->count()
+                        'transactions' => $item->pluck('slipNo')->unique()->count(),
                     ];
                 });
         }
@@ -200,12 +197,12 @@ class IndicatorsRepository implements IIndicatorsRepository
         if ($txnGroupByDate->has('OUTBOUND')) {
             $outboundArr = $txnGroupByDate->only(['OUTBOUND']);
 
-             // Count Outbound transactions
+            // Count Outbound transactions
             $countTnxOutbound = $outboundArr['OUTBOUND']
                 ->groupBy('date')
                 ->map(function ($item) {
                     return [
-                        'transactions' => $item->pluck('docNo')->unique()->count()
+                        'transactions' => $item->pluck('docNo')->unique()->count(),
                     ];
                 });
 
@@ -213,7 +210,7 @@ class IndicatorsRepository implements IIndicatorsRepository
 
         // Check the difference by key DATE
         // Inbound
-        if($countTnxInbound && $countTnxOutbound){
+        if ($countTnxInbound && $countTnxOutbound) {
             $inboundDiffFromOutbound = $countTnxOutbound->diffKeys($countTnxInbound)->map(function ($item) {
                 return [
                     ...$item,
@@ -222,13 +219,12 @@ class IndicatorsRepository implements IIndicatorsRepository
             })->union($countTnxInbound)->sortKeys();
 
             $inboundTransactions = $inboundDiffFromOutbound->pluck('transactions');
-        }
-        else{
-            $inboundTransactions = $countTnxInbound ? $countTnxInbound->pluck('transactions'): null ;
+        } else {
+            $inboundTransactions = $countTnxInbound ? $countTnxInbound->pluck('transactions') : null;
         }
 
         // Outbound
-        if($countTnxOutbound && $countTnxInbound){
+        if ($countTnxOutbound && $countTnxInbound) {
             $outboundDiffFromInbound = $countTnxInbound->diffKeys($countTnxOutbound)->map(function ($item) {
                 return [
                     ...$item,
@@ -237,8 +233,7 @@ class IndicatorsRepository implements IIndicatorsRepository
             })->union($countTnxOutbound)->sortKeys();
 
             $outboundTransactions = $outboundDiffFromInbound->pluck('transactions');
-        }
-        else{
+        } else {
             $outboundTransactions = $countTnxOutbound ? $countTnxOutbound->pluck('transactions') : null;
         }
 
@@ -247,7 +242,6 @@ class IndicatorsRepository implements IIndicatorsRepository
             'counts' => [$inboundTransactions, $outboundTransactions],
         ];
     }
-
 
     public function getActiveSku($customerCode, $date)
     {

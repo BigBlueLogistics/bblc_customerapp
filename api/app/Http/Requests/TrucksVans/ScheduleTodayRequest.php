@@ -22,7 +22,7 @@ class ScheduleTodayRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'customerCode' => ['required', 'string', 'size:8']
+            'customerCode' => ['required', 'string', 'size:8'],
         ];
     }
 }

@@ -28,16 +28,16 @@ class RegisterUserRequest extends FormRequest
             'lname' => ['required', 'string'],
             'password' => ['required', 'string', 'min:8'],
             'email' => ['required', 'string', 'email'],
-            'phone_num' => ['required','numeric','min_digits:11', 'max_digits:11'],
+            'phone_num' => ['required', 'numeric', 'min_digits:11', 'max_digits:11'],
             'company' => ['required', 'string'],
         ];
     }
 
     public function messages()
     {
-        return [ 
+        return [
             'phone_num.min_digits' => 'The phone number must be 11 digits.',
-            'phone_num.max_digits' => 'The phone number must be 11 digits.'
+            'phone_num.max_digits' => 'The phone number must be 11 digits.',
         ];
     }
 }

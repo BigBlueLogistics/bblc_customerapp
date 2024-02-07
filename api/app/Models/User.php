@@ -64,5 +64,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(CompanyRepresent::class, 'user_id');
     }
-
 }

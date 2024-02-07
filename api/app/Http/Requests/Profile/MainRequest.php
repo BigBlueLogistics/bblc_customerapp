@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Profile;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class MainRequest extends FormRequest
 {
@@ -23,17 +22,17 @@ class MainRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone_num' => ['required','numeric','min_digits:11', 'max_digits:11'],
+            'phone_num' => ['required', 'numeric', 'min_digits:11', 'max_digits:11'],
             'van_status' => ['boolean'],
-            'invnt_report' => ['boolean']
+            'invnt_report' => ['boolean'],
         ];
     }
 
     public function messages()
     {
-        return [ 
+        return [
             'phone_num.min_digits' => 'The phone number must be 11 digits.',
-            'phone_num.max_digits' => 'The phone number must be 11 digits.'
+            'phone_num.max_digits' => 'The phone number must be 11 digits.',
         ];
     }
 }

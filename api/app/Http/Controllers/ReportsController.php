@@ -92,7 +92,7 @@ class ReportsController extends Controller
             $request->validated($request->all());
 
             $customerCode = $request->input('customer_code');
-            $freqy  = $request->input('freqy');
+            $freqy = $request->input('freqy');
             $invty1 = $request->input('invty1');
             $invty2 = $request->input('invty2');
             $invty3 = $request->input('invty3');
@@ -102,9 +102,7 @@ class ReportsController extends Controller
             $res = $this->reports->scheduleInventory($customerCode, $freqy, $invty1, $invty2, $invty3, $time1, $time2, $time3);
 
             return $this->sendResponse($res, 'Successully created or updated report sending information');
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             return $this->sendError($e);
         }
     }

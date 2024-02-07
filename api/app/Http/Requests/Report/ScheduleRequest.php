@@ -22,8 +22,8 @@ class ScheduleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'customer_code' => ['required','string','min:8'],
-            'freqy'  => ['string', 'required'],
+            'customer_code' => ['required', 'string', 'min:8'],
+            'freqy' => ['string', 'required'],
             'invty1' => ['string', 'nullable'],
             'invty2' => ['string', 'nullable'],
             'invty3' => ['string', 'nullable'],

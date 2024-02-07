@@ -24,7 +24,7 @@ class OrderHeader extends Model
         'miles', 'erdat', 'ertim',
         'apstat', 'transid', 'ernam',
         'pudat', 'kunnr', 'access',
-        'vbeln', 'audat', 'podat'
+        'vbeln', 'audat', 'podat',
     ];
 
     protected $casts = [
@@ -80,10 +80,10 @@ class OrderHeader extends Model
                 'charg' => $field['batch'],
                 'vfdat' => $field['expiry'],
                 'created_at' => Carbon::now(),
-                'remarks' => $field['remarks']
+                'remarks' => $field['remarks'],
             ];
         })
-        ->all();
+            ->all();
     }
 
     public function toFormattedOrderDetails()

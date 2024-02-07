@@ -24,11 +24,11 @@ class MovementRequest extends FormRequest
     public function rules()
     {
         return [
-            'warehouseNo'  => ['required', 'string'],
+            'warehouseNo' => ['required', 'string'],
             'movementType' => ['required', 'string'],
             'materialCode' => ['required', 'string'],
             'customerCode' => ['required', 'string', 'size:8'],
-            'coverageDate' => ['required', 'array','size:2'],
+            'coverageDate' => ['required', 'array', 'size:2'],
             'coverageDate.*' => ['date'],
         ];
     }
@@ -36,7 +36,7 @@ class MovementRequest extends FormRequest
     public function messages()
     {
         return [
-            'coverageDate.size' => 'The coverage date must contain 2 dates.'
+            'coverageDate.size' => 'The coverage date must contain 2 dates.',
         ];
     }
 }

@@ -7,7 +7,6 @@ use App\Http\Requests\TrucksVans\StatusDetailsRequest;
 use App\Http\Requests\TrucksVans\TrucksVansRequest;
 use App\Interfaces\ITrucksVansRepository;
 use App\Traits\HttpResponse;
-use Illuminate\Http\Request;
 
 class TrucksVansController extends Controller
 {

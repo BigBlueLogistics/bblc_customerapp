@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class MemberUpdateRequest extends FormRequest
 {
@@ -33,10 +32,10 @@ class MemberUpdateRequest extends FormRequest
             'role_id' => ['numeric', 'nullable'],
             'van_status' => ['boolean'],
             'invnt_report' => ['boolean'],
-            'companies'=> ['required', 'array', 'min:1'],
-            'companies.*.id'=> ['nullable', 'integer'],
-            'companies.*.customer_code'=> ['required', 'string', 'size:8'],
-            'companies.*.company'=> ['required', 'string'],
+            'companies' => ['required', 'array', 'min:1'],
+            'companies.*.id' => ['nullable', 'integer'],
+            'companies.*.customer_code' => ['required', 'string', 'size:8'],
+            'companies.*.company' => ['required', 'string'],
             'delete_companies' => ['nullable', 'array'],
             'phone_num' => ['numeric', 'nullable', 'min_digits:11', 'max_digits:11'],
         ];
@@ -51,9 +50,9 @@ class MemberUpdateRequest extends FormRequest
 
     public function messages()
     {
-        return [ 
+        return [
             'phone_num.min_digits' => 'The phone number must be 11 digits.',
-            'phone_num.max_digits' => 'The phone number must be 11 digits.'
+            'phone_num.max_digits' => 'The phone number must be 11 digits.',
         ];
     }
 }

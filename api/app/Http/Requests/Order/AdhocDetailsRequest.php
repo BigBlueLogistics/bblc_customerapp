@@ -23,7 +23,7 @@ class AdhocDetailsRequest extends FormRequest
     {
         return [
             'docNo' => ['required', 'string'],
-            'customerCode' => ['required','string','size:8']
+            'customerCode' => ['required', 'string', 'size:8'],
         ];
     }
 }

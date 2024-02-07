@@ -22,7 +22,7 @@ class IndicatorsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'customer_code' => ['required', 'string', 'size:8']
+            'customer_code' => ['required', 'string', 'size:8'],
         ];
     }
 }

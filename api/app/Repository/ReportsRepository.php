@@ -79,9 +79,9 @@ class ReportsRepository implements IReportsRepository
 
         $fieldName = null;
         if ($groupBy === 'batch') {
-            $fieldName = ['CHARG','VFDAT'];
+            $fieldName = ['CHARG', 'VFDAT'];
         } elseif ($groupBy === 'expiry') {
-            $fieldName = ['MATNR','VFDAT'];
+            $fieldName = ['MATNR', 'VFDAT'];
         } else {
             $fieldName = ['MATNR'];
         }
@@ -97,10 +97,9 @@ class ReportsRepository implements IReportsRepository
         })
             ->map(function ($group) use ($groupBy) {
                 $availableWt = $group->reduce(function ($total, $current) {
-                    if (in_array(strtoupper($current['CAT']), ['F1']) 
-                        && array_key_exists('DOCCAT', $current) 
-                        && $current['DOCCAT'] === "") 
-                    {
+                    if (in_array(strtoupper($current['CAT']), ['F1'])
+                        && array_key_exists('DOCCAT', $current)
+                        && $current['DOCCAT'] === '') {
                         $total += (float) $current['QUAN'];
                     }
 
@@ -183,6 +182,7 @@ class ReportsRepository implements IReportsRepository
                     ],
                 ];
             }
+
             return [
                 $item[$fieldName[0]] => [
                     'totalVsolmWt' => $item['VSOLM'],
@@ -201,27 +201,26 @@ class ReportsRepository implements IReportsRepository
             ];
         })->toArray();
 
-
         $merged = $groupProductDetails->filter(function ($data) {
             // Return only data if anyone of the field below has value.
             return
-                (array_key_exists('availableWt', $data) 
+                (array_key_exists('availableWt', $data)
                             || array_key_exists('restrictedWt', $data)
                             || array_key_exists('initialAllocatedWt', $data))
                             && array_key_exists('materialCode', $data);
         })
             ->map(function ($data, $key) use ($keyedFixedWt, $totalVsolmWt) {
-               
+
                 $materialCode = $data['materialCode'];
                 $fixedWt = $keyedFixedWt[$materialCode]['fixedWt'] ?? 1;
                 $unit = $keyedFixedWt[$materialCode]['unit'] ?? 'KG';
-                $totalVsolmWt = array_key_exists($key, $totalVsolmWt) 
+                $totalVsolmWt = array_key_exists($key, $totalVsolmWt)
                         && $totalVsolmWt[$key]['totalVsolmWt'] > 0
                             ? $totalVsolmWt[$key]['totalVsolmWt'] : 0;
 
                 $restrictedWt = array_key_exists('restrictedWt', $data) && $data['restrictedWt'] > 0 ? $data['restrictedWt'] : 0;
                 $initialAllocatedWt = array_key_exists('initialAllocatedWt', $data) && $data['initialAllocatedWt'] > 0 ? $data['initialAllocatedWt'] : 0;
-                $availableWt = array_key_exists('availableWt', $data) && $data['availableWt'] > 0 ? $data['availableWt']  : 0;
+                $availableWt = array_key_exists('availableWt', $data) && $data['availableWt'] > 0 ? $data['availableWt'] : 0;
                 $allocatedWt = $initialAllocatedWt + $totalVsolmWt;
 
                 // Calculate the quantity.

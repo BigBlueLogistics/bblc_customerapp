@@ -14,7 +14,7 @@ class OrderItems extends Model
     protected $fillable = [
         'transid', 'matnr', 'quan',
         'meinh', 'charg', 'vfdat',
-        'lgnum', 'remarks'
+        'lgnum', 'remarks',
     ];
 
     protected $casts = [

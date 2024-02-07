@@ -4,8 +4,8 @@ namespace App\Repository;
 
 use App\Facades\SapRfcFacade;
 use App\Interfaces\IMemberRepository;
-use DB;
 use Carbon\Carbon;
+use DB;
 
 class MemberRepository implements IMemberRepository
 {
@@ -42,22 +42,21 @@ class MemberRepository implements IMemberRepository
 
     public function createInventoryReport($data)
     {
-        $email = $data['email']; 
-        $customerCode = $data['customer_code']; 
-        $fname = $data['fname']; 
-        $lname = $data['lname']; 
-        $phone = strtoupper($data['phone_num']); 
+        $email = $data['email'];
+        $customerCode = $data['customer_code'];
+        $fname = $data['fname'];
+        $lname = $data['lname'];
+        $phone = strtoupper($data['phone_num']);
 
         // check first if exists
         $recipient = DB::connection('wms')->table('PRTR')->select('*')
-                     ->where('KUNNR', $customerCode)
-                     ->whereRaw('UPPER(email) = ?' ,[$email])
-                     ->first();
+            ->where('KUNNR', $customerCode)
+            ->whereRaw('UPPER(email) = ?', [$email])
+            ->first();
 
-        if($recipient){
+        if ($recipient) {
             return 'Email is already existing as recipient of selected customer';
-        }
-        else{
+        } else {
             $currentDatetime = Carbon::now();
             $insert = DB::connection('wms')->table('PRTR')
                 ->insert([
@@ -70,9 +69,10 @@ class MemberRepository implements IMemberRepository
                     'ERDAT' => $currentDatetime,
                 ]);
 
-            if($insert){
+            if ($insert) {
                 return 'Successfully updated inventory email recipient(s)';
             }
+
             return 'Failed updating inventory email recipient(s)';
         }
 

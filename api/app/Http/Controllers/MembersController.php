@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Interfaces\IMemberRepository;
 use App\Http\Requests\MemberUpdateRequest;
+use App\Interfaces\IMemberRepository;
 use App\Models\CompanyRepresent;
-use App\Models\User;
 use App\Models\Role;
+use App\Models\User;
 use App\Traits\HttpResponse;
 use Carbon\Carbon;
 
@@ -16,7 +16,8 @@ class MembersController extends Controller
 
     private $members;
 
-    public function __construct(IMemberRepository $members) {
+    public function __construct(IMemberRepository $members)
+    {
         $this->members = $members;
     }
 
@@ -31,9 +32,9 @@ class MembersController extends Controller
             $this->authorize('view', $user);
 
             $members = User::with('company:user_id,customer_code')
-                        ->orderBy('active','asc')
-                        ->orderBy('email_verified_at','desc')
-                        ->get();
+                ->orderBy('active', 'asc')
+                ->orderBy('email_verified_at', 'desc')
+                ->get();
 
             return $this->sendResponse($members, 'members list');
         } catch (Throwable $th) {
@@ -52,30 +53,30 @@ class MembersController extends Controller
         try {
             $this->authorize('view', $user);
 
-            $member = User::find($loggedUserId, ['id', 'fname', 'lname', 'email', 'email_verified_at', 'active', 
-                    'role_id', 'van_status','invnt_report' , 'phone_num'
+            $member = User::find($loggedUserId, ['id', 'fname', 'lname', 'email', 'email_verified_at', 'active',
+                'role_id', 'van_status', 'invnt_report', 'phone_num',
             ]);
-            $roles = Role::where('id', '!=', 0)->select('id','name')->get();
+            $roles = Role::where('id', '!=', 0)->select('id', 'name')->get();
             $rolesWithNone = [['id' => '', 'name' => '--None--'], ...$roles->toArray()];
 
             if ($member) {
                 $vanStatus = $member->van_status == 'x';
                 $invntReport = $member->invnt_report == 'x';
                 $isActive = $member->active;
-                $companies = collect($member->companies)->map(function($item){
-                    return $item->only(['id','customer_code','company']);
+                $companies = collect($member->companies)->map(function ($item) {
+                    return $item->only(['id', 'customer_code', 'company']);
                 })->all();
 
-                $member = [...$member->toArray(), 
-                        'van_status' => $vanStatus, 
-                        'invnt_report' => $invntReport,
-                        'active' => $isActive,
-                        'companies' => $companies,
-                        'customer_code' => $member->company->customer_code ?? '',
-                        'company' => $member->company->company ?? '',
-                        'roles' => $rolesWithNone
-                    ];
-              
+                $member = [...$member->toArray(),
+                    'van_status' => $vanStatus,
+                    'invnt_report' => $invntReport,
+                    'active' => $isActive,
+                    'companies' => $companies,
+                    'customer_code' => $member->company->customer_code ?? '',
+                    'company' => $member->company->company ?? '',
+                    'roles' => $rolesWithNone,
+                ];
+
             }
 
             return $this->sendResponse($member, 'member details');
@@ -125,21 +126,21 @@ class MembersController extends Controller
                 }
 
                 // Delete assigned companies
-                if($request->delete_companies){
+                if ($request->delete_companies) {
                     CompanyRepresent::where('user_id', $loggedUserId)
                         ->whereIn('id', $request->delete_companies)
                         ->delete();
                 }
 
-                $roles = Role::where('id', '!=', 0)->select('id','name')->get();
+                $roles = Role::where('id', '!=', 0)->select('id', 'name')->get();
                 $rolesWithNone = [['id' => '', 'name' => '--None--'], ...$roles->toArray()];
 
                 $vanStatus = $member->van_status == 'x';
                 $invntReport = $member->invnt_report == 'x';
-                $newCompanies = CompanyRepresent::where('user_id', $loggedUserId)->get(['id','customer_code','company']);
+                $newCompanies = CompanyRepresent::where('user_id', $loggedUserId)->get(['id', 'customer_code', 'company']);
 
-                $member = [...$member->toArray(), 
-                    'van_status' => $vanStatus, 
+                $member = [...$member->toArray(),
+                    'van_status' => $vanStatus,
                     'invnt_report' => $invntReport,
                     'companies' => $newCompanies,
                     'roles' => $rolesWithNone,
@@ -149,7 +150,7 @@ class MembersController extends Controller
                 // // insert inventory report
                 // $invntReport = $this->members->createInventoryReport($request->all());
                 // $member['invnt_report_message'] = $invntReport;
-                
+
             }
 
             return $this->sendResponse($member, __('members.updated'));

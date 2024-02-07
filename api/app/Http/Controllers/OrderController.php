@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Order\AdhocDetailsRequest;
+use App\Http\Requests\Order\CreateAdhocRequest;
 use App\Http\Requests\Order\CreateRequest;
 use App\Http\Requests\Order\ExpiryBatchRequest;
 use App\Http\Requests\Order\ListRequest;
 use App\Http\Requests\Order\MaterialRequest;
 use App\Http\Requests\Order\ProductUnitsRequest;
-use App\Http\Requests\Order\AdhocDetailsRequest;
-use App\Http\Requests\Order\CreateAdhocRequest;
 use App\Interfaces\IOrderRepository;
 use App\Models\OrderHeader;
 use App\Models\OrderItems;
@@ -270,9 +270,10 @@ class OrderController extends Controller
 
             $details = $this->order->adhocDetails($customerCode, $docNo);
 
-            if($details["status"] === "failed"){
-                return $this->sendError($details["message"]);
+            if ($details['status'] === 'failed') {
+                return $this->sendError($details['message']);
             }
+
             return $this->sendResponse($details, 'Outbound details');
         } catch (Exception $e) {
             return $this->sendError($e);
@@ -287,10 +288,11 @@ class OrderController extends Controller
 
             $adhocRequest = $this->order->createAdhocRequest($request, $authUser);
 
-            if($adhocRequest){
+            if ($adhocRequest) {
                 return $this->sendResponse(null, $adhocRequest);
             }
-            return $this->sendError("Failed request notification");
+
+            return $this->sendError('Failed request notification');
 
         } catch (Exception $e) {
             return $this->sendError($e);

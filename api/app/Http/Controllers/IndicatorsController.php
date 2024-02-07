@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Interfaces\IIndicatorsRepository;
 use App\Http\Requests\IndicatorsRequest;
+use App\Interfaces\IIndicatorsRepository;
 use App\Traits\HttpResponse;
-use Exception;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Exception;
 
 class IndicatorsController extends Controller
 {
