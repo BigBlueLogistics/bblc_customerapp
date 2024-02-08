@@ -28,7 +28,7 @@
             <th colspan="2">{{ $timeNow }}</th>
         </tr>
         <tr class="fontBold">
-            <th align="center" colspan="11">{{$caption}}</th>
+            <th align="center" colspan="12">{{$caption}}</th>
         </tr>
     </thead>
     <thead>
@@ -38,6 +38,7 @@
             <th align="center">Fixed Weight</th>
             @if ($groupBy === 'batch')
                 <th align="center">Batch / Lot</th>
+                <th align="center">Expiry Date</th>
             @elseif ($groupBy === 'expiry')
                 <th align="center">Expiry Date</th>
             @endif
@@ -50,7 +51,10 @@
             <th align="center">Code</th>
             <th align="center">Description</th>
             <th align="center">(KG/UNIT)</th>
-            @if ($groupBy === 'batch' || $groupBy === 'expiry')
+            @if ($groupBy === 'batch')
+                <th align="center"></th>
+                <th align="center"></th>
+            @elseif ($groupBy === 'expiry')
                 <th align="center"></th>
             @endif
             <th align="center">Quantity</th>
@@ -85,6 +89,7 @@
             <td>{{ $inventory['fixedWt'] }}</td>
             @if ($groupBy === 'batch')
                 <td>{{ $inventory['batch']}}</td>
+                <td>{{ $inventory['expiry']}}</td>
             @elseif ($groupBy === 'expiry')
                 <td>{{ $inventory['expiry']}}</td>
             @endif
@@ -111,10 +116,14 @@
         @endforeach
         <tr>
             <td></td>
-            @php
-                $colSpan = $groupBy === 'expiry' || $groupBy == 'batch' ? 3 : 2;
-            @endphp
-            <td colspan={{$colSpan}}>TOTAL >>>>></td>
+            @if ($groupBy === 'batch')
+                <td></td>
+                <td colspan="3">TOTAL >>>>></td>
+            @elseif ($groupBy === 'expiry')
+                <td colspan="3">TOTAL >>>>></td>
+            @else
+                <td colspan="2">TOTAL >>>>></td>
+            @endif
             <td>{{ $subAllocatedQty }}</td>
             <td>{{ $subAllocatedWt }}</td>
             <td>{{ $subAvailableQty }}</td>
