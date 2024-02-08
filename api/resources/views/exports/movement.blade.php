@@ -8,24 +8,21 @@
         <!-- Appending data begin on cell A5 -->
         <tr>
             <th>Customer</th>
-            <th colspan="3">{{ $customerName }}</th>
-            <th colspan="2"></th>
+            <th colspan="8">{{ $customerName }}</th>
             <th>DATE:</th>
-            <th colspan="2">{{ $dateNow }}</th>
+            <th colspan="3">{{ $dateNow }}</th>
         </tr>
         <tr>
             <th class="fontBold">Address</th>
-            <th colspan="3">{{ $address }}</th>
-            <th colspan="2"></th>
+            <th colspan="8">{{ $address }}</th>
             <th>WHSE:</th>
-            <th colspan="2">{{ $warehouseNo }}</th>
+            <th colspan="3">{{ $warehouseNo }}</th>
         </tr>
         <tr>
             <th class="fontBold">PHONE/FAX:</th>
-            <th align="left" colspan="3">{{ $phone }}</th>
-            <th colspan="2"></th>
+            <th align="left" colspan="8">{{ $phone }}</th>
             <th>TIME:</th>
-            <th colspan="2">{{ $timeNow }}</th>
+            <th colspan="3">{{ $timeNow }}</th>
         </tr>
         <tr class="fontBold">
             <th align="center" colspan="13">MOVEMENTS - SUMMARY</th>

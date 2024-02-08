@@ -81,9 +81,16 @@ class WHSnapshotExport implements FromView, ShouldAutoSize, WithEvents, WithDraw
 
     public static function afterSheet(AfterSheet $event)
     {
+        $concernable = $event->getConcernable();
+        $groupBy = $concernable->groupBy;
+
         $activeSheet = $event->sheet->getDelegate();
+        
         // Headings label
-        $activeSheet->getStyle('A5:A8')->getFont()->setBold(true);
+        $headerBoldCells = $groupBy === 'batch' ? ['A5:A7', 'J5:J7']: ['A5:A7', 'I5:I7'];
+            
+        $activeSheet->getStyle($headerBoldCells[0])->getFont()->setBold(true);
+        $activeSheet->getStyle($headerBoldCells[1])->getFont()->setBold(true);
         $activeSheet->getStyle('G5:G8')->getFont()->setBold(true);
 
         // Label: Warehouse stocks.
@@ -94,7 +101,6 @@ class WHSnapshotExport implements FromView, ShouldAutoSize, WithEvents, WithDraw
 
         // Format numberic if empty default value is dash (-).
         $columnNumberFormat = 'D:K';
-        $concernable = $event->getConcernable();
         if ($concernable->groupBy === 'batch') {
             $columnNumberFormat = 'E:M';
         }

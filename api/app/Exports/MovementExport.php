@@ -101,7 +101,7 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
 
         // Headings label
         $activeSheet->getStyle('A5:A8')->getFont()->setBold(true);
-        $activeSheet->getStyle('G5:G8')->getFont()->setBold(true);
+        $activeSheet->getStyle('J5:J8')->getFont()->setBold(true);
 
         // Label: Warehouse stocks.
         $activeSheet->mergeCells('A8:M8')->getStyle('A8:M8')->getFont()->setBold(true)->setSize(26);

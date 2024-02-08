@@ -1,3 +1,18 @@
+@php
+    $headerOneColSpan = 7;
+    $headerTwoColSpan = 2;
+    $captionColSpan = 11;
+
+    if ($groupBy === 'batch'){
+        $headerOneColSpan = 8;
+        $headerTwoColSpan = 3;
+        $captionColSpan = 13;
+    }
+    else if($groupBy === 'expiry'){
+        $headerTwoColSpan = 3;
+        $captionColSpan = 12;
+    }
+@endphp
 <table>
     <thead>
         <!-- Empty cell for embedding image logo -->
@@ -8,27 +23,24 @@
         <!-- Appending data begin on cell A5 -->
         <tr>
             <th>Customer</th>
-            <th colspan="3">{{ $customerName }}</th>
-            <th colspan="2"></th>
+            <th colspan={{$headerOneColSpan}}>{{ $customerName }}</th>
             <th>DATE:</th>
-            <th colspan="2">{{ $dateNow }}</th>
+            <th colspan={{$headerTwoColSpan}}>{{ $dateNow }}</th>
         </tr>
         <tr>
             <th class="fontBold">Address</th>
-            <th colspan="3">{{ $address }}</th>
-            <th colspan="2"></th>
+            <th colspan={{$headerOneColSpan}}>{{ $address }}</th>
             <th>WHSE:</th>
-            <th colspan="2">{{ $warehouseNo }}</th>
+            <th colspan={{$headerTwoColSpan}}>{{ $warehouseNo }}</th>
         </tr>
         <tr>
             <th class="fontBold">PHONE/FAX:</th>
-            <th align="left" colspan="3">{{ $phone }}</th>
-            <th colspan="2"></th>
+            <th align="left" colspan={{$headerOneColSpan}}>{{ $phone }}</th>
             <th>TIME:</th>
-            <th colspan="2">{{ $timeNow }}</th>
+            <th colspan={{$headerTwoColSpan}}>{{ $timeNow }}</th>
         </tr>
         <tr class="fontBold">
-            <th align="center" colspan="12">{{$caption}}</th>
+            <th align="center" colspan={{$captionColSpan}}>{{$caption}}</th>
         </tr>
     </thead>
     <thead>
