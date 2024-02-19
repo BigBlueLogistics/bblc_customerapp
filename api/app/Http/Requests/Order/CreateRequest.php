@@ -35,6 +35,10 @@ class CreateRequest extends FormRequest
             'requests.*.qty' => ['required', 'numeric'],
             'requests.*.remarks' => ['nullable', 'string', 'max:35'],
             'requestsDelete' => ['nullable', 'array'],
+            'attachment' => ['array', 'nullable'],
+            'attachment.*' => ['required','mimes:xlsx,xlx','max:4096'],
+            'attachmentDelete' => ['array', 'nullable'],
+            'attachmentDelete.*' => ['required','string'],
         ];
     }
 }

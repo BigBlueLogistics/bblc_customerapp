@@ -190,7 +190,7 @@ function FormTable(props: FormikProps<TOrderData> & IFormTable) {
                               handleRemoveRow(remove, setValues, index, uuid, material, rowUnit)
                             }
                             sx={{
-                              "&:hover": { backgroundColor: "#ffcbc4" },
+                              "&:hover": { backgroundColor: "#ffcbc4", borderRadius: "50%" },
                             }}
                           >
                             <Icon color="error" fontSize="large">

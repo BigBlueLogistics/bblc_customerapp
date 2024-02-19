@@ -21,10 +21,15 @@ export type TGroupByAging = "expiration" | "receiving" | "production";
 export type TReportType = "wh-snapshot" | "aging-report" | "stock-status";
 export type TGroupBy = LooseType<TGroupByWhSnapshot | TGroupByAging>;
 
-export type TFiltered = {
+type FieldFilter = {
   reportType: TReportType;
   warehouse: string;
   groupBy: TGroupBy;
+};
+
+export type TFiltered = {
+  filtering: FieldFilter;
+  filtered: FieldFilter;
 };
 
 export type TGroupByKey = "stock" | "aging";

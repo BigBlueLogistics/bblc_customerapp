@@ -249,10 +249,15 @@ export default function miscData() {
     return am.concat(pm);
   };
 
-  const initialFilter: TFiltered = {
-    reportType: "wh-snapshot",
+  const fieldsFilter = {
+    reportType: "wh-snapshot" as TReportType,
     groupBy: "",
     warehouse: "",
+  };
+
+  const initialFilter: TFiltered = {
+    filtering: fieldsFilter,
+    filtered: fieldsFilter,
   };
 
   const tableHeaders: Record<TReportType, any> = {

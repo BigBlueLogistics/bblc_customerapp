@@ -9,10 +9,15 @@ use App\Models\OrderHeader;
 use App\Traits\StringEncode;
 use Carbon\Carbon;
 use DB;
+use Storage;
 
 class OrderRepository implements IOrderRepository
 {
     use StringEncode;
+
+    protected const EXCEL_ROOT_DIR = 'excel';
+
+    protected const EXCEL_DISK = 'excel';
 
     public function materialAndDescription($customerCode, $warehouseNo)
     {
@@ -459,6 +464,65 @@ class OrderRepository implements IOrderRepository
             }
 
             return null;
+        }
+    }
+
+    function uploadFile($request, $transId)
+    {
+        $uploadedFiles = null;
+        if($request->hasFile('attachment'))
+        {
+            $excelRootDir = self::EXCEL_ROOT_DIR;
+            if(!Storage::disk(self::EXCEL_DISK)->exists($excelRootDir)){
+                Storage::makeDirectory($excelRootDir, 0777, true, true);
+            }
+    
+            foreach($request->file('attachment') as $key => $file)
+            {
+                if($file->isValid())
+                {
+                    $fileName = strtolower($file->getClientOriginalName());
+                    
+                    $uploadedFiles[$key]['filename'] = $fileName;
+                    $uploadedFiles[$key]['path'] = $file->storeAs($transId, $fileName, ['disk' => self::EXCEL_DISK]);
+                }
+            }
+
+        } 
+        return $uploadedFiles;
+    }
+
+    public function retrieveFile($transId)
+    {
+        $fileNames = null;
+        if(Storage::disk(self::EXCEL_DISK)->exists($transId))
+        {
+            $files = Storage::disk(self::EXCEL_DISK)->files("{$transId}");
+            
+            if(count($files) > 0)
+            {
+                $fileNames = array_map(function($path){
+                    $fileName = explode('/', $path)[1];
+                    
+                    return $fileName;
+                }, $files);
+            }
+        }
+
+        return $fileNames;
+    }
+
+    function deleteFile($fileNames, $transId)
+    {
+        if($fileNames && count($fileNames) && Storage::disk(self::EXCEL_DISK)->exists($transId))
+        {
+            $arrayFiles = array_map(function($fileName) use ($transId){
+                $newFileName = strtolower($fileName);
+
+                  return "{$transId}/{$newFileName}";
+            }, $fileNames);
+           
+            Storage::disk(self::EXCEL_DISK)->delete($arrayFiles);
         }
     }
 }

@@ -15,8 +15,10 @@ use App\Models\OrderItems;
 use App\Models\OrderStatus;
 use App\Traits\HttpResponse;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use DB;
 use Exception;
+use Storage;
 
 class OrderController extends Controller
 {
@@ -137,17 +139,25 @@ class OrderController extends Controller
                 $id = $orderHeader['transid'];
                 $createdOrder = OrderHeader::where('id', $id)->first(['transid', 'lgnum']);
 
-                $mappedData = $createdOrder->withMapOrderDetails($request->input('requests'));
+                $orders = $request->input('requests');
+                $mappedData = $createdOrder->withMapOrderDetails($orders);
+                $transId = $createdOrder['transid'];
 
                 // Bulk insert order items
                 OrderItems::insert($mappedData);
+
+                // File upload
+                $this->order->uploadFile($request, $transId);
+
+                return $this->sendResponse([
+                    'id' => $transId,
+                ], 'Successfully created product request');
             }
 
-            return $this->sendResponse([
-                'id' => $createdOrder['transid'],
-            ], 'Successfully created request');
+            return $this->sendError('Failed to create product request');
+
         } catch (Exception $e) {
-            return $this->sendError($e);
+            return $this->sendError($e->getMessage());
         }
     }
 
@@ -157,9 +167,11 @@ class OrderController extends Controller
             $orders = OrderHeader::find($transId);
             if ($orders) {
                 $orders = $orders->toFormattedOrderDetails();
+
+                $orders['attachment'] = $this->order->retrieveFile($transId);
             }
 
-            return $this->sendResponse($orders, 'request order details');
+            return $this->sendResponse($orders, 'Request order details');
         } catch (Exception $e) {
             return $this->sendError($e);
         }
@@ -178,7 +190,7 @@ class OrderController extends Controller
                 'meinh' => $field['units'],
                 'charg' => $field['batch'],
                 'vfdat' => $field['expiry'],
-                'remarks' => $field['remarks'],
+                'remarks' => $field['remarks'] ?? null,
             ];
         })->all();
     }
@@ -197,31 +209,47 @@ class OrderController extends Controller
                 return $this->sendError('Sorry! this order cannot no longer to update.');
             }
 
-            $header->lgnum = $request->source_wh;
-            $header->ponum = $request->ref_number;
-            $header->pudat = $request->pickup_date;
-            $header->miles = $request->allow_notify;
-            $header->header = $request->instruction;
+            $header->lgnum = $request->input('source_wh');
+            $header->ponum = $request->input('ref_number');
+            $header->pudat = $request->input('pickup_date');
+            $header->miles = $request->input('allow_notify');
+            $header->header = $request->input('instruction');
             $isSuccess = $header->save();
 
             if ($isSuccess) {
                 // Get the inserted order header details
-                $mapRequests = $this->withUpdateMapOrderDetails($request->requests, ['lgnum' => $header->lgnum, 'transid' => $header->transid]);
+                $mapRequests = $this->withUpdateMapOrderDetails($request->input('requests'), ['lgnum' => $header->lgnum, 'transid' => $header->transid]);
 
                 // Insert if uuid and transid not exist else it updates the record.
                 OrderItems::upsert($mapRequests, ['uuid', 'transid'], ['lgnum', 'matnr', 'quan', 'meinh', 'charg', 'vfdat', 'remarks']);
 
                 // Delete existing order items
-                if ($request->requestsDelete) {
-                    OrderItems::whereIn('uuid', $request->requestsDelete)
+                if ($request->input('requestsDelete')) {
+                    OrderItems::whereIn('uuid', $request->input('requestsDelete'))
                         ->where('transid', $header->transid)
                         ->delete();
                 }
+
+                // Delete file
+                $filesToDelete = $request->input('attachmentDelete');
+                $this->order->deleteFile($filesToDelete, $transId);
+
+                // Upload file
+                $this->order->uploadFile($request, $transId);
+
+                // Get updated data
+                $updatedOrders = OrderHeader::find($transId);
+                if ($updatedOrders) {
+                    $updatedOrders = $updatedOrders->toFormattedOrderDetails();
+                    $updatedOrders['attachment'] = $this->order->retrieveFile($transId);
+                }
+
+                return $this->sendResponse($updatedOrders, 'Successfully update product request');
             }
 
-            return $this->sendResponse(null, 'Successfully update order request');
+            return $this->sendError('Failed to update product request');            
         } catch (Exception $e) {
-            return $this->sendError($e);
+            return $this->sendError($e->getMessage());
         }
     }
 

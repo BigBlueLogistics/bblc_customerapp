@@ -19,7 +19,11 @@ class OrdersServices extends HttpAdapter {
   }
 
   createOrder(data: any) {
-    return this.post("/orders/create", data);
+    return this.post("/orders/create", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   }
 
   getOrderById(transId: string) {
@@ -27,7 +31,11 @@ class OrdersServices extends HttpAdapter {
   }
 
   updateOrder(transId: string, data: any) {
-    return this.post(`/orders/update/${transId}`, data);
+    return this.post(`/orders/update/${transId}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   }
 
   cancelOrder(transId: string) {

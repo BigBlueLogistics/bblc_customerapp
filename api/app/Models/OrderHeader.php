@@ -80,10 +80,9 @@ class OrderHeader extends Model
                 'charg' => $field['batch'],
                 'vfdat' => $field['expiry'],
                 'created_at' => Carbon::now(),
-                'remarks' => $field['remarks'],
+                'remarks' => $field['remarks'] ?? null,
             ];
-        })
-            ->all();
+        })->all();
     }
 
     public function toFormattedOrderDetails()

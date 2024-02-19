@@ -218,9 +218,9 @@ function Orders() {
       } else if (formOrder.type === "edit" || formOrder.type === "update") {
         setFormOrder((prev) => ({ ...prev, message: "", type: "update", status: "loading" }));
         const {
-          data: { message },
+          data: { message, data },
         } = await ordersServices.updateOrder(formOrder.id, orderData);
-        setFormOrder((prev) => ({ ...prev, message, status: "succeeded" }));
+        setFormOrder((prev) => ({ ...prev, message, data, status: "succeeded" }));
       }
     } catch (err: any) {
       setFormOrder((prev) => ({ ...prev, message: err.message, status: "failed" }));

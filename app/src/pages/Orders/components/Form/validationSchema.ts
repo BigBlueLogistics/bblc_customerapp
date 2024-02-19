@@ -7,12 +7,14 @@ const validationSchema = yup.object({
     .max(12, "maximum of 12 characters")
     .matches(/^[^'%"]+$/i, `not allowed characters: '%"`),
   source_wh: yup.string().required("required"),
-  pickup_date: yup.date(),
+  pickup_date: yup.date().nullable(),
   allow_notify: yup.boolean(),
   instruction: yup
     .string()
     .nullable()
     .matches(/^[^'%"]+$/i, `not allowed characters: '%"`),
+  attachment: yup.mixed().nullable(),
+  attachmentDelete: yup.array(yup.string()).nullable(),
   requests: yup
     .array(
       yup.object({

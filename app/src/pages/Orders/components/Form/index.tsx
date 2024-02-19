@@ -1,8 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
+import { ChangeEvent, useCallback, useEffect, useState, useRef } from "react";
+import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { AutocompleteChangeReason } from "@mui/material/Autocomplete";
 import { v4 as uuidv4 } from "uuid";
 import { format, isValid } from "date-fns";
@@ -13,12 +10,14 @@ import MDInput from "atoms/MDInput";
 import MDatePicker from "atoms/MDatePicker";
 import MDAlert2 from "atoms/MDAlert2";
 import SkeletonForm from "organisms/Skeleton/Form";
+import FileUpload from "organisms/FileUpload";
 import { Formik, Form, ArrayHelpers, FormikHelpers, FormikHandlers, FormikProps } from "formik";
 import MDCheckbox from "atoms/MDCheckbox";
 import MDSelect from "atoms/MDSelect";
 import { ordersServices } from "services";
 import selector from "selector";
 import { TOrderData } from "pages/Orders/types";
+import { TAttachmentStatus } from "pages/Orders/data/types";
 import FormTable from "../FormTable";
 import miscData from "../../data";
 import { IForm } from "./types";
@@ -35,7 +34,7 @@ function FormRequests({
   data,
   warehouseList,
 }: IForm) {
-  const { initialOrder } = miscData();
+  const { initialOrder, initialAttachment } = miscData();
   const initialRowId = uuidv4();
   initialOrder.requests[0].uuid = initialRowId;
   const { customerCode } = selector();
@@ -45,6 +44,8 @@ function FormRequests({
 
   const [warehouseNo, setWarehouseNo] = useState("");
   const [selectedRowValues, setSelectedRowValues] = useState({});
+  const [attachmentFile, setAttachmentFile] = useState<TAttachmentStatus>(initialAttachment);
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   const renderMessage = () => {
     const { message, status: formStatus, type } = data;
@@ -432,6 +433,66 @@ function FormRequests({
     [computeAvailableQtyPerBatch, data, open]
   );
 
+  const onClearInputFile = () => {
+    inputFileRef.current.value = null;
+  };
+
+  const handleChangeFile = (
+    e: ChangeEvent<HTMLInputElement>,
+    setFieldValue: FormikProps<TOrderData>["setFieldValue"]
+  ) => {
+    const { files } = e.currentTarget;
+    const fileName = [];
+    if (files.length) {
+      // eslint-disable-next-line no-plusplus
+      for (let idx = 0; idx < files.length; idx++) {
+        const file = files[idx];
+
+        fileName[idx] = file;
+        setFieldValue(`attachment[${idx}]`, file);
+      }
+    }
+
+    // Selected files
+    setAttachmentFile((prev) => ({ ...prev, upload: [...fileName] }));
+  };
+
+  const handleDeleteFile = (
+    file: string | File,
+    setValues: FormikProps<TOrderData>["setValues"]
+  ) => {
+    // Store only string filename to delete on the server.
+    setAttachmentFile((prev) => {
+      const clonePrev = prev;
+      if (clonePrev.uploaded) {
+        clonePrev.uploaded = clonePrev.uploaded.filter((uploaded) => uploaded !== file);
+      }
+
+      if (clonePrev.upload) {
+        clonePrev.upload = clonePrev.upload.filter((upload) => upload !== file);
+      }
+
+      if (typeof file === "string") {
+        clonePrev.delete.push(file);
+      }
+
+      return { ...clonePrev };
+    });
+
+    // Delete the selected file from element <input[type="file"]/>
+    if (file instanceof File) {
+      setValues((prev) => {
+        let cloneAttachment: File[] = prev.attachment;
+
+        cloneAttachment = cloneAttachment.filter(
+          (attachment) => attachment.name.toLowerCase() !== file.name.toLowerCase()
+        );
+
+        return { ...prev, attachment: cloneAttachment.length ? cloneAttachment : null };
+      });
+    }
+  };
+
   // Open form
   useEffect(() => {
     if (open && customerCode && warehouseNo) {
@@ -446,20 +507,30 @@ function FormRequests({
       setExpiryBatchList({});
       setUnitList({});
       setMaterialList([]);
+      setAttachmentFile(initialAttachment);
     }
   }, [open]);
 
-  // Fetching data when editing record
   useEffect(() => {
     const { type, status, data: orderData } = data || {};
 
+    // Fetch data to edit the record.
     if ((type === "edit" || type === "view") && status === "succeeded" && orderData?.id) {
-      const { source_wh: sourceWh, requests } = orderData;
+      const { source_wh: sourceWh, requests, attachment } = orderData;
+
       setWarehouseNo(sourceWh);
       getAllUnits(requests);
       getAllExpiryBatch(requests, sourceWh);
       getAllSelectedRowValues(requests);
+      setAttachmentFile({ ...initialAttachment, uploaded: attachment || [] });
     }
+
+    // Update attachment state when uploaded
+    if (type === "update" && status === "succeeded" && orderData?.id) {
+      const { attachment } = orderData;
+      setAttachmentFile({ ...initialAttachment, uploaded: attachment || [] });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   const isSaving =
@@ -473,15 +544,16 @@ function FormRequests({
   const canCancel = !isCreate && data.data?.status.id === 0;
 
   const parseData = (orderData: TOrderData): TOrderData => {
-    const pickupDate = orderData ? new Date(orderData.pickup_date) : null;
+    const cloneOrderData = orderData;
+    if (orderData) {
+      const pickupDate = orderData ? new Date(orderData.pickup_date) : null;
 
-    if (isValid(pickupDate)) {
-      return {
-        ...orderData,
-        pickup_date: pickupDate,
-      };
+      if (isValid(pickupDate)) {
+        cloneOrderData.pickup_date = pickupDate;
+      }
     }
-    return orderData;
+
+    return { ...cloneOrderData };
   };
 
   return (
@@ -500,9 +572,13 @@ function FormRequests({
                 ...validatedData,
                 customer_code: customerCode,
                 pickup_date: formattedPickupDate as unknown as Date,
+                attachment: attachmentFile.upload,
+                attachmentDelete: attachmentFile.delete,
               },
               actions
             );
+
+            onClearInputFile();
           }}
         >
           {(formikProp) => (
@@ -570,7 +646,7 @@ function FormRequests({
                     }}
                   />
                 </MDBox>
-                <MDBox mb={2}>
+                <MDBox mb={1}>
                   <MDInput
                     margin="dense"
                     name="instruction"
@@ -584,6 +660,20 @@ function FormRequests({
                     helperText={formikProp.touched.instruction ? formikProp.errors.instruction : ""}
                     value={formikProp.values?.instruction || ""}
                     onChange={formikProp.handleChange}
+                  />
+                </MDBox>
+                <MDBox mb={1.5}>
+                  <FileUpload
+                    ref={inputFileRef}
+                    formikProps={formikProp}
+                    name="attachment[]"
+                    accept=".xlsx"
+                    multiple
+                    localFiles={attachmentFile.upload}
+                    remoteFiles={attachmentFile.uploaded}
+                    showRemoteFiles={isUpdate || isView}
+                    onChange={handleChangeFile}
+                    onDelete={handleDeleteFile}
                   />
                 </MDBox>
 

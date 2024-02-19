@@ -1,6 +1,6 @@
 import { CellAction, CellStatus } from "../components/TableCell";
 import { TNotifyOrder, TOrderData, TStatusUpdateData, TTableOrder } from "../types";
-import { TData } from "./types";
+import { TAttachmentStatus, TData } from "./types";
 
 export default function miscData() {
   const commonHeadersAttr = {
@@ -114,6 +114,8 @@ export default function miscData() {
     allow_notify: false,
     source_wh: "",
     status: { id: null, name: "" },
+    attachment: null,
+    attachmentDelete: null,
     requests: [
       {
         uuid: "",
@@ -144,6 +146,12 @@ export default function miscData() {
     status: "idle",
   };
 
+  const initialAttachment: TAttachmentStatus = {
+    upload: [],
+    uploaded: [],
+    delete: [],
+  };
+
   return {
     tableHeaders,
     typeReportsData,
@@ -153,5 +161,6 @@ export default function miscData() {
     initialOrder,
     initialOutboundDetails,
     initialTableOrders,
+    initialAttachment,
   };
 }

@@ -44,7 +44,7 @@ function Reports() {
   } = miscData();
   const [showNotifyDownload, setShowNotifyDownload] =
     useState<INotifyDownload>(initialStateNotification);
-  const [filtered, setFiltered] = useState<TFiltered>(initialFilter);
+  const [filter, setFilter] = useState<TFiltered>(initialFilter);
   // const [, setDateRange] = useState(null);
   const [warehouseList, setWarehouseList] = useState([]);
   const [groupByKey, setGroupByKey] = useState<TGroupByKey>("stock");
@@ -83,16 +83,34 @@ function Reports() {
   const onChangeReport = (e: ChangeEvent<HTMLInputElement>) => {
     const reportType = e.target.value as TReportType;
     const key = ["stock-status", "wh-snapshot"].includes(reportType) ? "stock" : "aging";
-    setFiltered((prev) => ({ ...prev, reportType }));
+    setFilter((prev) => ({
+      ...prev,
+      filtering: {
+        ...prev.filtering,
+        reportType,
+      },
+    }));
     setGroupByKey(key);
   };
 
   const onChangeGroupBy = (e: ChangeEvent<HTMLInputElement>) => {
-    setFiltered((prev) => ({ ...prev, groupBy: e.target.value }));
+    setFilter((prev) => ({
+      ...prev,
+      filtering: {
+        ...prev.filtering,
+        groupBy: e.target.value,
+      },
+    }));
   };
 
   const onChangeWarehouse = (e: ChangeEvent<HTMLInputElement>) => {
-    setFiltered((prev) => ({ ...prev, warehouse: e.target.value }));
+    setFilter((prev) => ({
+      ...prev,
+      filtering: {
+        ...prev.filtering,
+        warehouse: e.target.value,
+      },
+    }));
   };
 
   // const onChangeDateRange = (dates) => {
@@ -109,9 +127,9 @@ function Reports() {
     try {
       const tableBody = {
         customer_code: customerCode,
-        warehouse: filtered.warehouse,
-        group_by: filtered.groupBy,
-        report_type: filtered.reportType,
+        warehouse: filter.filtering.warehouse,
+        group_by: filter.filtering.groupBy,
+        report_type: filter.filtering.reportType,
       };
 
       const { data: rows } = await reportServices.getReports({ params: tableBody });
@@ -136,7 +154,7 @@ function Reports() {
   };
 
   const exportFile = (format: "xlsx" | "csv") => {
-    const { warehouse, groupBy, reportType } = filtered;
+    const { warehouse, groupBy, reportType } = filter.filtering;
     const data = {
       customer_code: customerCode,
       warehouse,
@@ -160,11 +178,15 @@ function Reports() {
   };
 
   const onFilter = () => {
+    setFilter((prev) => ({
+      ...prev,
+      filtered: prev.filtering,
+    }));
     fetchReports();
   };
 
   const onClear = () => {
-    setFiltered(initialFilter);
+    setFilter(initialFilter);
     setTableReports(initialTableReports);
   };
 
@@ -200,6 +222,8 @@ function Reports() {
     }
   };
 
+  // const disableMoreMenuItem = JSON.stringify(filter.filtering) !== JSON.stringify(filter.filtered);
+
   useEffect(() => {
     fetchWarehouseList();
   }, []);
@@ -213,7 +237,7 @@ function Reports() {
   useEffect(() => {
     if (customerCode) {
       // Clear filtering values
-      setFiltered(initialFilter);
+      setFilter(initialFilter);
       setTableReports(initialTableReports);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -379,7 +403,7 @@ function Reports() {
                       variant="outlined"
                       onChange={onChangeReport}
                       options={typeReportsData}
-                      value={filtered.reportType}
+                      value={filter.filtering.reportType}
                       showArrowIcon
                       sx={{ marginRight: "8px" }}
                     />
@@ -389,7 +413,7 @@ function Reports() {
                       variant="outlined"
                       onChange={onChangeWarehouse}
                       options={warehouseList}
-                      value={filtered.warehouse}
+                      value={filter.filtering.warehouse}
                       showArrowIcon
                       optKeyValue="PLANT"
                       optKeyLabel="NAME1"
@@ -401,7 +425,7 @@ function Reports() {
                       variant="outlined"
                       onChange={onChangeGroupBy}
                       options={groupByData[groupByKey]}
-                      value={filtered.groupBy as number | string}
+                      value={filter.filtering.groupBy as number | string}
                       showArrowIcon
                       sx={{ marginRight: "8px" }}
                     />
@@ -410,11 +434,11 @@ function Reports() {
                       <MDateRangePicker
                         label="Dates.."
                         onChange={onChangeDateRange}
-                        disabled={filtered.reportType !== "stock-status"}
+                        disabled={filter.filtering.reportType !== "stock-status"}
                         sx={{
                           marginRight: "12px",
                           cursor:
-                            filtered.reportType !== "stock-status" ? "not-allowed" : "default",
+                            filter.filtering.reportType !== "stock-status" ? "not-allowed" : "default",
                         }}
                       />
                     </MDBox> */}
@@ -442,7 +466,7 @@ function Reports() {
                 </MDBox>
                 <DataTable
                   table={{
-                    columns: tableHeaders[filtered.reportType](filtered.groupBy),
+                    columns: tableHeaders[filter.filtered.reportType](filter.filtered.groupBy),
                     rows: tableReports.data,
                   }}
                   isSorted={false}
