@@ -3,6 +3,11 @@ version: "3.9"
 volumes:
   app_build:
     external: true
+  shared_file:
+    driver_opts:
+      type: cifs
+      o: "username=Administrator,password=hst-B!gBlu3 2021,file_mode=0777,dir_mode=0777"
+      device: "//192.168.1.33/customer_portal/shared"
 
 networks:
   bblc_customer:
@@ -25,6 +30,7 @@ services:
       - ./api:/var/www/html
       - /var/www/html/vendor
       - app_build:/var/www/html/portal
+      - shared_file:/var/www/html/storage/app/excel
     networks:
       - bblc_customer
 
