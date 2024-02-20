@@ -36,7 +36,7 @@ function configs(labels, datasets) {
             color: "#9ca2b7",
             font: {
               size: 14,
-              weight: "300",
+              weight: "lighter",
               family: "Roboto",
               style: "normal",
               lineHeight: 2,
@@ -60,7 +60,7 @@ function configs(labels, datasets) {
             padding: 10,
             font: {
               size: 14,
-              weight: "300",
+              weight: "lighter",
               family: "Roboto",
               style: "normal",
               lineHeight: 2,

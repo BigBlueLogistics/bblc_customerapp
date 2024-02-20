@@ -15,10 +15,8 @@ use App\Models\OrderItems;
 use App\Models\OrderStatus;
 use App\Traits\HttpResponse;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use DB;
 use Exception;
-use Storage;
 
 class OrderController extends Controller
 {

@@ -48,3 +48,13 @@ NOTE: Generate a CSR in Docker host not in docker container itself. [Reference l
 ```bash
 openssl req -new -newkey rsa:2048 -nodes -keyout yourdomain.key -out yourdomain.csr
 ```
+
+**Local file sharing**
+
+To share a Docker Compose volume using CIFS (Common Internet File System) from an Ubuntu host to a Windows host,
+you can use the mount option in docker-compose.yml. And install the package.
+
+```bash
+sudo apt update
+sudo apt install cifs-utils
+```

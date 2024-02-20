@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
 
-import Tooltip from "@mui/material/Tooltip";
+import { Tooltip } from "@mui/material";
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import MDAvatar from "atoms/MDAvatar";
@@ -22,7 +22,7 @@ import team4 from "assets/images/team-4.jpg";
 export default function data() {
   const avatars = (أعضاء) =>
     أعضاء.map(([image, name]) => (
-      <Tooltip key={name} title={name} placeholder="bottom">
+      <Tooltip key={name} title={name}>
         <MDAvatar
           src={image}
           alt="name"

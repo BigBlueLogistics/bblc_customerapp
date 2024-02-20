@@ -4,6 +4,13 @@ networks:
   bblc_customer:
     name: bblc_customer_net
 
+volumes:
+  shared_file:
+    driver_opts:
+      type: cifs
+      o: "username=Administrator,password=hst-B!gBlu3 2021,file_mode=0777,dir_mode=0777"
+      device: "//192.168.1.33/customer_portal/shared"
+
 services:
   api:
     build:
@@ -19,6 +26,7 @@ services:
     volumes:
       - ./api:/var/www/html
       - /var/www/html/vendor
+      - shared_file:/var/www/html/storage/app/excel
     networks:
       - bblc_customer
 

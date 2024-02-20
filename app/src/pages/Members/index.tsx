@@ -36,7 +36,6 @@ function Members() {
   const closeAction = () => setAction(null);
 
   const updateProfile = (userId: string, newProfileData: ViewMemberEntity) => {
-    // console.log(userId === loggedUserId);
     if (userId === loggedUserId) {
       dispatch(updateProfileFromMember(newProfileData));
     }
@@ -84,7 +83,6 @@ function Members() {
         data: rows.data,
         message: rows.message,
       }));
-      // console.log("updatezz");
       updateProfile(userId, rows.data);
     } catch (err) {
       setViewMemberDetails({ status: "failed", message: err.message, data: null, action: null });

@@ -51,7 +51,7 @@ function configs(color, labels, label, data) {
             color: "#9ca2b7",
             font: {
               size: 14,
-              weight: "300",
+              weight: "lighter",
               family: "Roboto",
               style: "normal",
               lineHeight: 2,
@@ -75,7 +75,7 @@ function configs(color, labels, label, data) {
             color: "#9ca2b7",
             font: {
               size: 14,
-              weight: "300",
+              weight: "lighter",
               family: "Roboto",
               style: "normal",
               lineHeight: 2,

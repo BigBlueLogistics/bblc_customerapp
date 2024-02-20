@@ -9,8 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
+import { Card, Icon } from "@mui/material";
 
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
