@@ -1,6 +1,5 @@
 /node_modules
 *.trc
-package-lock.json
 yarn.lock
 supervisord.log
 supervisord.pid
