@@ -18,6 +18,7 @@ import { ordersServices } from "services";
 import selector from "selector";
 import { TOrderData } from "pages/Orders/types";
 import { TAttachmentStatus } from "pages/Orders/data/types";
+import { urls, files } from "constant";
 import FormTable from "../FormTable";
 import miscData from "../../data";
 import { IForm } from "./types";
@@ -441,12 +442,12 @@ function FormRequests({
     e: ChangeEvent<HTMLInputElement>,
     setFieldValue: FormikProps<TOrderData>["setFieldValue"]
   ) => {
-    const { files } = e.currentTarget;
+    const { files: selectedFiles } = e.currentTarget;
     const fileName = [];
-    if (files.length) {
+    if (selectedFiles.length) {
       // eslint-disable-next-line no-plusplus
-      for (let idx = 0; idx < files.length; idx++) {
-        const file = files[idx];
+      for (let idx = 0; idx < selectedFiles.length; idx++) {
+        const file = selectedFiles[idx];
 
         fileName[idx] = file;
         setFieldValue(`attachment[${idx}]`, file);
@@ -663,6 +664,22 @@ function FormRequests({
                   />
                 </MDBox>
                 <MDBox mb={1.5}>
+                  <MDBox
+                    component="a"
+                    href={`${urls().TEMPLATE_ORDER_FORM_URL}`}
+                    sx={{ width: "max-content", display: "block" }}
+                  >
+                    <MDTypography
+                      sx={({ typography: { pxToRem }, palette: { text } }) => ({
+                        fontSize: pxToRem(12),
+                        textDecoration: "underline!important",
+                        color: text.main,
+                      })}
+                      title={files().TEMPLATE_ORDER_FORM}
+                    >
+                      Download template
+                    </MDTypography>
+                  </MDBox>
                   <FileUpload
                     ref={inputFileRef}
                     formikProps={formikProp}

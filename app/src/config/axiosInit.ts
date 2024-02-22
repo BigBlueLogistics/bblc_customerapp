@@ -1,12 +1,12 @@
 import axios, { AxiosInstance } from "axios";
-import { urls } from "config";
+import { urls } from "constant";
 
 class AxiosInit {
   private instance: AxiosInstance;
 
   constructor() {
     const init = axios.create({
-      baseURL: urls().apiUrl,
+      baseURL: urls().API_URL,
       withCredentials: true,
       headers: {
         Accept: "application/json",

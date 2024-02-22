@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
-import { urls } from "config";
+import { urls } from "constant";
 
 type Status = "idle" | "loading" | "success" | "failed";
 type Download = {
@@ -14,7 +14,7 @@ function axiosInit() {
   const apiToken = localStorage.getItem("apiToken");
 
   return axios.create({
-    baseURL: urls().apiUrl,
+    baseURL: urls().API_URL,
     withCredentials: true,
     headers: {
       Accept: "application/json",

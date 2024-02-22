@@ -1,6 +1,6 @@
 import { forwardRef, useState } from "react";
 import { Link } from "@mui/material";
-import { CloudUploadRounded } from "@mui/icons-material";
+import { AttachFileRounded } from "@mui/icons-material";
 import MDBox from "atoms/MDBox";
 import MDButton from "atoms/MDButton";
 import MDTypography from "atoms/MDTypography";
@@ -49,7 +49,7 @@ const FileUpload = forwardRef<HTMLInputElement, TFileUpload>(
           variant="text"
           color="info"
           component="label"
-          startIcon={<CloudUploadRounded />}
+          startIcon={<AttachFileRounded />}
         >
           Attachment{" "}
           <input
