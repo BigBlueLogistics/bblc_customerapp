@@ -63,7 +63,7 @@ function ListFileTooltip({
           disableHoverListener
           disableTouchListener
           title={renderlistFiles()}
-          placement="bottom-end"
+          placement="bottom-start"
           slotProps={{
             tooltip: {
               sx: toolTipStyle(),

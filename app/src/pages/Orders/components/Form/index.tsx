@@ -675,23 +675,10 @@ function FormRequests({
                         textDecoration: "underline!important",
                         color: text.main,
                       })}
-                      title={files().TEMPLATE_ORDER_FORM}
                     >
-                      Download template
+                      Download {files().TEMPLATE_ORDER_FORM}
                     </MDTypography>
                   </MDBox>
-                  <FileUpload
-                    ref={inputFileRef}
-                    formikProps={formikProp}
-                    name="attachment[]"
-                    accept=".xlsx"
-                    multiple
-                    localFiles={attachmentFile.upload}
-                    remoteFiles={attachmentFile.uploaded}
-                    showRemoteFiles={isUpdate || isView}
-                    onChange={handleChangeFile}
-                    onDelete={handleDeleteFile}
-                  />
                 </MDBox>
 
                 <MDBox mb={1}>
@@ -716,15 +703,27 @@ function FormRequests({
                     Cancel Request
                   </MDButton>
                 )}
-                <MDBox>
-                  <MDButton color="error" onClick={onClose}>
+                <MDBox display="inline-flex">
+                  <FileUpload
+                    ref={inputFileRef}
+                    formikProps={formikProp}
+                    name="attachment[]"
+                    accept=".xlsx"
+                    multiple
+                    localFiles={attachmentFile.upload}
+                    remoteFiles={attachmentFile.uploaded}
+                    showRemoteFiles={isUpdate || isView}
+                    onChange={handleChangeFile}
+                    onDelete={handleDeleteFile}
+                  />
+                  <MDButton color="error" onClick={onClose} sx={{ marginLeft: 2 }}>
                     Close
                   </MDButton>
                   {canCancel || !isView ? (
                     <MDButton
                       color="success"
                       type="submit"
-                      sx={{ marginLeft: 2 }}
+                      sx={{ marginLeft: 1.5 }}
                       disabled={isSaving || !formikProp.dirty}
                       loading={isSaving}
                       onClick={formikProp.handleSubmit}

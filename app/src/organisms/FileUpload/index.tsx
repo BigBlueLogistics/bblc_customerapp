@@ -44,46 +44,6 @@ const FileUpload = forwardRef<HTMLInputElement, TFileUpload>(
 
     return (
       <MDBox>
-        <MDButton
-          sx={{ padding: "0.5rem" }}
-          variant="text"
-          color="info"
-          component="label"
-          startIcon={<AttachFileRounded />}
-        >
-          Attachment{" "}
-          <input
-            ref={ref}
-            style={inputFileStyle()}
-            type="file"
-            name={name}
-            multiple={multiple}
-            accept={accept}
-            onChange={(e) => onChange(e, formikProps.setFieldValue)}
-          />
-        </MDButton>
-        <ListFileTooltip
-          formikProps={formikProps}
-          open={showLocalFile}
-          files={localFiles}
-          onClose={onCloseLocalFile}
-        >
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <Link component="button" onClick={onShowLocalFile} variant="caption" type="button">
-            (
-            <MDTypography
-              variant="caption"
-              component="small"
-              fontWeight="regular"
-              color="text"
-              sx={{ textDecoration: "underline" }}
-            >
-              {localFiles.length} file&apos;s
-            </MDTypography>
-            )
-          </Link>
-        </ListFileTooltip>
-        {"  "}
         {showRemoteFiles ? (
           <ListFileTooltip
             formikProps={formikProps}
@@ -109,6 +69,47 @@ const FileUpload = forwardRef<HTMLInputElement, TFileUpload>(
             </Link>
           </ListFileTooltip>
         ) : null}
+        {"  "}
+        <ListFileTooltip
+          formikProps={formikProps}
+          open={showLocalFile}
+          files={localFiles}
+          onClose={onCloseLocalFile}
+        >
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          <Link component="button" onClick={onShowLocalFile} variant="caption" type="button">
+            (
+            <MDTypography
+              variant="caption"
+              component="small"
+              fontWeight="regular"
+              color="text"
+              sx={{ textDecoration: "underline" }}
+            >
+              {localFiles.length} file&apos;s
+            </MDTypography>
+            )
+          </Link>
+        </ListFileTooltip>
+        {"  "}
+        <MDButton
+          sx={{ padding: "0.5rem" }}
+          variant="contained"
+          color="info"
+          component="label"
+          startIcon={<AttachFileRounded />}
+        >
+          Upload{" "}
+          <input
+            ref={ref}
+            style={inputFileStyle()}
+            type="file"
+            name={name}
+            multiple={multiple}
+            accept={accept}
+            onChange={(e) => onChange(e, formikProps.setFieldValue)}
+          />
+        </MDButton>
       </MDBox>
     );
   }
