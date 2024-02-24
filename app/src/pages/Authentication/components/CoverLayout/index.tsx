@@ -36,7 +36,7 @@ function CoverLayout({ coverHeight, image, children }: TCoverLayout) {
           </Grid>
         </Grid>
       </MDBox>
-      <Footer />
+      <Footer position="relative" />
     </PageLayout>
   );
 }
