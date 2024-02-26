@@ -8,7 +8,7 @@ import { toolTipStyle } from "./styles";
 function ListFileTooltip({
   open,
   children,
-  files,
+  files = null,
   formikProps,
   messageEmptyFiles = "No choosen file",
   onClose,

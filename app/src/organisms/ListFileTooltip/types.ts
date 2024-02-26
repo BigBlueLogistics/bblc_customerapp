@@ -3,7 +3,7 @@ import { FormikProps } from "formik";
 import { TOrderData } from "pages/Orders/types";
 
 export type TListFileTooltip = {
-  files: (string | File)[];
+  files: (string | File)[] | null;
   open: boolean;
   children: ReactElement;
   formikProps?: FormikProps<TOrderData>;

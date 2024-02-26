@@ -20,6 +20,8 @@ export type TOrderData = {
     name: string;
   };
   requestsDelete?: string[];
+  attachment: any[];
+  attachmentDelete: string[];
 } & TValidationSchema;
 
 export type TFiltered = {
@@ -38,6 +40,19 @@ export type TFormOrderState = {
   type: LooseType<"create" | "edit" | "update" | "view" | "confirmation" | "cancel">;
   status: TStatus;
   data: TOrderData;
+  message: string;
+  openConfirmation: boolean;
+};
+
+export type TUploadFormOrderState = {
+  id: string;
+  type: LooseType<"create" | "edit" | "update" | "delete">;
+  status: TStatus;
+  data: {
+    attachment: any[];
+    attachmentDelete: string[];
+    customerCode: string;
+  };
   message: string;
   openConfirmation: boolean;
 };

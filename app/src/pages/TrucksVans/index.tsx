@@ -2,6 +2,7 @@ import { useState, useEffect, ChangeEvent, useRef } from "react";
 import Grid from "@mui/material/Grid";
 
 import MDBox from "atoms/MDBox";
+import MDButton from "atoms/MDButton";
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
@@ -130,6 +131,11 @@ function TrucksVans() {
       <MDBox pt={6}>
         <MDBox mb={3}>
           <Grid container spacing={3}>
+            <Grid item md={12}>
+              <MDButton type="button" color="info" variant="gradient">
+                Maintain Notices Recipients
+              </MDButton>
+            </Grid>
             <Grid item xs={12} md={6}>
               <Schedule data={listScheduleToday} />
             </Grid>

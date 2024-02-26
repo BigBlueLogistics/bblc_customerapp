@@ -13,8 +13,6 @@ const validationSchema = yup.object({
     .string()
     .nullable()
     .matches(/^[^'%"]+$/i, `not allowed characters: '%"`),
-  attachment: yup.mixed().nullable(),
-  attachmentDelete: yup.array(yup.string()).nullable(),
   requests: yup
     .array(
       yup.object({

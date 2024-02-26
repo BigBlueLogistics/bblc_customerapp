@@ -483,8 +483,8 @@ class OrderRepository implements IOrderRepository
                 {
                     $fileName = strtolower($file->getClientOriginalName());
                     
-                    $uploadedFiles[$key]['filename'] = $fileName;
-                    $uploadedFiles[$key]['path'] = $file->storeAs($transId, $fileName, ['disk' => self::EXCEL_DISK]);
+                    $uploadedFiles[$key] = $fileName;
+                    $file->storeAs($transId, $fileName, ['disk' => self::EXCEL_DISK]);
                 }
             }
 

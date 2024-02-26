@@ -9,6 +9,8 @@ use App\Http\Requests\Order\ExpiryBatchRequest;
 use App\Http\Requests\Order\ListRequest;
 use App\Http\Requests\Order\MaterialRequest;
 use App\Http\Requests\Order\ProductUnitsRequest;
+use App\Http\Requests\Order\CreateUploadRequest;
+use App\Http\Requests\Order\UpdateUploadRequest;
 use App\Interfaces\IOrderRepository;
 use App\Models\OrderHeader;
 use App\Models\OrderItems;
@@ -144,9 +146,6 @@ class OrderController extends Controller
                 // Bulk insert order items
                 OrderItems::insert($mappedData);
 
-                // File upload
-                $this->order->uploadFile($request, $transId);
-
                 return $this->sendResponse([
                     'id' => $transId,
                 ], 'Successfully created product request');
@@ -227,13 +226,6 @@ class OrderController extends Controller
                         ->where('transid', $header->transid)
                         ->delete();
                 }
-
-                // Delete file
-                $filesToDelete = $request->input('attachmentDelete');
-                $this->order->deleteFile($filesToDelete, $transId);
-
-                // Upload file
-                $this->order->uploadFile($request, $transId);
 
                 // Get updated data
                 $updatedOrders = OrderHeader::find($transId);
@@ -322,6 +314,79 @@ class OrderController extends Controller
 
         } catch (Exception $e) {
             return $this->sendError($e);
+        }
+    }
+
+    public function createFileUpload(CreateUploadRequest $request)
+    {
+        try {
+            $request->validated($request->all());
+
+            $authUser = auth()->user();
+            $currentDatetime = Carbon::now();
+
+            // Insert order header
+            // NOTE: transid is auto generated in model OrderHeader
+            $orderHeader = OrderHeader::create([
+                'kunnr' => $request->input('customer_code'),
+                'ernam' => $authUser->id,
+                'apstat' => 0,
+                'access' => 0,
+                'erdat' => $currentDatetime->format('m/d/Y'),
+                'ertim' => $currentDatetime->format('H:i:s'),
+            ]);
+
+            if($orderHeader){
+                $id = $orderHeader['transid'];
+                $createUpload = OrderHeader::where('id', $id)->first(['transid']);
+                $transId = $createUpload['transid'];
+
+                // Upload file
+                $this->order->uploadFile($request, $transId);
+
+                return $this->sendResponse([
+                    'id' => $transId,
+                ], 'Successfully uploaded product request');
+            }
+
+            return $this->sendError('Failed to upload product request');
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage());
+        }
+    }
+
+    public function updateFileUpload(UpdateUploadRequest $request, $transId)
+    {
+        try {
+            $request->validated();
+
+            $updatedFileData = null;
+
+            $header = OrderHeader::find($transId);
+            if (! $header) {
+                return $this->sendError('Transaction ID not exists');
+            }
+
+            if ($header->apstat != 0) {
+                return $this->sendError('Sorry! this order cannot no longer to update.');
+            }
+
+            // Delete file
+            $filesToDelete = $request->input('attachmentDelete');
+            $this->order->deleteFile($filesToDelete, $transId);
+
+            // Upload file
+            $this->order->uploadFile($request, $transId);
+
+            // Get updated files
+            $updatedFileData['attachment'] = $this->order->retrieveFile($transId);
+    
+            $updatedFileData['transid'] = $transId;
+
+            return $this->sendResponse($updatedFileData, 'Successfully update uploaded product request');
+            
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage());
         }
     }
 }

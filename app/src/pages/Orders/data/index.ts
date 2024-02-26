@@ -1,5 +1,12 @@
 import { CellAction, CellStatus } from "../components/TableCell";
-import { TNotifyOrder, TOrderData, TStatusUpdateData, TTableOrder } from "../types";
+import {
+  TFormOrderState,
+  TNotifyOrder,
+  TOrderData,
+  TStatusUpdateData,
+  TTableOrder,
+  TUploadFormOrderState,
+} from "../types";
 import { TAttachmentStatus, TData } from "./types";
 
 export default function miscData() {
@@ -106,6 +113,24 @@ export default function miscData() {
     color: "primary",
   };
 
+  const initialFormOrderState: TFormOrderState = {
+    message: "",
+    data: null,
+    status: "idle",
+    type: "create",
+    id: "",
+    openConfirmation: false,
+  };
+
+  const initialFormUploadState: TUploadFormOrderState = {
+    message: "",
+    data: null,
+    status: "idle",
+    type: "create",
+    id: "",
+    openConfirmation: false,
+  };
+
   const initialOrder: TOrderData = {
     id: "",
     pickup_date: null,
@@ -156,6 +181,8 @@ export default function miscData() {
     tableHeaders,
     typeReportsData,
     groupByData,
+    initialFormOrderState,
+    initialFormUploadState,
     initialFilter,
     initialNotification,
     initialOrder,

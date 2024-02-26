@@ -10,9 +10,7 @@ export type TFileUpload = {
   multiple?: boolean;
   accept?: string;
   formikProps?: FormikProps<TOrderData>;
-  onChange?: (
-    e: ChangeEvent<HTMLInputElement>,
-    setFieldValue: FormikProps<TOrderData>["setFieldValue"]
-  ) => void;
+  onUpload?: () => void;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   onDelete?: (fileName: string | File, setValues: FormikProps<TOrderData>["setValues"]) => void;
 };

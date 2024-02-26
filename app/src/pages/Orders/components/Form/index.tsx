@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useState, useRef } from "react";
+import { ChangeEvent, useCallback, useEffect, useState, ReactElement } from "react";
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { AutocompleteChangeReason } from "@mui/material/Autocomplete";
 import { v4 as uuidv4 } from "uuid";
@@ -16,7 +16,7 @@ import MDCheckbox from "atoms/MDCheckbox";
 import MDSelect from "atoms/MDSelect";
 import { ordersServices } from "services";
 import selector from "selector";
-import { TOrderData } from "pages/Orders/types";
+import { TFormOrderState, TOrderData, TUploadFormOrderState } from "pages/Orders/types";
 import { TAttachmentStatus } from "pages/Orders/data/types";
 import { urls, files } from "constant";
 import FormTable from "../FormTable";
@@ -31,8 +31,11 @@ function FormRequests({
   open,
   onClose,
   onSave,
+  onUploadFile,
   onShowCancelConfirmation,
   data,
+  fileUploadedData,
+  inputFileRef,
   warehouseList,
 }: IForm) {
   const { initialOrder, initialAttachment } = miscData();
@@ -46,10 +49,9 @@ function FormRequests({
   const [warehouseNo, setWarehouseNo] = useState("");
   const [selectedRowValues, setSelectedRowValues] = useState({});
   const [attachmentFile, setAttachmentFile] = useState<TAttachmentStatus>(initialAttachment);
-  const inputFileRef = useRef<HTMLInputElement>(null);
 
-  const renderMessage = () => {
-    const { message, status: formStatus, type } = data;
+  function renderMessage<T extends { [key: string]: any }>(msgData: T): ReactElement | null {
+    const { message, status: formStatus, type } = msgData;
     if (
       (type === "create" || type === "update") &&
       (formStatus === "succeeded" || formStatus === "failed")
@@ -71,7 +73,7 @@ function FormRequests({
       );
     }
     return null;
-  };
+  }
 
   const fetchMaterialDescription = useCallback(async (code: string, warehouse: string) => {
     try {
@@ -434,14 +436,7 @@ function FormRequests({
     [computeAvailableQtyPerBatch, data, open]
   );
 
-  const onClearInputFile = () => {
-    inputFileRef.current.value = null;
-  };
-
-  const handleChangeFile = (
-    e: ChangeEvent<HTMLInputElement>,
-    setFieldValue: FormikProps<TOrderData>["setFieldValue"]
-  ) => {
+  const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
     const { files: selectedFiles } = e.currentTarget;
     const fileName = [];
     if (selectedFiles.length) {
@@ -450,7 +445,6 @@ function FormRequests({
         const file = selectedFiles[idx];
 
         fileName[idx] = file;
-        setFieldValue(`attachment[${idx}]`, file);
       }
     }
 
@@ -458,10 +452,7 @@ function FormRequests({
     setAttachmentFile((prev) => ({ ...prev, upload: [...fileName] }));
   };
 
-  const handleDeleteFile = (
-    file: string | File,
-    setValues: FormikProps<TOrderData>["setValues"]
-  ) => {
+  const handleDeleteFile = (file: string | File) => {
     // Store only string filename to delete on the server.
     setAttachmentFile((prev) => {
       const clonePrev = prev;
@@ -479,19 +470,14 @@ function FormRequests({
 
       return { ...clonePrev };
     });
+  };
 
-    // Delete the selected file from element <input[type="file"]/>
-    if (file instanceof File) {
-      setValues((prev) => {
-        let cloneAttachment: File[] = prev.attachment;
-
-        cloneAttachment = cloneAttachment.filter(
-          (attachment) => attachment.name.toLowerCase() !== file.name.toLowerCase()
-        );
-
-        return { ...prev, attachment: cloneAttachment.length ? cloneAttachment : null };
-      });
-    }
+  const onSaveFileUpload = () => {
+    onUploadFile({
+      attachment: attachmentFile.upload,
+      attachmentDelete: attachmentFile.delete,
+      customer_code: customerCode,
+    });
   };
 
   // Open form
@@ -526,13 +512,19 @@ function FormRequests({
       setAttachmentFile({ ...initialAttachment, uploaded: attachment || [] });
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  useEffect(() => {
+    const { type, status, data: fileData } = fileUploadedData || {};
+
     // Update attachment state when uploaded
-    if (type === "update" && status === "succeeded" && orderData?.id) {
-      const { attachment } = orderData;
+    if (fileData && type === "update" && status === "succeeded") {
+      const { attachment } = fileData;
       setAttachmentFile({ ...initialAttachment, uploaded: attachment || [] });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [fileUploadedData]);
 
   const isSaving =
     data.type !== "edit" && data.type !== "confirmation" && data.status === "loading";
@@ -573,13 +565,9 @@ function FormRequests({
                 ...validatedData,
                 customer_code: customerCode,
                 pickup_date: formattedPickupDate as unknown as Date,
-                attachment: attachmentFile.upload,
-                attachmentDelete: attachmentFile.delete,
               },
               actions
             );
-
-            onClearInputFile();
           }}
         >
           {(formikProp) => (
@@ -587,7 +575,8 @@ function FormRequests({
               <DialogTitle sx={{ textTransform: "capitalize" }}>
                 {formHeaderTitle} Product Request
               </DialogTitle>
-              {renderMessage()}
+              {renderMessage<TFormOrderState>(data)}
+              {renderMessage<TUploadFormOrderState>(fileUploadedData)}
               <DialogContent
                 sx={{ paddingTop: "20px !important", pointerEvents: isView ? "none" : "unset" }}
               >
@@ -714,6 +703,7 @@ function FormRequests({
                     remoteFiles={attachmentFile.uploaded}
                     showRemoteFiles={isUpdate || isView}
                     onChange={handleChangeFile}
+                    onUpload={onSaveFileUpload}
                     onDelete={handleDeleteFile}
                   />
                   <MDButton color="error" onClick={onClose} sx={{ marginLeft: 2 }}>

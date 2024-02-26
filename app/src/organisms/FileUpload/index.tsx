@@ -1,6 +1,6 @@
 import { forwardRef, useState } from "react";
-import { Link } from "@mui/material";
-import { AttachFileRounded } from "@mui/icons-material";
+import { ButtonGroup, Link } from "@mui/material";
+import { AddRounded } from "@mui/icons-material";
 import MDBox from "atoms/MDBox";
 import MDButton from "atoms/MDButton";
 import MDTypography from "atoms/MDTypography";
@@ -12,13 +12,14 @@ const FileUpload = forwardRef<HTMLInputElement, TFileUpload>(
   (
     {
       name,
-      localFiles,
-      remoteFiles,
+      localFiles = null,
+      remoteFiles = null,
       multiple,
       accept,
       formikProps,
       showRemoteFiles,
       onChange,
+      onUpload,
       onDelete,
     },
     ref
@@ -86,30 +87,41 @@ const FileUpload = forwardRef<HTMLInputElement, TFileUpload>(
               color="text"
               sx={{ textDecoration: "underline" }}
             >
-              {localFiles.length} file&apos;s
+              {localFiles?.length} file&apos;s
             </MDTypography>
             )
           </Link>
         </ListFileTooltip>
         {"  "}
-        <MDButton
-          sx={{ padding: "0.5rem" }}
-          variant="contained"
-          color="info"
-          component="label"
-          startIcon={<AttachFileRounded />}
-        >
-          Upload{" "}
-          <input
-            ref={ref}
-            style={inputFileStyle()}
-            type="file"
-            name={name}
-            multiple={multiple}
-            accept={accept}
-            onChange={(e) => onChange(e, formikProps.setFieldValue)}
-          />
-        </MDButton>
+        <ButtonGroup variant="text" color="inherit">
+          <MDButton
+            sx={{ padding: "0.5rem" }}
+            variant="contained"
+            color="info"
+            component="label"
+            type="button"
+          >
+            <AddRounded />
+            <input
+              ref={ref}
+              style={inputFileStyle()}
+              type="file"
+              name={name}
+              multiple={multiple}
+              accept={accept}
+              onChange={(e) => onChange(e)}
+            />
+          </MDButton>
+          <MDButton
+            sx={{ padding: "0.5rem" }}
+            variant="contained"
+            color="info"
+            type="button"
+            onClick={onUpload}
+          >
+            Upload
+          </MDButton>
+        </ButtonGroup>
       </MDBox>
     );
   }

@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import { FormikHelpers } from "formik";
@@ -21,7 +21,14 @@ import { inventoryServices, ordersServices } from "services";
 import { AxiosError } from "axios";
 import selector from "./selector";
 import miscData from "./data";
-import { TNotifyOrder, TOrderData, TFormOrderState, TTableOrder, TFiltered } from "./types";
+import {
+  TNotifyOrder,
+  TOrderData,
+  TFormOrderState,
+  TTableOrder,
+  TFiltered,
+  TUploadFormOrderState,
+} from "./types";
 import Form from "./components/Form";
 import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
@@ -34,10 +41,12 @@ function Orders() {
   const { customerCode } = selector();
   const {
     tableHeaders,
+    initialFormOrderState,
     initialFilter,
     initialNotification,
     initialOutboundDetails,
     initialTableOrders,
+    initialFormUploadState,
   } = miscData();
   const [showNotify, setShowNotify] = useState<TNotifyOrder>(initialNotification);
   const [showForm, setShowForm] = useState(false);
@@ -49,17 +58,12 @@ function Orders() {
   const [toggleFilter, setToggleFilter] = useState(true);
   const [filtered, setFiltered] = useState<TFiltered>(initialFilter);
   const [outboundDetails, setOutboundDetails] = useState(initialOutboundDetails);
-
   const [tableOrders, setTableOrders] = useState<TTableOrder>(initialTableOrders);
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
-  const [formOrder, setFormOrder] = useState<TFormOrderState>({
-    message: "",
-    data: null,
-    status: "idle",
-    type: "",
-    id: "",
-    openConfirmation: false,
-  });
+  const [formOrder, setFormOrder] = useState<TFormOrderState>(initialFormOrderState);
+  const [uploadFormOrder, setUploadFormOrder] =
+    useState<TUploadFormOrderState>(initialFormUploadState);
 
   const openAction = ({ currentTarget }) => setAction(currentTarget);
   const closeAction = () => setAction(null);
@@ -161,14 +165,8 @@ function Orders() {
 
   const onCreate = () => {
     onShowForm();
-    setFormOrder({
-      message: "",
-      data: null,
-      status: "idle",
-      type: "create",
-      id: "",
-      openConfirmation: false,
-    });
+    setFormOrder(initialFormOrderState);
+    setUploadFormOrder(initialFormUploadState);
   };
 
   const onShowCancelConfirmation = (transId: string) => {
@@ -230,11 +228,42 @@ function Orders() {
   const onShowEdit = async (transId: string, type: TFormOrderState["type"]) => {
     onShowForm();
     setFormOrder((prev) => ({ ...prev, type, message: "", data: null, status: "loading" }));
+    setUploadFormOrder(initialFormUploadState);
     try {
       const { data } = await ordersServices.getOrderById(transId);
       setFormOrder((prev) => ({ ...prev, data: data.data, status: "succeeded", id: transId }));
     } catch (err: any) {
       setFormOrder((prev) => ({ ...prev, message: err.message, status: "failed" }));
+    }
+  };
+
+  const onClearInputFile = () => {
+    inputFileRef.current.value = null;
+  };
+
+  const onUploadFile = async (
+    orderData: Pick<TOrderData, "attachment" | "attachmentDelete"> & {
+      customer_code: string;
+    }
+  ) => {
+    try {
+      if (formOrder.type === "create") {
+        setUploadFormOrder((prev) => ({ ...prev, message: "", data: null, status: "loading" }));
+        const {
+          data: { message, data },
+        } = await ordersServices.createUploadOrder(orderData);
+        setUploadFormOrder((prev) => ({ ...prev, message, id: data.id, status: "succeeded" }));
+        onCloseForm();
+      } else if (formOrder.type === "edit" || formOrder.type === "update") {
+        setUploadFormOrder((prev) => ({ ...prev, message: "", type: "update", status: "loading" }));
+        const {
+          data: { message, data },
+        } = await ordersServices.updateUploadOrder(formOrder.id, orderData);
+        setUploadFormOrder((prev) => ({ ...prev, message, data, status: "succeeded" }));
+      }
+      onClearInputFile();
+    } catch (err: any) {
+      setUploadFormOrder((prev) => ({ ...prev, message: err.message, status: "failed" }));
     }
   };
 
@@ -289,11 +318,15 @@ function Orders() {
   // Refresh order list after create, update and cancel.
   useEffect(() => {
     const { status, type } = formOrder;
-    if ((type === "create" || type === "update" || type === "cancel") && status === "succeeded") {
+    const { status: uploadStatus, type: uploadType } = uploadFormOrder;
+    if (
+      (["create", "update", "cancel"].includes(type as string) && status === "succeeded") ||
+      (["create", "update"].includes(uploadType as string) && uploadStatus === "succeeded")
+    ) {
       fetchOrderList(filtered);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formOrder]);
+  }, [formOrder, uploadFormOrder]);
 
   useEffect(() => {
     fetchOrderList(initialFilter);
@@ -309,6 +342,7 @@ function Orders() {
     }
   }, [error, dispatch]);
 
+  // Form notification
   useEffect(() => {
     const {
       status: orderStatus,
@@ -335,6 +369,25 @@ function Orders() {
       });
     }
   }, [showForm, formOrder]);
+
+  // Upload file notification
+  useEffect(() => {
+    const {
+      status: orderStatus,
+      id: orderTransid,
+      message: orderMessage,
+      type: orderType,
+    } = uploadFormOrder;
+
+    if (!showForm && orderType === "create" && orderStatus === "succeeded") {
+      openNotify({
+        open: true,
+        message: `Transaction No. ${orderTransid}`,
+        title: orderMessage,
+        color: "success",
+      });
+    }
+  }, [showForm, uploadFormOrder]);
 
   useEffect(() => {
     if (customerCode) {
@@ -376,10 +429,13 @@ function Orders() {
       />
 
       <Form
+        inputFileRef={inputFileRef}
         open={showForm}
         onClose={onCloseForm}
         onSave={onSave}
+        onUploadFile={onUploadFile}
         data={formOrder}
+        fileUploadedData={uploadFormOrder}
         warehouseList={warehouseList}
         onShowCancelConfirmation={onShowCancelConfirmation}
       />
