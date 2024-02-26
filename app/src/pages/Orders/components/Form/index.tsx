@@ -539,7 +539,7 @@ function FormRequests({
   const parseData = (orderData: TOrderData): TOrderData => {
     const cloneOrderData = orderData;
     if (orderData) {
-      const pickupDate = orderData ? new Date(orderData.pickup_date) : null;
+      const pickupDate = orderData?.pickup_date ? new Date(orderData.pickup_date) : null;
 
       if (isValid(pickupDate)) {
         cloneOrderData.pickup_date = pickupDate;
