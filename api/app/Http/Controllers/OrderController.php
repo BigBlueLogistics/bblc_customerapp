@@ -334,6 +334,7 @@ class OrderController extends Controller
                 'access' => 0,
                 'erdat' => $currentDatetime->format('m/d/Y'),
                 'ertim' => $currentDatetime->format('H:i:s'),
+                'apnam' => $authUser->id,
             ]);
 
             if($orderHeader){

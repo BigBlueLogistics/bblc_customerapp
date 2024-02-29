@@ -25,6 +25,7 @@ class OrderHeader extends Model
         'apstat', 'transid', 'ernam',
         'pudat', 'kunnr', 'access',
         'vbeln', 'audat', 'podat',
+        'apnam'
     ];
 
     protected $casts = [
