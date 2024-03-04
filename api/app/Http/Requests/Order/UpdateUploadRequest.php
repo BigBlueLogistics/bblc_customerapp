@@ -25,10 +25,17 @@ class UpdateUploadRequest extends FormRequest
     {
         return [
             'customer_code' => ['required', 'string', 'size:8'],
-            'attachment' => ['array', 'nullable'],
-            'attachment.*' => ['required','mimes:xlsx,xlx','max:4096'],
             'attachmentDelete' => ['array', 'nullable'],
             'attachmentDelete.*' => ['required', 'string'],
+            'attachment' => ['array', 'required_without:attachmentDelete'],
+            'attachment.*' => ['required','mimes:xlsx,xlx','max:4096'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'attachment.required_without' => 'Please add attachment.'
         ];
     }
 }

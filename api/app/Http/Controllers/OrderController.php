@@ -320,7 +320,7 @@ class OrderController extends Controller
     public function createFileUpload(CreateUploadRequest $request)
     {
         try {
-            $request->validated($request->all());
+            $request->validated();
 
             $authUser = auth()->user();
             $currentDatetime = Carbon::now();

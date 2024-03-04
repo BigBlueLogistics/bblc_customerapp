@@ -37,7 +37,7 @@ class MemberUpdateRequest extends FormRequest
             'companies.*.customer_code' => ['required', 'string', 'size:8'],
             'companies.*.company' => ['required', 'string'],
             'delete_companies' => ['nullable', 'array'],
-            'phone_num' => ['numeric', 'nullable', 'min_digits:11', 'max_digits:11'],
+            'phone_num' => ['numeric', 'nullable', 'regex:/^09[0-9]{9}$/'],
         ];
     }
 
@@ -51,8 +51,7 @@ class MemberUpdateRequest extends FormRequest
     public function messages()
     {
         return [
-            'phone_num.min_digits' => 'The phone number must be 11 digits.',
-            'phone_num.max_digits' => 'The phone number must be 11 digits.',
+            'phone_num.regex' => 'Invalid format phone number must be E.g: 09xxxxxxxxx',
         ];
     }
 }

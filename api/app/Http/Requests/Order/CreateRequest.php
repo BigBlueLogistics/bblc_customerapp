@@ -33,7 +33,7 @@ class CreateRequest extends FormRequest
             'requests.*.uuid' => ['required', 'uuid'],
             'requests.*.material' => ['required', 'string'],
             'requests.*.qty' => ['required', 'numeric'],
-            'requests.*.remarks' => ['nullable', 'string', 'max:35'],
+            'requests.*.remarks' => ['nullable', 'string', 'max:35', 'regex:/^[^\'%"]+$/i'],
             'requestsDelete' => ['nullable', 'array'],
             'attachment' => ['array', 'nullable'],
             'attachment.*' => ['required','mimes:xlsx,xlx','max:4096'],
