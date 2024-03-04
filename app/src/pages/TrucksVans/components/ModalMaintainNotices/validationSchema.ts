@@ -1,9 +1,13 @@
 import * as yup from "yup";
 
 const validationSchema = yup.object({
-  actionType: yup.string().nullable().oneOf(["create", "delete"]),
-  fname: yup.string().nullable(),
-  lname: yup.string().nullable(),
+  actionType: yup.string().nullable(),
+  fname: yup.string().when("actionType", (isActionType, schema) => {
+    return isActionType === "create" ? schema.required("required") : schema.nullable();
+  }),
+  lname: yup.string().when("actionType", (isActionType, schema) => {
+    return isActionType === "create" ? schema.required("required") : schema.nullable();
+  }),
   emailAdd: yup.string().email().nullable(),
   phoneNum: yup
     .string()

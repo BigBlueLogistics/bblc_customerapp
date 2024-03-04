@@ -149,6 +149,7 @@ function TrucksVans() {
       formikHelper.resetForm();
     } catch (err) {
       setNotices((prev) => ({ ...prev, status: "failed", message: err?.message, data: null }));
+      formikHelper.setSubmitting(false);
     }
   };
 
@@ -175,6 +176,7 @@ function TrucksVans() {
       formikHelper.resetForm();
     } catch (err) {
       setNotices((prev) => ({ ...prev, status: "failed", message: err?.message, data: null }));
+      formikHelper.setSubmitting(false);
     }
   };
 

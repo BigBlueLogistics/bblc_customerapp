@@ -3,8 +3,9 @@
 namespace App\Http\Requests\TrucksVans;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class MaintainNoticesRequest extends FormRequest
+class CreateNoticesRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +24,8 @@ class MaintainNoticesRequest extends FormRequest
     {
         return [
             'customerCode' => ['required', 'string', 'size:8'],
-            'fname' => ['nullable','string'],
-            'lname' => ['nullable','string'],
+            'fname' => ['required', 'string'],
+            'lname' => ['required', 'string'],
             'emailAdd' => ['nullable', 'email'],
             'phoneNum' => ['required', 'regex:/^09[0-9]{9}$/'],
         ];
@@ -34,6 +35,14 @@ class MaintainNoticesRequest extends FormRequest
     {
         return [
             'phoneNum.regex' => 'Invalid format phone number must be E.g: 09xxxxxxxxx',
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'fname' => 'first name',
+            'lname' => 'last name',
         ];
     }
 }

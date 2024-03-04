@@ -1,4 +1,5 @@
-import { FormEvent } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { FormEvent, useEffect, useState } from "react";
 import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { Close as CloseIcon, DeleteRounded } from "@mui/icons-material";
 import { useFormik } from "formik";
@@ -18,32 +19,40 @@ function ModalMaintainNotices({
 }: TMaintainNotices) {
   const { status, type, message } = data;
 
-  const { handleChange, handleSubmit, values, touched, errors, dirty, setFieldValue, resetForm } =
-    useFormik<TValidationNotices>({
-      validationSchema,
-      initialValues: {
-        actionType: "",
-        fname: "",
-        lname: "",
-        emailAdd: "",
-        phoneNum: "",
-      },
-      onSubmit: (validatedData, formikHelper) => {
-        if (validatedData.actionType === "create") {
-          onCreateNotices(validatedData, formikHelper);
-        }
-        if (validatedData.actionType === "delete") {
-          onDeleteNotices(validatedData, formikHelper);
-        }
-      },
-    });
+  const {
+    handleChange,
+    handleSubmit,
+    values,
+    touched,
+    errors,
+    dirty,
+    setFieldValue,
+    resetForm,
+    isSubmitting,
+    setSubmitting,
+  } = useFormik<TValidationNotices>({
+    validateOnChange: true,
+    validationSchema,
+    initialValues: {
+      actionType: "",
+      fname: "",
+      lname: "",
+      emailAdd: "",
+      phoneNum: "",
+    },
+    onSubmit: (validatedData, formikHelper) => {
+      if (validatedData.actionType === "create") {
+        onCreateNotices(validatedData, formikHelper);
+      }
+      if (validatedData.actionType === "delete") {
+        onDeleteNotices(validatedData, formikHelper);
+      }
+    },
+  });
 
-  const handleSubmitType = (
-    e: FormEvent<HTMLFormElement>,
-    actionType: TValidationNotices["actionType"]
-  ) => {
-    setFieldValue("actionType", actionType);
-    handleSubmit(e);
+  const handleSubmitType = (actionType: TValidationNotices["actionType"]) => {
+    setFieldValue("actionType", actionType, true);
+    setSubmitting(true);
   };
 
   const handleClose = () => {
@@ -78,6 +87,13 @@ function ModalMaintainNotices({
   const isCreating = type === "create" && status === "loading";
   const isDeleting = type === "delete" && status === "loading";
 
+  useEffect(() => {
+    if (isSubmitting) {
+      handleSubmit();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSubmitting]);
+
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">
       <DialogTitle>
@@ -108,6 +124,8 @@ function ModalMaintainNotices({
             value={values.fname}
             fullWidth
             sx={{ mb: 1.2 }}
+            error={touched.fname && Boolean(errors.fname)}
+            helperText={touched.fname ? errors.fname : ""}
           />
           <MDInput
             label="Last name"
@@ -118,6 +136,8 @@ function ModalMaintainNotices({
             value={values.lname}
             fullWidth
             sx={{ mb: 1.2 }}
+            error={touched.lname && Boolean(errors.lname)}
+            helperText={touched.lname ? errors.lname : ""}
           />
           <MDInput
             label="Email address"
@@ -128,6 +148,8 @@ function ModalMaintainNotices({
             value={values.emailAdd}
             fullWidth
             sx={{ mb: 1.2 }}
+            error={touched.emailAdd && Boolean(errors.emailAdd)}
+            helperText={touched.emailAdd ? errors.emailAdd : ""}
           />
           <MDInput
             label="Phone number"
@@ -148,7 +170,7 @@ function ModalMaintainNotices({
             color="error"
             disabled={isDeleting || !dirty || !values.phoneNum}
             startIcon={<DeleteRounded />}
-            onClick={(e) => handleSubmitType(e as unknown as FormEvent<HTMLFormElement>, "delete")}
+            onClick={() => handleSubmitType("delete")}
             aria-label="Delete"
           >
             Delete
@@ -158,7 +180,7 @@ function ModalMaintainNotices({
             color="info"
             disabled={isCreating || !dirty}
             loading={isCreating}
-            onClick={(e) => handleSubmitType(e as unknown as FormEvent<HTMLFormElement>, "create")}
+            onClick={() => handleSubmitType("create")}
             aria-label="Create"
           >
             Create

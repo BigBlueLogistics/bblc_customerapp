@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TrucksVans\ScheduleTodayRequest;
 use App\Http\Requests\TrucksVans\StatusDetailsRequest;
 use App\Http\Requests\TrucksVans\TrucksVansRequest;
-use App\Http\Requests\TrucksVans\MaintainNoticesRequest;
+use App\Http\Requests\TrucksVans\CreateNoticesRequest;
+use App\Http\Requests\TrucksVans\DeleteNoticesRequest;
 use App\Interfaces\ITrucksVansRepository;
 use App\Traits\HttpResponse;
 use Exception;
@@ -70,7 +71,7 @@ class TrucksVansController extends Controller
         }
     }
 
-    public function createNotices(MaintainNoticesRequest $request)
+    public function createNotices(CreateNoticesRequest $request)
     {
         try {
             $request->validated($request->all());
@@ -88,7 +89,7 @@ class TrucksVansController extends Controller
     }
 
     
-    public function deleteNotices(MaintainNoticesRequest $request)
+    public function deleteNotices(DeleteNoticesRequest $request)
     {
         try {
             $request->validated($request->all());
