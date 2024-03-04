@@ -9,4 +9,8 @@ interface ITrucksVansRepository
     public function getTrucksVansStatusDetails($searchVal, $customerCode, $action);
 
     public function getScheduleToday($customerCode);
+
+    public function createNotices($request);
+
+    public function deleteNotices($customerCode, $phoneNum);
 }

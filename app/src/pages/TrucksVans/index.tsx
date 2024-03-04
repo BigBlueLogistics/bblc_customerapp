@@ -1,21 +1,26 @@
 import { useState, useEffect, ChangeEvent, useRef } from "react";
 import Grid from "@mui/material/Grid";
+import { FormikHelpers } from "formik";
 
 import MDBox from "atoms/MDBox";
 import MDButton from "atoms/MDButton";
 import DashboardLayout from "organisms/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "organisms/Navbars/DashboardNavbar";
 import Footer from "organisms/Footer";
-import Status from "pages/TrucksVans/components/Status";
-import Schedule from "pages/TrucksVans/components/Schedule";
-import StatusDetails from "pages/TrucksVans/components/StatusDetails";
 import { trucksVansServices } from "services";
-import { TListStatus, TListStatusDetails, TListScheduleToday } from "pages/TrucksVans/types";
 import { getValue } from "utils";
+import Status from "./components/Status";
+import Schedule from "./components/Schedule";
+import ModalStatusDetails from "./components/ModalStatusDetails";
+import ModalMaintainNotices from "./components/ModalMaintainNotices";
+import { TListStatus, TListStatusDetails, TListScheduleToday, TNotices } from "./types";
 import selector from "./selector";
+import miscData from "./data";
+import { TValidationNotices } from "./components/ModalMaintainNotices/validationSchema";
 
 function TrucksVans() {
   const { customerCode } = selector();
+  const { initialNotices } = miscData();
   const [listStatus, setListStatus] = useState<TListStatus>({
     message: null,
     data: null,
@@ -31,7 +36,9 @@ function TrucksVans() {
     data: null,
     status: "idle",
   });
+  const [notices, setNotices] = useState<TNotices>(initialNotices);
   const [showDetails, setShowDetails] = useState(false);
+  const [showNotices, setShowNotices] = useState(false);
   const [searchVMR, setSearchVMR] = useState("");
   const inputSearchRef = useRef<HTMLInputElement>(null);
 
@@ -49,7 +56,7 @@ function TrucksVans() {
         message: truckVansStatus.message,
       });
     } catch (err) {
-      setListStatus({ status: "failed", message: err, data: null });
+      setListStatus({ status: "failed", message: err?.message, data: null });
     }
   };
 
@@ -66,8 +73,8 @@ function TrucksVans() {
         data: truckVansStatus.data,
         message: truckVansStatus.message,
       });
-    } catch (err) {
-      setListStatusDetails({ status: "failed", message: err, data: null });
+    } catch (err: any) {
+      setListStatusDetails({ status: "failed", message: err?.message, data: null });
     }
   };
 
@@ -85,7 +92,7 @@ function TrucksVans() {
         message: truckVansSchedule.message,
       });
     } catch (err) {
-      setListScheduleToday({ status: "failed", message: err, data: null });
+      setListScheduleToday({ status: "failed", message: err?.message, data: null });
     }
   };
 
@@ -112,6 +119,65 @@ function TrucksVans() {
     }
   };
 
+  const onShowNotices = () => {
+    setShowNotices(true);
+  };
+
+  const onCloseNotices = () => {
+    setShowNotices(false);
+    setNotices(initialNotices);
+  };
+
+  const onCreateNotices = async (
+    data: TValidationNotices,
+    formikHelper: FormikHelpers<TValidationNotices>
+  ) => {
+    setNotices((prev) => ({ ...prev, status: "loading", type: "create" }));
+
+    try {
+      const { data: noticesData } = await trucksVansServices.createNotices({
+        customerCode,
+        ...data,
+      });
+
+      setNotices((prev) => ({
+        ...prev,
+        status: "succeeded",
+        data: noticesData.data,
+        message: noticesData.message,
+      }));
+      formikHelper.resetForm();
+    } catch (err) {
+      setNotices((prev) => ({ ...prev, status: "failed", message: err?.message, data: null }));
+    }
+  };
+
+  const onDeleteNotices = async (
+    data: TValidationNotices,
+    formikHelper: FormikHelpers<TValidationNotices>
+  ) => {
+    setNotices((prev) => ({ ...prev, status: "loading", type: "delete" }));
+
+    try {
+      const { data: noticesData } = await trucksVansServices.deleteNotices({
+        params: {
+          customerCode,
+          phoneNum: data.phoneNum,
+        },
+      });
+
+      setNotices((prev) => ({
+        ...prev,
+        status: "succeeded",
+        data: noticesData.data,
+        message: noticesData.message,
+      }));
+      formikHelper.resetForm();
+    } catch (err) {
+      setNotices((prev) => ({ ...prev, status: "failed", message: err?.message, data: null }));
+    }
+  };
+
   useEffect(() => {
     if (customerCode) {
       fetchScheduleToday(customerCode);
@@ -122,17 +188,24 @@ function TrucksVans() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <StatusDetails
+      <ModalStatusDetails
         open={showDetails}
         data={listStatusDetails.data}
         onClose={onCloseStatusDetails}
         loadingStatus={listStatusDetails.status}
       />
+      <ModalMaintainNotices
+        data={notices}
+        open={showNotices}
+        onClose={onCloseNotices}
+        onCreateNotices={onCreateNotices}
+        onDeleteNotices={onDeleteNotices}
+      />
       <MDBox pt={6}>
         <MDBox mb={3}>
           <Grid container spacing={3}>
             <Grid item md={12}>
-              <MDButton type="button" color="info" variant="gradient">
+              <MDButton type="button" color="info" variant="gradient" onClick={onShowNotices}>
                 Maintain Notices Recipients
               </MDButton>
             </Grid>

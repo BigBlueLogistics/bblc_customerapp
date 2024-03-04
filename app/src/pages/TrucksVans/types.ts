@@ -23,3 +23,10 @@ export type TListScheduleToday = {
   data: TruckVansScheduleTodayEntity[];
   message: AxiosError | string;
 };
+
+export type TNotices = {
+  status: TStatus;
+  data: { [key: string]: any };
+  message: AxiosError | string;
+  type: "create" | "delete" | null;
+};

@@ -94,6 +94,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/status', [TrucksVansController::class, 'status']);
         Route::get('/status-details', [TrucksVansController::class, 'statusDetails']);
         Route::get('/schedule-today', [TrucksVansController::class, 'scheduleToday']);
+        Route::post('/create/notices', [TrucksVansController::class, 'createNotices']);
+        Route::delete('/delete/notices', [TrucksVansController::class, 'deleteNotices']);
     });
 
     Route::prefix('profile')->group(function () {

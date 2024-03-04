@@ -90,4 +90,29 @@ class TrucksVansRepository implements ITrucksVansRepository
 
         return $res;
     }
+
+    public function createNotices($request)
+    {
+        $res = DB::connection('wms')->table('PRTR')
+                ->insert([
+                    'FNAME' => $request->input('fname') ? strtoupper($request->input('fname')) : null,
+                    'LNAME' => $request->input('lname') ? strtoupper($request->input('lname')) : null,
+                    'EMAIL' => $request->input('emailAdd') ? strtoupper($request->input('emailAdd')) : null,
+                    'PHONE' => strtoupper($request->input('phoneNum')),
+                    'KUNNR' => strtoupper($request->input('customerCode')),
+                    'VANST' => 'X',
+                    'NONIN' => 'X'
+                ]);
+        return $res;
+    }
+    
+    public function deleteNotices($customerCode, $phoneNum)
+    {
+        $res = DB::connection('wms')->table('PRTR')
+                ->where('KUNNR', '=', $customerCode)
+                ->where('PHONE', '=', $phoneNum)
+                ->delete();
+               
+        return $res;
+    }
 }

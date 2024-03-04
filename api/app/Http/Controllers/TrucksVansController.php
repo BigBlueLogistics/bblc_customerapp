@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TrucksVans\ScheduleTodayRequest;
 use App\Http\Requests\TrucksVans\StatusDetailsRequest;
 use App\Http\Requests\TrucksVans\TrucksVansRequest;
+use App\Http\Requests\TrucksVans\MaintainNoticesRequest;
 use App\Interfaces\ITrucksVansRepository;
 use App\Traits\HttpResponse;
+use Exception;
 
 class TrucksVansController extends Controller
 {
@@ -56,11 +58,51 @@ class TrucksVansController extends Controller
     public function scheduleToday(ScheduleTodayRequest $request)
     {
         try {
+            $request->validated($request->all());
+            
             $customerCode = $request->input('customerCode');
 
             $schedule = $this->trucks->getScheduleToday($customerCode);
 
             return $this->sendResponse($schedule, 'Trucks and vans schedule today');
+        } catch (Exception $e) {
+            return $this->sendError($e);
+        }
+    }
+
+    public function createNotices(MaintainNoticesRequest $request)
+    {
+        try {
+            $request->validated($request->all());
+
+            $createNotices = $this->trucks->createNotices($request);
+
+            if($createNotices) {
+                return $this->sendResponse(null, 'Successfully created notices');
+            }
+            return $this->sendError('Failed to create notices');
+            
+        } catch (Exception $e) {
+            return $this->sendError($e);
+        }
+    }
+
+    
+    public function deleteNotices(MaintainNoticesRequest $request)
+    {
+        try {
+            $request->validated($request->all());
+
+            $customerCode = $request->input('customerCode');
+            $phoneNum = $request->input('phoneNum');
+            
+            $createNotices = $this->trucks->deleteNotices($customerCode, $phoneNum);
+
+            if($createNotices) {
+                return $this->sendResponse(null, 'Successfully deleted notices');
+            }
+            return $this->sendError('Failed to delete notices');
+            
         } catch (Exception $e) {
             return $this->sendError($e);
         }

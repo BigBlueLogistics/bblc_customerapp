@@ -7,9 +7,9 @@ import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
 import SkeletonForm from "organisms/Skeleton/Form";
 import { getValue, formatDate } from "utils";
-import { TStatusDetails } from "./types";
+import { TModalStatusDetails } from "./types";
 
-function StatusDetails({ open, onClose, data, loadingStatus }: TStatusDetails) {
+function ModalStatusDetails({ open, onClose, data, loadingStatus }: TModalStatusDetails) {
   const {
     vanno,
     vmrno,
@@ -255,4 +255,4 @@ function StatusDetails({ open, onClose, data, loadingStatus }: TStatusDetails) {
   );
 }
 
-export default StatusDetails;
+export default ModalStatusDetails;
