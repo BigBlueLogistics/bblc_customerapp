@@ -91,6 +91,7 @@ class OrderController extends Controller
                 Db::raw('CONVERT(VARCHAR(11), CAST(order_header.ertim AS TIME), 100) AS created_time'),
                 Db::raw("FORMAT(order_header.updated_at, 'MMM, dd yyyy hh:mmtt') AS last_modified"),
             ])
+                ->where('lgnum', '!=', null)
                 ->where('ernam', auth()->id())
                 ->where('apstat', '!=', 6)
                 ->when($filterStatus, function ($query, $filterStatus) {
