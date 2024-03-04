@@ -21,7 +21,7 @@ const validationSchema = yup.object({
   email_verified_at: yup.string(),
   phone_num: yup
     .string()
-    .matches(/^[0-9]+$/, "Must be only digits")
+    .matches(/^09[0-9]{9}$/, "Invalid format")
     .min(11, "Must be exactly 11 digits")
     .max(11, "Must be exactly 11 digits"),
   is_verify: yup.boolean(),
@@ -31,6 +31,6 @@ const validationSchema = yup.object({
   invnt_report: yup.boolean(),
 });
 
-export type TValidationSchema = yup.InferType<typeof validationSchema>;
+export type TValidationMemberForm = yup.InferType<typeof validationSchema>;
 
 export default validationSchema;

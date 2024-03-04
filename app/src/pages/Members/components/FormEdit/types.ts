@@ -1,6 +1,6 @@
 import { ArrayHelpers, FormikProps } from "formik";
 import { TViewMemberDetails } from "../../types";
-import { TValidationSchema } from "./validationSchema";
+import { TValidationMemberForm } from "./validationSchema";
 
 export type IFormEdit = {
   open: boolean;
@@ -11,6 +11,6 @@ export type IFormEdit = {
 
 export type IFieldArrayCompanies = {
   arrayHelper: ArrayHelpers;
-  formik: FormikProps<TValidationSchema>;
+  formik: FormikProps<TValidationMemberForm>;
   onDeleteCompanies: (idx: number) => void;
 };

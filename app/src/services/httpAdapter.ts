@@ -13,6 +13,10 @@ class HttpAdapter extends axiosInit {
 
     return this.axios().post(url, postData, config);
   }
+
+  public delete(url: string, config: AxiosRequestConfig = {}) {
+    return this.axios().delete(url, config);
+  }
 }
 
 export default HttpAdapter;

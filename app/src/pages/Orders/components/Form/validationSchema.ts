@@ -40,6 +40,6 @@ const validationSchema = yup.object({
     .min(1, "Required to input one item! Please ADD ROW"),
 });
 
-export type TValidationSchema = yup.InferType<typeof validationSchema>;
+export type TValidationOrderForm = yup.InferType<typeof validationSchema>;
 
 export default validationSchema;

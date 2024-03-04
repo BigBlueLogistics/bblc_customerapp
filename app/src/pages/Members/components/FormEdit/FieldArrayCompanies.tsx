@@ -2,7 +2,7 @@ import { Icon, Tooltip } from "@mui/material";
 import MDInput from "atoms/MDInput";
 import MDButton from "atoms/MDButton";
 import MDBox from "atoms/MDBox";
-import { TValidationSchema } from "./validationSchema";
+import { TValidationMemberForm } from "./validationSchema";
 import { IFieldArrayCompanies } from "./types";
 
 function FieldArrayCompanies({ arrayHelper, formik, onDeleteCompanies }: IFieldArrayCompanies) {
@@ -16,7 +16,7 @@ function FieldArrayCompanies({ arrayHelper, formik, onDeleteCompanies }: IFieldA
       errors?.companies.length &&
       typeof errors?.companies[idx] === "object"
     ) {
-      const fieldErrors = errors?.companies[idx] as TValidationSchema["companies"];
+      const fieldErrors = errors?.companies[idx] as TValidationMemberForm["companies"];
       const fieldTouched = touched?.companies[idx];
       if (fieldTouched?.[fieldName] && fieldErrors[fieldName]) {
         return fieldErrors[fieldName];

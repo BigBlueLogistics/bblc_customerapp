@@ -6,7 +6,7 @@ export type TData = {
 };
 
 export type TAttachmentStatus = {
-  upload: File[];
-  uploaded: string[];
-  delete: string[];
+  upload: File[] | null;
+  uploaded: string[] | null;
+  delete: string[] | null;
 };

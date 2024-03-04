@@ -18,6 +18,8 @@ const FileUpload = forwardRef<HTMLInputElement, TFileUpload>(
       accept,
       formikProps,
       showRemoteFiles,
+      disabledUpload,
+      loading,
       onChange,
       onUpload,
       onDelete,
@@ -45,7 +47,7 @@ const FileUpload = forwardRef<HTMLInputElement, TFileUpload>(
 
     return (
       <MDBox>
-        {showRemoteFiles ? (
+        {showRemoteFiles && remoteFiles?.length ? (
           <ListFileTooltip
             formikProps={formikProps}
             open={showRemoteFile}
@@ -99,7 +101,7 @@ const FileUpload = forwardRef<HTMLInputElement, TFileUpload>(
             variant="contained"
             color="info"
             component="label"
-            type="button"
+            disabled={loading}
           >
             <AddRounded />
             <input
@@ -117,6 +119,8 @@ const FileUpload = forwardRef<HTMLInputElement, TFileUpload>(
             variant="contained"
             color="info"
             type="button"
+            disabled={disabledUpload}
+            loading={loading}
             onClick={onUpload}
           >
             Upload

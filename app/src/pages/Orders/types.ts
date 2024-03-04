@@ -1,6 +1,6 @@
 import { TStatus } from "types/status";
 import { LooseType } from "types/utility";
-import { TValidationSchema } from "./components/Form/validationSchema";
+import { TValidationOrderForm } from "./components/Form/validationSchema";
 
 export type TNotifyOrder = {
   open: boolean;
@@ -22,7 +22,7 @@ export type TOrderData = {
   requestsDelete?: string[];
   attachment: any[];
   attachmentDelete: string[];
-} & TValidationSchema;
+} & TValidationOrderForm;
 
 export type TFiltered = {
   status: string;

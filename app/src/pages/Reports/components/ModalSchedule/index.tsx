@@ -9,15 +9,15 @@ import MDSelect from "atoms/MDSelect";
 import MDAlert2 from "atoms/MDAlert2";
 import { useFormik } from "formik";
 import miscData from "../../data";
-import validationSchema from "./validationSchema";
-import { TModalSchedule, TPropsUpdateSchedule } from "./type";
+import validationSchema, { TValidationSchedule } from "./validationSchema";
+import { TModalSchedule } from "./types";
 
 function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule) {
   const { status, message } = data;
   const { sendingTimeOpts, inventoryTypesOpts, freqyOpts } = miscData();
   const timeOpts = sendingTimeOpts();
   const { values, handleChange, handleSubmit, resetForm, touched, errors } =
-    useFormik<TPropsUpdateSchedule>({
+    useFormik<TValidationSchedule>({
       enableReinitialize: true,
       validationSchema,
       initialValues: {
@@ -72,7 +72,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
         <DialogContent>
           {renderMessage()}
           <MDSelect
-            sx={{ width: "94%", marginY: "10px" }}
+            sx={{ marginY: "10px" }}
             label="Sending Frequency"
             variant="outlined"
             name="freqy"
@@ -82,9 +82,10 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             showArrowIcon
             error={touched.freqy && Boolean(errors.freqy)}
             helperText={touched.freqy ? errors.freqy : ""}
+            fullWidth
           />
           <MDSelect
-            sx={{ width: "94%", marginBottom: "10px" }}
+            sx={{ marginBottom: "10px" }}
             label="Inventory Types 1"
             variant="outlined"
             name="invty1"
@@ -92,9 +93,10 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             value={values.invty1}
             options={inventoryTypesOpts}
             showArrowIcon
+            fullWidth
           />
           <MDSelect
-            sx={{ width: "94%", marginBottom: "10px" }}
+            sx={{ marginBottom: "10px" }}
             label="Inventory Types 2"
             variant="outlined"
             name="invty2"
@@ -102,9 +104,10 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             value={values.invty2}
             options={inventoryTypesOpts}
             showArrowIcon
+            fullWidth
           />
           <MDSelect
-            sx={{ width: "94%", marginBottom: "10px" }}
+            sx={{ marginBottom: "10px" }}
             label="Inventory Types 3"
             variant="outlined"
             name="invty3"
@@ -112,9 +115,10 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             value={values.invty3}
             options={inventoryTypesOpts}
             showArrowIcon
+            fullWidth
           />
           <MDSelect
-            sx={{ width: "94%", marginBottom: "10px" }}
+            sx={{ marginBottom: "10px" }}
             label="1st Sending Time"
             variant="outlined"
             name="time1"
@@ -122,9 +126,10 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             value={values.time1}
             options={timeOpts}
             showArrowIcon
+            fullWidth
           />
           <MDSelect
-            sx={{ width: "94%", marginBottom: "10px" }}
+            sx={{ marginBottom: "10px" }}
             label="2nd Sending Time"
             variant="outlined"
             name="time2"
@@ -132,9 +137,9 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             value={values.time2}
             options={timeOpts}
             showArrowIcon
+            fullWidth
           />
           <MDSelect
-            sx={{ width: "94%" }}
             label="3rd Sending Time"
             variant="outlined"
             name="time3"
@@ -142,6 +147,7 @@ function ModalSchedule({ data, open, onClose, onUpdateSchedule }: TModalSchedule
             value={values.time3}
             options={timeOpts}
             showArrowIcon
+            fullWidth
           />
         </DialogContent>
         <DialogActions>

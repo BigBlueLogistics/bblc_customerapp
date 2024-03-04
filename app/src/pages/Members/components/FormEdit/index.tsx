@@ -12,7 +12,7 @@ import MDSelect from "atoms/MDSelect";
 import SkeletonForm from "organisms/Skeleton/Form";
 import FieldArrayCompanies from "./FieldArrayCompanies";
 import { IFormEdit } from "./types";
-import validationSchema, { TValidationSchema } from "./validationSchema";
+import validationSchema, { TValidationMemberForm } from "./validationSchema";
 
 function FormEdit({ open, onClose, onUpdate, viewData }: IFormEdit) {
   const [deleteCompanies, setDeleteCompanies] = useState<number[] | null>(null);
@@ -20,7 +20,7 @@ function FormEdit({ open, onClose, onUpdate, viewData }: IFormEdit) {
   const isActionUpdate = action === "update";
   const isLoadingUpdate = isActionUpdate && status === "loading";
 
-  const formik = useFormik<TValidationSchema>({
+  const formik = useFormik<TValidationMemberForm>({
     enableReinitialize: true,
     validationSchema,
     initialValues: {
@@ -194,7 +194,7 @@ function FormEdit({ open, onClose, onUpdate, viewData }: IFormEdit) {
                   label="Phone Number"
                   variant="standard"
                   fullWidth
-                  placeholder="Eg: 09xxxxxxxxx"
+                  placeholder="E.g: 09xxxxxxxxx"
                   value={values.phone_num}
                   error={touched.phone_num && Boolean(errors.phone_num)}
                   helperText={touched.phone_num ? errors.phone_num : ""}

@@ -1,4 +1,5 @@
 import { AxiosRequestConfig } from "axios";
+import { TValidationSchedule } from "pages/Reports/components/ModalSchedule/validationSchema";
 import HttpAdapter from "./httpAdapter";
 
 class ReportsServices extends HttpAdapter {
@@ -6,7 +7,7 @@ class ReportsServices extends HttpAdapter {
     return this.get("/reports", config);
   }
 
-  updateSchedule(data: any) {
+  updateSchedule(data: TValidationSchedule & { customer_code: string }) {
     return this.post("/reports/schedule-inventory", data);
   }
 }

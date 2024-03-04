@@ -9,6 +9,8 @@ export type TFileUpload = {
   name?: string;
   multiple?: boolean;
   accept?: string;
+  disabledUpload?: boolean;
+  loading?: boolean;
   formikProps?: FormikProps<TOrderData>;
   onUpload?: () => void;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;

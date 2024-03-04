@@ -1,6 +1,7 @@
 import { ChangeEvent, useCallback, useEffect, useState, ReactElement } from "react";
-import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { AutocompleteChangeReason } from "@mui/material/Autocomplete";
+import { CloseRounded as CloseIcon } from "@mui/icons-material";
 import { v4 as uuidv4 } from "uuid";
 import { format, isValid } from "date-fns";
 import MDBox from "atoms/MDBox";
@@ -438,7 +439,7 @@ function FormRequests({
 
   const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {
     const { files: selectedFiles } = e.currentTarget;
-    const fileName = [];
+    let fileName = [];
     if (selectedFiles.length) {
       // eslint-disable-next-line no-plusplus
       for (let idx = 0; idx < selectedFiles.length; idx++) {
@@ -446,26 +447,29 @@ function FormRequests({
 
         fileName[idx] = file;
       }
+    } else {
+      fileName = null;
     }
 
     // Selected files
-    setAttachmentFile((prev) => ({ ...prev, upload: [...fileName] }));
+    setAttachmentFile((prev) => ({ ...prev, upload: fileName }));
   };
 
   const handleDeleteFile = (file: string | File) => {
-    // Store only string filename to delete on the server.
     setAttachmentFile((prev) => {
       const clonePrev = prev;
+      // Remove filename from uploaded.
       if (clonePrev.uploaded) {
         clonePrev.uploaded = clonePrev.uploaded.filter((uploaded) => uploaded !== file);
       }
 
-      if (clonePrev.upload) {
-        clonePrev.upload = clonePrev.upload.filter((upload) => upload !== file);
-      }
-
+      // Store only string filename to delete on the server.
       if (typeof file === "string") {
-        clonePrev.delete.push(file);
+        if (clonePrev.delete) {
+          clonePrev.delete.push(file);
+        } else {
+          clonePrev.delete = [file];
+        }
       }
 
       return { ...clonePrev };
@@ -535,6 +539,8 @@ function FormRequests({
   const isView = data.type === "view";
   const formHeaderTitle = isUpdate ? "update" : data.type;
   const canCancel = !isCreate && data.data?.status.id === 0;
+  const isUploadingFile = fileUploadedData.status === "loading";
+  const disabledUpload = (!attachmentFile.upload && !attachmentFile.delete) || isUploadingFile;
 
   const parseData = (orderData: TOrderData): TOrderData => {
     const cloneOrderData = orderData;
@@ -574,6 +580,19 @@ function FormRequests({
             <Form role="form" onSubmit={formikProp.handleSubmit}>
               <DialogTitle sx={{ textTransform: "capitalize" }}>
                 {formHeaderTitle} Product Request
+                <IconButton
+                  aria-label="close"
+                  onClick={onClose}
+                  sx={{
+                    position: "absolute",
+                    right: 8,
+                    top: 8,
+                    color: (theme) => theme.palette.grey[500],
+                  }}
+                  title="Close"
+                >
+                  <CloseIcon />
+                </IconButton>
               </DialogTitle>
               {renderMessage<TFormOrderState>(data)}
               {renderMessage<TUploadFormOrderState>(fileUploadedData)}
@@ -652,23 +671,25 @@ function FormRequests({
                     onChange={formikProp.handleChange}
                   />
                 </MDBox>
-                <MDBox mb={1.5}>
-                  <MDBox
-                    component="a"
-                    href={`${urls().TEMPLATE_ORDER_FORM_URL}`}
-                    sx={{ width: "max-content", display: "block" }}
-                  >
-                    <MDTypography
-                      sx={({ typography: { pxToRem }, palette: { text } }) => ({
-                        fontSize: pxToRem(12),
-                        textDecoration: "underline!important",
-                        color: text.main,
-                      })}
+                {!isView ? (
+                  <MDBox mb={1.5}>
+                    <MDBox
+                      component="a"
+                      href={`${urls().TEMPLATE_ORDER_FORM_URL}`}
+                      sx={{ width: "max-content", display: "block" }}
                     >
-                      Download {files().TEMPLATE_ORDER_FORM}
-                    </MDTypography>
+                      <MDTypography
+                        sx={({ typography: { pxToRem }, palette: { text } }) => ({
+                          fontSize: pxToRem(12),
+                          textDecoration: "underline!important",
+                          color: text.main,
+                        })}
+                      >
+                        Download {files().TEMPLATE_ORDER_FORM}
+                      </MDTypography>
+                    </MDBox>
                   </MDBox>
-                </MDBox>
+                ) : null}
 
                 <MDBox mb={1}>
                   <FormTable
@@ -693,22 +714,24 @@ function FormRequests({
                   </MDButton>
                 )}
                 <MDBox display="inline-flex">
-                  <FileUpload
-                    ref={inputFileRef}
-                    formikProps={formikProp}
-                    name="attachment[]"
-                    accept=".xlsx"
-                    multiple
-                    localFiles={attachmentFile.upload}
-                    remoteFiles={attachmentFile.uploaded}
-                    showRemoteFiles={isUpdate || isView}
-                    onChange={handleChangeFile}
-                    onUpload={onSaveFileUpload}
-                    onDelete={handleDeleteFile}
-                  />
-                  <MDButton color="error" onClick={onClose} sx={{ marginLeft: 2 }}>
-                    Close
-                  </MDButton>
+                  {!isView ? (
+                    <FileUpload
+                      ref={inputFileRef}
+                      formikProps={formikProp}
+                      name="attachment[]"
+                      accept=".xlsx"
+                      multiple
+                      disabledUpload={disabledUpload}
+                      loading={isUploadingFile}
+                      localFiles={attachmentFile.upload}
+                      remoteFiles={attachmentFile.uploaded}
+                      showRemoteFiles={isUpdate || isView}
+                      onChange={handleChangeFile}
+                      onUpload={onSaveFileUpload}
+                      onDelete={handleDeleteFile}
+                    />
+                  ) : null}
+
                   {canCancel || !isView ? (
                     <MDButton
                       color="success"
@@ -716,7 +739,6 @@ function FormRequests({
                       sx={{ marginLeft: 1.5 }}
                       disabled={isSaving || !formikProp.dirty}
                       loading={isSaving}
-                      onClick={formikProp.handleSubmit}
                     >
                       Save
                     </MDButton>

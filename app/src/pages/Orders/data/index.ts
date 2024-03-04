@@ -172,9 +172,9 @@ export default function miscData() {
   };
 
   const initialAttachment: TAttachmentStatus = {
-    upload: [],
-    uploaded: [],
-    delete: [],
+    upload: null,
+    uploaded: null,
+    delete: null,
   };
 
   return {

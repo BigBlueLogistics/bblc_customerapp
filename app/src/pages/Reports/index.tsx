@@ -28,7 +28,7 @@ import MenuAction from "./components/MenuAction";
 import ActionIcon from "./components/ActionIcon";
 import ModalSchedule from "./components/ModalSchedule";
 import { TMenuAction } from "./components/MenuAction/types";
-import { TPropsUpdateSchedule } from "./components/ModalSchedule/type";
+import { TValidationSchedule } from "./components/ModalSchedule/validationSchema";
 
 function Reports() {
   const dispatch = useAppDispatch();
@@ -201,8 +201,8 @@ function Reports() {
   };
 
   const onUpdateSchedule = async (
-    props: TPropsUpdateSchedule,
-    resetForm: FormikHelpers<TPropsUpdateSchedule>["resetForm"]
+    props: TValidationSchedule,
+    resetForm: FormikHelpers<TValidationSchedule>["resetForm"]
   ) => {
     setUpdateSchedule((prev) => ({ ...prev, status: "loading" }));
 
