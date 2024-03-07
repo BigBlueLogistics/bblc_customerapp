@@ -4,14 +4,14 @@ const validationSchema = yup.object({
   ref_number: yup
     .string()
     .required("required")
-    .matches(/^[A-Za-z0-9]+$/, `must be only letters and digits`),
+    .matches(/^[A-Za-z0-9 ]+$/, `must be only letters and digits`),
   source_wh: yup.string().required("required"),
   pickup_date: yup.date().nullable(),
   allow_notify: yup.boolean(),
   instruction: yup
     .string()
     .nullable()
-    .matches(/^[A-Za-z0-9]+$/, `must be only letters and digits`),
+    .matches(/^[A-Za-z0-9 ]+$/, `must be only letters and digits`),
   requests: yup
     .array(
       yup.object({
@@ -32,7 +32,7 @@ const validationSchema = yup.object({
           .string()
           .nullable()
           .max(35, "maximum of 35 characters")
-          .matches(/^[A-Za-z0-9]+$/, `must be only letters and digits`),
+          .matches(/^[A-Za-z0-9 ]+$/, `must be only letters and digits`),
         created_at: yup.string(),
       })
     )

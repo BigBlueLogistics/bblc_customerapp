@@ -25,15 +25,15 @@ class CreateRequest extends FormRequest
     {
         return [
             'source_wh' => ['required', 'string'],
-            'ref_number' => ['required', 'regex:/^[A-Za-z0-9]+$/'],
+            'ref_number' => ['required', 'regex:/^[A-Za-z0-9 ]+$/'],
             'pickup_date' => ['nullable', 'date'],
-            'instruction' => ['nullable', 'regex:/^[A-Za-z0-9]+$/'],
+            'instruction' => ['nullable', 'regex:/^[A-Za-z0-9 ]+$/'],
             'customer_code' => ['required', 'string', 'size:8'],
             'requests' => ['required', 'array', 'min:1'],
             'requests.*.uuid' => ['required', 'uuid'],
             'requests.*.material' => ['required', 'string'],
             'requests.*.qty' => ['required', 'numeric'],
-            'requests.*.remarks' => ['nullable', 'string', 'max:35', 'regex:/^[A-Za-z0-9]+$/'],
+            'requests.*.remarks' => ['nullable', 'string', 'max:35', 'regex:/^[A-Za-z0-9 ]+$/'],
             'requestsDelete' => ['nullable', 'array'],
             'attachment' => ['array', 'nullable'],
             'attachment.*' => ['required','mimes:xlsx,xlx','max:4096'],
