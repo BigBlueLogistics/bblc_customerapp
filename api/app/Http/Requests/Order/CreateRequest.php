@@ -25,7 +25,7 @@ class CreateRequest extends FormRequest
     {
         return [
             'source_wh' => ['required', 'string'],
-            'ref_number' => ['required', 'regex:/^[^\'%"]+$/i', 'max:12'],
+            'ref_number' => ['required', 'regex:/^[^\'%"]+$/i'],
             'pickup_date' => ['nullable', 'date'],
             'instruction' => ['nullable', 'regex:/^[^\'%"]+$/i'],
             'customer_code' => ['required', 'string', 'size:8'],

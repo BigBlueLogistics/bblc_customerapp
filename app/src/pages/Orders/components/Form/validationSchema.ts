@@ -4,7 +4,6 @@ const validationSchema = yup.object({
   ref_number: yup
     .string()
     .required("required")
-    .max(12, "maximum of 12 characters")
     .matches(/^[^'%"]+$/i, `not allowed characters: '%"`),
   source_wh: yup.string().required("required"),
   pickup_date: yup.date().nullable(),
