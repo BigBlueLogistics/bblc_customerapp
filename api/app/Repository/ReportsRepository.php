@@ -146,7 +146,7 @@ class ReportsRepository implements IReportsRepository
             }
 
             return $prev;
-        });
+        }, []);
 
         $keyedFixedWt = $collectionFixedWt->reduce(function ($carry, $item) use ($keyedSalesUnit) {
             $prev = $carry ?? [];
