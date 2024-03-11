@@ -124,7 +124,7 @@ class InventoryRepository implements IInventoryRepository
             }
 
             return $prev;
-        });
+        }, []);
 
         $keyedFixedWt = $collectionFixedWt->reduce(function ($carry, $item) use ($keyedSalesUnit) {
             $prev = $carry ?? [];
