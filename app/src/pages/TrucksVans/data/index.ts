@@ -1,4 +1,4 @@
-import { TNotices } from "../types";
+import { TNotices, TSearchTrucksVans } from "../types";
 
 export default function miscData() {
   const initialNotices: TNotices = {
@@ -8,7 +8,14 @@ export default function miscData() {
     type: null,
   };
 
+  const initialSearchResult: TSearchTrucksVans = {
+    message: null,
+    data: [],
+    status: "idle",
+  };
+
   return {
     initialNotices,
+    initialSearchResult,
   };
 }

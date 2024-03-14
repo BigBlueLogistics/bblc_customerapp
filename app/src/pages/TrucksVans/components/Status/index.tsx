@@ -1,21 +1,20 @@
 import Card from "@mui/material/Card";
-import MDIcon from "atoms/MDIcon";
+
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
-import MDInput from "atoms/MDInput";
-import MDButton from "atoms/MDButton";
 import { useMaterialUIController } from "context";
 import SkeletonList from "organisms/Skeleton/List";
 import ItemStatus from "../ItemStatus";
 import { TStatus } from "./types";
+import AutoCompleteSearch from "./AutoCompleteSearch";
 
 function Status({
-  inputSearchRef,
   data,
-  searchData,
+  searchTerm,
+  searchResult,
   onOpen,
-  onChangeSearch,
-  onOpenSearch,
+  onInputSearch,
+  onSelectSearch,
 }: TStatus) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
@@ -24,20 +23,13 @@ function Status({
   const renderSearch = () => {
     if (viewStatus?.length) {
       return (
-        <MDBox>
-          <MDInput
-            inputRef={inputSearchRef}
-            placeholder="Input search"
-            size="small"
-            onChange={onChangeSearch}
-            value={searchData}
-          />
-          <MDButton variant="text" iconOnly onClick={onOpenSearch}>
-            <MDIcon color="info" fontSize={25} title="Search">
-              search
-            </MDIcon>
-          </MDButton>
-        </MDBox>
+        <AutoCompleteSearch
+          value={searchTerm}
+          onInputSearch={onInputSearch}
+          onSelectSearch={onSelectSearch}
+          options={searchResult.data}
+          isLoading={searchResult.status === "loading"}
+        />
       );
     }
     return null;

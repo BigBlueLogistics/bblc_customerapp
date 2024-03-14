@@ -92,6 +92,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('trucks-vans')->group(function () {
         Route::get('/status', [TrucksVansController::class, 'status']);
+        Route::get('/status/search', [TrucksVansController::class, 'searchTrucksVans']);
         Route::get('/status-details', [TrucksVansController::class, 'statusDetails']);
         Route::get('/schedule-today', [TrucksVansController::class, 'scheduleToday']);
         Route::post('/create/notices', [TrucksVansController::class, 'createNotices']);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TrucksVans\ScheduleTodayRequest;
 use App\Http\Requests\TrucksVans\StatusDetailsRequest;
+use App\Http\Requests\TrucksVans\SearchTrucksVansRequest;
 use App\Http\Requests\TrucksVans\TrucksVansRequest;
 use App\Http\Requests\TrucksVans\CreateNoticesRequest;
 use App\Http\Requests\TrucksVans\DeleteNoticesRequest;
@@ -20,6 +21,22 @@ class TrucksVansController extends Controller
     public function __construct(ITrucksVansRepository $trucks)
     {
         $this->trucks = $trucks;
+    }
+
+    public function searchTrucksVans(SearchTrucksVansRequest $request)
+    {
+        try {
+            $request->validated($request->all());
+
+            $customerCode = $request->input('customerCode');
+            $searchTerm = $request->input('searchTerm');
+
+            $search = $this->trucks->searchTrucksVans($customerCode, $searchTerm);
+
+            return $this->sendResponse($search, 'Search trucks and vans');
+        } catch (Exception $e) {
+           return $this->sendError($e);
+        }
     }
 
     public function status(TrucksVansRequest $request)

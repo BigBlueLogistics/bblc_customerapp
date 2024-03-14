@@ -49,6 +49,13 @@ export type TruckVansScheduleTodayEntity = {
   vehicletype: string;
 };
 
+export type TrucksVansSearchEntity = {
+  id: string;
+  vmrno: string;
+  vanno: string;
+};
+
 export type ResponseTrucksVansStatusEntity = TResponse<TrucksVansStatusEntity[]>;
 export type ResponseTrucksVansStatusDetailsEntity = TResponse<TrucksVansStatusDetailsEntity>;
 export type ResponseTrucksVansScheduleTodayEntity = TResponse<TruckVansScheduleTodayEntity[]>;
+export type ResponseTrucksVansSearchEntity = TResponse<TrucksVansSearchEntity[]>;

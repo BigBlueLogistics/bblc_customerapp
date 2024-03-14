@@ -8,6 +8,23 @@ use Illuminate\Support\Facades\DB;
 
 class TrucksVansRepository implements ITrucksVansRepository
 {
+    public function searchTrucksVans($customerCode, $searchTerm)
+    {
+        $res = DB::connection('wms')->table('VANS')
+            ->select('vnmbr AS vanNo', 'vmrno')
+            ->where(function ($query) use ($searchTerm){
+                $query->where('vnmbr', 'like', '%'.$searchTerm.'%')
+                ->Orwhere('vmrno', 'like', '%'.$searchTerm.'%');
+            })
+            ->where('kunnr', '=', $customerCode)
+            ->orderBy('werks', 'desc')
+            ->limit(5)
+            ->get();
+
+        return $res;
+    }
+
+
     public function getTrucksVansStatus($customerCode)
     {
         $res = DB::connection('wms')->table('VANS')
@@ -24,7 +41,7 @@ class TrucksVansRepository implements ITrucksVansRepository
         return $res;
     }
 
-    public function getTrucksVansStatusDetails($searchVal, $customerCode, $action)
+    public function getTrucksVansStatusDetails($searchTerm, $customerCode, $action)
     {
         $actionIsView = boolval($action === 'view');
 
@@ -36,14 +53,14 @@ class TrucksVansRepository implements ITrucksVansRepository
                 frdwr AS forwarder, odatu AS outDate, ozeit AS outTime, oseal AS outSealNo, 
                 odnum AS outDeliveryNo, ostat AS outStatus, wschd AS whSchedule,
                 whdat AS whProcessStartDate, whtim AS whProcessStartTime, ctime AS whProcessEnd')
-            ->when($actionIsView, function (Builder $query) use ($searchVal, $customerCode) {
-                return $query->where('vmrno', '=', $searchVal)
+            ->when($actionIsView, function (Builder $query) use ($searchTerm, $customerCode) {
+                return $query->where('vmrno', '=', $searchTerm)
                     ->where('kunnr', '=', $customerCode);
-            }, function (Builder $query) use ($searchVal, $customerCode) {
+            }, function (Builder $query) use ($searchTerm, $customerCode) {
                 return $query->where('kunnr', '=', $customerCode)
-                    ->where(function (Builder $query) use ($searchVal) {
-                        return $query->where('vnmbr', 'like', '%'.$searchVal.'%')
-                            ->Orwhere('vmrno', 'like', '%'.$searchVal.'%');
+                    ->where(function (Builder $query) use ($searchTerm) {
+                        return $query->where('vnmbr', 'like', '%'.$searchTerm.'%')
+                            ->Orwhere('vmrno', 'like', '%'.$searchTerm.'%');
                     });
             })
             ->orderBy('adatu', 'desc')
@@ -56,14 +73,14 @@ class TrucksVansRepository implements ITrucksVansRepository
             $plugin = DB::connection('wms')->table('PLUG')
                 ->selectRaw('psdat AS startDate, pstim AS startTime, pedat AS endDate, petim AS endTime,
                 pitot AS totalPlugHrs, [Index] AS id')
-                ->when($actionIsView, function (Builder $query) use ($searchVal, $customerCode) {
-                    return $query->where('vmrno', '=', $searchVal)
+                ->when($actionIsView, function (Builder $query) use ($searchTerm, $customerCode) {
+                    return $query->where('vmrno', '=', $searchTerm)
                         ->where('kunnr', '=', $customerCode);
-                }, function (Builder $query) use ($searchVal, $customerCode) {
+                }, function (Builder $query) use ($searchTerm, $customerCode) {
                     return $query->where('kunnr', '=', $customerCode)
-                        ->where(function (Builder $query) use ($searchVal) {
-                            return $query->where('vnmbr', 'like', '%'.$searchVal.'%')
-                                ->Orwhere('vmrno', 'like', '%'.$searchVal.'%');
+                        ->where(function (Builder $query) use ($searchTerm) {
+                            return $query->where('vnmbr', 'like', '%'.$searchTerm.'%')
+                                ->Orwhere('vmrno', 'like', '%'.$searchTerm.'%');
                         });
                 })
                 ->orderBy('psdat', 'desc')

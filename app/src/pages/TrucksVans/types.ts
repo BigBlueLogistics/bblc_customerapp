@@ -4,6 +4,7 @@ import {
   TrucksVansStatusEntity,
   TrucksVansStatusDetailsEntity,
   TruckVansScheduleTodayEntity,
+  TrucksVansSearchEntity,
 } from "entities/trucksVans";
 
 export type TListStatus = {
@@ -21,6 +22,12 @@ export type TListStatusDetails = {
 export type TListScheduleToday = {
   status: TStatus;
   data: TruckVansScheduleTodayEntity[];
+  message: AxiosError | string;
+};
+
+export type TSearchTrucksVans = {
+  status: TStatus;
+  data: TrucksVansSearchEntity[];
   message: AxiosError | string;
 };
 

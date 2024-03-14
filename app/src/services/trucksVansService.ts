@@ -2,12 +2,19 @@ import {
   ResponseTrucksVansStatusEntity,
   ResponseTrucksVansStatusDetailsEntity,
   ResponseTrucksVansScheduleTodayEntity,
+  ResponseTrucksVansSearchEntity,
 } from "entities/trucksVans";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { TValidationNotices } from "pages/TrucksVans/components/ModalMaintainNotices/validationSchema";
 import HttpAdapter from "./httpAdapter";
 
 class TrucksVansServices extends HttpAdapter {
+  searchTrucksVans(
+    config: AxiosRequestConfig
+  ): Promise<AxiosResponse<ResponseTrucksVansSearchEntity>> {
+    return this.get("/trucks-vans/status/search", config);
+  }
+
   getStatus(config: AxiosRequestConfig): Promise<AxiosResponse<ResponseTrucksVansStatusEntity>> {
     return this.get("/trucks-vans/status", config);
   }

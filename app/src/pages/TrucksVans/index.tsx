@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent, useRef } from "react";
+import { useState, useEffect, ChangeEvent, useDeferredValue } from "react";
 import Grid from "@mui/material/Grid";
 import { FormikHelpers } from "formik";
 
@@ -13,14 +13,21 @@ import Status from "./components/Status";
 import Schedule from "./components/Schedule";
 import ModalStatusDetails from "./components/ModalStatusDetails";
 import ModalMaintainNotices from "./components/ModalMaintainNotices";
-import { TListStatus, TListStatusDetails, TListScheduleToday, TNotices } from "./types";
+import {
+  TListStatus,
+  TListStatusDetails,
+  TListScheduleToday,
+  TNotices,
+  TSearchTrucksVans,
+} from "./types";
 import selector from "./selector";
 import miscData from "./data";
 import { TValidationNotices } from "./components/ModalMaintainNotices/validationSchema";
+import { IAutoCompleteSearchData } from "./components/Status/AutoCompleteSearch/types";
 
 function TrucksVans() {
   const { customerCode } = selector();
-  const { initialNotices } = miscData();
+  const { initialNotices, initialSearchResult } = miscData();
   const [listStatus, setListStatus] = useState<TListStatus>({
     message: null,
     data: null,
@@ -36,11 +43,12 @@ function TrucksVans() {
     data: null,
     status: "idle",
   });
+  const [searchResult, setSearchResult] = useState<TSearchTrucksVans>(initialSearchResult);
+  const [searchVMR, setSearchVMR] = useState("");
   const [notices, setNotices] = useState<TNotices>(initialNotices);
   const [showDetails, setShowDetails] = useState(false);
   const [showNotices, setShowNotices] = useState(false);
-  const [searchVMR, setSearchVMR] = useState("");
-  const inputSearchRef = useRef<HTMLInputElement>(null);
+  const deferredSearchVMR = useDeferredValue(searchVMR);
 
   const fetchStatus = async (customer: string) => {
     setListStatus((prev) => ({ ...prev, status: "loading" }));
@@ -105,17 +113,17 @@ function TrucksVans() {
     setShowDetails(false);
   };
 
-  const onChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchVMR(e.target.value);
+  const onInputSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchVMR(e?.target.value);
   };
 
-  const onOpenSearch = () => {
-    const vmr = getValue(searchVMR);
+  const onSelectSearch = (value: IAutoCompleteSearchData) => {
+    const vmr = getValue(value?.vmrno);
     if (vmr) {
+      // Fill the input from selected
+      setSearchVMR(vmr);
       setShowDetails(true);
       fetchStatusDetails(vmr, "search");
-    } else {
-      inputSearchRef.current.focus();
     }
   };
 
@@ -184,8 +192,33 @@ function TrucksVans() {
     if (customerCode) {
       fetchScheduleToday(customerCode);
       fetchStatus(customerCode);
+      setSearchVMR("");
     }
   }, [customerCode]);
+
+  useEffect(() => {
+    async function fetchSearch(searchTerm: string) {
+      setSearchResult((prev) => ({ ...prev, status: "loading" }));
+      try {
+        const { data: searchedData } = await trucksVansServices.searchTrucksVans({
+          params: { customerCode, searchTerm },
+        });
+
+        setSearchResult({
+          status: "succeeded",
+          data: searchedData.data,
+          message: searchedData.message,
+        });
+      } catch (err) {
+        setSearchResult({ status: "failed", message: err?.message, data: null });
+      }
+    }
+
+    if (deferredSearchVMR) {
+      fetchSearch(deferredSearchVMR);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deferredSearchVMR]);
 
   return (
     <DashboardLayout>
@@ -216,12 +249,12 @@ function TrucksVans() {
             </Grid>
             <Grid item xs={12} md={6}>
               <Status
-                inputSearchRef={inputSearchRef}
                 data={listStatus}
-                searchData={searchVMR}
+                searchTerm={searchVMR}
                 onOpen={onShowStatusDetails}
-                onChangeSearch={onChangeSearch}
-                onOpenSearch={onOpenSearch}
+                onInputSearch={onInputSearch}
+                onSelectSearch={onSelectSearch}
+                searchResult={searchResult}
               />
             </Grid>
           </Grid>
