@@ -259,7 +259,7 @@ function ModalStatusDetails({ open, onClose, data, loadingStatus }: TModalStatus
                 </MDBox>
               </MDBox>
 
-              <MDBox aria-label="arrival info">
+              <MDBox aria-label="remarks">
                 <MDBox mb={0.6}>
                   <MDTypography
                     component="div"
