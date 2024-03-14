@@ -52,7 +52,8 @@ class TrucksVansRepository implements ITrucksVansRepository
                 adnum AS arrivalDeliveryNo, astat AS arrivalStatus, aseal AS arrivalSealNo,
                 frdwr AS forwarder, odatu AS outDate, ozeit AS outTime, oseal AS outSealNo, 
                 odnum AS outDeliveryNo, ostat AS outStatus, wschd AS whSchedule,
-                whdat AS whProcessStartDate, whtim AS whProcessStartTime, ctime AS whProcessEnd')
+                whdat AS whProcessStartDate, whtim AS whProcessStartTime, ctime AS whProcessEnd,
+                rmark AS remarks')
             ->when($actionIsView, function (Builder $query) use ($searchTerm, $customerCode) {
                 return $query->where('vmrno', '=', $searchTerm)
                     ->where('kunnr', '=', $customerCode);

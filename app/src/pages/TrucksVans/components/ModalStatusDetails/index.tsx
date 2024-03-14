@@ -31,6 +31,7 @@ function ModalStatusDetails({ open, onClose, data, loadingStatus }: TModalStatus
     whprocessstartdate,
     whprocessstarttime,
     whschedule,
+    remarks,
   } = data || {};
 
   const arrivalDateTime = `${arrivaldate} ${arrivaltime}`;
@@ -127,6 +128,19 @@ function ModalStatusDetails({ open, onClose, data, loadingStatus }: TModalStatus
                     textTransform={getValue(arrivalstatus) ? "uppercase" : "lowercase"}
                   >
                     {getValue(arrivalstatus, "n/a")}
+                  </MDTypography>
+                </MDBox>
+                <MDBox mb={0.6} display="flex">
+                  <MDTypography component="div" variant="button" fontWeight="light" width="30%">
+                    Forwarder:
+                  </MDTypography>
+                  <MDTypography
+                    component="div"
+                    variant="button"
+                    fontWeight="regular"
+                    textTransform={getValue(forwarder) ? "uppercase" : "lowercase"}
+                  >
+                    {getValue(forwarder, "n/a")}
                   </MDTypography>
                 </MDBox>
               </MDBox>
@@ -242,6 +256,25 @@ function ModalStatusDetails({ open, onClose, data, loadingStatus }: TModalStatus
                     Plug-in info
                   </MDTypography>
                   {renderPlugin()}
+                </MDBox>
+              </MDBox>
+
+              <MDBox aria-label="arrival info">
+                <MDBox mb={0.6}>
+                  <MDTypography
+                    component="div"
+                    variant="button"
+                    fontWeight="medium"
+                    textTransform="uppercase"
+                    sx={({ palette: { grey } }) => ({ backgroundColor: grey["200"], padding: 0.5 })}
+                  >
+                    Remarks
+                  </MDTypography>
+                </MDBox>
+                <MDBox mb={0.6} display="flex">
+                  <MDTypography component="div" variant="button" fontWeight="regular">
+                    {getValue(remarks, "n/a")}
+                  </MDTypography>
                 </MDBox>
               </MDBox>
             </MDBox>
