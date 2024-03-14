@@ -32,6 +32,7 @@ function ModalStatusDetails({ open, onClose, data, loadingStatus }: TModalStatus
     whprocessstarttime,
     whschedule,
     remarks,
+    provider,
   } = data || {};
 
   const arrivalDateTime = `${arrivaldate} ${arrivaltime}`;
@@ -132,15 +133,15 @@ function ModalStatusDetails({ open, onClose, data, loadingStatus }: TModalStatus
                 </MDBox>
                 <MDBox mb={0.6} display="flex">
                   <MDTypography component="div" variant="button" fontWeight="light" width="30%">
-                    Forwarder:
+                    Provider:
                   </MDTypography>
                   <MDTypography
                     component="div"
                     variant="button"
                     fontWeight="regular"
-                    textTransform={getValue(forwarder) ? "uppercase" : "lowercase"}
+                    textTransform={getValue(provider) ? "uppercase" : "lowercase"}
                   >
-                    {getValue(forwarder, "n/a")}
+                    {getValue(provider, "n/a")}
                   </MDTypography>
                 </MDBox>
               </MDBox>

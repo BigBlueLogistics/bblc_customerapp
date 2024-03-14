@@ -53,7 +53,7 @@ class TrucksVansRepository implements ITrucksVansRepository
                 frdwr AS forwarder, odatu AS outDate, ozeit AS outTime, oseal AS outSealNo, 
                 odnum AS outDeliveryNo, ostat AS outStatus, wschd AS whSchedule,
                 whdat AS whProcessStartDate, whtim AS whProcessStartTime, ctime AS whProcessEnd,
-                rmark AS remarks')
+                rmark AS remarks, vname AS provider')
             ->when($actionIsView, function (Builder $query) use ($searchTerm, $customerCode) {
                 return $query->where('vmrno', '=', $searchTerm)
                     ->where('kunnr', '=', $customerCode);

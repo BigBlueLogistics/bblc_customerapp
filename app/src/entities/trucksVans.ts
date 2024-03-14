@@ -32,6 +32,7 @@ export type TrucksVansStatusDetailsEntity = Omit<
   whprocessstarttime: string;
   whprocessend: string;
   remarks: string;
+  provider: string;
   plugin: {
     id: number;
     startdate: string;
