@@ -20,9 +20,12 @@ function Status({
   const { darkMode } = controller;
   const { data: viewStatus, status } = data;
 
-  const renderSearch = () => {
-    if (viewStatus?.length) {
-      return (
+  return (
+    <Card sx={{ height: "100%" }}>
+      <MDBox pt={3} px={2} display="inline-flex" justifyContent="space-between">
+        <MDTypography variant="h6" fontWeight="medium">
+          Trucks and Vans Status
+        </MDTypography>
         <AutoCompleteSearch
           value={searchTerm}
           onInputSearch={onInputSearch}
@@ -30,19 +33,6 @@ function Status({
           options={searchResult.data}
           isLoading={searchResult.status === "loading"}
         />
-      );
-    }
-    return null;
-  };
-
-  return (
-    <Card sx={{ height: "100%" }}>
-      <MDBox pt={3} px={2} display="inline-flex" justifyContent="space-between">
-        <MDTypography variant="h6" fontWeight="medium">
-          Trucks and Vans Status
-        </MDTypography>
-
-        {renderSearch()}
       </MDBox>
       <MDBox pt={1} pb={2} px={2}>
         {status === "loading" ? (
