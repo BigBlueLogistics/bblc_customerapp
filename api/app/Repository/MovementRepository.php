@@ -152,7 +152,9 @@ class MovementRepository implements IMovementRepository
             ->get();
 
         $inbound = $res->map(function ($item) {
-            $qty = explode('/', $item->meinh)[1] ?? '';
+            $explodeMeinh = explode('/', $item->meinh);
+
+            $unit =  count($explodeMeinh) > 1 ? $explodeMeinh[1] : preg_replace('~\([^()]*\)~','', $explodeMeinh[0]) ;
             $date = Carbon::parse($item->erdat)->format('m/d/Y');
             $expiration = Carbon::parse($item->vfdat)->format('m/d/Y');
 
@@ -165,7 +167,7 @@ class MovementRepository implements IMovementRepository
                 'batch' => $item->charg,
                 'expiration' => $expiration,
                 'quantity' => $item->lfimg,
-                'unit' => $qty,
+                'unit' => $unit,
                 'weight' => $item->brgew,
                 'headerText' => $item->headr,
                 'reference' => $item->vnmbr,
