@@ -32,9 +32,9 @@
         <tr>
             <th align="center">Warehouse</th>
             <th align="center">Date</th>
-            <th align="center">Material code</th>
-            <th align="center">Document No.</th>
             <th align="center">Type</th>
+            <th align="center">Document No.</th>
+            <th align="center">Material code</th>
             <th align="center">Description</th>
             <th align="center">Batch</th>
             <th align="center">Expiration</th>
@@ -51,9 +51,9 @@
             <tr>
                 <td>{{ $movement['warehouse'] }}</td>
                 <td>{{ $movement['date'] }}</td>
-                <td>{{ $movement['materialCode'] }}</td>
-                <td>{{ $movement['documentNo'] }}</td>
                 <td>{{ $movement['movementType'] }}</td>
+                <td>{{ $movement['documentNo'] }}</td>
+                <td>{{ $movement['materialCode'] }}</td>
                 <td>{{ $movement['description'] }}</td>
                 <td>{{ $movement['batch'] }}</td>
                 <td>{{ $movement['expiration'] }}</td>

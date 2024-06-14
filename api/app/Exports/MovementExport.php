@@ -128,7 +128,7 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
     public function columnWidths(): array
     {
         return [
-            'E' => 12,  // Type
+            'C' => 12,  // Material
         ];
     }
 }

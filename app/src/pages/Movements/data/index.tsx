@@ -57,8 +57,8 @@ export default function miscData() {
       ...commonHeadersAttr,
     },
     {
-      Header: "Material Code",
-      accessor: "materialCode",
+      Header: "Type",
+      accessor: "movementType",
       ...commonHeadersAttr,
     },
     {
@@ -67,8 +67,8 @@ export default function miscData() {
       ...commonHeadersAttr,
     },
     {
-      Header: "Type",
-      accessor: "movementType",
+      Header: "Material Code",
+      accessor: "materialCode",
       ...commonHeadersAttr,
     },
     {
