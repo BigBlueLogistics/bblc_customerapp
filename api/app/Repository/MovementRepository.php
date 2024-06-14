@@ -153,7 +153,7 @@ class MovementRepository implements IMovementRepository
 
         $inbound = $res->map(function ($item) {
             $explodeMeinh = explode('/', $item->meinh);
-
+            // delete the string parentheses ()
             $unit =  count($explodeMeinh) > 1 ? $explodeMeinh[1] : preg_replace('~\([^()]*\)~','', $explodeMeinh[0]) ;
             $date = Carbon::parse($item->erdat)->format('m/d/Y');
             $expiration = Carbon::parse($item->vfdat)->format('m/d/Y');
