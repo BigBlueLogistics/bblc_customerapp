@@ -158,7 +158,7 @@ class AuthController extends Controller
     {
         Auth()->user()->currentAccessToken()->delete();
 
-        return $this->sendResponse('', __('auth.logout'));
+        return $this->sendResponse(null, __('auth.logout'));
     }
 
     public function isAuthenticated(Request $request)
