@@ -108,7 +108,7 @@ class MovementRepository implements IMovementRepository
                         'budat' => $budat,
                     ];                
             })->filter(function($item){
-                return $item['budat'] != '';
+                return $item['budat'] != '00000000';
             });
             
         }
