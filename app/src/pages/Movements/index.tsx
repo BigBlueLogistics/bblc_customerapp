@@ -211,8 +211,8 @@ function Movements() {
 
       subRows = [subData.data];
     } else {
-      const { headerText, reference } = original;
-      subRows = [{ headerText, reference }];
+      const { headerText } = original;
+      subRows = [{ headerText }];
     }
 
     setTableMovements((prev) => {

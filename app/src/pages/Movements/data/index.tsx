@@ -102,14 +102,19 @@ export default function miscData() {
       accessor: "weight",
       ...commonHeadersAttr,
     },
-  ];
-
-  const subTableHeaders = [
     {
       Header: "Reference",
       accessor: "reference",
       ...commonHeadersAttr,
     },
+    {
+      Header: "Vehicle",
+      accessor: "vehicle",
+      ...commonHeadersAttr,
+    },
+  ];
+
+  const subTableHeaders = [
     {
       Header: "Header text",
       accessor: "headerText",

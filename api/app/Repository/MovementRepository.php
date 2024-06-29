@@ -14,20 +14,36 @@ class MovementRepository implements IMovementRepository
 
     public function outboundMov($materialCode, $fromDate, $toDate, $warehouseNo, $customerCode, $generateType)
     {
+        $outboundCustomerCode = '';
         if (strtolower($warehouseNo) != 'all') {
             $formatWarehouse = str_replace('BB', 'W', $warehouseNo);
             $optLGNUM = ['TEXT' => " AND LGNUM EQ '{$formatWarehouse}'"];
         } else {
+            $formatWarehouse = '';
             $optLGNUM = [];
         }
 
         if (strtolower($materialCode) != 'all') {
+            $outboundCustomerCode = $materialCode;
             $optMATNR = ['TEXT' => " AND MATNR EQ '{$materialCode}'"];
         } else {
+            $outboundCustomerCode = $customerCode;
             $optMATNR = ['TEXT' => " AND MATNR LIKE '{$customerCode}%'"];
         }
 
         $mandt = SapRfcFacade::getMandt();
+
+        $likp = SapRfcFacade::functionModule('ZFM_ERP_LIKP_TABLEREAD_1')
+                ->param('IV_CUSTOMER', $outboundCustomerCode)
+                ->param('IV_TYPE', 'LF')
+                ->param('IV_WAREHOUSENO', $formatWarehouse)
+                ->param('IV_DOCSTART', $fromDate)
+                ->param('IV_DOCEND', $toDate)
+                ->getData();
+
+
+        $collectLikp = collect($likp['T_ERP_LIKP_MKPF'])->groupBy('VBELN')->toArray();
+
         $lips = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
             ->param('QUERY_TABLE', 'LIPS')
             ->param('SORT_FIELDS', 'VBELN')
@@ -60,32 +76,48 @@ class MovementRepository implements IMovementRepository
         $outbound = collect($lips);
 
         if ($outbound->count()) {
-            $outbound = $outbound->map(function ($item) {
-                $date = Carbon::parse($item['ERDAT'])->format('m/d/Y');
+            $outbound = $outbound->map(function ($item) use ($collectLikp){
                 $expiration = Carbon::parse($item['VFDAT'])->format('m/d/Y');
+                $vblen = $item['VBELN'];
+                $wadat = '';
+                $bstkd = '';
+                $xblnr = '';
+                $budat = '';
+                if(array_key_exists($vblen, $collectLikp)){
+                    $wadat =  Carbon::parse($collectLikp[$vblen][0]['WADAT'])->format('m/d/Y') ?? '';
+                    $bstkd =  trim($collectLikp[$vblen][0]['BSTKD']) ?? '';
+                    $xblnr =  trim($collectLikp[$vblen][0]['XBLNR']) ?? '';
+                    $budat =  trim($collectLikp[$vblen][0]['BUDAT']) ?? '';
+                }
 
-                return [
-                    'date' => $date,
-                    'materialCode' => $item['MATNR'],
-                    'documentNo' => $item['VBELN'],
-                    'movementType' => 'OUTBOUND',
-                    'description' => $item['ARKTX'],
-                    'batch' => $item['CHARG'],
-                    'expiration' => $expiration,
-                    'quantity' => $item['LFIMG'],
-                    'unit' => $item['VRKME'],
-                    'weight' => $item['BRGEW'],
-                    'warehouse' => str_replace('W', 'WH', $item['LGNUM']),
-                    'documentNoRef' => $item['VGBEL'],
-                ];
+                    return [
+                        'date' => $wadat,
+                        'materialCode' => $item['MATNR'],
+                        'documentNo' => $vblen,
+                        'movementType' => 'OUTBOUND',
+                        'description' => $item['ARKTX'],
+                        'batch' => $item['CHARG'],
+                        'expiration' => $expiration,
+                        'quantity' => $item['LFIMG'],
+                        'unit' => $item['VRKME'],
+                        'weight' => $item['BRGEW'],
+                        'warehouse' => str_replace('W', 'WH', $item['LGNUM']),
+                        'documentNoRef' => $item['VGBEL'],
+                        'reference' => $bstkd,
+                        'vehicle'=> $xblnr,
+                        'budat' => $budat,
+                    ];                
+            })->filter(function($item){
+                return $item['budat'] != '';
             });
+            
         }
 
         // lazy load the column headerText and reference
         if ($generateType === 'table') {
-            return $outbound->toArray();
+            return $outbound->values()->toArray();
         } else {
-            return $this->outboundMovExcel($outbound->toArray());
+            return $this->outboundMovExcel($outbound->values()->toArray());
         }
 
     }
@@ -126,13 +158,13 @@ class MovementRepository implements IMovementRepository
         $isNotAllWarehouse = boolval(strtolower($warehouseNo) != 'all');
         $isAllMaterial = boolval(strtolower($materialCode) == 'all');
 
-        $likpSubQuery = DB::raw("(SELECT BWMID, ERDAT, HEADR, VNMBR FROM LIKP WHERE ERDAT BETWEEN '{$fromDate}' AND '{$toDate}' GROUP BY BWMID, ERDAT, HEADR, VNMBR ) AS likp");
+        $likpSubQuery = DB::raw("(SELECT BWMID, ERDAT, HEADR, PONUM, VNMBR, BUDAT FROM LIKP WHERE ERDAT BETWEEN '{$fromDate}' AND '{$toDate}' GROUP BY BWMID, ERDAT, HEADR, PONUM, VNMBR, BUDAT ) AS likp");
         $res = DB::connection('wms')->table('lips')
             ->leftJoin($likpSubQuery, 'lips.bwmid', '=', 'likp.bwmid')
             ->selectRaw('likp.bwmid, likp.erdat, likp.headr,
                     SUM(lips.lfimg) AS lfimg, SUM(lips.brgew) AS brgew,
                     lips.matnr, lips.maktx, lips.charg, lips.meinh,
-                    lips.vfdat, lips.lgnum, likp.vnmbr'
+                    lips.vfdat, lips.lgnum, likp.ponum, likp.vnmbr, likp.budat'
             )
             ->when($isNotAllWarehouse, function ($query) use ($warehouseNo) {
                 $formatWarehouse = str_replace('BB', 'WH', $warehouseNo);
@@ -147,7 +179,7 @@ class MovementRepository implements IMovementRepository
             })
             ->where('lips.charg', '!=', 'null')
             ->whereBetween('likp.erdat', [$fromDate, $toDate])
-            ->groupBy('lips.matnr', 'lips.charg', 'lips.meinh', 'lips.maktx', 'lips.vfdat', 'lips.lgnum', 'likp.headr', 'likp.erdat', 'likp.bwmid', 'likp.vnmbr')
+            ->groupBy('lips.matnr', 'lips.charg', 'lips.meinh', 'lips.maktx', 'lips.vfdat', 'lips.lgnum', 'likp.headr', 'likp.erdat', 'likp.bwmid', 'likp.ponum', 'likp.vnmbr', 'likp.budat')
             ->orderBy('likp.bwmid', 'asc')
             ->get();
 
@@ -158,24 +190,29 @@ class MovementRepository implements IMovementRepository
             $date = Carbon::parse($item->erdat)->format('m/d/Y');
             $expiration = Carbon::parse($item->vfdat)->format('m/d/Y');
 
-            return [
-                'date' => $date,
-                'materialCode' => $item->matnr,
-                'documentNo' => $item->bwmid,
-                'movementType' => 'INBOUND',
-                'description' => $item->maktx,
-                'batch' => $item->charg,
-                'expiration' => $expiration,
-                'quantity' => $item->lfimg,
-                'unit' => $unit,
-                'weight' => $item->brgew,
-                'headerText' => $item->headr,
-                'reference' => $item->vnmbr,
-                'warehouse' => $item->lgnum,
-            ];
+                return [
+                    'date' => $date,
+                    'materialCode' => $item->matnr,
+                    'documentNo' => $item->bwmid,
+                    'movementType' => 'INBOUND',
+                    'description' => $item->maktx,
+                    'batch' => $item->charg,
+                    'expiration' => $expiration,
+                    'quantity' => $item->lfimg,
+                    'unit' => $unit,
+                    'weight' => $item->brgew,
+                    'headerText' => $item->headr,
+                    'reference' => $item->ponum,
+                    'warehouse' => $item->lgnum,
+                    'vehicle' => $item->vnmbr,
+                    'budat'=> $item->budat,
+                ];
+            
+        })->filter(function($item){
+            return $item['budat'] != '';
         });
 
-        return $inbound->toArray();
+        return $inbound->values()->toArray();
 
     }
 
@@ -192,20 +229,9 @@ class MovementRepository implements IMovementRepository
         return $collectionMergeInOut;
     }
 
-    public function outboundSubDetails($documentNo, $documentNoRef)
+    public function outboundReference($documentNoRef)
     {
         $mandt = SapRfcFacade::getMandt();
-        $headerText = SapRfcFacade::functionModule('RFC_READ_TEXT')
-            ->param('TEXT_LINES', [
-                'TEXT_LINES' => [
-                    'TDOBJECT' => 'VBBK',
-                    'TDID' => '0001',
-                    'TDSPRAS' => 'E',
-                    'TDNAME' => $documentNo,
-                ],
-            ])
-            ->getData();
-
         $reference = SapRfcFacade::functionModule('ZFM_BBP_RFC_READ_TABLE')
             ->param('QUERY_TABLE', 'VBAK')
             ->param('DELIMITER', ';')
@@ -219,6 +245,23 @@ class MovementRepository implements IMovementRepository
                 ['FIELDNAME' => 'VGBEL'],
             ])
             ->getDataToArray();
+        
+        return $reference[0]['BSTNK'] ?? '';
+
+    }
+
+    public function outboundSubDetails($documentNo, $documentNoRef)
+    {
+        $headerText = SapRfcFacade::functionModule('RFC_READ_TEXT')
+            ->param('TEXT_LINES', [
+                'TEXT_LINES' => [
+                    'TDOBJECT' => 'VBBK',
+                    'TDID' => '0001',
+                    'TDSPRAS' => 'E',
+                    'TDNAME' => $documentNo,
+                ],
+            ])
+            ->getData();
 
         $textLines = collect($headerText['TEXT_LINES'])->reduce(function ($total, $item) {
             $total[] = trim($item['TDLINE']);
@@ -228,7 +271,7 @@ class MovementRepository implements IMovementRepository
 
         return [
             'headerText' => implode(' ', $textLines),
-            'reference' => $reference[0]['BSTNK'] ?? '',
+            'reference' => $this->outboundReference($documentNoRef),
         ];
     }
 
