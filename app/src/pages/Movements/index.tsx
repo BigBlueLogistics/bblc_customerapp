@@ -1,6 +1,6 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import { Grid, Card, Icon } from "@mui/material";
-import { addMonths } from "date-fns";
+import { addMonths, format } from "date-fns";
 
 import MDBox from "atoms/MDBox";
 import MDTypography from "atoms/MDTypography";
@@ -90,10 +90,6 @@ function Movements() {
   };
 
   const onCoverageDate = (date: [Date, Date]) => {
-    // const from = date[0] && format(date[0], "yyyy/MM/dd");
-    // const to = date[1] && format(date[1], "yyyy/MM/dd");
-    // const coverageDate = [from, to] as [string, string];
-
     setFiltered((prev) => ({ ...prev, coverageDate: date }));
   };
 
@@ -105,12 +101,15 @@ function Movements() {
     setTableMovements((prev) => ({ ...prev, status: "loading" }));
 
     try {
+      const from = coverageDate[0] && format(coverageDate[0], "yyyy/MM/dd");
+      const to = coverageDate[1] && format(coverageDate[1], "yyyy/MM/dd");
+
       const { data: rows } = await movementServices.getMovements({
         params: {
           materialCode,
           movementType: type,
           warehouseNo,
-          coverageDate,
+          coverageDate: [from, to],
           customerCode,
         },
       });
@@ -163,7 +162,7 @@ function Movements() {
     setTableMovements(initialMovements);
   };
 
-  const exportFile = (format: "xlsx" | "csv") => {
+  const exportFile = (fileFormat: "xlsx" | "csv") => {
     const { warehouseNo, type, materialCode, coverageDate } = filtered;
     const data = {
       materialCode,
@@ -171,10 +170,10 @@ function Movements() {
       warehouseNo,
       coverageDate,
       customerCode,
-      format,
+      format: fileFormat,
     };
 
-    const fileName = `MOVEMENTS-${customerCode}-${warehouseNo}.${format}`;
+    const fileName = `MOVEMENTS-${customerCode}-${warehouseNo}.${fileFormat}`;
     downloadFile({
       url: "/movements/export-excel",
       filename: fileName,
