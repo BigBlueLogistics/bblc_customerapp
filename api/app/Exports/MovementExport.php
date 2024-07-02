@@ -104,8 +104,8 @@ class MovementExport implements FromView, ShouldAutoSize, WithEvents, WithDrawin
         $activeSheet->getStyle('J5:J8')->getFont()->setBold(true);
 
         // Label: Warehouse stocks.
-        $activeSheet->mergeCells('A8:M8')->getStyle('A8:M8')->getFont()->setBold(true)->setSize(26);
-        $activeSheet->getStyle('A8:M8')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $activeSheet->mergeCells('A8:N8')->getStyle('A8:N8')->getFont()->setBold(true)->setSize(26);
+        $activeSheet->getStyle('A8:N8')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         // Tables
 

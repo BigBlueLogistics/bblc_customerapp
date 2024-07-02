@@ -25,7 +25,7 @@
             <th colspan="3">{{ $timeNow }}</th>
         </tr>
         <tr class="fontBold">
-            <th align="center" colspan="13">MOVEMENTS - SUMMARY</th>
+            <th align="center" colspan="14">MOVEMENTS - SUMMARY</th>
         </tr>
     </thead>
     <thead>
@@ -43,6 +43,7 @@
             <th align="center">Weight</th>
             <th align="center">Reference</th>
             <th align="center">Header text</th>
+            <th align="center">Vehicle</th>
         </tr>
     </thead>
     <tbody>
@@ -62,6 +63,7 @@
                 <td>{{ $movement['weight'] }}</td>
                 <td>{{ $movement['reference'] ?? ""}}</td>
                 <td>{{ $movement['headerText'] ?? ""}}</td>
+                <td>{{ $movement['vehicle'] ?? ""}}</td>
             </tr>
             @endforeach
         @endif
